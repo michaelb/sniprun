@@ -1,0 +1,12 @@
+[package]
+name = "sniprun"
+version = "0.1.0"
+authors = ["michaelb <michael.bleuez2@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+neovim-lib="0.6.1"
+log="0.4.11"
+simple-logging="2.0.2"
