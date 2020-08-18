@@ -1,12 +1,16 @@
 use log::{info, LevelFilter};
-use neovim_lib::{Neovim, NeovimApi, Session};
+use neovim_lib::{Neovim, NeovimApi, Session, Value};
 use simple_logging::log_to_file;
 
+use std::thread;
+
+#[derive(Debug)]
 struct DataHolder {
     filetype: String,
     range: [i64; 2],
     filepath: String,
     projectroot: String,
+    dependencies_path: Vec<String>,
 }
 
 impl DataHolder {
@@ -16,6 +20,7 @@ impl DataHolder {
             range: [-1, -1],
             filepath: String::from(""),
             projectroot: String::from(""),
+            dependencies_path: vec![],
         }
     }
 }
@@ -57,18 +62,13 @@ impl EventHandler {
 
         for (event, values) in receiver {
             info!("inside loop: {:?}", event);
-            match Messages::from(event) {
+            match Messages::from(event.clone()) {
                 //Run command
                 Messages::Run => {
                     info!("run command received");
-                    info!("trying line : {:?}", self.nvim.get_current_line());
-                    info!(
-                        "trying range : {:?}",
-                        values
-                            .iter()
-                            .map(|v| v.as_i64().unwrap())
-                            .collect::<Vec<i64>>()
-                    );
+                    self.fill_data(&event, values);
+                    //run the interpreter
+                    //clean data
                 }
 
                 Messages::Terminate => {
@@ -81,6 +81,24 @@ impl EventHandler {
                 }
             }
         }
+    }
+
+    fn fill_data(&mut self, event: &str, values: Vec<Value>) {
+        self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
+
+        //get filetype
+        let ft = self.nvim.command_output("set ft?");
+        if let Ok(real_ft) = ft {
+            self.data.filetype = real_ft;
+        }
+
+        //get full file path
+        let full_file_path = self.nvim.command_output("echo expand('%:p')");
+        if let Ok(real_full_file_path) = full_file_path {
+            self.data.filepath = real_full_file_path;
+        }
+
+        info!("data : {:?}", self.data);
     }
 }
 
