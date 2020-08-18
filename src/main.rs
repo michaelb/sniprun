@@ -89,7 +89,7 @@ impl EventHandler {
         //get filetype
         let ft = self.nvim.command_output("set ft?");
         if let Ok(real_ft) = ft {
-            self.data.filetype = real_ft;
+            self.data.filetype = String::from(real_ft.split("=").last().unwrap());
         }
 
         //get full file path
