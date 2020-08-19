@@ -4,6 +4,11 @@ use simple_logging::log_to_file;
 
 use std::thread;
 
+mod launcher;
+
+mod interpreter;
+mod interpreters;
+
 #[derive(Debug)]
 struct DataHolder {
     filetype: String,
@@ -68,7 +73,12 @@ impl EventHandler {
                     info!("run command received");
                     self.fill_data(&event, values);
                     //run the interpreter
+                    let launcher = launcher::Launcher::new(self.data);
+                    let mut i = launcher.select();
+                    i.run();
+
                     //clean data
+                    self.data = DataHolder::new();
                 }
 
                 Messages::Terminate => {
