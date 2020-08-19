@@ -22,10 +22,10 @@ pub enum SupportLevel {
 
 pub trait Interpreter {
     //create
-    fn new<'a>(data: DataHolder) -> &'a Self {
+    fn new(data: DataHolder) -> Box<Self> {
         Self::new_with_level(data, Self::get_max_support_level())
     }
-    fn new_with_level<'a>(data: DataHolder, level: SupportLevel) -> &'a Self;
+    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Self>;
 
     fn get_supported_languages() -> Vec<String>;
     fn get_current_level(&self) -> SupportLevel;

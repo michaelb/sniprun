@@ -2,7 +2,7 @@ use crate::*;
 use interpreter::Interpreter;
 
 pub struct Launcher {
-    data: DataHolder,
+    pub data: DataHolder,
 }
 
 impl Launcher {
@@ -10,12 +10,12 @@ impl Launcher {
         Launcher { data: data }
     }
 
-    pub fn select(&self) -> impl Interpreter {
+    pub fn select_and_run<'a>(&self) -> Result<String, String> {
         iter_types! {
-            if Current::get_supported_languages().contains(self.data.filetype) {
+            if Current::get_supported_languages().contains(&self.data.filetype) {
                 // later, check and sort for best support level
-                let inter = Current::new(self.data);
-                return inter;
+                let mut inter = Current::new(self.data.clone());
+                return inter.run();
             }
         }
         panic!()

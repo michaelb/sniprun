@@ -6,6 +6,7 @@ use pyo3::{
     types::{PyBytes, PyDict},
 };
 
+#[derive(Debug, Clone)]
 pub struct Python3 {
     support_level: SupportLevel,
     data: DataHolder,
@@ -13,12 +14,12 @@ pub struct Python3 {
 }
 
 impl Interpreter for Python3 {
-    fn new_with_level<'a>(data: DataHolder, level: SupportLevel) -> &'a Python3 {
-        &Python3 {
+    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Python3> {
+        Box::new(Python3 {
             data,
             support_level: level,
             code: String::from(""),
-        }
+        })
     }
 
     fn get_supported_languages() -> Vec<String> {
@@ -37,7 +38,7 @@ impl Interpreter for Python3 {
     }
 
     fn get_data(&self) -> DataHolder {
-        self.data
+        self.data.clone()
     }
 
     fn get_max_support_level() -> SupportLevel {
@@ -45,7 +46,18 @@ impl Interpreter for Python3 {
     }
 
     fn fetch_code(&mut self) {
-        self.code = String::from("print(\"this is a success\")");
+        if !self
+            .data
+            .current_bloc
+            .replace(&[' ', '\t', '\n', '\r'][..], "")
+            .is_empty()
+        {
+            self.code = self.data.current_bloc.clone();
+        } else if !self.data.current_line.replace(" ", "").is_empty() {
+            self.code = self.data.current_line.clone();
+        } else {
+            self.code = String::from("");
+        }
     }
     fn add_boilerplate(&mut self) {
         self.code = String::from(
@@ -61,9 +73,11 @@ exit_value1428571999 = str(mystdout1427851999.getvalue())";
     }
     fn build(&mut self) {}
     fn execute(&mut self) -> Result<String, String> {
-        let py = pyo3::Python::acquire_gil().python();
-        let locals = PyDict::new(py);
-        py.run(self.code.as_str(), None, Some(locals)).unwrap();
+        let py = pyo3::Python::acquire_gil();
+        let locals = PyDict::new(py.python());
+        py.python()
+            .run(self.code.as_str(), None, Some(locals))
+            .unwrap();
         let py_stdout = locals.get_item("exit_value1428571999").unwrap();
         let result: String = py_stdout.extract().unwrap();
         Ok(result)

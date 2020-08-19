@@ -9,9 +9,13 @@ mod launcher;
 mod interpreter;
 mod interpreters;
 
-#[derive(Debug)]
-struct DataHolder {
+use interpreter::Interpreter;
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct DataHolder {
     filetype: String,
+    current_line: String,
+    current_bloc: String,
     range: [i64; 2],
     filepath: String,
     projectroot: String,
@@ -22,6 +26,8 @@ impl DataHolder {
     fn new() -> Self {
         DataHolder {
             filetype: String::from(""),
+            current_line: String::from(""),
+            current_bloc: String::from(""),
             range: [-1, -1],
             filepath: String::from(""),
             projectroot: String::from(""),
@@ -73,9 +79,13 @@ impl EventHandler {
                     info!("run command received");
                     self.fill_data(&event, values);
                     //run the interpreter
-                    let launcher = launcher::Launcher::new(self.data);
-                    let mut i = launcher.select();
-                    i.run();
+                    let launcher = launcher::Launcher::new(self.data.clone());
+                    let answer = launcher.select_and_run().unwrap();
+                    info!("answer: {}", answer);
+
+                    //display ouput in nvim
+                    let res = self.nvim.command(&format!("echo \"{}\"", answer));
+                    info!("echoing back results : {:?}", res);
 
                     //clean data
                     self.data = DataHolder::new();
@@ -100,6 +110,23 @@ impl EventHandler {
         let ft = self.nvim.command_output("set ft?");
         if let Ok(real_ft) = ft {
             self.data.filetype = String::from(real_ft.split("=").last().unwrap());
+        }
+
+        //get current line
+        let current_line = self.nvim.get_current_line();
+        if let Ok(real_current_line) = current_line {
+            self.data.current_line = real_current_line;
+        }
+
+        //get current bloc
+        let current_bloc = self.nvim.get_current_buf().unwrap().get_lines(
+            &mut self.nvim,
+            self.data.range[0],
+            self.data.range[1] + 1,
+            false,
+        );
+        if let Ok(real_current_bloc) = current_bloc {
+            self.data.current_bloc = real_current_bloc.join("\n");
         }
 
         //get full file path
