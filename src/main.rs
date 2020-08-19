@@ -121,8 +121,8 @@ impl EventHandler {
         //get current bloc
         let current_bloc = self.nvim.get_current_buf().unwrap().get_lines(
             &mut self.nvim,
-            self.data.range[0],
-            self.data.range[1] + 1,
+            self.data.range[0] - 1, //because the function is 0-based instead of 1 and end-exclusive
+            self.data.range[1],
             false,
         );
         if let Ok(real_current_bloc) = current_bloc {
