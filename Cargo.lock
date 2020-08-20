@@ -337,15 +337,8 @@ dependencies = [
  "neovim-lib",
  "pyo3",
  "simple-logging",
- "stoppable_thread",
  "thiserror",
 ]
-
-[[package]]
-name = "stoppable_thread"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e6700c1ed393aa9c1fff950032a64a4856436dadee820641ce1b914cab65019f"
 
 [[package]]
 name = "syn"

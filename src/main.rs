@@ -3,7 +3,6 @@ use neovim_lib::{Neovim, NeovimApi, Session, Value};
 use simple_logging::log_to_file;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
-use stoppable_thread;
 
 mod error;
 mod interpreter;
@@ -101,7 +100,7 @@ impl EventHandler {
     }
 }
 enum HandleAction {
-    New(stoppable_thread::StoppableHandle<()>),
+    New(thread::JoinHandle<()>),
 }
 
 fn main() {
@@ -112,8 +111,8 @@ fn main() {
     let meh = Arc::new(Mutex::new(event_handler));
 
     let (send, recv) = mpsc::channel();
-    stoppable_thread::spawn(move |stopped| {
-        let mut handle: Option<stoppable_thread::StoppableHandle<()>> = None;
+    thread::spawn(move || {
+        let mut handle: Option<thread::JoinHandle<()>> = None;
         loop {
             match recv.recv() {
                 Err(_) => panic!("Idk"),
@@ -129,11 +128,11 @@ fn main() {
                 info!("run command received");
 
                 let cloned_meh = meh.clone();
-                send.send(HandleAction::New(stoppable_thread::spawn(move |stopped| {
+                let res2 = send.send(HandleAction::New(thread::spawn(move || {
                     cloned_meh.lock().unwrap().fill_data(values);
                     //run the interpreter
                     let launcher = launcher::Launcher::new(cloned_meh.lock().unwrap().data.clone());
-                    let mut result = launcher.select_and_run();
+                    let result = launcher.select_and_run();
                     let res = match result {
                         Ok(answer_str) => {
                             let len_without_newline = answer_str.trim_end().len();
