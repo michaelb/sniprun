@@ -10,4 +10,9 @@ edition = "2018"
 neovim-lib="0.6.1"
 log="0.4.11"
 simple-logging="2.0.2"
+thiserror="1.0.20"
+
+
+
+# Python3 interpreter
 pyo3="0.11.1"

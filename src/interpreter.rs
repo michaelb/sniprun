@@ -1,4 +1,5 @@
 use crate::*;
+use error::SniprunError;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum SupportLevel {
@@ -12,7 +13,7 @@ pub enum SupportLevel {
     ExtImport = 5,
     ///run a line/bloc of code, but include variable/functions definitions found in the file
     File = 10,
-    ///run a line/bloc of code, but include variable/functions found in the project
+    ///run a line/bloc of code, but include (only needed) variable/functions found in the project
     Project = 20,
     ///Run a line/bloc of code, but include variable/function from the project and project or system-wide dependencies
     System = 30,
@@ -36,19 +37,19 @@ pub trait Interpreter {
     }
     fn get_data(&self) -> DataHolder;
 
-    fn fetch_code(&mut self); //mut to allow modification of the current_level
-    fn add_boilerplate(&mut self);
-    fn build(&mut self); //return path to executable
-    fn execute(&mut self) -> Result<String, String>;
+    fn fetch_code(&mut self) -> Result<(), SniprunError>; //mut to allow modification of the current_level
+    fn add_boilerplate(&mut self) -> Result<(), SniprunError>;
+    fn build(&mut self) -> Result<(), SniprunError>; //return path to executable
+    fn execute(&mut self) -> Result<String, SniprunError>;
 
-    fn run_at_level(&mut self, level: SupportLevel) -> Result<String, String> {
+    fn run_at_level(&mut self, level: SupportLevel) -> Result<String, SniprunError> {
         self.set_current_level(level);
-        self.fetch_code();
-        self.add_boilerplate();
-        self.build();
-        self.execute()
+        self.fetch_code()
+            .and_then(|_| self.add_boilerplate())
+            .and_then(|_| self.build())
+            .and_then(|_| self.execute())
     }
-    fn run(&mut self) -> Result<String, String> {
+    fn run(&mut self) -> Result<String, SniprunError> {
         self.run_at_level(self.get_current_level())
     }
 }

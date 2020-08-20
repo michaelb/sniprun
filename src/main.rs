@@ -4,10 +4,10 @@ use simple_logging::log_to_file;
 
 use std::thread;
 
-mod launcher;
-
+mod error;
 mod interpreter;
 mod interpreters;
+mod launcher;
 
 use interpreter::Interpreter;
 
@@ -80,7 +80,10 @@ impl EventHandler {
                     self.fill_data(&event, values);
                     //run the interpreter
                     let launcher = launcher::Launcher::new(self.data.clone());
-                    let answer = launcher.select_and_run().unwrap();
+                    let answer = match launcher.select_and_run() {
+                        Ok(answer_str) => answer_str,
+                        Err(e) => format!("{}", e),
+                    };
                     info!("answer: {}", answer);
 
                     //display ouput in nvim

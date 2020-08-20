@@ -1,10 +1,8 @@
+use crate::error::SniprunError;
 use crate::interpreter::{Interpreter, SupportLevel};
 use crate::DataHolder;
 
-use pyo3::{
-    prelude::*,
-    types::{PyBytes, PyDict},
-};
+use pyo3::types::PyDict;
 
 #[derive(Debug, Clone)]
 pub struct Python3 {
@@ -45,7 +43,7 @@ impl Interpreter for Python3 {
         SupportLevel::Unsupported
     }
 
-    fn fetch_code(&mut self) {
+    fn fetch_code(&mut self) -> Result<(), SniprunError> {
         if !self
             .data
             .current_bloc
@@ -58,8 +56,9 @@ impl Interpreter for Python3 {
         } else {
             self.code = String::from("");
         }
+        Ok(())
     }
-    fn add_boilerplate(&mut self) {
+    fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         self.code = String::from(
             "from io import StringIO
 import sys
@@ -70,16 +69,31 @@ sys.stdout = mystdout1427851999 = StringIO()
         ) + self.code.as_str()
             + "
 exit_value1428571999 = str(mystdout1427851999.getvalue())";
+        Ok(())
     }
-    fn build(&mut self) {}
-    fn execute(&mut self) -> Result<String, String> {
+    fn build(&mut self) -> Result<(), SniprunError> {
+        Ok(())
+    }
+    fn execute(&mut self) -> Result<String, SniprunError> {
         let py = pyo3::Python::acquire_gil();
         let locals = PyDict::new(py.python());
-        py.python()
-            .run(self.code.as_str(), None, Some(locals))
-            .unwrap();
-        let py_stdout = locals.get_item("exit_value1428571999").unwrap();
-        let result: String = py_stdout.extract().unwrap();
-        Ok(result)
+        match py.python().run(self.code.as_str(), None, Some(locals)) {
+            Ok(_) => (),
+            Err(e) => {
+                return Err(SniprunError::InterpreterError);
+            }
+        }
+        let py_stdout = locals.get_item("exit_value1428571999");
+        if let Some(unwrapped_stdout) = py_stdout {
+            let result: Result<String, _> = unwrapped_stdout.extract();
+            match result {
+                Ok(unwrapped_result) => return Ok(unwrapped_result),
+                Err(e) => return Err(SniprunError::InterpreterError),
+            }
+        } else {
+            return Err(SniprunError::InterpreterLimitationError(String::from(
+                "Code erased a needed value to get standart output)",
+            )));
+        }
     }
 }

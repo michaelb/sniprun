@@ -1,4 +1,5 @@
 use crate::*;
+use error::SniprunError;
 use interpreter::Interpreter;
 
 pub struct Launcher {
@@ -10,7 +11,7 @@ impl Launcher {
         Launcher { data: data }
     }
 
-    pub fn select_and_run<'a>(&self) -> Result<String, String> {
+    pub fn select_and_run<'a>(&self) -> Result<String, SniprunError> {
         iter_types! {
             if Current::get_supported_languages().contains(&self.data.filetype) {
                 // later, check and sort for best support level
