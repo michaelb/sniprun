@@ -4,8 +4,8 @@ if !exists('s:sniprunJobId')
 endif
 
 
-let s:Run = 'run'
-let s:Terminate = 'terminate'
+let s:SnipRun = 'run'
+let s:SnipTerminate = 'terminate'
 
 let s:scriptdir = resolve(expand('<sfile>:p:h') . '/..')
 let s:bin= s:scriptdir.'/target/release/sniprun'
