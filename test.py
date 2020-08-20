@@ -1,10 +1,13 @@
+print(3+3)
 
 
 
 
+count = 0 
+for i in range(1,1000000000000000000000000):
+    count += 1
+print(count)
 
-for i in range(1,10):
-    print(i, end="")
 
 
 print(" test <-", end="")

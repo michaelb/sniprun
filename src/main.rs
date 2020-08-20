@@ -1,15 +1,14 @@
 use log::{info, LevelFilter};
 use neovim_lib::{Neovim, NeovimApi, Session, Value};
 use simple_logging::log_to_file;
-
+use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
+use stoppable_thread;
 
 mod error;
 mod interpreter;
 mod interpreters;
 mod launcher;
-
-use interpreter::Interpreter;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct DataHolder {
@@ -43,7 +42,6 @@ struct EventHandler {
 
 enum Messages {
     Run,
-    Terminate,
     Unknown(String),
 }
 
@@ -51,7 +49,6 @@ impl From<String> for Messages {
     fn from(event: String) -> Self {
         match &event[..] {
             "run" => Messages::Run,
-            "terminate" => Messages::Terminate,
             _ => Messages::Unknown(event),
         }
     }
@@ -68,45 +65,7 @@ impl EventHandler {
         }
     }
 
-    fn recv(&mut self) {
-        let receiver = self.nvim.session.start_event_loop_channel();
-
-        for (event, values) in receiver {
-            info!("inside loop: {:?}", event);
-            match Messages::from(event.clone()) {
-                //Run command
-                Messages::Run => {
-                    info!("run command received");
-                    self.fill_data(&event, values);
-                    //run the interpreter
-                    let launcher = launcher::Launcher::new(self.data.clone());
-                    let answer = match launcher.select_and_run() {
-                        Ok(answer_str) => answer_str,
-                        Err(e) => format!("{}", e),
-                    };
-                    info!("answer: {}", answer);
-
-                    //display ouput in nvim
-                    let res = self.nvim.command(&format!("echo \"{}\"", answer));
-                    info!("echoing back results : {:?}", res);
-
-                    //clean data
-                    self.data = DataHolder::new();
-                }
-
-                Messages::Terminate => {
-                    // self.nvim.command(&format!("echo terminating")).unwrap();
-                    info!("terminate command received");
-                }
-
-                Messages::Unknown(event) => {
-                    info!("unknown event received: {:?}", event);
-                }
-            }
-        }
-    }
-
-    fn fill_data(&mut self, event: &str, values: Vec<Value>) {
+    fn fill_data(&mut self, values: Vec<Value>) {
         self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
 
         //get filetype
@@ -141,9 +100,70 @@ impl EventHandler {
         info!("data : {:?}", self.data);
     }
 }
+enum HandleAction {
+    New(stoppable_thread::StoppableHandle<()>),
+}
 
 fn main() {
     log_to_file("out.log", LevelFilter::Info);
     let mut event_handler = EventHandler::new();
-    event_handler.recv();
+    let receiver = event_handler.nvim.session.start_event_loop_channel();
+
+    let meh = Arc::new(Mutex::new(event_handler));
+
+    let (send, recv) = mpsc::channel();
+    stoppable_thread::spawn(move |stopped| {
+        let mut handle: Option<stoppable_thread::StoppableHandle<()>> = None;
+        loop {
+            match recv.recv() {
+                Err(_) => panic!("Idk"),
+                Ok(HandleAction::New(new)) => handle = Some(new),
+            }
+        }
+    });
+    for (event, values) in receiver {
+        info!("inside loop: {:?}", event);
+        match Messages::from(event.clone()) {
+            //Run command
+            Messages::Run => {
+                info!("run command received");
+
+                let cloned_meh = meh.clone();
+                send.send(HandleAction::New(stoppable_thread::spawn(move |stopped| {
+                    cloned_meh.lock().unwrap().fill_data(values);
+                    //run the interpreter
+                    let launcher = launcher::Launcher::new(cloned_meh.lock().unwrap().data.clone());
+                    let mut result = launcher.select_and_run();
+                    let res = match result {
+                        Ok(answer_str) => {
+                            let len_without_newline = answer_str.trim_end().len();
+                            let mut answer_str = answer_str.clone();
+                            answer_str.truncate(len_without_newline);
+                            cloned_meh
+                                .lock()
+                                .unwrap()
+                                .nvim
+                                .command(&format!("echo \"{}\"", answer_str))
+                        }
+                        Err(e) => cloned_meh
+                            .lock()
+                            .unwrap()
+                            .nvim
+                            .err_writeln(&format!("{}", e)),
+                    };
+                    info!("answer: {:?}", res);
+
+                    //display ouput in nvim
+                    info!("echoing back results : {:?}", res);
+
+                    //clean data
+                    cloned_meh.lock().unwrap().data = DataHolder::new();
+                })));
+            }
+
+            Messages::Unknown(event) => {
+                info!("unknown event received: {:?}", event);
+            }
+        }
+    }
 }

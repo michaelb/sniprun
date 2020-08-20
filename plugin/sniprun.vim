@@ -41,7 +41,9 @@ function! s:run() range
 endfunction
 
 function! s:terminate()
-  call rpcnotify(s:sniprunJobId, s:Terminate)
+  call jobstop(s:sniprunJobId)
+  let s:sniprunJobId = 0
+  call s:connect()
 endfunction
 
 
@@ -52,7 +54,6 @@ endfunction
 function! s:initRpc()
   if s:sniprunJobId == 0
     let jobid = jobstart([s:bin], { 'rpc': v:true })
-    echo jobid
     return jobid
   else
     return s:sniprunJobId
