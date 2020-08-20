@@ -21,6 +21,8 @@ Sniprun is developped and maintained on Linux (-only for now), support for other
 
 Sniprun is and will always (try to) be dead simple.
 
+### Running
+
 Line mode: Place your cursor on the line you want to run, and type (in command mode):
 
 ```vim
@@ -34,7 +36,10 @@ Bloc mode: Select the code you want to execute in visual mode and type in:
 :'<,'>SnipRun
 ```
 
-(nota bene: the `:'<,'>` is often pre-typed)
+(nota bene: the `:'<,'>` is often pre-typed and appears if you type in `:`)
+
+### Stopping
+
 _ARGHHH_ I 'SnipRan' and infinite loop (or anything that takes too long)!
 No worries, the second and last command will kill everything Sniprun ran so far (and has not finished yet):
 
@@ -47,7 +52,7 @@ Alternatively, exit Neovim.
 ### My usage recommandation
 
 - Map the line mode to a simple command such as `ff`
-- Rename `SnipRun` to a more convenient command that do not conflict with your existing mappings
+- Rename `SnipRun` to a more convenient command that do not conflict with your existing mappings, to run bloc mode faster as is probably the most widely used mode while still having easily implemented support for multiples languages
 
 ## Dump
 
