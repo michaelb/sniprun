@@ -1,4 +1,3 @@
-use std::env;
 use std::fs;
 use std::path::Path;
 
@@ -56,7 +55,7 @@ fn main() -> Result<(), std::io::Error> {
     // cargo stuff for rebuild
 
     for path in fs::read_dir(out_dir).unwrap() {
-        let plugin_path = path.unwrap().path().display();
+        let _plugin_path = path.unwrap().path().display();
     }
     println!(
         "cargo:rerun-if-changed=build.rs

@@ -1,7 +1,3 @@
-use crate::error::SniprunError;
-use crate::interpreter::{Interpreter, SupportLevel};
-use crate::DataHolder;
-
 use pyo3::types::PyDict;
 use unindent::unindent;
 
@@ -19,6 +15,10 @@ impl Interpreter for Python3 {
             support_level: level,
             code: String::from(""),
         })
+    }
+
+    fn get_name() -> String {
+        String::from("python3-original")
     }
 
     fn get_supported_languages() -> Vec<String> {
@@ -41,7 +41,7 @@ impl Interpreter for Python3 {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::Unsupported
+        SupportLevel::Bloc
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {

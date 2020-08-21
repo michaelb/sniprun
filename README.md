@@ -47,6 +47,8 @@ No worries, the second and last command will kill everything Sniprun ran so far 
  :SnipTerminate
 ```
 
+(This command also takes cares of cleaning up the build directory used by sniprun)
+
 Alternatively, exit Neovim.
 
 ### My usage recommandation
@@ -58,27 +60,28 @@ Alternatively, exit Neovim.
 
 As of writing, languages can be supported up to different extents:
 
-- Unsupported : You should not expect anything to work.
-- Line : Code contained in a signle line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
-- Bloc : You can select any piece of code that is correct on its own (indepenently of indentation) in visual mode, and run it.
-- Import : Support external imports, so you don't have to select the top-of-file import to test 'bloc-mode-style' a code selection somewhere else.
-- File : Sniprun will recursively find the missing variable and function definitions to run your line of code(you don't have to select a bloc anymore).
-- Project : Sniprun will detect the root of your project, and get the necessary code from files in your project.
-- System : Sniprun will use local (and system) libraries, such as jar files, to run your what you want.
+- **Unsupported** : You should not expect anything to work.
+- **Line** : Code contained in a signle line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
+- **Bloc** : You can select any piece of code that is correct on its own (indepenently of indentation) in visual mode, and run it.
+- **Import** : Support external imports, so you don't have to select the top-of-file import to test 'bloc-mode-style' a code selection somewhere else.
+- **File** : Sniprun will recursively find the missing variable and function definitions to run your line of code(you don't have to select a bloc anymore).
+- **Project** : Sniprun will detect the root of your project, and get the necessary code from files in your project.
+- **System** : Sniprun will use local (and system) libraries, such as jar files, to run your what you want.
 
-| Language   | Support level |
-| ---------- | ------------- |
-| Python3    | Bloc          |
-| Rust       | Unsupported   |
-| C          | Unsupported   |
-| Java       | Unsupported   |
-| JavaScript | Unsupported   |
+| Language   | Support level | Language   | Support level |
+| ---------- | ------------- | ---------- | ------------- |
+| Python3    | Bloc          | Go         | Unsupported   |
+| Rust       | Unsupported   | C++        | Unsupported   |
+| C          | Unsupported   | Bash/Shell | Unsupported   |
+| Java       | Unsupported   | Scilab     | Unsupported   |
+| JavaScript | Unsupported   | R          | Unsupported   |
 
 ## Known limitations
 
 Due to its nature, Sniprun may have trouble with programs that :
 
 - Meddle with standart output / stderr
-- Prints double quotes (")
+- Need to read from stdin
+- Prints double quotes ("), or incorrect UTF8 characters
 - Purposely fails
-- Access files; sniprun does not run in a virtual environment.
+- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong.

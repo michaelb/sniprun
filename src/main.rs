@@ -1,6 +1,8 @@
+use dirs::config_dir;
 use log::{info, LevelFilter};
 use neovim_lib::{Neovim, NeovimApi, Session, Value};
 use simple_logging::log_to_file;
+use std::path::Path;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 
@@ -18,10 +20,19 @@ pub struct DataHolder {
     filepath: String,
     projectroot: String,
     dependencies_path: Vec<String>,
+    work_dir: String,
 }
 
 impl DataHolder {
     fn new() -> Self {
+        std::fs::create_dir_all(format!(
+            "{}/{}",
+            config_dir().unwrap().to_str().unwrap(),
+            "sniprun"
+        ))
+        .unwrap();
+        info!("created work dir");
+
         DataHolder {
             filetype: String::from(""),
             current_line: String::from(""),
@@ -30,7 +41,13 @@ impl DataHolder {
             filepath: String::from(""),
             projectroot: String::from(""),
             dependencies_path: vec![],
+            work_dir: format!("{}/{}", config_dir().unwrap().to_str().unwrap(), "sniprun"),
         }
+    }
+    fn clean_dir(&mut self) {
+        let work_dir_path = self.work_dir.clone();
+        std::fs::remove_dir_all(&work_dir_path).unwrap();
+        std::fs::create_dir_all(&work_dir_path).unwrap();
     }
 }
 
@@ -41,6 +58,7 @@ struct EventHandler {
 
 enum Messages {
     Run,
+    Clean,
     Unknown(String),
 }
 
@@ -159,6 +177,7 @@ fn main() {
                     cloned_meh.lock().unwrap().data = DataHolder::new();
                 })));
             }
+            Messages::Clean => meh.clone().lock().unwrap().data.clean_dir(),
 
             Messages::Unknown(event) => {
                 info!("unknown event received: {:?}", event);

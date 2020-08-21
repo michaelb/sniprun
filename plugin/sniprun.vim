@@ -6,6 +6,7 @@ endif
 
 let s:SnipRun = 'run'
 let s:SnipTerminate = 'terminate'
+let s:SnipClean = "clean"
 
 let s:scriptdir = resolve(expand('<sfile>:p:h') . '/..')
 let s:bin= s:scriptdir.'/target/release/sniprun'
@@ -41,11 +42,18 @@ function! s:run() range
 endfunction
 
 function! s:terminate()
+  call s:clean()
   call jobstop(s:sniprunJobId)
   let s:sniprunJobId = 0
   call s:connect()
 endfunction
 
+
+function! s:clean()
+  call rpcnotify(s:sniprunJobId, s:SnipClean)
+  sleep 200m
+  " necessary to give enough time to clean the sniprun work directory
+endfunction
 
 
 
