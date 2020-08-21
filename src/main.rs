@@ -1,8 +1,7 @@
-use dirs::config_dir;
+use dirs::cache_dir;
 use log::{info, LevelFilter};
 use neovim_lib::{Neovim, NeovimApi, Session, Value};
 use simple_logging::log_to_file;
-use std::path::Path;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 
@@ -27,7 +26,7 @@ impl DataHolder {
     fn new() -> Self {
         std::fs::create_dir_all(format!(
             "{}/{}",
-            config_dir().unwrap().to_str().unwrap(),
+            cache_dir().unwrap().to_str().unwrap(),
             "sniprun"
         ))
         .unwrap();
@@ -41,7 +40,7 @@ impl DataHolder {
             filepath: String::from(""),
             projectroot: String::from(""),
             dependencies_path: vec![],
-            work_dir: format!("{}/{}", config_dir().unwrap().to_str().unwrap(), "sniprun"),
+            work_dir: format!("{}/{}", cache_dir().unwrap().to_str().unwrap(), "sniprun"),
         }
     }
     fn clean_dir(&mut self) {
