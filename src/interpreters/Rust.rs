@@ -89,6 +89,7 @@ impl Interpreter for Rust {
             File::create(&self.main_file_path).expect("Failed to create file for rust-original");
         write(&self.main_file_path, &self.code).expect("Unable to write to file for rust-original");
         let output = Command::new("rustc")
+            .arg("-O")
             .arg("--out-dir")
             .arg(&self.rust_work_dir)
             .arg(&self.main_file_path)
