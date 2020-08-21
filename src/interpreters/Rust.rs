@@ -59,7 +59,7 @@ impl Interpreter for Rust {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::Unsupported
+        SupportLevel::Bloc
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
