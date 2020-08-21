@@ -29,7 +29,7 @@ endfunction
 
 
 function! s:configureCommands()
-  command! -range Run <line1>,<line2>call s:run()
+  command! -range SnipRun <line1>,<line2>call s:run()
   command! Terminate :call s:terminate()
 endfunction
 
@@ -37,7 +37,7 @@ endfunction
 function! s:run() range
   let s:fl=a:firstline
   let s:ll=a:lastline
-  call rpcnotify(s:sniprunJobId, s:Run, str2nr(s:fl), str2nr(s:ll))
+  call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll))
 endfunction
 
 function! s:terminate()

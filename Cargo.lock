@@ -338,6 +338,7 @@ dependencies = [
  "pyo3",
  "simple-logging",
  "thiserror",
+ "unindent",
 ]
 
 [[package]]

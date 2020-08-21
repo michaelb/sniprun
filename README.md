@@ -19,7 +19,7 @@ Sniprun is developped and maintained on Linux (-only for now), support for other
 
 ## Usage
 
-Sniprun is and will always (try to) be dead simple.
+Sniprun is and will always (try to) be dead simple. `:SnipRun` a piece of code and the plugin will return its standart output. ( +stderr if supported)
 
 ### Running
 
@@ -54,6 +54,31 @@ Alternatively, exit Neovim.
 - Map the line mode to a simple command such as `ff`
 - Rename `SnipRun` to a more convenient command that do not conflict with your existing mappings, to run bloc mode faster as is probably the most widely used mode while still having easily implemented support for multiples languages
 
-## Dump
+## Support levels and languages
 
-If the code needed to run your line/bloc is not completely contained within your line or selection, depending on the support level for your language, sniprun will automatically fetch it from the current file, the current project or even use your project's dependencies and system libraries.
+As of writing, languages can be supported up to different extents:
+
+- Unsupported : You should not expect anything to work.
+- Line : Code contained in a signle line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
+- Bloc : You can select any piece of code that is correct on its own (indepenently of indentation) in visual mode, and run it.
+- Import : Support external imports, so you don't have to select the top-of-file import to test 'bloc-mode-style' a code selection somewhere else.
+- File : Sniprun will recursively find the missing variable and function definitions to run your line of code(you don't have to select a bloc anymore).
+- Project : Sniprun will detect the root of your project, and get the necessary code from files in your project.
+- System : Sniprun will use local (and system) libraries, such as jar files, to run your what you want.
+
+| Language   | Support level |
+| ---------- | ------------- |
+| Python3    | Bloc          |
+| Rust       | Unsupported   |
+| C          | Unsupported   |
+| Java       | Unsupported   |
+| JavaScript | Unsupported   |
+
+## Known limitations
+
+Due to its nature, Sniprun may have trouble with programs that :
+
+- Meddle with standart output / stderr
+- Prints double quotes (")
+- Purposely fails
+- Access files; sniprun does not run in a virtual environment.

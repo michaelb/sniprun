@@ -10,7 +10,7 @@ pub enum SupportLevel {
     ///run a bloc of code, same limitations as Line
     Bloc = 2,
     ///support exterior imports
-    ExtImport = 5,
+    Import = 5,
     ///run a line/bloc of code, but include variable/functions definitions found in the file
     File = 10,
     ///run a line/bloc of code, but include (only needed) variable/functions found in the project
