@@ -3,7 +3,7 @@
 Sniprun is a (still WIP) code runner plugin. It aims to provide stupidly fast testing for interpreted _and_ compiled languages.
 
 Ever dreamt of printing the type of that obscure object, or that list to check if it contains everything you expect, but it was all pipe dream as your code would not even compile/run in its unfinished state?
-Quickly grab some visual range, `:'<,'>SnipRun` it and... that's it! And there's more!
+Quickly grab some visual range, `:'<,'>SnipRun` it and... that's it!
 
 ## Installation
 
