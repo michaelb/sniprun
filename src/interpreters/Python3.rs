@@ -3,6 +3,7 @@ use crate::interpreter::{Interpreter, SupportLevel};
 use crate::DataHolder;
 
 use pyo3::types::PyDict;
+use unindent::unindent;
 
 #[derive(Debug, Clone)]
 pub struct Python3 {
@@ -66,7 +67,7 @@ import sys
 sys.stdout = mystdout1427851999 = StringIO()
 
 ",
-        ) + self.code.as_str()
+        ) + &unindent(&format!("{}{}", "\n", self.code.as_str()))
             + "
 exit_value1428571999 = str(mystdout1427851999.getvalue())";
         Ok(())
