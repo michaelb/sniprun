@@ -91,7 +91,7 @@ As of writing, languages can be supported up to different extents:
 | Java       | Unsupported   | Scilab     | Unsupported   |
 | JavaScript | Unsupported   | R          | Unsupported   |
 
-Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md)!
+Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
 ## Known limitations
 
