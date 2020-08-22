@@ -47,7 +47,7 @@ No worries, the second and last command will kill everything Sniprun ran so far 
  :SnipTerminate
 ```
 
-(This command also takes cares of cleaning up the build directory used by sniprun)
+(This command also takes cares of cleaning up the build directory used by sniprun, and if SnipRun crashes because of something unexpected, resets it)
 
 Alternatively, exit Neovim.
 
@@ -61,9 +61,9 @@ Alternatively, exit Neovim.
 As of writing, languages can be supported up to different extents:
 
 - **Unsupported** : You should not expect anything to work.
-- **Line** : Code contained in a signle line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
-- **Bloc** : You can select any piece of code that is correct on its own (indepenently of indentation) in visual mode, and run it.
-- **Import** : Support external imports, so you don't have to select the top-of-file import to test 'bloc-mode-style' a code selection somewhere else.
+- **Line** : Code contained in a single line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
+- **Bloc** : You can select any piece of code that is correct on its own (independently of indentation) in visual mode, and run it.
+- **Import** : Support external imports, so you don't have to select the top-of-file import to test a 'bloc-mode-style' code selection somewhere else.
 - **File** : Sniprun will recursively find the missing variable and function definitions to run your line of code(you don't have to select a bloc anymore).
 - **Project** : Sniprun will detect the root of your project, and get the necessary code from files in your project.
 - **System** : Sniprun will use local (and system) libraries, such as jar files, to run your what you want.
@@ -72,7 +72,7 @@ As of writing, languages can be supported up to different extents:
 | ---------- | ------------- | ---------- | ------------- |
 | Python3    | Bloc          | Go         | Unsupported   |
 | Rust       | Bloc          | C++        | Unsupported   |
-| C          | Unsupported   | Bash/Shell | Unsupported   |
+| C          | Unsupported   | Bash/Shell | Bloc          |
 | Java       | Unsupported   | Scilab     | Unsupported   |
 | JavaScript | Unsupported   | R          | Unsupported   |
 
