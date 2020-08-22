@@ -18,7 +18,7 @@ What do I write, and where?
 
 Yeah cool but what _code_ goes inside?
 
--> Inside, you must define a struct that implement the **Interpreter** trait. Have a look at existing inmplementations to get the full picture. Make sur to respect the [conventions](#conventions)
+-> Inside, you must define a struct that implement the **Interpreter** trait. Have a look at existing inmplementations to get the idea. Make sure to respect the [conventions](#conventions)
 
 I just compiled, how do I test my code quick?
 
@@ -28,7 +28,7 @@ I just compiled, how do I test my code quick?
 
 Is _my_ code running?
 
--> Assert that the file type detected by vim is contained in your list of supported file types. If there is already a implementation for your filetype/language, set (temporarly) your max support level to "Selected".
+-> Assert that the file type detected by Neovim is contained in your list of supported file types. If there is already a implementation for your filetype/language, set (temporarly) your max support level to "Selected".
 
 ---
 
@@ -54,6 +54,12 @@ I need to import some external dependencies.
 I need more than one file to write complicated code...
 
 -> You can have a subfolder alongside your file (same name to prevent confusion and conflicts) and put some other code inside as you see fit.
+
+---
+
+Do I need to manage async running and compiling?
+
+-> No, Sniprun takes care of that for you. You can implement a single-threaded synchronous code just like the Python3_original interpreter
 
 ### Conventions
 
