@@ -47,7 +47,7 @@ No worries, the second and last command will kill everything Sniprun ran so far 
  :SnipTerminate
 ```
 
-Under the hood, what it does is just kill Sniprun (and its child processes) and relaunch it, thus a more mnemonic alias for the intention is set `:SnipReset` but it does basically the same thing as terminate, but also cleans the cache directory.
+Under the hood, what it does is just kill Sniprun (and its child processes) and relaunch it, thus a more mnemonic alias for the intention is set `:SnipReset` that does basically the same thing as terminate, but also cleans the cache directory.
 
 Alternatively, exit Neovim.
 
@@ -75,6 +75,8 @@ As of writing, languages can be supported up to different extents:
 | C          | Unsupported   | Bash/Shell | Bloc          |
 | Java       | Unsupported   | Scilab     | Unsupported   |
 | JavaScript | Unsupported   | R          | Unsupported   |
+
+Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md)!
 
 ## Known limitations
 

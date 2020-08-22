@@ -1,4 +1,4 @@
-#Welcome to the contributing page
+# Welcome to the contributing page
 
 ## Add support for your language
 
@@ -14,28 +14,57 @@ What do I write, and where?
 
 -> You have to write a file in src/interpreters/ that has the name of the interpreter, by convention; \<language_name\>\_\<differentiator\>.rs
 
+---
+
 Yeah cool but what _code_ goes inside?
--> Inside, you must write a struct that has the **exact same name** as the file (minus the .rs extension).
-The struct must implement the **Interpreter** trait. Have a look at existing inmplementations to get the full picture.
+
+-> Inside, you must define a struct that implement the **Interpreter** trait. Have a look at existing inmplementations to get the full picture. Make sur to respect the [conventions](#conventions)
 
 I just compiled, how do I test my code quick?
+
 -> run `nvim -u plugin/sniprun.vim some_test_file.ext` from sniprun project root.
 
-If _my_ code running?
+---
+
+Is _my_ code running?
+
 -> Assert that the file type detected by vim is contained in your list of supported file types. If there is already a implementation for your filetype/language, set (temporarly) your max support level to "Selected".
 
+---
+
 I need to debug, how ?
+
 -> Use the `info!("here")` macro instead of `println!("here")`. This writes to the log file you can find in ~/.cache/sniprun/sniprun.log.
 
-Can I panic!() ?
--> Yes but preferably only when you encounter a fatal error (eg: you have to write a file, but there is no space left on the device).
-Failing compilation or failing to run the code should be handled via the SniprunError enum
+---
 
-I need to import some exterior dependencies.
+Can I panic!() ?
+
+-> Yes but preferably only when you encounter a fatal error (eg: you have to write a file, but there is no space left on the device).
+Failing compilation or incorrect code panicking should be handled via the SniprunError enum
+
+---
+
+I need to import some external dependencies.
+
 -> Add what you need to the src/interpreters/import.rs file, and the Cargo.toml if necessary
 
+---
+
 I need more than one file to write complicated code...
--> You can have a subfolder with the same name as your file (to prevent confusion and conflicts) and put some other code inside as you see fit.
+
+-> You can have a subfolder alongside your file (same name to prevent confusion and conflicts) and put some other code inside as you see fit.
+
+### Conventions
+
+A program (struct with methods) that can fetch code, execute it and return the result is called an interpreter.
+
+- The interpreter main file is named \<language_name\>\_\<differentiator\>.rs; for example "Python3_lsp.rs", case-independent.
+- The interpreter main file contains a struct has the **exact same name** as the file (minus the .rs extension).
+- Names for interpreters should be unique. Include filenames, and also the name returned by `get_name()` that should be identical (case difference is tolerated).
+- Extra files for the same interpreter go into a subdfolder alongside the interpreter's main file. The subfolder has the same name as the file, minus the extension.
+- The interpreter try to follow (and create by itself) SupportLevel hints when possible; for example, will not try to parse an entire project into when it has been determined SupportLevel::Line is enough to run the submitted code.
+- The interpreter should not panic (unless fatal), but return the SniprunError as suggested by the Interpreter trait
 
 ## Contribute to Sniprun itself
 
