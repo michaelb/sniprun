@@ -13,14 +13,19 @@ impl Python3_original {
         let mut file = File::open(&self.data.filepath)?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;
+        let import_regex =
+            Regex::new("(?m)^(?:from[ ]+([\r\n\t ]+)[ ]+)?import[ ]+([^\r\n\t ]+)[ ]*$").unwrap();
 
         for line in contents.lines() {
-            if line.contains("import") {
+            if line.contains("import")
+                && line.trim().chars().next().unwrap() != '#'
+                && import_regex.is_match(line.replace("\n", "").trim())
+            {
                 self.imports = self.imports.clone()
                     + "\n
 try:\n" + "\t" + line
                     + "\nexcept:\n\t"
-                    + "print(\"failed to import module\")\n";
+                    + "print()\n";
             }
         }
         Ok(())

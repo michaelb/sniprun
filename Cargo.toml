@@ -1,6 +1,6 @@
 [package]
 name = "sniprun"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["michaelb <michael.bleuez2@gmail.com>"]
 edition = "2018"
 
@@ -12,6 +12,7 @@ log="0.4.11"
 simple-logging="2.0.2"
 thiserror="1.0.20"
 dirs="3.0"
+regex="1"
 
 
 # Python3 interpreter

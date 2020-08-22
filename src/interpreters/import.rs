@@ -3,6 +3,7 @@ use crate::interpreter::{Interpreter, SupportLevel};
 use crate::DataHolder;
 use log::info;
 
+use regex::Regex;
 use std::fs::{write, DirBuilder, File};
 use std::io::prelude::*;
 use std::process::Command;
