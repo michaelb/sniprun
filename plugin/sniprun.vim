@@ -31,7 +31,8 @@ endfunction
 
 function! s:configureCommands()
   command! -range SnipRun <line1>,<line2>call s:run()
-  command! Terminate :call s:terminate()
+  command! SnipTerminate :call s:terminate()
+  command! SnipReset :call s:clean()| :call s:terminate()
 endfunction
 
 
@@ -42,7 +43,6 @@ function! s:run() range
 endfunction
 
 function! s:terminate()
-  call s:clean()
   call jobstop(s:sniprunJobId)
   let s:sniprunJobId = 0
   call s:connect()

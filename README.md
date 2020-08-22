@@ -47,7 +47,7 @@ No worries, the second and last command will kill everything Sniprun ran so far 
  :SnipTerminate
 ```
 
-(This command also takes cares of cleaning up the build directory used by sniprun, and if SnipRun crashes because of something unexpected, resets it)
+Under the hood, what it does is just kill Sniprun (and its child processes) and relaunch it, thus a more mnemonic alias for the intention is set `:SnipReset` but it does basically the same thing as terminate, but also cleans the cache directory.
 
 Alternatively, exit Neovim.
 

@@ -1,43 +1,40 @@
 #[derive(Debug, Clone)]
-pub struct Rust {
+pub struct Bash_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    rust_work_dir: String,
-    bin_path: String,
+    bash_work_dir: String,
     main_file_path: String,
 }
 
-impl Interpreter for Rust {
-    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Rust> {
-        let rwd = data.work_dir.clone() + "/rust-original";
+impl Interpreter for Bash_original {
+    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Bash_original> {
+        let bwd = data.work_dir.clone() + "/bash-original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
-            .create(&rwd)
+            .create(&bwd)
             .expect("Could not create directory for rust-original");
-        let mfp = rwd.clone() + "/main.rs";
-        let bp = String::from(&mfp[..mfp.len() - 3]);
-        Box::new(Rust {
+        let mfp = bwd.clone() + "/main.sh";
+        Box::new(Bash_original {
             data,
-            support_level,
+            support_level: level,
             code: String::from(""),
-            rust_work_dir: rwd,
-            bin_path: bp,
+            bash_work_dir: bwd,
             main_file_path: mfp,
         })
     }
 
-    fn get_supported_languages() -> Vec<String> {
-        vec![
-            String::from("rust"),
-            String::from("rust-lang"),
-            String::from("rs"),
-        ]
+    fn get_name() -> String {
+        String::from("bash_original")
     }
 
-    fn get_name() -> String {
-        String::from("rust-original")
+    fn get_supported_languages() -> Vec<String> {
+        vec![
+            String::from("bash"),
+            String::from("shell"),
+            String::from("sh"),
+        ]
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -61,9 +58,12 @@ impl Interpreter for Rust {
             .current_bloc
             .replace(&[' ', '\t', '\n', '\r'][..], "")
             .is_empty()
+            && self.get_current_level() >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty() {
+        } else if !self.data.current_line.replace(" ", "").is_empty()
+            && self.get_current_level() >= SupportLevel::Line
+        {
             self.code = self.data.current_line.clone();
         } else {
             self.code = String::from("");
@@ -72,35 +72,25 @@ impl Interpreter for Rust {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("fn main() {") + &self.code + "}";
+        //add shebang just in case
+        self.code = String::from("#!/usr/bin/env bash \n") + &self.code;
         Ok(())
     }
 
     fn build(&mut self) -> Result<(), SniprunError> {
-        //write code to file
         let mut file =
-            File::create(&self.main_file_path).expect("Failed to create file for rust-original");
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for rust-original");
-        let output = Command::new("rustc")
-            .arg("-O")
-            .arg("--out-dir")
-            .arg(&self.rust_work_dir)
-            .arg(&self.main_file_path)
-            .output()
-            .expect("Unable to start process");
+            File::create(&self.main_file_path).expect("Failed to create file for bash-original");
 
-        //TODO if relevant, return the error number (parse it from stderr)
-        if !output.status.success() {
-            return Err(SniprunError::CompilationError("".to_string()));
-        } else {
-            return Ok(());
-        }
+        write(&self.main_file_path, &self.code).expect("Unable to write to file for bash-original");
+        Ok(())
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new(&self.bin_path)
+        let output = Command::new("bash")
+            .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
+        info!("yay from bash interpreter");
         if output.status.success() {
             return Ok(String::from_utf8(output.stdout).unwrap());
         } else {

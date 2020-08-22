@@ -1,13 +1,13 @@
 #[derive(Debug, Clone)]
-pub struct Python3 {
+pub struct Python3_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
 }
 
-impl Interpreter for Python3 {
-    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Python3> {
-        Box::new(Python3 {
+impl Interpreter for Python3_original {
+    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Python3_original> {
+        Box::new(Python3_original {
             data,
             support_level: level,
             code: String::from(""),
@@ -15,7 +15,7 @@ impl Interpreter for Python3 {
     }
 
     fn get_name() -> String {
-        String::from("python3-original")
+        String::from("Python3_original")
     }
 
     fn get_supported_languages() -> Vec<String> {

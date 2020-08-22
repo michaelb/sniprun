@@ -121,9 +121,12 @@ enum HandleAction {
 }
 
 fn main() {
-    log_to_file("out.log", LevelFilter::Info);
     let mut event_handler = EventHandler::new();
     let receiver = event_handler.nvim.session.start_event_loop_channel();
+    log_to_file(
+        &format!("{}/{}", event_handler.data.work_dir, "sniprun.log"),
+        LevelFilter::Info,
+    );
 
     let meh = Arc::new(Mutex::new(event_handler));
 
@@ -132,7 +135,7 @@ fn main() {
         let mut handle: Option<thread::JoinHandle<()>> = None;
         loop {
             match recv.recv() {
-                Err(_) => panic!("Idk"),
+                Err(_) => panic!("Broken connection"),
                 Ok(HandleAction::New(new)) => handle = Some(new),
             }
         }
