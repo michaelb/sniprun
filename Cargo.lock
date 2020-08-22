@@ -464,7 +464,7 @@ checksum = "fbee7696b84bbf3d89a1c2eccff0850e3047ed46bfcd2e92c29a2d074d57e252"
 
 [[package]]
 name = "sniprun"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "dirs",
  "log",

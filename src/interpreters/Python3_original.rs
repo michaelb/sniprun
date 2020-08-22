@@ -8,7 +8,11 @@ pub struct Python3_original {
 }
 
 impl Python3_original {
+    // would be nice if it determined by itself whether it needs those imports
     pub fn fetch_imports(&mut self) -> std::io::Result<()> {
+        if self.support_level < SupportLevel::Line {
+            return Ok(());
+        }
         //no matter if it fails, we should try to run the rest
         let mut file = File::open(&self.data.filepath)?;
         let mut contents = String::new();
@@ -66,7 +70,7 @@ impl Interpreter for Python3_original {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::Bloc
+        SupportLevel::Import
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
