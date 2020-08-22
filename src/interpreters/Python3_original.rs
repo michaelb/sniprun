@@ -4,6 +4,27 @@ pub struct Python3_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
+    imports: String,
+}
+
+impl Python3_original {
+    pub fn fetch_imports(&mut self) -> std::io::Result<()> {
+        //no matter if it fails, we should try to run the rest
+        let mut file = File::open(&self.data.filepath)?;
+        let mut contents = String::new();
+        file.read_to_string(&mut contents)?;
+
+        for line in contents.lines() {
+            if line.contains("import") {
+                self.imports = self.imports.clone()
+                    + "\n
+try:\n" + "\t" + line
+                    + "\nexcept:\n\t"
+                    + "print(\"failed to import module\")\n";
+            }
+        }
+        Ok(())
+    }
 }
 
 impl Interpreter for Python3_original {
@@ -12,6 +33,7 @@ impl Interpreter for Python3_original {
             data,
             support_level: level,
             code: String::from(""),
+            imports: String::from(""),
         })
     }
 
@@ -43,6 +65,7 @@ impl Interpreter for Python3_original {
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
+        let _res = self.fetch_imports();
         if !self
             .data
             .current_bloc
@@ -61,14 +84,16 @@ impl Interpreter for Python3_original {
         Ok(())
     }
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from(
-            "from io import StringIO
+        self.code = self.imports.clone()
+            + &String::from(
+                "from io import StringIO
 import sys
 
 sys.stdout = mystdout1427851999 = StringIO()
 
 ",
-        ) + &unindent(&format!("{}{}", "\n", self.code.as_str()))
+            )
+            + &unindent(&format!("{}{}", "\n", self.code.as_str()))
             + "
 exit_value1428571999 = str(mystdout1427851999.getvalue())";
         Ok(())

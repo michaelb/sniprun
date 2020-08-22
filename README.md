@@ -2,8 +2,14 @@
 
 Sniprun is a (still WIP) code runner plugin. It aims to provide stupidly fast testing for interpreted _and_ compiled languages.
 
+## What does it do ?
+
+Basically, it allows you to run a part of your code.
+
 Ever dreamt of printing the type of that obscure object, or that list to check if it contains everything you expect, but it was all pipe dream as your code would not even compile/run in its unfinished state?
 Quickly grab some visual range, `:'<,'>SnipRun` it and... that's it!
+
+(And there's more to come!)
 
 ## Installation
 
@@ -70,7 +76,7 @@ As of writing, languages can be supported up to different extents:
 
 | Language   | Support level | Language   | Support level |
 | ---------- | ------------- | ---------- | ------------- |
-| Python3    | Bloc          | Go         | Unsupported   |
+| Python3    | Import        | Go         | Unsupported   |
 | Rust       | Bloc          | C++        | Unsupported   |
 | C          | Unsupported   | Bash/Shell | Bloc          |
 | Java       | Unsupported   | Scilab     | Unsupported   |
