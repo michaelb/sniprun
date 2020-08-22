@@ -6,6 +6,8 @@ Sniprun is a code runner plugin. It aims to provide stupidly fast testing for in
 
 ![](demo.gif)
 
+(the exact same thing can also be done on **compiled** languages such as Rust, to the relevant support level's extent)
+
 ## What does it do ?
 
 Basically, it allows you to run a part of your code.
