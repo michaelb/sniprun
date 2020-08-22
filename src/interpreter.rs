@@ -2,6 +2,7 @@ use crate::error::SniprunError;
 use crate::DataHolder;
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+#[allow(dead_code)]
 pub enum SupportLevel {
     ///no support
     Unsupported = 0,

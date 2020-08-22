@@ -1,4 +1,5 @@
 #[derive(Debug, Clone)]
+#[allow(non_camel_case_types)]
 pub struct Rust_original {
     support_level: SupportLevel,
     data: DataHolder,
@@ -78,7 +79,7 @@ impl Interpreter for Rust_original {
 
     fn build(&mut self) -> Result<(), SniprunError> {
         //write code to file
-        let mut file =
+        let mut _file =
             File::create(&self.main_file_path).expect("Failed to create file for rust-original");
         write(&self.main_file_path, &self.code).expect("Unable to write to file for rust-original");
         let output = Command::new("rustc")

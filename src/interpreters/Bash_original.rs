@@ -1,4 +1,5 @@
 #[derive(Debug, Clone)]
+#[allow(non_camel_case_types)]
 pub struct Bash_original {
     support_level: SupportLevel,
     data: DataHolder,
@@ -78,7 +79,7 @@ impl Interpreter for Bash_original {
     }
 
     fn build(&mut self) -> Result<(), SniprunError> {
-        let mut file =
+        let mut _file =
             File::create(&self.main_file_path).expect("Failed to create file for bash-original");
 
         write(&self.main_file_path, &self.code).expect("Unable to write to file for bash-original");

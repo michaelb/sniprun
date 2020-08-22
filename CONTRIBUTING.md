@@ -18,11 +18,11 @@ What do I write, and where?
 
 Yeah cool but what _code_ goes inside?
 
--> Inside, you must define a struct that implement the **Interpreter** trait. Have a look at existing inmplementations to get the idea. Make sure to respect the [conventions](#conventions)
+-> Inside, you must define a struct that implement the **Interpreter** trait. Have a look at existing implementations to get the idea. Make sure to respect the [conventions](#conventions)
 
-I just compiled, how do I test my code quick?
+I just compiled, how do I test my code quickly?
 
--> run `nvim -u plugin/sniprun.vim some_test_file.ext` from sniprun project root.
+-> compile `cargo build --release` and run `nvim -u plugin/sniprun.vim some_test_file.ext` from the sniprun project root.
 
 ---
 

@@ -55,6 +55,7 @@ struct EventHandler {
     data: DataHolder,
 }
 
+#[allow(dead_code)]
 enum Messages {
     Run,
     Clean,
@@ -123,7 +124,7 @@ enum HandleAction {
 fn main() {
     let mut event_handler = EventHandler::new();
     let receiver = event_handler.nvim.session.start_event_loop_channel();
-    log_to_file(
+    let _ = log_to_file(
         &format!("{}/{}", event_handler.data.work_dir, "sniprun.log"),
         LevelFilter::Info,
     );
@@ -132,11 +133,11 @@ fn main() {
 
     let (send, recv) = mpsc::channel();
     thread::spawn(move || {
-        let mut handle: Option<thread::JoinHandle<()>> = None;
+        let mut _handle: Option<thread::JoinHandle<()>> = None;
         loop {
             match recv.recv() {
                 Err(_) => panic!("Broken connection"),
-                Ok(HandleAction::New(new)) => handle = Some(new),
+                Ok(HandleAction::New(new)) => _handle = Some(new),
             }
         }
     });
@@ -148,7 +149,7 @@ fn main() {
                 info!("run command received");
 
                 let cloned_meh = meh.clone();
-                let res2 = send.send(HandleAction::New(thread::spawn(move || {
+                let _res2 = send.send(HandleAction::New(thread::spawn(move || {
                     cloned_meh.lock().unwrap().fill_data(values);
                     //run the interpreter
                     let launcher = launcher::Launcher::new(cloned_meh.lock().unwrap().data.clone());

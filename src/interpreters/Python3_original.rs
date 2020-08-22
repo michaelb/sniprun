@@ -1,4 +1,5 @@
 #[derive(Debug, Clone)]
+#[allow(non_camel_case_types)]
 pub struct Python3_original {
     support_level: SupportLevel,
     data: DataHolder,
@@ -80,7 +81,7 @@ exit_value1428571999 = str(mystdout1427851999.getvalue())";
         let locals = PyDict::new(py.python());
         match py.python().run(self.code.as_str(), None, Some(locals)) {
             Ok(_) => (),
-            Err(e) => {
+            Err(_e) => {
                 return Err(SniprunError::InterpreterError);
             }
         }
@@ -89,7 +90,7 @@ exit_value1428571999 = str(mystdout1427851999.getvalue())";
             let result: Result<String, _> = unwrapped_stdout.extract();
             match result {
                 Ok(unwrapped_result) => return Ok(unwrapped_result),
-                Err(e) => return Err(SniprunError::InterpreterError),
+                Err(_e) => return Err(SniprunError::InterpreterError),
             }
         } else {
             return Err(SniprunError::InterpreterLimitationError(String::from(
