@@ -17,7 +17,10 @@ Quickly grab some visual range, `:'<,'>SnipRun` it and... that's it!
 
 ## Installation
 
-(Recommended) Use your favorite plugin manager. (Run `install.sh` as a post-installation script, it will download or compile the sniprun binary)
+(Recommended)
+
+Use your favorite plugin manager.
+(Run `install.sh` as a post-installation script, it will download or compile the sniprun binary)
 
 For example, `vim-plug`:
 
