@@ -87,7 +87,7 @@ As of writing, languages can be supported up to different extents:
 | ---------- | ------------- | ---------- | ------------- |
 | Python3    | Import        | Go         | Unsupported   |
 | Rust       | Bloc          | C++        | Unsupported   |
-| C          | Unsupported   | Bash/Shell | Bloc          |
+| C          | Bloc          | Bash/Shell | Bloc          |
 | Java       | Unsupported   | Scilab     | Unsupported   |
 | JavaScript | Unsupported   | R          | Unsupported   |
 
