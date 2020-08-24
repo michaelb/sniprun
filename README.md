@@ -102,3 +102,4 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Prints double quotes ("), or incorrect UTF8 characters
 - Purposely fails
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong.
+- For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need ahve been _saved_.
