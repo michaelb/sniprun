@@ -72,7 +72,7 @@ Alternatively, exit Neovim.
 
 ```
 nnoremap ff :SnipRun<CR>
-vnoremap ff :SnipRun<CR>
+vnoremap f :SnipRun<CR>
 ```
 
 - For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire code.
