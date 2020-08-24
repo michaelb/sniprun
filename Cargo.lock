@@ -467,6 +467,7 @@ name = "sniprun"
 version = "0.2.0"
 dependencies = [
  "dirs",
+ "lazy_static",
  "log",
  "neovim-lib",
  "pyo3",

@@ -7,8 +7,29 @@ pub struct Python3_original {
     imports: String,
 }
 
+fn module_used(line: &str, code: &str) -> bool {
+    if line.contains("*") {
+        return true;
+    }
+    if line.contains(" as ") {
+        if let Some(name) = line.split(" ").last() {
+            return code.contains(name);
+        }
+    }
+    for name in line
+        .replace(",", " ")
+        .replace("from", " ")
+        .replace("import ", " ")
+        .split(" ")
+    {
+        if code.contains(name.trim()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 impl Python3_original {
-    // would be nice if it determined by itself whether it needs those imports
     pub fn fetch_imports(&mut self) -> std::io::Result<()> {
         if self.support_level < SupportLevel::Line {
             return Ok(());
@@ -17,14 +38,14 @@ impl Python3_original {
         let mut file = File::open(&self.data.filepath)?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;
-        let import_regex =
-            Regex::new("(?m)^(?:from[ ]+([\r\n\t ]+)[ ]+)?import[ ]+([^\r\n\t ]+)[ ]*$").unwrap();
 
         for line in contents.lines() {
-            if line.contains("import")
-                && line.trim().chars().next().unwrap() != '#'
-                && import_regex.is_match(line.replace("\n", "").trim())
+            info!("lines are : {}", line);
+            if line.contains("import ") //basic selection
+                && line.trim().chars().next() != Some('#')
+            && module_used(line, &contents)
             {
+                // embed in try catch blocs in case uneeded module is unavailable
                 self.imports = self.imports.clone()
                     + "\n
 try:\n" + "\t" + line

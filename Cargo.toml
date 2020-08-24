@@ -13,6 +13,7 @@ simple-logging="2.0.2"
 thiserror="1.0.20"
 dirs="3.0"
 regex="1"
+lazy_static="1.4.0"
 
 
 # Python3 interpreter
