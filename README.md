@@ -66,7 +66,7 @@ Under the hood, what it does is just kill Sniprun (and its child processes) and 
 
 Alternatively, exit Neovim.
 
-### My usage recommandation
+### My usage recommandation & tricks
 
 - Map the line and bloc mode to a simple command such as `ff`
 
@@ -74,6 +74,8 @@ Alternatively, exit Neovim.
 nnoremap ff :SnipRun<CR>
 vnoremap ff :SnipRun<CR>
 ```
+
+- For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire code.
 
 ## Support levels and languages
 
