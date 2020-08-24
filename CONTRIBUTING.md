@@ -4,7 +4,7 @@
 
 ### How hard it is?
 
-Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in about 1h30.
+Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 13min (my best time, for C_original) to 1h30.
 
 Higher support levels gets exponentially harder (depends on the languages though).
 
