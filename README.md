@@ -68,8 +68,12 @@ Alternatively, exit Neovim.
 
 ### My usage recommandation
 
-- Map the line mode to a simple command such as `ff`
-- Rename `SnipRun` to a more convenient command that do not conflict with your existing mappings, to run bloc mode faster as is probably the most widely used mode while still having easily implemented support for multiples languages
+- Map the line and bloc mode to a simple command such as `ff`
+
+```
+nnoremap ff :SnipRun<CR>
+vnoremap ff :SnipRun<CR>
+```
 
 ## Support levels and languages
 
@@ -103,3 +107,7 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Purposely fails
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong.
 - For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need ahve been _saved_.
+
+```
+
+```
