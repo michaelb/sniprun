@@ -1,12 +1,14 @@
 # Sniprun
 
-![](https://img.shields.io/badge/sniprun-v0.2.0-green.svg)
+![](https://img.shields.io/badge/sniprun-v0.3.0-green.svg)
 
 Sniprun is a code runner plugin. It aims to provide stupidly fast testing for interpreted _and_ **compiled** [languages](#support-levels-and-languages)
 
 ![](demo.gif)
 
 (the exact same thing can also be done on **compiled** languages such as Rust, to the relevant support level's extent)
+
+> Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your worflow.
 
 ## What does it do ?
 
@@ -18,6 +20,13 @@ Quickly grab some visual range, `:'<,'>SnipRun` it and... that's it!
 (And there's more to come...)
 
 ## Installation
+
+### Prerequisites
+
+- Compiler / interpreter for your language must be installed & on your \$PATH
+- For C, gcc is required
+
+### Install Sniprun
 
 (Recommended)
 
@@ -81,7 +90,7 @@ vnoremap f :SnipRun<CR>
 
 As of writing, languages can be supported up to different extents:
 
-- **Unsupported** : You should not expect anything to work.
+- **Unsupported** : You should not expect anything to work, except if the generic interpreter works correctly with it \*.
 - **Line** : Code contained in a single line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
 - **Bloc** : You can select any piece of code that is correct on its own (independently of indentation) in visual mode, and run it.
 - **Import** : Support external imports, so you don't have to select the top-of-file import to test a 'bloc-mode-style' code selection somewhere else.
@@ -99,6 +108,8 @@ As of writing, languages can be supported up to different extents:
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
+\* SnipRun includes a _'fallback'_ generic interpreter that makes uses of [this](https://github.com/prasmussen/glot-code-runner) project. It allows bloc-level language support for many interpreted languages, though it has many limitations and differences. The following languages are supported (unofficially) through the generic interpreter: Assembly, ats, Bash, C, Clojure, COBOL, Coffescript, C++, C#, D, Elixir, Elm, Erlang, F#, Golang, Groovy, Haskell, Idris, Java, Javascript, Julia, Lua, Nim, OCaml, Perl, Perl6, PHP, Python, Ruby, Rust, Scala, Swift.
+
 ## Known limitations
 
 Due to its nature, Sniprun may have trouble with programs that :
@@ -110,6 +121,15 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong.
 - For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _saved_.
 
-```
+#### Generic interpreter limitations:
 
-```
+- All interpreted languages get only bloc level support.
+- Compiled languages necessitate to run a a bloc containing a standart entry point (such as `int main(){....}` for C
+- the detected filetype must match the language named as written on the [project](https://github.com/prasmussen/glot-code-runner) page.
+- The project is stale (no active development)
+
+## Mentions & Support
+
+This project is very similar to [this](https://github.com/formulahendry/vscode-code-runner) but is an attempt to make the same kind of plugin for Neovim, preferably simpler, and more complete.
+
+For example, SnipRun Python support is (objectively) sligthly superior, and with some help, can get way, way better. Infrastructure to run code is also more feature-complete, with simple examples to implement basic support for new languages. Compared to the 'one-line-should-run-everythin' approach of vs-code-runner, SnipRun can go further.

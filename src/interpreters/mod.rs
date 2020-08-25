@@ -1,5 +1,6 @@
 include!("Python3_original.rs");
 include!("Rust_original.rs");
+include!("Generic.rs");
 include!("Bash_original.rs");
 include!("C_original.rs");
 include!("import.rs");
@@ -13,6 +14,11 @@ include!("import.rs");
                  )*
                 };{
             type Current = interpreters::Rust_original;
+                $(
+                    $code
+                 )*
+                };{
+            type Current = interpreters::Generic;
                 $(
                     $code
                  )*

@@ -2,6 +2,7 @@ use crate::error::SniprunError;
 use crate::interpreter::{Interpreter, SupportLevel};
 use crate::DataHolder;
 use log::info;
+use serde_json::{Map, Value};
 
 use lazy_static::lazy_static;
 use regex::Regex;

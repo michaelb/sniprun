@@ -13,7 +13,7 @@ impl Launcher {
 
     pub fn select_and_run<'a>(&self) -> Result<String, SniprunError> {
         let mut max_level_support = SupportLevel::Unsupported;
-        let mut name_best_interpreter = String::from("generic");
+        let mut name_best_interpreter = String::from("Generic");
         //select the best interpreter for the language
         iter_types! {
             if Current::get_supported_languages().contains(&self.data.filetype){

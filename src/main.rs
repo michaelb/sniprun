@@ -20,6 +20,7 @@ pub struct DataHolder {
     projectroot: String,
     dependencies_path: Vec<String>,
     work_dir: String,
+    sniprun_root_dir: String,
 }
 
 impl DataHolder {
@@ -41,6 +42,7 @@ impl DataHolder {
             projectroot: String::from(""),
             dependencies_path: vec![],
             work_dir: format!("{}/{}", cache_dir().unwrap().to_str().unwrap(), "sniprun"),
+            sniprun_root_dir: String::from(""),
         }
     }
     fn clean_dir(&mut self) {
@@ -84,6 +86,7 @@ impl EventHandler {
 
     fn fill_data(&mut self, values: Vec<Value>) {
         self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
+        self.data.sniprun_root_dir = String::from(values[2].as_str().unwrap());
 
         //get filetype
         let ft = self.nvim.command_output("set ft?");
@@ -156,9 +159,14 @@ fn main() {
                     let result = launcher.select_and_run();
                     let res = match result {
                         Ok(answer_str) => {
-                            let len_without_newline = answer_str.trim_end().len();
                             let mut answer_str = answer_str.clone();
+                            answer_str = answer_str.replace("\\\"", "\"");
+                            answer_str = answer_str.replace("\"", "\\\"");
+                            //make sure there is no lone "
+                            let len_without_newline = answer_str.trim_end().len();
                             answer_str.truncate(len_without_newline);
+                            info!("returning answer: {}", answer_str);
+
                             cloned_meh
                                 .lock()
                                 .unwrap()
