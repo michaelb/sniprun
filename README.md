@@ -8,7 +8,7 @@ Sniprun is a code runner plugin. It aims to provide stupidly fast testing for in
 
 (the exact same thing can also be done on **compiled** languages such as Rust, to the relevant support level's extent)
 
-> Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your worflow.
+> Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
 
 ## What does it do ?
 
@@ -105,25 +105,25 @@ printf("hello n° %i", i+1);
 - **Project** : Sniprun will detect the root of your project, and get the necessary code from files in your project.
 - **System** : Sniprun will use local (and system) libraries, such as jar files, to run your what you want.
 
-| Language    | Support level | Language   | Support level |
-| ----------- | ------------- | ---------- | ------------- |
-| Python3     | Import        | Go         | Unsupported\* |
-| Rust        | Bloc          | C++        | Unsupported\* |
-| C           | Bloc          | Bash/Shell | Bloc          |
-| Java        | Unsupported\* | Scilab     | Unsupported\* |
-| JavaScript  | Unsupported\* | R          | Unsupported\* |
-| Assembly    | Unsupported\* | ats        | Unsupported\* |
-| Clojure     | Unsupported\* | COBOL      | Unsupported\* |
-| Coffescript | Unsupported\* | C#         | Unsupported\* |
-| D           | Unsupported\* | Elixir     | Unsupported\* |
-| Elm         | Unsupported\* | Erlang     | Unsupported\* |
-| F#          | Unsupported\* | Groovy     | Unsupported\* |
-| Haskell     | Unsupported\* | Idris      | Unsupported\* |
-| Julia       | Unsupported\* | Lua        | Unsupported\* |
-| Nim         | Unsupported\* | OCaml      | Unsupported\* |
-| Perl        | Unsupported\* | Perl6      | Unsupported\* |
-| Ruby        | Unsupported\* | Scala      | Unsupported\* |
-| Swift       | Unsupported\* | PHP        | Unsupported   |
+| Language    | Support level |     | Language   | Support level |
+| ----------- | ------------- | --- | ---------- | ------------- |
+| Python3     | Import        |     | Go         | Unsupported\* |
+| Rust        | Bloc          |     | C++        | Unsupported\* |
+| C           | Bloc          |     | Bash/Shell | Bloc          |
+| Java        | Unsupported\* |     | Scilab     | Unsupported\* |
+| JavaScript  | Unsupported\* |     | R          | Unsupported\* |
+| Assembly    | Unsupported\* |     | ats        | Unsupported\* |
+| Clojure     | Unsupported\* |     | COBOL      | Unsupported\* |
+| Coffescript | Unsupported\* |     | C#         | Unsupported\* |
+| D           | Unsupported\* |     | Elixir     | Unsupported\* |
+| Elm         | Unsupported\* |     | Erlang     | Unsupported\* |
+| F#          | Unsupported\* |     | Groovy     | Unsupported\* |
+| Haskell     | Unsupported\* |     | Idris      | Unsupported\* |
+| Julia       | Unsupported\* |     | Lua        | Unsupported\* |
+| Nim         | Unsupported\* |     | OCaml      | Unsupported\* |
+| Perl        | Unsupported\* |     | Perl6      | Unsupported\* |
+| Ruby        | Unsupported\* |     | Scala      | Unsupported\* |
+| Swift       | Unsupported\* |     | PHP        | Unsupported   |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
