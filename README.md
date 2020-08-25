@@ -98,13 +98,25 @@ As of writing, languages can be supported up to different extents:
 - **Project** : Sniprun will detect the root of your project, and get the necessary code from files in your project.
 - **System** : Sniprun will use local (and system) libraries, such as jar files, to run your what you want.
 
-| Language   | Support level | Language   | Support level |
-| ---------- | ------------- | ---------- | ------------- |
-| Python3    | Import        | Go         | Unsupported   |
-| Rust       | Bloc          | C++        | Unsupported   |
-| C          | Bloc          | Bash/Shell | Bloc          |
-| Java       | Unsupported   | Scilab     | Unsupported   |
-| JavaScript | Unsupported   | R          | Unsupported   |
+| Language    | Support level | Language   | Support level |
+| ----------- | ------------- | ---------- | ------------- |
+| Python3     | Import        | Go         | Unsupported\* |
+| Rust        | Bloc          | C++        | Unsupported\* |
+| C           | Bloc          | Bash/Shell | Bloc          |
+| Java        | Unsupported\* | Scilab     | Unsupported\* |
+| JavaScript  | Unsupported\* | R          | Unsupported\* |
+| Assembly    | Unsupported\* | ats        | Unsupported\* |
+| Clojure     | Unsupported\* | COBOL      | Unsupported\* |
+| Coffescript | Unsupported\* | C#         | Unsupported\* |
+| D           | Unsupported\* | Elixir     | Unsupported\* |
+| Elm         | Unsupported\* | Erlang     | Unsupported\* |
+| F#          | Unsupported\* | Groovy     | Unsupported\* |
+| Haskell     | Unsupported\* | Idris      | Unsupported\* |
+| Julia       | Unsupported\* | Lua        | Unsupported\* |
+| Nim         | Unsupported\* | OCaml      | Unsupported\* |
+| Perl        | Unsupported\* | Perl6      | Unsupported\* |
+| Ruby        | Unsupported\* | Scala      | Unsupported\* |
+| Swift       | Unsupported\* | PHP        | Unsupported   |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
@@ -125,11 +137,11 @@ Due to its nature, Sniprun may have trouble with programs that :
 
 - All interpreted languages get only bloc level support.
 - Compiled languages necessitate to run a a bloc containing a standart entry point (such as `int main(){....}` for C
-- the detected filetype must match the language named as written on the [project](https://github.com/prasmussen/glot-code-runner) page.
+- the detected filetype must match the language name as written on the [project](https://github.com/prasmussen/glot-code-runner) page.
 - The project is stale (no active development)
 
 ## Mentions & Support
 
 This project is very similar to [this](https://github.com/formulahendry/vscode-code-runner) but is an attempt to make the same kind of plugin for Neovim, preferably simpler, and more complete.
 
-For example, SnipRun Python support is (objectively) sligthly superior, and with some help, can get way, way better. Infrastructure to run code is also more feature-complete, with simple examples to implement basic support for new languages. Compared to the 'one-line-should-run-everythin' approach of vs-code-runner, SnipRun can go further.
+For example, SnipRun Python support is (objectively) sligthly superior, and with some help, can get way, way better. Infrastructure to run code is also more feature-complete, with simple examples to implement basic support for new languages. Compared to the 'one-line-should-run-everything' approach of vs-code-runner, SnipRun can go further.
