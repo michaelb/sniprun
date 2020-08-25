@@ -92,7 +92,14 @@ As of writing, languages can be supported up to different extents:
 
 - **Unsupported** : You should not expect anything to work, except if the generic interpreter works correctly with it \*.
 - **Line** : Code contained in a single line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
-- **Bloc** : You can select any piece of code that is correct on its own (independently of indentation) in visual mode, and run it.
+- **Bloc** : You can select any piece of code that is correct on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in C:
+
+```
+int j = 5;
+int i = j * 3;
+printf("hello n° %i", i+1);
+```
+
 - **Import** : Support external imports, so you don't have to select the top-of-file import to test a 'bloc-mode-style' code selection somewhere else.
 - **File** : Sniprun will recursively find the missing variable and function definitions to run your line of code(you don't have to select a bloc anymore).
 - **Project** : Sniprun will detect the root of your project, and get the necessary code from files in your project.
@@ -120,7 +127,7 @@ As of writing, languages can be supported up to different extents:
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
-\* SnipRun includes a _'fallback'_ generic interpreter that makes uses of [this](https://github.com/prasmussen/glot-code-runner) project. It allows bloc-level language support for many interpreted languages, though it has many limitations and differences. The following languages are supported (unofficially) through the generic interpreter: Assembly, ats, Bash, C, Clojure, COBOL, Coffescript, C++, C#, D, Elixir, Elm, Erlang, F#, Golang, Groovy, Haskell, Idris, Java, Javascript, Julia, Lua, Nim, OCaml, Perl, Perl6, PHP, Python, Ruby, Rust, Scala, Swift.
+\* SnipRun includes a _'fallback'_ generic interpreter that makes uses of [this](https://github.com/prasmussen/glot-code-runner) project. It allows to (unofficially) have bloc-level language support for many interpreted languages, though it has many limitations and differences for compiled languages. The reasons interpreted languages are still marked as Unsupported is because of a lack of testing.
 
 ## Known limitations
 
@@ -136,8 +143,8 @@ Due to its nature, Sniprun may have trouble with programs that :
 #### Generic interpreter limitations:
 
 - All interpreted languages get only bloc level support.
-- Compiled languages necessitate to run a a bloc containing a standart entry point (such as `int main(){....}` for C
-- the detected filetype must match the language name as written on the [project](https://github.com/prasmussen/glot-code-runner) page.
+- Compiled languages necessitate to run a a bloc containing a standart entry point (such as `int main(){....}` for C)
+- The detected filetype must match the language name as written on the [project](https://github.com/prasmussen/glot-code-runner) page.
 - The project is stale (no active development)
 
 ## Mentions & Support
