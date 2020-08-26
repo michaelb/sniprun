@@ -61,6 +61,14 @@ Do I need to manage async running and compiling?
 
 -> No, Sniprun takes care of that for you. You can implement a single-threaded synchronous code just like the Python3_original interpreter
 
+### What's the deal with...
+
+- Support Levels? Those exists to document what the interpreter supports to the end user. They are also used for higher (file, project and system) levels as if an interpreter detects it does not need a support level that high, it can set down its own level and hopefully be faster [ since it won't need to open all files etc...]. **You don't have to worry about this too much if you are just getting started**.
+
+- Errors? When possible and sensible, functions like fetch(), build() and execute() should return either an Ok(\_) variant or a Err(SniprunError). Choose the error that most closely describe whatever migth cause your function to fail, and populate it with a String message if relevant.
+
+* The imposed names? To simplify contribution (you only have to write a interpreter), the main program fetch new files and run functions of your interpreter. This is only easily possible if you types names match your file name, as I can get those easily but i would have to read them, guess what struct is the correct one should you have many....no, I rather do the `use file_name::file_name;` trick that just works.
+
 ### Conventions
 
 A program (struct with methods) that can fetch code, execute it and return the result is called an interpreter.
