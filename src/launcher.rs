@@ -8,7 +8,7 @@ pub struct Launcher {
 
 impl Launcher {
     pub fn new(data: DataHolder) -> Self {
-        Launcher { data: data }
+        Launcher { data }
     }
 
     pub fn select_and_run<'a>(&self) -> Result<String, SniprunError> {
@@ -24,7 +24,7 @@ impl Launcher {
             }
         }
         info!(
-            "Selected interpreter : {} ; with support level {:?}",
+            "[LAUNCHER] Selected interpreter : {} ; with support level {:?}",
             name_best_interpreter, max_level_support
         );
 

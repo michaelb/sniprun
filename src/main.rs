@@ -1,3 +1,7 @@
+//! This documentation for the Sniprun project
+//!
+//! Sniprun is a neovim plugin that run parts of code.
+
 use dirs::cache_dir;
 use log::{info, LevelFilter};
 use neovim_lib::{Neovim, NeovimApi, Session, Value};
@@ -10,20 +14,35 @@ mod interpreter;
 mod interpreters;
 mod launcher;
 
+///This struct holds (with ownership) the data Sniprun and neovim
+///give to the interpreter.
+///This should be enough to implement up to project-level interpreters.
 #[derive(Debug, Clone, PartialEq)]
 pub struct DataHolder {
+    /// contains the filetype of the file as return by `:set ft?`
     filetype: String,
+    ///This contains the current line of code from where the user ran sniprun, and
+    ///want to execute
     current_line: String,
+    ///This contains the current block of text, if the user selected a bloc of code and ran snirpun
+    ///on it
     current_bloc: String,
+    ///The inclusive limits of the selected block (line numbers)
     range: [i64; 2],
+    /// path of the current file that's being edited
     filepath: String,
+    /// Field is left blank as of v0.3
     projectroot: String,
+    /// field is left blank as of v0.3
     dependencies_path: Vec<String>,
+    /// path to the cache directory that sniprun create
     work_dir: String,
+    /// path to sniprun root, eg in case you need ressoruces from the ressources folder
     sniprun_root_dir: String,
 }
 
 impl DataHolder {
+    ///create a new but almost empty DataHolder
     fn new() -> Self {
         std::fs::create_dir_all(format!(
             "{}/{}",
@@ -31,7 +50,6 @@ impl DataHolder {
             "sniprun"
         ))
         .unwrap();
-        info!("created work dir");
 
         DataHolder {
             filetype: String::from(""),
@@ -45,6 +63,7 @@ impl DataHolder {
             sniprun_root_dir: String::from(""),
         }
     }
+    ///remove and recreate the cache directory (is invoked by `:SnipReset`)
     fn clean_dir(&mut self) {
         let work_dir_path = self.work_dir.clone();
         std::fs::remove_dir_all(&work_dir_path).unwrap();
@@ -57,7 +76,6 @@ struct EventHandler {
     data: DataHolder,
 }
 
-#[allow(dead_code)]
 enum Messages {
     Run,
     Clean,
@@ -68,6 +86,7 @@ impl From<String> for Messages {
     fn from(event: String) -> Self {
         match &event[..] {
             "run" => Messages::Run,
+            "clean" => Messages::Clean,
             _ => Messages::Unknown(event),
         }
     }
@@ -78,12 +97,10 @@ impl EventHandler {
         let session = Session::new_parent().unwrap();
         let nvim = Neovim::new(session);
         let data = DataHolder::new();
-        EventHandler {
-            nvim: nvim,
-            data: data,
-        }
+        EventHandler { nvim, data }
     }
 
+    /// fill the DataHolder with data from sniprun and Neovim
     fn fill_data(&mut self, values: Vec<Value>) {
         self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
         self.data.sniprun_root_dir = String::from(values[2].as_str().unwrap());
@@ -116,8 +133,6 @@ impl EventHandler {
         if let Ok(real_full_file_path) = full_file_path {
             self.data.filepath = real_full_file_path;
         }
-
-        info!("data : {:?}", self.data);
     }
 }
 enum HandleAction {
@@ -126,12 +141,14 @@ enum HandleAction {
 
 fn main() {
     let mut event_handler = EventHandler::new();
-    let receiver = event_handler.nvim.session.start_event_loop_channel();
     let _ = log_to_file(
         &format!("{}/{}", event_handler.data.work_dir, "sniprun.log"),
         LevelFilter::Info,
     );
 
+    info!("[MAIN] SnipRun launched successfully");
+
+    let receiver = event_handler.nvim.session.start_event_loop_channel();
     let meh = Arc::new(Mutex::new(event_handler));
 
     let (send, recv) = mpsc::channel();
@@ -144,20 +161,28 @@ fn main() {
             }
         }
     });
+
+    //main loop
+    info!("[MAIN] Start of main event loop");
     for (event, values) in receiver {
-        info!("inside loop: {:?}", event);
         match Messages::from(event.clone()) {
             //Run command
             Messages::Run => {
-                info!("run command received");
+                info!("[MAINLOOP] Run command received");
 
                 let cloned_meh = meh.clone();
                 let _res2 = send.send(HandleAction::New(thread::spawn(move || {
+                    // get up-to-date data
+                    //
                     cloned_meh.lock().unwrap().fill_data(values);
-                    //run the interpreter
+
+                    //run the launcher (that selects, init and run an interpreter)
                     let launcher = launcher::Launcher::new(cloned_meh.lock().unwrap().data.clone());
                     let result = launcher.select_and_run();
-                    let res = match result {
+                    info!("[MAINLOOP] Interpreter return a result");
+
+                    // return Ok(result) or Err(sniprunerror)
+                    match result {
                         Ok(answer_str) => {
                             let mut answer_str = answer_str.clone();
                             answer_str = answer_str.replace("\\\"", "\"");
@@ -165,33 +190,38 @@ fn main() {
                             //make sure there is no lone "
                             let len_without_newline = answer_str.trim_end().len();
                             answer_str.truncate(len_without_newline);
-                            info!("returning answer: {}", answer_str);
 
-                            cloned_meh
+                            info!("[MAINLOOP] Returning stdout of code run: {}", answer_str);
+
+                            let _ = cloned_meh
                                 .lock()
                                 .unwrap()
                                 .nvim
-                                .command(&format!("echo \"{}\"", answer_str))
+                                .command(&format!("echo \"{}\"", answer_str));
                         }
-                        Err(e) => cloned_meh
-                            .lock()
-                            .unwrap()
-                            .nvim
-                            .err_writeln(&format!("{}", e)),
+                        Err(e) => {
+                            info!("[MAINLOOP] Returning an error");
+                            let _ = cloned_meh
+                                .lock()
+                                .unwrap()
+                                .nvim
+                                .err_writeln(&format!("{}", e));
+                        }
                     };
-                    info!("answer: {:?}", res);
 
                     //display ouput in nvim
-                    info!("echoing back results : {:?}", res);
 
                     //clean data
                     cloned_meh.lock().unwrap().data = DataHolder::new();
                 })));
             }
-            Messages::Clean => meh.clone().lock().unwrap().data.clean_dir(),
+            Messages::Clean => {
+                info!("[MAINLOOP] Clean command received");
+                meh.clone().lock().unwrap().data.clean_dir()
+            }
 
             Messages::Unknown(event) => {
-                info!("unknown event received: {:?}", event);
+                info!("[MAINLOOP] Unknown event received: {:?}", event);
             }
         }
     }
