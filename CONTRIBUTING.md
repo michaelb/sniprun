@@ -1,5 +1,7 @@
 # Welcome to the contributing page
 
+Just in case: to compile `cargo build --release`, to create and show the documentation, `cargo doc --open` ( open target/doc/sniprun/index.html from your browser if not automatic).
+
 ## Add support for your language
 
 ### How hard it is?

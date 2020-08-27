@@ -23,7 +23,8 @@ Quickly grab some visual range, `:'<,'>SnipRun` it and... that's it!
 
 ### Prerequisites
 
-- Compiler / interpreter for your language must be installed & on your \$PATH
+- cargo and the rust toolchain v>= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install), for as long as the project is not distributed as binary (see the release section)
+- Compiler / interpreter for the languages must be installed & on your \$PATH
 - For C, gcc is required
 
 ### Install Sniprun
