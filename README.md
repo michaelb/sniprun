@@ -24,6 +24,7 @@ Quickly grab some visual range, `:'<,'>SnipRun` it and... that's it!
 ### Prerequisites
 
 - Sniprun is Linux-only for now (as of v0.3.0)
+- Neovim version >= 1.44 preferably, but should work with older version
 - cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)). Those are needed to build sniprun, for as long as the project is not distributed as binary (see the release section).
 - Compiler / interpreter for the languages must be installed & on your \$PATH
 - For C, gcc is required
