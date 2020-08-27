@@ -1,7 +1,5 @@
 # Sniprun
 
-i
-
 ![](https://img.shields.io/badge/sniprun-v0.3.0-green.svg)
 
 Sniprun is a code runner plugin. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages)
