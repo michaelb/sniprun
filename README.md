@@ -2,7 +2,7 @@
 
 ![](https://img.shields.io/badge/sniprun-v0.3.0-green.svg)
 
-Sniprun is a code runner plugin. It aims to provide stupidly fast testing for interpreted _and_ **compiled** [languages](#support-levels-and-languages)
+Sniprun is a code runner plugin. It aims to provide stupidly fast testing for interpreted **and compiled** [languages](#support-levels-and-languages)
 
 ![](demo.gif)
 
@@ -14,7 +14,7 @@ Sniprun is a code runner plugin. It aims to provide stupidly fast testing for in
 
 Basically, it allows you to run a part of your code.
 
-Ever dreamt of printing the type of that obscure object, or that collection to check if it contains everything you expect, but it was all pipe dream as your code would not even compile/run in its unfinished state?
+Printing the type of that obscure object, or that collection to check if it contains everything you expect is not a pipe dream, even if as-is your code won't even compile/run because it's unfinished? (but to finish it you'd need to assert the first part)
 Quickly grab some visual range, `:'<,'>SnipRun` it and... that's it!
 
 (And there's more to come...)
@@ -77,7 +77,7 @@ Alternatively, exit Neovim.
 
 ### My usage recommandation & tricks
 
-- Map the line and bloc mode to a simple command such as `ff`
+- Map the line and bloc mode to a simple command such as `ff` (or just `f` in visual mode).
 
 ```
 nnoremap ff :SnipRun<CR>
@@ -95,8 +95,8 @@ As of writing, languages can be supported up to different extents:
 - **Bloc** : You can select any piece of code that is correct on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in C:
 
 ```
-int j = 5;
-int i = j * 3;
+int j () {return 2};
+int i = j() * 3;
 printf("hello n° %i", i+1);
 ```
 
