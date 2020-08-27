@@ -2,7 +2,7 @@
 
 ![](https://img.shields.io/badge/sniprun-v0.3.0-green.svg)
 
-Sniprun is a code runner plugin. It aims to provide stupidly fast testing for interpreted **and compiled** [languages](#support-levels-and-languages)
+Sniprun is a code runner plugin. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages)
 
 ![](demo.gif)
 
@@ -14,8 +14,11 @@ Sniprun is a code runner plugin. It aims to provide stupidly fast testing for in
 
 Basically, it allows you to run a part of your code.
 
-Printing the type of that obscure object, or that collection to check if it contains everything you expect is not a pipe dream, even if as-is your code won't even compile/run because it's unfinished? (but to finish it you'd need to assert the first part)
-Quickly grab some visual range, `:'<,'>SnipRun` it and... that's it!
+Printing the type of that obscure object, or that collection to check if it contains everything you expect mid-editing is not a pipe dream.
+
+Even if as-is your code won't even compile/run because it's unfinished (but to finish it you'd need to assert the first part)
+
+Quickly grab a line or some visual range, `:'<,'>SnipRun` it and... that's it!
 
 (And there's more to come...)
 
@@ -24,7 +27,7 @@ Quickly grab some visual range, `:'<,'>SnipRun` it and... that's it!
 ### Prerequisites
 
 - Sniprun is Linux-only for now (as of v0.3.0)
-- Neovim version >= 1.44 preferably, but should work with older version
+- Neovim version >= 0.44 preferably, but should work with older version
 - cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)). Those are needed to build sniprun, for as long as the project is not distributed as binary (see the release section).
 - Compiler / interpreter for the languages must be installed & on your \$PATH
 - For C, gcc is required
