@@ -158,3 +158,7 @@ Due to its nature, Sniprun may have trouble with programs that :
 This project is very similar to [this](https://github.com/formulahendry/vscode-code-runner) but is an attempt to make the same kind of plugin for Neovim, preferably simpler, and more complete.
 
 For example, SnipRun Python support is (objectively) sligthly superior, and with some help, can get way, way better. Infrastructure to run code is also more feature-complete, with simple examples to implement basic support for new languages. Compared to the 'one-line-should-run-everything' approach of vs-code-runner, SnipRun can go further.
+
+## Contribute
+
+see [contributing](CONTRIBUTING.md)
