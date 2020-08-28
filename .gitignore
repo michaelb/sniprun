@@ -1,4 +1,4 @@
 /target
 out.log
-/test
+test/
 src/interpreters/mod.rs

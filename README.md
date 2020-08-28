@@ -98,12 +98,14 @@ As of writing, languages can be supported up to different extents:
 
 - **Unsupported** : You should not expect anything to work, except if the generic interpreter works correctly with it \*.
 - **Line** : Code contained in a single line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
-- **Bloc** : You can select any piece of code that is correct on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in C:
+- **Bloc** : You can select any piece of code that is correct on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:
 
 ```
-int j () {return 2};
-int i = j() * 3;
-printf("hello n° %i", i+1);
+fn have_two() -> u16 {
+  return 2;
+}
+let i = std::once(j() * 3).map(|u| u*u).next().unwrap();
+println!("hello n° {}", i+1);
 ```
 
 - **Import** : Support external imports, so you don't have to select the top-of-file import to test a 'bloc-mode-style' code selection somewhere else.
@@ -117,7 +119,7 @@ printf("hello n° %i", i+1);
 | Rust        | Bloc          |     | C++        | Unsupported\* |
 | C           | Bloc          |     | Bash/Shell | Bloc          |
 | Java        | Unsupported\* |     | Scilab     | Unsupported\* |
-| JavaScript  | Unsupported\* |     | R          | Unsupported\* |
+| JavaScript  | Bloc          |     | R          | Unsupported\* |
 | Assembly    | Unsupported\* |     | ats        | Unsupported\* |
 | Clojure     | Unsupported\* |     | COBOL      | Unsupported\* |
 | Coffescript | Unsupported\* |     | C#         | Unsupported\* |
