@@ -15,7 +15,7 @@ impl Interpreter for Bash_original {
         builder.recursive(true);
         builder
             .create(&bwd)
-            .expect("Could not create directory for rust-original");
+            .expect("Could not create directory for bash-original");
         let mfp = bwd.clone() + "/main.sh";
         Box::new(Bash_original {
             data,
