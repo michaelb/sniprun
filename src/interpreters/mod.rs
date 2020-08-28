@@ -1,19 +1,28 @@
 include!("Python3_original.rs");
 include!("Rust_original.rs");
-include!("Generic.rs");
+include!("JS_original.rs");
 include!("Bash_original.rs");
-include!("C_original.rs");
+include!("Lua_nvim.rs");
+include!("Generic.rs");
+include!("Rust_original.rs");
+include!("Python3_original.rs");
 include!("import.rs");
+include!("C_original.rs");
 #[macro_export]
     macro_rules! iter_types {
     ($($code:tt)*) => {
 {
-            type Current = interpreters::Python3_original;
+            type Current = interpreters::Bash_original;
                 $(
                     $code
                  )*
                 };{
-            type Current = interpreters::Rust_original;
+            type Current = interpreters::Lua_nvim;
+                $(
+                    $code
+                 )*
+                };{
+            type Current = interpreters::JS_original;
                 $(
                     $code
                  )*
@@ -23,7 +32,12 @@ include!("import.rs");
                     $code
                  )*
                 };{
-            type Current = interpreters::Bash_original;
+            type Current = interpreters::Rust_original;
+                $(
+                    $code
+                 )*
+                };{
+            type Current = interpreters::Python3_original;
                 $(
                     $code
                  )*
