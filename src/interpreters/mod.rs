@@ -1,3 +1,6 @@
+include!("Python3_original.rs");
+include!("Rust_original.rs");
+include!("JS_original.rs");
 include!("Bash_original.rs");
 include!("Lua_nvim.rs");
 include!("Generic.rs");
@@ -15,6 +18,11 @@ include!("C_original.rs");
                  )*
                 };{
             type Current = interpreters::Lua_nvim;
+                $(
+                    $code
+                 )*
+                };{
+            type Current = interpreters::JS_original;
                 $(
                     $code
                  )*
