@@ -104,7 +104,7 @@ As of writing, languages can be supported up to different extents:
 fn have_two() -> u16 {
   return 2;
 }
-let i = std::once(j() * 3).map(|u| u*u).next().unwrap();
+let i = std::iter::once(have_two() * 3).map(|u| u*u).next().unwrap();
 println!("hello n° {}", i+1);
 ```
 
