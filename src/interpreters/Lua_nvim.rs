@@ -4,7 +4,7 @@ pub struct Lua_nvim {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    bash_work_dir: String,
+    lua_work_dir: String,
     main_file_path: String,
 }
 
@@ -21,7 +21,7 @@ impl Interpreter for Lua_nvim {
             data,
             support_level: level,
             code: String::from(""),
-            bash_work_dir: bwd,
+            lua_work_dir: bwd,
             main_file_path: mfp,
         })
     }
@@ -85,12 +85,15 @@ impl Interpreter for Lua_nvim {
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new("nvim")
             .arg("--headless")
-            .arg(format!("+\"luafile {}\"", &self.main_file_path))
+            .arg("-c")
+            .arg(format!("luafile {}", &self.main_file_path))
+            .arg("-c")
+            .arg("q!")
             .output()
             .expect("Unable to start process");
-        info!("yay from bash interpreter");
+        info!("yay from lua interpreter");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            return Ok(String::from_utf8(output.stderr).unwrap());
         } else {
             return Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
