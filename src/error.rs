@@ -14,16 +14,14 @@ pub enum SniprunError {
     /// raised if code cannot be fetched from files for whatever reason
     #[error("Cannot fetch code from files")]
     FetchCodeError,
-
     ///when the user's code run into problems because of an interpreter's implementation
     #[error("Interpreter limitations error: {0}")]
     InterpreterLimitationError(String),
-
     /// raised when code couldn't be run because of either incorrect code or
     /// UnsufficientSupportLevel but the language interpreter cannot determine which one
     #[error("Code contains errors or unsufficent support level")]
     InterpreterError,
-    /// should be raised when users code fail to run but code is correct
+    /// should be raised when users code fail to run but code is asserted correct
     #[error("Support level not high enough for this language")]
     UnsufficientSupportLevel,
     /// errors raised if the user code is incorrect and fail a compile-time (and not because the language interpreter
