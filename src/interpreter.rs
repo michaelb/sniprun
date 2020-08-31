@@ -50,6 +50,18 @@ pub trait Interpreter {
         return SupportLevel::Unsupported;
     }
 
+    /// This function should be overwritten if your intepreter cannot run
+    /// all the files for the advertised filetypes.
+    /// It's up to you to detect it, and initialize (new()) and .run() it and return the result
+    fn fallback(&mut self) -> Option<Result<String, SniprunError>> {
+        // if incompatible code detected {
+        //      let good_interpreter =
+        //      interpreters::Good_interpreter::new(&self.data,&self.get_support_level());
+        //      return Some(good_interpreter.run());
+        //      }
+        None
+    }
+
     /// This method should get the needed code from the data struct and eventually the files
     /// of the project
     fn fetch_code(&mut self) -> Result<(), SniprunError>; //mut to allow modification of the current_level
@@ -69,6 +81,9 @@ pub trait Interpreter {
     /// set the current support level to the one provided, run fetch(), add_boilerplate(), build() and execute() in order if each step is successfull
     fn run_at_level(&mut self, level: SupportLevel) -> Result<String, SniprunError> {
         self.set_current_level(level);
+        if let Some(res) = self.fallback() {
+            return res;
+        }
         self.fetch_code()
             .and_then(|_| self.add_boilerplate())
             .and_then(|_| self.build())
