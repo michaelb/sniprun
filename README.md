@@ -164,3 +164,8 @@ For example, SnipRun Python support is (objectively) sligthly superior, and with
 ## Contribute
 
 see [contributing](CONTRIBUTING.md)
+
+## Related projects
+All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file, and cannot make use of your project's Makefile (or compilation config).
+
+Sniprun also add the typical boilerplate so you only need to select the lines that really do the job, rather than those plus everything in the enclosing `int main() {` or equivalent.
