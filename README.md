@@ -8,6 +8,8 @@ Sniprun is a code runner plugin. It aims to provide stupidly fast partial code t
 
 (the exact same thing can also be done on **compiled** languages such as Rust, to the relevant support level's extent)
 
+![](demo_rust.gif)
+
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
 
 ## What does it do ?
