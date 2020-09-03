@@ -117,23 +117,23 @@ println!("hello n° {}", i+1);
 
 | Language    | Support level |     | Language   | Support level |
 | ----------- | ------------- | --- | ---------- | ------------- |
-| Python3     | Import        |     | Go         | Unsupported\* |
-| Rust        | Bloc          |     | C++        | Unsupported\* |
-| C           | Bloc          |     | Bash/Shell | Bloc          |
-| Java        | Unsupported\* |     | Scilab     | Unsupported\* |
-| JavaScript  | Bloc          |     | R          | Unsupported\* |
-| Assembly    | Unsupported\* |     | ats        | Unsupported\* |
-| Clojure     | Unsupported\* |     | COBOL      | Unsupported\* |
-| Coffescript | Unsupported\* |     | C#         | Unsupported\* |
-| D           | Unsupported\* |     | Elixir     | Unsupported\* |
-| Elm         | Unsupported\* |     | Erlang     | Unsupported\* |
-| F#          | Unsupported\* |     | Groovy     | Unsupported\* |
-| Haskell     | Unsupported\* |     | Idris      | Unsupported\* |
-| Julia       | Unsupported\* |     | Lua        | Unsupported\* |
-| Nim         | Unsupported\* |     | OCaml      | Unsupported\* |
-| Perl        | Unsupported\* |     | Perl6      | Unsupported\* |
-| Ruby        | Unsupported\* |     | Scala      | Unsupported\* |
-| Swift       | Unsupported\* |     | PHP        | Unsupported   |
+| Assembly    | Unsupported\* |     | Idris      | Unsupported\* |
+| ats         | Unsupported\* |     | JavaScript | Bloc          |
+| Bash/Shell  | Bloc          |     | Java       | Unsupported\* |
+| C           | Bloc          |     | Julia      | Unsupported\* |
+| Clojure     | Unsupported\* |     | Lua        | Unsupported\* |
+| COBOL       | Unsupported\* |     | Nim        | Unsupported\* |
+| Coffescript | Unsupported\* |     | OCaml      | Unsupported\* |
+| C#          | Unsupported\* |     | Perl6      | Unsupported\* |
+| C++         | Unsupported\* |     | Perl       | Unsupported\* |
+| D           | Unsupported\* |     | PHP        | Unsupported   |
+| Elixir      | Unsupported\* |     | Python3    | Import        |
+| Elm         | Unsupported\* |     | Ruby       | Unsupported\* |
+| Erlang      | Unsupported\* |     | R          | Unsupported\* |
+| F#          | Unsupported\* |     | Rust       | Bloc          |
+| Go          | Unsupported\* |     | Scala      | Unsupported\* |
+| Groovy      | Unsupported\* |     | Scilab     | Unsupported\* |
+| Haskell     | Unsupported\* |     | Swift      | Unsupported\* |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
