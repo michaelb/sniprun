@@ -1,6 +1,6 @@
 #[derive(Debug, Clone)]
 #[allow(non_camel_case_types)]
-pub struct Lua_nvim {
+pub struct Lua_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
@@ -8,16 +8,16 @@ pub struct Lua_nvim {
     main_file_path: String,
 }
 
-impl Interpreter for Lua_nvim {
-    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Lua_nvim> {
+impl Interpreter for Lua_original {
+    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Lua_original> {
         let bwd = data.work_dir.clone() + "/nvim-lua";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
             .create(&bwd)
-            .expect("Could not create directory for lua-nvim");
+            .expect("Could not create directory for lua-original");
         let mfp = bwd.clone() + "/main.lua";
-        Box::new(Lua_nvim {
+        Box::new(Lua_original {
             data,
             support_level: level,
             code: String::from(""),
@@ -27,7 +27,7 @@ impl Interpreter for Lua_nvim {
     }
 
     fn get_name() -> String {
-        String::from("lua_nvim")
+        String::from("lua_original")
     }
 
     fn get_supported_languages() -> Vec<String> {
@@ -51,9 +51,9 @@ impl Interpreter for Lua_nvim {
 
     fn fallback(&mut self) -> Option<Result<String, SniprunError>> {
         self.fetch_code().expect("could not fetch code");
-        if !(self.code.contains("nvim")) {
-            //then this is not lua_nvim code but pure lua one
-            let mut good_interpreter = crate::interpreters::Lua_original::new_with_level(
+        if self.code.contains("nvim") {
+            //then this is not pure lua code but  lua-nvim one
+            let mut good_interpreter = crate::interpreters::Lua_nvim::new_with_level(
                 self.data.clone(),
                 self.get_current_level(),
             );
@@ -87,19 +87,15 @@ impl Interpreter for Lua_nvim {
 
     fn build(&mut self) -> Result<(), SniprunError> {
         let mut _file =
-            File::create(&self.main_file_path).expect("Failed to create file for lua-nvim");
+            File::create(&self.main_file_path).expect("Failed to create file for lua-original");
 
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for lua-nvim");
+        write(&self.main_file_path, &self.code).expect("Unable to write to file for lua-original");
         Ok(())
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("nvim")
-            .arg("--headless")
-            .arg("-c")
-            .arg(format!("luafile {}", &self.main_file_path))
-            .arg("-c")
-            .arg("q!")
+        let output = Command::new("lua")
+            .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
         info!("yay from lua interpreter");

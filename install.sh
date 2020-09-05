@@ -7,10 +7,10 @@ name="sniprun"
 
 cargo_build() {
   if command -v cargo >/dev/null; then
-    echo "Trying to build locally using Cargo.."
+    echo "Trying to build Sniprun locally using Cargo.."
     cargo build --release
   else
-    echo "Could not build binary. Your installation might be corrupt."
+    echo "Could not start Cargo. Your installation might be corrupt."
     return 1
   fi
 }

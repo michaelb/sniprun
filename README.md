@@ -121,8 +121,8 @@ println!("hello n° {}", i+1);
 | ats         | Unsupported\* |     | JavaScript | Bloc          |
 | Bash/Shell  | Bloc          |     | Java       | Unsupported\* |
 | C           | Bloc          |     | Julia      | Unsupported\* |
-| Clojure     | Unsupported\* |     | Lua        | Unsupported\* |
-| COBOL       | Unsupported\* |     | Nim        | Unsupported\* |
+| Clojure     | Unsupported\* |     | Lua        | Bloc          |
+| COBOL       | Unsupported\* |     | Lua-nvim   | Bloc          |
 | Coffescript | Unsupported\* |     | OCaml      | Unsupported\* |
 | C#          | Unsupported\* |     | Perl6      | Unsupported\* |
 | C++         | Unsupported\* |     | Perl       | Unsupported\* |

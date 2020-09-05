@@ -55,8 +55,8 @@ pub trait Interpreter {
     /// It's up to you to detect it, and initialize (new()) and .run() it and return the result
     fn fallback(&mut self) -> Option<Result<String, SniprunError>> {
         // if incompatible code detected {
-        //      let good_interpreter =
-        //      interpreters::Good_interpreter::new(&self.data,&self.get_support_level());
+        //      let mut good_interpreter =
+        //      crate::interpreters::Good_interpreter::new_with_level(&self.data,&self.get_current_level());
         //      return Some(good_interpreter.run());
         //      }
         None

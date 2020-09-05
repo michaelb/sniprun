@@ -63,6 +63,12 @@ Do I need to manage async running and compiling?
 
 -> No, Sniprun takes care of that for you. You can implement a single-threaded synchronous code just like the Python3_original interpreter
 
+---
+
+My interpreter has some quirks that the end user should know
+
+-> Document limitations and features in doc/interpreter_name.md
+
 ### What's the deal with...
 
 - Support Levels? Those exists to document what the interpreter supports to the end user. They are also used for higher (file, project and system) levels as if an interpreter detects it does not need a support level that high, it can set down its own level and hopefully be faster [ since it won't need to open all files etc...]. **You don't have to worry about this too much if you are just getting started**.
