@@ -119,7 +119,7 @@ println!("hello n° {}", i+1);
 | ----------- | ------------- | --- | ---------- | ------------- |
 | Assembly    | Unsupported\* |     | Idris      | Unsupported\* |
 | ats         | Unsupported\* |     | JavaScript | Bloc          |
-| Bash/Shell  | Bloc          |     | Java       | Unsupported\* |
+| Bash/Shell  | Bloc          |     | Java       | Bloc |
 | C           | Bloc          |     | Julia      | Unsupported\* |
 | Clojure     | Unsupported\* |     | Lua        | Bloc          |
 | COBOL       | Unsupported\* |     | Lua-nvim   | Bloc          |
