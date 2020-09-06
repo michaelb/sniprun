@@ -119,7 +119,7 @@ println!("hello n° {}", i+1);
 | ----------- | ------------- | --- | ---------- | ------------- |
 | Assembly    | Unsupported\* |     | Idris      | Unsupported\* |
 | ats         | Unsupported\* |     | JavaScript | Bloc          |
-| Bash/Shell  | Bloc          |     | Java       | Bloc |
+| Bash/Shell  | Bloc          |     | Java       | Bloc          |
 | C           | Bloc          |     | Julia      | Unsupported\* |
 | Clojure     | Unsupported\* |     | Lua        | Bloc          |
 | COBOL       | Unsupported\* |     | Lua-nvim   | Bloc          |
@@ -147,13 +147,13 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Need to read from stdin
 - Prints double quotes ("), or incorrect UTF8 characters, or just too many lines
 - Purposely fails
-- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong.
+- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. Relative paths may cause issues, as the current working directory for neovim won't necessarily be the one from where the binary runs, or the good one for relative imports.
 - For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _saved_.
 
 #### Generic interpreter limitations:
 
-- All interpreted languages get only bloc level support.
-- Compiled languages necessitate to run a a bloc containing a standart entry point (such as `int main(){....}` for C)
+- All interpreted languages get only line level support.
+- Compiled languages necessitate to run a a line (!) containing a standart entry point (such as `int main(){....}` for C)
 - The detected filetype must match the language name as written on the [project](https://github.com/prasmussen/glot-code-runner) page.
 - The project is stale (no active development)
 
@@ -168,6 +168,7 @@ For example, SnipRun Python support is (objectively) sligthly superior, and with
 see [contributing](CONTRIBUTING.md)
 
 ## Related projects
+
 All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file, and cannot make use of your project's Makefile (or compilation config).
 
 Sniprun also add the typical boilerplate so you only need to select the lines that really do the job, rather than those plus everything in the enclosing `int main() {` or equivalent.
