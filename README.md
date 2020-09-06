@@ -31,8 +31,7 @@ Quickly grab a line or some visual range, `:'<,'>SnipRun` it and... that's it!
 - Sniprun is Linux-only for now (as of v0.3.0)
 - Neovim version >= 0.44 preferably, but should work with older version
 - cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)). Those are needed to build sniprun, for as long as the project is not distributed as binary (see the release section).
-- Compiler / interpreter for the languages must be installed & on your \$PATH
-- For C, gcc is required
+- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools are required, those are documented in the doc folder
 
 ### Install Sniprun
 
@@ -117,23 +116,23 @@ println!("hello n° {}", i+1);
 
 | Language    | Support level |     | Language   | Support level |
 | ----------- | ------------- | --- | ---------- | ------------- |
-| Assembly    | Unsupported\* |     | Idris      | Unsupported\* |
-| ats         | Unsupported\* |     | JavaScript | Bloc          |
-| Bash/Shell  | Bloc          |     | Java       | Bloc          |
-| C           | Bloc          |     | Julia      | Unsupported\* |
-| Clojure     | Unsupported\* |     | Lua        | Bloc          |
-| COBOL       | Unsupported\* |     | Lua-nvim   | Bloc          |
-| Coffescript | Unsupported\* |     | OCaml      | Unsupported\* |
-| C#          | Unsupported\* |     | Perl6      | Unsupported\* |
-| C++         | Unsupported\* |     | Perl       | Unsupported\* |
-| D           | Unsupported\* |     | PHP        | Unsupported   |
-| Elixir      | Unsupported\* |     | Python3    | Import        |
-| Elm         | Unsupported\* |     | Ruby       | Unsupported\* |
-| Erlang      | Unsupported\* |     | R          | Unsupported\* |
-| F#          | Unsupported\* |     | Rust       | Bloc          |
-| Go          | Unsupported\* |     | Scala      | Unsupported\* |
-| Groovy      | Unsupported\* |     | Scilab     | Unsupported\* |
-| Haskell     | Unsupported\* |     | Swift      | Unsupported\* |
+| Assembly    | Unsupported\* |     | JavaScript | Bloc          |
+| ats         | Unsupported\* |     | Java       | Bloc          |
+| Bash/Shell  | Bloc          |     | Julia      | Unsupported\* |
+| C           | Bloc          |     | Lisp       | Unsupported\* |
+| COBOL       | Unsupported\* |     | Lua        | Bloc          |
+| Coffescript | Unsupported\* |     | Lua-nvim   | Bloc          |
+| C#          | Unsupported\* |     | OCaml      | Unsupported\* |
+| C++         | Unsupported\* |     | Perl6      | Unsupported\* |
+| D           | Unsupported\* |     | Perl       | Unsupported\* |
+| Elixir      | Unsupported\* |     | PHP        | Unsupported   |
+| Elm         | Unsupported\* |     | Python3    | Import        |
+| Erlang      | Unsupported\* |     | Ruby       | Unsupported\* |
+| F#          | Unsupported\* |     | R          | Unsupported\* |
+| Go          | Bloc          |     | Rust       | Bloc          |
+| Groovy      | Unsupported\* |     | Scala      | Unsupported\* |
+| Haskell     | Unsupported\* |     | Scilab     | Unsupported\* |
+| Idris       | Unsupported\* |     | Swift      | Unsupported\* |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
