@@ -1,6 +1,6 @@
 # Sniprun
 
-![](https://img.shields.io/badge/sniprun-v0.3.0-green.svg)
+![](https://img.shields.io/badge/sniprun-v0.3.1-green.svg)
 
 Sniprun is a code runner plugin. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages)
 
@@ -31,8 +31,7 @@ Quickly grab a line or some visual range, `:'<,'>SnipRun` it and... that's it!
 - Sniprun is Linux-only for now (as of v0.3.0)
 - Neovim version >= 0.44 preferably, but should work with older version
 - cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)). Those are needed to build sniprun, for as long as the project is not distributed as binary (see the release section).
-- Compiler / interpreter for the languages must be installed & on your \$PATH
-- For C, gcc is required
+- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools are required, those are documented in the doc folder
 
 ### Install Sniprun
 
@@ -100,7 +99,7 @@ As of writing, languages can be supported up to different extents:
 
 - **Unsupported** : You should not expect anything to work, except if the generic interpreter works correctly with it \*.
 - **Line** : Code contained in a single line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
-- **Bloc** : You can select any piece of code that is correct on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:
+- **Bloc** : You can select any piece of code that is semantially correct (minus the eventual entry point) on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:
 
 ```
 fn have_two() -> u16 {
@@ -117,23 +116,23 @@ println!("hello n° {}", i+1);
 
 | Language    | Support level |     | Language   | Support level |
 | ----------- | ------------- | --- | ---------- | ------------- |
-| Assembly    | Unsupported\* |     | Idris      | Unsupported\* |
-| ats         | Unsupported\* |     | JavaScript | Bloc          |
-| Bash/Shell  | Bloc          |     | Java       | Bloc |
-| C           | Bloc          |     | Julia      | Unsupported\* |
-| Clojure     | Unsupported\* |     | Lua        | Bloc          |
-| COBOL       | Unsupported\* |     | Lua-nvim   | Bloc          |
-| Coffescript | Unsupported\* |     | OCaml      | Unsupported\* |
-| C#          | Unsupported\* |     | Perl6      | Unsupported\* |
-| C++         | Unsupported\* |     | Perl       | Unsupported\* |
-| D           | Unsupported\* |     | PHP        | Unsupported   |
-| Elixir      | Unsupported\* |     | Python3    | Import        |
-| Elm         | Unsupported\* |     | Ruby       | Unsupported\* |
-| Erlang      | Unsupported\* |     | R          | Unsupported\* |
-| F#          | Unsupported\* |     | Rust       | Bloc          |
-| Go          | Unsupported\* |     | Scala      | Unsupported\* |
-| Groovy      | Unsupported\* |     | Scilab     | Unsupported\* |
-| Haskell     | Unsupported\* |     | Swift      | Unsupported\* |
+| Assembly    | Unsupported\* |     | JavaScript | Bloc          |
+| ats         | Unsupported\* |     | Java       | Bloc          |
+| Bash/Shell  | Bloc          |     | Julia      | Unsupported\* |
+| C           | Bloc          |     | Lisp       | Unsupported\* |
+| COBOL       | Unsupported\* |     | Lua        | Bloc          |
+| Coffescript | Unsupported\* |     | Lua-nvim   | Bloc          |
+| C#          | Unsupported\* |     | OCaml      | Unsupported\* |
+| C++         | Unsupported\* |     | Perl6      | Unsupported\* |
+| D           | Unsupported\* |     | Perl       | Unsupported\* |
+| Elixir      | Unsupported\* |     | PHP        | Unsupported   |
+| Elm         | Unsupported\* |     | Python3    | Import        |
+| Erlang      | Unsupported\* |     | Ruby       | Unsupported\* |
+| F#          | Unsupported\* |     | R          | Unsupported\* |
+| Go          | Bloc          |     | Rust       | Bloc          |
+| Groovy      | Unsupported\* |     | Scala      | Unsupported\* |
+| Haskell     | Unsupported\* |     | Scilab     | Unsupported\* |
+| Idris       | Unsupported\* |     | Swift      | Unsupported\* |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
@@ -147,13 +146,13 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Need to read from stdin
 - Prints double quotes ("), or incorrect UTF8 characters, or just too many lines
 - Purposely fails
-- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong.
+- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. Relative paths may cause issues, as the current working directory for neovim won't necessarily be the one from where the binary runs, or the good one for relative imports.
 - For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _saved_.
 
 #### Generic interpreter limitations:
 
-- All interpreted languages get only bloc level support.
-- Compiled languages necessitate to run a a bloc containing a standart entry point (such as `int main(){....}` for C)
+- All interpreted languages get only line level support.
+- Compiled languages necessitate to run a a line (!) containing a standart entry point (such as `int main(){....}` for C)
 - The detected filetype must match the language name as written on the [project](https://github.com/prasmussen/glot-code-runner) page.
 - The project is stale (no active development)
 
@@ -168,6 +167,7 @@ For example, SnipRun Python support is (objectively) sligthly superior, and with
 see [contributing](CONTRIBUTING.md)
 
 ## Related projects
+
 All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file, and cannot make use of your project's Makefile (or compilation config).
 
 Sniprun also add the typical boilerplate so you only need to select the lines that really do the job, rather than those plus everything in the enclosing `int main() {` or equivalent.
