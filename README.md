@@ -100,7 +100,7 @@ As of writing, languages can be supported up to different extents:
 
 - **Unsupported** : You should not expect anything to work, except if the generic interpreter works correctly with it \*.
 - **Line** : Code contained in a single line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
-- **Bloc** : You can select any piece of code that is correct on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:
+- **Bloc** : You can select any piece of code that is semantially correct (minus the eventual entry point) on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:
 
 ```
 fn have_two() -> u16 {
