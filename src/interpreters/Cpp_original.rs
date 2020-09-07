@@ -1,6 +1,6 @@
 #[derive(Debug, Clone)]
 #[allow(non_camel_case_types)]
-pub struct C_original {
+pub struct Cpp_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
@@ -10,33 +10,33 @@ pub struct C_original {
     compiler: String,
 }
 
-impl Interpreter for C_original {
-    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<C_original> {
+impl Interpreter for Cpp_original {
+    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Cpp_original> {
         let rwd = data.work_dir.clone() + "/c_original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
             .create(&rwd)
-            .expect("Could not create directory for c-original");
-        let mfp = rwd.clone() + "/main.c";
+            .expect("Could not create directory for cpp-original");
+        let mfp = rwd.clone() + "/main.cpp";
         let bp = String::from(&mfp[..mfp.len() - 2]);
-        Box::new(C_original {
+        Box::new(Cpp_original {
             data,
             support_level,
             code: String::from(""),
             c_work_dir: rwd,
             bin_path: bp,
             main_file_path: mfp,
-            compiler: String::from("gcc"),
+            compiler: String::from("g++"),
         })
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("c")]
+        vec![String::from("cpp"), String::from("c++")]
     }
 
     fn get_name() -> String {
-        String::from("C_original")
+        String::from("Cpp_original")
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -71,15 +71,15 @@ impl Interpreter for C_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("#include <stdio.h>\nint main() {") + &self.code + "return 0;}";
+        self.code = String::from("#include <iostream>\nint main() {") + &self.code + "return 0;}";
         Ok(())
     }
 
     fn build(&mut self) -> Result<(), SniprunError> {
         //write code to file
         let mut _file =
-            File::create(&self.main_file_path).expect("Failed to create file for c-original");
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for c-original");
+            File::create(&self.main_file_path).expect("Failed to create file for rust-original");
+        write(&self.main_file_path, &self.code).expect("Unable to write to file for rust-original");
         let output = Command::new(&self.compiler)
             .arg(&self.main_file_path)
             .arg("-o")

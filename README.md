@@ -123,7 +123,7 @@ println!("hello n° {}", i+1);
 | COBOL       | Unsupported\* |     | Lua        | Bloc          |
 | Coffescript | Unsupported\* |     | Lua-nvim   | Bloc          |
 | C#          | Unsupported\* |     | OCaml      | Unsupported\* |
-| C++         | Unsupported\* |     | Perl6      | Unsupported\* |
+| C++         | Bloc          |     | Perl6      | Unsupported\* |
 | D           | Unsupported\* |     | Perl       | Unsupported\* |
 | Elixir      | Unsupported\* |     | PHP        | Unsupported   |
 | Elm         | Unsupported\* |     | Python3    | Import        |
