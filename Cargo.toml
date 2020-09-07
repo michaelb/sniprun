@@ -5,6 +5,8 @@ authors = ["michaelb <michael.bleuez2@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[build-dependencies]
+cc="*"
 
 [dependencies]
 neovim-lib="0.6.1"
@@ -16,6 +18,8 @@ regex="1"
 lazy_static="1.4.0"
 serde_json="1.0.57"
 
+# tree-sitter stuff
+tree-sitter = "0.16.1"
 
 # Python3 interpreter
 pyo3="0.11.1"

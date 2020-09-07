@@ -57,6 +57,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "08c48aae112d48ed9f069b33538ea9e3e90aa263cfa3d1c24309612b1f7472de"
 
 [[package]]
+name = "cc"
+version = "1.0.59"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "66120af515773fb005778dc07c261bd201ec8ce50bd6e7144c927753fe013381"
+
+[[package]]
 name = "cfg-if"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -489,6 +495,7 @@ checksum = "fbee7696b84bbf3d89a1c2eccff0850e3047ed46bfcd2e92c29a2d074d57e252"
 name = "sniprun"
 version = "0.3.1"
 dependencies = [
+ "cc",
  "dirs",
  "lazy_static",
  "log",
@@ -498,6 +505,7 @@ dependencies = [
  "serde_json",
  "simple-logging",
  "thiserror",
+ "tree-sitter",
  "unindent",
 ]
 
@@ -550,6 +558,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d40c6d1b69745a6ec6fb1ca717914848da4b44ae29d9b3080cbee91d72a69b14"
 dependencies = [
  "lazy_static",
+]
+
+[[package]]
+name = "tree-sitter"
+version = "0.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1df33680edb07e4fb76edcbdd9c7b849b96709fb878afcf0ada678d6bda167af"
+dependencies = [
+ "cc",
+ "regex",
 ]
 
 [[package]]
