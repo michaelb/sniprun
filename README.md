@@ -114,25 +114,25 @@ println!("hello n° {}", i+1);
 - **Project** : Sniprun will detect the root of your project, and get the necessary code from files in your project.
 - **System** : Sniprun will use local (and system) libraries, such as jar files, to run your what you want.
 
-| Language    | Support level |     | Language   | Support level |
-| ----------- | ------------- | --- | ---------- | ------------- |
-| Assembly    | Unsupported\* |     | JavaScript | Bloc          |
-| ats         | Unsupported\* |     | Java       | Bloc          |
-| Bash/Shell  | Bloc          |     | Julia      | Unsupported\* |
-| C           | Bloc          |     | Lisp       | Unsupported\* |
-| COBOL       | Unsupported\* |     | Lua        | Bloc          |
-| Coffescript | Unsupported\* |     | Lua-nvim   | Bloc          |
-| C#          | Unsupported\* |     | OCaml      | Unsupported\* |
-| C++         | Bloc          |     | Perl6      | Unsupported\* |
-| D           | Unsupported\* |     | Perl       | Unsupported\* |
-| Elixir      | Unsupported\* |     | PHP        | Unsupported   |
-| Elm         | Unsupported\* |     | Python3    | Import        |
-| Erlang      | Unsupported\* |     | Ruby       | Unsupported\* |
-| F#          | Unsupported\* |     | R          | Unsupported\* |
-| Go          | Bloc          |     | Rust       | Bloc          |
-| Groovy      | Unsupported\* |     | Scala      | Unsupported\* |
-| Haskell     | Unsupported\* |     | Scilab     | Unsupported\* |
-| Idris       | Unsupported\* |     | Swift      | Unsupported\* |
+| Language     | Support level |     | Language   | Support level |
+| ------------ | ------------- | --- | ---------- | ------------- |
+| Assembly     | Unsupported\* |     | JavaScript | Bloc          |
+| ats          | Unsupported\* |     | Java       | Bloc          |
+| Bash/Shell   | Bloc          |     | Julia      | Unsupported\* |
+| C            | Bloc          |     | Lisp       | Unsupported\* |
+| COBOL        | Unsupported\* |     | Lua        | Bloc          |
+| Coffeescript | Unsupported\* |     | Lua-nvim   | Bloc          |
+| C#           | Unsupported\* |     | OCaml      | Unsupported\* |
+| C++          | Bloc          |     | Perl6      | Line          |
+| D            | Unsupported\* |     | Perl       | Line          |
+| Elixir       | Unsupported\* |     | PHP        | Unsupported   |
+| Elm          | Unsupported\* |     | Python3    | Import        |
+| Erlang       | Unsupported\* |     | Ruby       | Unsupported\* |
+| F#           | Unsupported\* |     | R          | Unsupported\* |
+| Go           | Bloc          |     | Rust       | Bloc          |
+| Groovy       | Unsupported\* |     | Scala      | Unsupported\* |
+| Haskell      | Unsupported\* |     | Scilab     | Unsupported\* |
+| Idris        | Unsupported\* |     | Swift      | Unsupported\* |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
