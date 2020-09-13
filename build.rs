@@ -2,23 +2,17 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 fn build_tree_sitter(language_name: &str) {
-    let dir: PathBuf = [
-        "ressources",
-        &("tree-sitter-".to_owned() + language_name),
-        "src",
-    ]
-    .iter()
-    .collect();
+    let dir: PathBuf = ["ressources", language_name, "src"].iter().collect();
 
     cc::Build::new()
         .include(&dir)
         .file(dir.join("parser.c"))
         .file(dir.join("scanner.c"))
-        .compile(&("tree-sitter-".to_owned() + language_name));
+        .compile(language_name);
 }
 
 fn main() -> Result<(), std::io::Error> {
-    build_tree_sitter("rust");
+    build_tree_sitter("tree-sitter-rust");
 
     //clarify this
     let out_dir = "src/interpreters";
