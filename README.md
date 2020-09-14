@@ -83,6 +83,15 @@ Under the hood, what it does is just kill Sniprun (and its child processes) and 
 
 Alternatively, exit Neovim.
 
+### Configuration
+
+(Still WIP)
+You can add interpreters you want to use above the others in case multiples interpreters are available for one file type by adding to your config file / init.vim :
+
+`let g:SnipRun_select_interpreters += ['name_of_the_interpreter']`(WIP)
+
+A list of all available interpreters can be displayed by running `:SnipList`
+
 ### My usage recommandation & tricks
 
 - Map the line and bloc mode to a simple command such as `ff` (or just `f` in visual mode).
@@ -119,7 +128,7 @@ println!("hello n° {}", i+1);
 | ----------- | ------------- | --- | ---------- | ------------- |
 | Assembly    | Unsupported\* |     | Idris      | Unsupported\* |
 | ats         | Unsupported\* |     | JavaScript | Bloc          |
-| Bash/Shell  | Bloc          |     | Java       | Bloc |
+| Bash/Shell  | Bloc          |     | Java       | Bloc          |
 | C           | Bloc          |     | Julia      | Unsupported\* |
 | Clojure     | Unsupported\* |     | Lua        | Bloc          |
 | COBOL       | Unsupported\* |     | Lua-nvim   | Bloc          |
@@ -165,9 +174,10 @@ For example, SnipRun Python support is (objectively) sligthly superior, and with
 
 ## Contribute
 
-see [contributing](CONTRIBUTING.md)
+It's super easy: see [contributing](CONTRIBUTING.md)
 
 ## Related projects
+
 All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file, and cannot make use of your project's Makefile (or compilation config).
 
 Sniprun also add the typical boilerplate so you only need to select the lines that really do the job, rather than those plus everything in the enclosing `int main() {` or equivalent.
