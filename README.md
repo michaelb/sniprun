@@ -82,6 +82,15 @@ Under the hood, what it does is just kill Sniprun (and its child processes) and 
 
 Alternatively, exit Neovim.
 
+### Configuration
+
+(Still WIP)
+You can add interpreters you want to use above the others in case multiples interpreters are available for one file type by adding to your config file / init.vim :
+
+`let g:SnipRun_select_interpreters += ['name_of_the_interpreter']`(WIP)
+
+A list of all available interpreters can be displayed by running `:SnipList`
+
 ### My usage recommandation & tricks
 
 - Map the line and bloc mode to a simple command such as `ff` (or just `f` in visual mode).
@@ -116,23 +125,24 @@ println!("hello n° {}", i+1);
 
 | Language    | Support level |     | Language   | Support level |
 | ----------- | ------------- | --- | ---------- | ------------- |
-| Assembly    | Unsupported\* |     | JavaScript | Bloc          |
-| ats         | Unsupported\* |     | Java       | Bloc          |
-| Bash/Shell  | Bloc          |     | Julia      | Unsupported\* |
-| C           | Bloc          |     | Lisp       | Unsupported\* |
-| COBOL       | Unsupported\* |     | Lua        | Bloc          |
-| Coffescript | Unsupported\* |     | Lua-nvim   | Bloc          |
-| C#          | Unsupported\* |     | OCaml      | Unsupported\* |
-| C++         | Unsupported\* |     | Perl6      | Unsupported\* |
-| D           | Unsupported\* |     | Perl       | Unsupported\* |
-| Elixir      | Unsupported\* |     | PHP        | Unsupported   |
-| Elm         | Unsupported\* |     | Python3    | Import        |
-| Erlang      | Unsupported\* |     | Ruby       | Unsupported\* |
-| F#          | Unsupported\* |     | R          | Unsupported\* |
-| Go          | Bloc          |     | Rust       | Bloc          |
-| Groovy      | Unsupported\* |     | Scala      | Unsupported\* |
-| Haskell     | Unsupported\* |     | Scilab     | Unsupported\* |
-| Idris       | Unsupported\* |     | Swift      | Unsupported\* |
+| Assembly    | Unsupported\* |     | Idris      | Unsupported\* |
+| ats         | Unsupported\* |     | JavaScript | Bloc          |
+| Bash/Shell  | Bloc          |     | Java       | Bloc          |
+| C           | Bloc          |     | Julia      | Unsupported\* |
+| Clojure     | Unsupported\* |     | Lua        | Bloc          |
+| COBOL       | Unsupported\* |     | Lua-nvim   | Bloc          |
+| Coffescript | Unsupported\* |     | OCaml      | Unsupported\* |
+| C#          | Unsupported\* |     | Perl6      | Unsupported\* |
+| C++         | Unsupported\* |     | Perl       | Unsupported\* |
+| D           | Unsupported\* |     | PHP        | Unsupported   |
+| Elixir      | Unsupported\* |     | Python3    | Import        |
+| Elm         | Unsupported\* |     | Ruby       | Unsupported\* |
+| Erlang      | Unsupported\* |     | R          | Unsupported\* |
+| F#          | Unsupported\* |     | Rust       | Bloc          |
+| Go          | Unsupported\* |     | Scala      | Unsupported\* |
+| Groovy      | Unsupported\* |     | Scilab     | Unsupported\* |
+| Haskell     | Unsupported\* |     | Swift      | Unsupported\* |
+
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
@@ -164,7 +174,7 @@ For example, SnipRun Python support is (objectively) sligthly superior, and with
 
 ## Contribute
 
-see [contributing](CONTRIBUTING.md)
+It's super easy: see [contributing](CONTRIBUTING.md)
 
 ## Related projects
 

@@ -7,9 +7,19 @@ endif
 let s:SnipRun = 'run'
 let s:SnipTerminate = 'terminate'
 let s:SnipClean = "clean"
+let s:SnipList = "showlist"
 
 let s:scriptdir = resolve(expand('<sfile>:p:h') . '/..')
 let s:bin= s:scriptdir.'/target/release/sniprun'
+
+
+let g:SnipRun_select_interpreters = []
+function! s:showlist()
+  execute '!sh' s:scriptdir.'/ressources/list_script.sh' s:scriptdir.'/src/interpreters'
+endfunction
+
+
+
 
 " Entry point. Initialize RPC. If it succeeds, then attach commands to the `rpcnotify` invocations.
 function! s:connect()
@@ -33,6 +43,7 @@ function! s:configureCommands()
   command! -range SnipRun <line1>,<line2>call s:run()
   command! SnipTerminate :call s:terminate()
   command! SnipReset :call s:clean()| :call s:terminate()
+  command! SnipList :call s:showlist()
 endfunction
 
 
