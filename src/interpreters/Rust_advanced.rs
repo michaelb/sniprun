@@ -51,7 +51,6 @@ impl Rust_advanced {
             for c in capture.0.captures[0]
                 .node
                 .children(&mut capture.0.captures[0].node.walk())
-            {
                 info!("    child : {:?}", c);
                 info!("    child : {:?}", c.to_sexp());
             }
