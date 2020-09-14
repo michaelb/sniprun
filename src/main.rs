@@ -110,50 +110,61 @@ impl EventHandler {
 
     /// fill the DataHolder with data from sniprun and Neovim
     fn fill_data(&mut self, values: Vec<Value>) {
-        self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
-        self.data.sniprun_root_dir = String::from(values[2].as_str().unwrap());
-
-        //get filetype
-        let ft = self.nvim.lock().unwrap().command_output("set ft?");
-        if let Ok(real_ft) = ft {
-            self.data.filetype = String::from(real_ft.split("=").last().unwrap());
+        {
+            info!("filling data");
+            self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
+            self.data.sniprun_root_dir = String::from(values[2].as_str().unwrap());
         }
 
-        //get current line
-        let current_line = self.nvim.lock().unwrap().get_current_line();
-        if let Ok(real_current_line) = current_line {
-            self.data.current_line = real_current_line;
+        {
+            //get filetype
+            let ft = self.nvim.lock().unwrap().command_output("set ft?");
+            if let Ok(real_ft) = ft {
+                self.data.filetype = String::from(real_ft.split("=").last().unwrap());
+            }
         }
 
-        //get current bloc
-        let current_bloc = self
-            .nvim
-            .lock()
-            .unwrap()
-            .get_current_buf()
-            .unwrap()
-            .get_lines(
-                &mut self.nvim.lock().unwrap(),
+        {
+            //get current line
+            let current_line = self.nvim.lock().unwrap().get_current_line();
+            if let Ok(real_current_line) = current_line {
+                self.data.current_line = real_current_line;
+            }
+            info!("got current_line");
+        }
+
+        {
+            //get current bloc
+            let mut nvim_instance = self.nvim.lock().unwrap();
+            let current_bloc = nvim_instance.get_current_buf().unwrap().get_lines(
+                &mut nvim_instance,
                 self.data.range[0] - 1, //because the function is 0-based instead of 1 and end-exclusive
                 self.data.range[1],
                 false,
             );
-        if let Ok(real_current_bloc) = current_bloc {
-            self.data.current_bloc = real_current_bloc.join("\n");
+            if let Ok(real_current_bloc) = current_bloc {
+                self.data.current_bloc = real_current_bloc.join("\n");
+            }
         }
 
-        //get full file path
-        let full_file_path = self
-            .nvim
-            .lock()
-            .unwrap()
-            .command_output("echo expand('%:p')");
-        if let Ok(real_full_file_path) = full_file_path {
-            self.data.filepath = real_full_file_path;
+        {
+            //get full file path
+            let full_file_path = self
+                .nvim
+                .lock()
+                .unwrap()
+                .command_output("echo expand('%:p')");
+            if let Ok(real_full_file_path) = full_file_path {
+                self.data.filepath = real_full_file_path;
+            }
+            info!("got filepath");
         }
 
-        //get nvim instance
-        self.data.nvim_instance = Some(self.nvim.clone());
+        {
+            //get nvim instance
+            self.data.nvim_instance = Some(self.nvim.clone());
+            info!("got nvim_instance");
+        }
     }
 }
 enum HandleAction {
@@ -197,13 +208,17 @@ fn main() {
                 info!("[MAINLOOP] Run command received");
 
                 let mut event_handler2 = event_handler.clone();
+                info!("[MAINLOOP] clone event handler");
                 let _res2 = send.send(HandleAction::New(thread::spawn(move || {
                     // get up-to-date data
                     //
+                    info!("[MAINLOOP] spawned thread");
                     event_handler2.fill_data(values);
+                    info!("[MAINLOOP] filled dataholder");
 
                     //run the launcher (that selects, init and run an interpreter)
                     let launcher = launcher::Launcher::new(event_handler2.data.clone());
+                    info!("[MAINLOOP] created launcher");
                     let result = launcher.select_and_run();
                     info!("[MAINLOOP] Interpreter return a result");
 
