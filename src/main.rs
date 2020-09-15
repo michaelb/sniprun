@@ -1,4 +1,4 @@
-//! This documentation for the Sniprun project
+//! This is the documentation for the Sniprun project
 //!
 //! Sniprun is a neovim plugin that run parts of code.
 
@@ -17,7 +17,7 @@ mod launcher;
 ///This struct holds (with ownership) the data Sniprun and neovim
 ///give to the interpreter.
 ///This should be enough to implement up to project-level interpreters.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone)]
 pub struct DataHolder {
     /// contains the filetype of the file as return by `:set ft?`
     filetype: String,
@@ -39,6 +39,9 @@ pub struct DataHolder {
     work_dir: String,
     /// path to sniprun root, eg in case you need ressoruces from the ressources folder
     sniprun_root_dir: String,
+
+    ///neovim instance
+    nvim_instance: Option<Arc<Mutex<Neovim>>>,
 }
 
 impl DataHolder {
@@ -61,6 +64,7 @@ impl DataHolder {
             dependencies_path: vec![],
             work_dir: format!("{}/{}", cache_dir().unwrap().to_str().unwrap(), "sniprun"),
             sniprun_root_dir: String::from(""),
+            nvim_instance: None,
         }
     }
     ///remove and recreate the cache directory (is invoked by `:SnipReset`)
@@ -71,8 +75,9 @@ impl DataHolder {
     }
 }
 
+#[derive(Clone)]
 struct EventHandler {
-    nvim: Neovim,
+    nvim: Arc<Mutex<Neovim>>,
     data: DataHolder,
 }
 
@@ -97,41 +102,68 @@ impl EventHandler {
         let session = Session::new_parent().unwrap();
         let nvim = Neovim::new(session);
         let data = DataHolder::new();
-        EventHandler { nvim, data }
+        EventHandler {
+            nvim: Arc::new(Mutex::new(nvim)),
+            data,
+        }
     }
 
     /// fill the DataHolder with data from sniprun and Neovim
     fn fill_data(&mut self, values: Vec<Value>) {
-        self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
-        self.data.sniprun_root_dir = String::from(values[2].as_str().unwrap());
-
-        //get filetype
-        let ft = self.nvim.command_output("set ft?");
-        if let Ok(real_ft) = ft {
-            self.data.filetype = String::from(real_ft.split("=").last().unwrap());
+        {
+            info!("filling data");
+            self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
+            self.data.sniprun_root_dir = String::from(values[2].as_str().unwrap());
         }
 
-        //get current line
-        let current_line = self.nvim.get_current_line();
-        if let Ok(real_current_line) = current_line {
-            self.data.current_line = real_current_line;
+        {
+            //get filetype
+            let ft = self.nvim.lock().unwrap().command_output("set ft?");
+            if let Ok(real_ft) = ft {
+                self.data.filetype = String::from(real_ft.split("=").last().unwrap());
+            }
         }
 
-        //get current bloc
-        let current_bloc = self.nvim.get_current_buf().unwrap().get_lines(
-            &mut self.nvim,
-            self.data.range[0] - 1, //because the function is 0-based instead of 1 and end-exclusive
-            self.data.range[1],
-            false,
-        );
-        if let Ok(real_current_bloc) = current_bloc {
-            self.data.current_bloc = real_current_bloc.join("\n");
+        {
+            //get current line
+            let current_line = self.nvim.lock().unwrap().get_current_line();
+            if let Ok(real_current_line) = current_line {
+                self.data.current_line = real_current_line;
+            }
+            info!("got current_line");
         }
 
-        //get full file path
-        let full_file_path = self.nvim.command_output("echo expand('%:p')");
-        if let Ok(real_full_file_path) = full_file_path {
-            self.data.filepath = real_full_file_path;
+        {
+            //get current bloc
+            let mut nvim_instance = self.nvim.lock().unwrap();
+            let current_bloc = nvim_instance.get_current_buf().unwrap().get_lines(
+                &mut nvim_instance,
+                self.data.range[0] - 1, //because the function is 0-based instead of 1 and end-exclusive
+                self.data.range[1],
+                false,
+            );
+            if let Ok(real_current_bloc) = current_bloc {
+                self.data.current_bloc = real_current_bloc.join("\n");
+            }
+        }
+
+        {
+            //get full file path
+            let full_file_path = self
+                .nvim
+                .lock()
+                .unwrap()
+                .command_output("echo expand('%:p')");
+            if let Ok(real_full_file_path) = full_file_path {
+                self.data.filepath = real_full_file_path;
+            }
+            info!("got filepath");
+        }
+
+        {
+            //get nvim instance
+            self.data.nvim_instance = Some(self.nvim.clone());
+            info!("got nvim_instance");
         }
     }
 }
@@ -148,8 +180,13 @@ fn main() {
 
     info!("[MAIN] SnipRun launched successfully");
 
-    let receiver = event_handler.nvim.session.start_event_loop_channel();
-    let meh = Arc::new(Mutex::new(event_handler));
+    let receiver = event_handler
+        .nvim
+        .lock()
+        .unwrap()
+        .session
+        .start_event_loop_channel();
+    // let meh = Arc::new(Mutex::new(event_handler));
 
     let (send, recv) = mpsc::channel();
     thread::spawn(move || {
@@ -170,14 +207,18 @@ fn main() {
             Messages::Run => {
                 info!("[MAINLOOP] Run command received");
 
-                let cloned_meh = meh.clone();
+                let mut event_handler2 = event_handler.clone();
+                info!("[MAINLOOP] clone event handler");
                 let _res2 = send.send(HandleAction::New(thread::spawn(move || {
                     // get up-to-date data
                     //
-                    cloned_meh.lock().unwrap().fill_data(values);
+                    info!("[MAINLOOP] spawned thread");
+                    event_handler2.fill_data(values);
+                    info!("[MAINLOOP] filled dataholder");
 
                     //run the launcher (that selects, init and run an interpreter)
-                    let launcher = launcher::Launcher::new(cloned_meh.lock().unwrap().data.clone());
+                    let launcher = launcher::Launcher::new(event_handler2.data.clone());
+                    info!("[MAINLOOP] created launcher");
                     let result = launcher.select_and_run();
                     info!("[MAINLOOP] Interpreter return a result");
 
@@ -193,18 +234,18 @@ fn main() {
 
                             info!("[MAINLOOP] Returning stdout of code run: {}", answer_str);
 
-                            let _ = cloned_meh
+                            let _ = event_handler2
+                                .nvim
                                 .lock()
                                 .unwrap()
-                                .nvim
                                 .command(&format!("echo \"{}\"", answer_str));
                         }
                         Err(e) => {
                             info!("[MAINLOOP] Returning an error");
-                            let _ = cloned_meh
+                            let _ = event_handler2
+                                .nvim
                                 .lock()
                                 .unwrap()
-                                .nvim
                                 .err_writeln(&format!("{}", e));
                         }
                     };
@@ -212,12 +253,12 @@ fn main() {
                     //display ouput in nvim
 
                     //clean data
-                    cloned_meh.lock().unwrap().data = DataHolder::new();
+                    event_handler2.data = DataHolder::new();
                 })));
             }
             Messages::Clean => {
                 info!("[MAINLOOP] Clean command received");
-                meh.clone().lock().unwrap().data.clean_dir()
+                event_handler.data.clean_dir()
             }
 
             Messages::Unknown(event) => {

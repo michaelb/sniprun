@@ -1,4 +1,8 @@
-#[derive(Debug, Clone)]
+//Interpreter:| Java_original       | java        |
+//############|_____________________|_____________|________________<- delimiters to help formatting,
+//###########| Interpretername      | language    | comment
+// Keep (but modify the first line after the :) if you wish to have this interpreter listedvia SnipList
+#[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Java_original {
     support_level: SupportLevel,

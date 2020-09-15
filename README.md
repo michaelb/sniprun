@@ -82,6 +82,15 @@ Under the hood, what it does is just kill Sniprun (and its child processes) and 
 
 Alternatively, exit Neovim.
 
+### Configuration
+
+(Still WIP)
+You can add interpreters you want to use above the others in case multiples interpreters are available for one file type by adding to your config file / init.vim :
+
+`let g:SnipRun_select_interpreters += ['name_of_the_interpreter']`(WIP)
+
+A list of all available interpreters can be displayed by running `:SnipList`
+
 ### My usage recommandation & tricks
 
 - Map the line and bloc mode to a simple command such as `ff` (or just `f` in visual mode).
@@ -164,7 +173,7 @@ For example, SnipRun Python support is (objectively) sligthly superior, and with
 
 ## Contribute
 
-see [contributing](CONTRIBUTING.md)
+It's super easy: see [contributing](CONTRIBUTING.md)
 
 ## Related projects
 
