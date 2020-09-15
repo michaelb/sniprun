@@ -1,4 +1,8 @@
-#[derive(Debug, Clone)]
+//Interpreter:| Rust_advanced       | rust        |
+//############|_____________________|_____________|________________<- delimiters to help formatting,
+//###########| Interpretername      | language    | comment
+// Keep (but modify the first line after the :) if you wish to have this interpreter listedvia SnipList
+#[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Rust_advanced {
     support_level: SupportLevel,
@@ -43,34 +47,33 @@ impl Rust_advanced {
 
         info!("tree {:?} ", tree);
         // info!(" root_node {:?}", root_node.to_sexp());
-        info!("query {:?}", query);
-        for capture in querycursor.captures(&query, root_node, |node| "lol") {
-            info!("querycatpured {:?}", capture.0.captures[0].node);
-            info!("querycatpured {:?}", capture.0.captures[0].node.to_sexp());
-            info!("querycatpured {:?}", capture.0.captures[0].node.kind_id());
-            for c in capture.0.captures[0]
-                .node
-                .children(&mut capture.0.captures[0].node.walk())
-                info!("    child : {:?}", c);
-                info!("    child : {:?}", c.to_sexp());
-            }
-        }
-        for capture in querycursor.captures(&query2, root_node, |node| "lol") {
-            info!("querycatpured {:?}", capture.0.captures[0].node);
-            info!("querycatpured {:?}", capture.0.captures[0].node.to_sexp());
-            info!("querycatpured {:?}", capture.0.captures[0].node.kind_id());
-            for c in capture.0.captures[0]
-                .node
-                .children(&mut capture.0.captures[0].node.walk())
-            {
-                info!("    child : {:?}", c);
-                info!("    child : {:?}", c.to_sexp());
-            }
-        }
+        // info!("query {:?}", query);
+        // for capture in querycursor.captures(&query, root_node, |node| "lol") {
+        //     info!("querycatpured {:?}", capture.0.captures[0].node);
+        //     info!("querycatpured {:?}", capture.0.captures[0].node.to_sexp());
+        //     info!("querycatpured {:?}", capture.0.captures[0].node.kind_id());
+        //     for c in capture.0.captures[0]
+        //         .node
+        //         .children(&mut capture.0.captures[0].node.walk())
+        //         info!("    child : {:?}", c);
+        //         info!("    child : {:?}", c.to_sexp());
+        //     }
+        // }
+        // for capture in querycursor.captures(&query2, root_node, |node| "lol") {
+        //     info!("querycatpured {:?}", capture.0.captures[0].node);
+        //     info!("querycatpured {:?}", capture.0.captures[0].node.to_sexp());
+        //     info!("querycatpured {:?}", capture.0.captures[0].node.kind_id());
+        //     for c in capture.0.captures[0]
+        //         .node
+        //         .children(&mut capture.0.captures[0].node.walk())
+        //     {
+        //         info!("    child : {:?}", c);
+        //         info!("    child : {:?}", c.to_sexp());
+        //     }
+        // }
         Ok(())
     }
 }
-
 impl Interpreter for Rust_advanced {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Rust_advanced> {
         //create a subfolder in the cache folder

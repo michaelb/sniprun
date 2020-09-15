@@ -42,6 +42,9 @@ pub struct DataHolder {
 
     ///neovim instance
     nvim_instance: Option<Arc<Mutex<Neovim>>>,
+
+    ///user config: selected interpreters
+    selected_interpreters: Vec<String>,
 }
 
 impl DataHolder {
@@ -65,6 +68,7 @@ impl DataHolder {
             work_dir: format!("{}/{}", cache_dir().unwrap().to_str().unwrap(), "sniprun"),
             sniprun_root_dir: String::from(""),
             nvim_instance: None,
+            selected_interpreters: vec![],
         }
     }
     ///remove and recreate the cache directory (is invoked by `:SnipReset`)
@@ -164,6 +168,15 @@ impl EventHandler {
             //get nvim instance
             self.data.nvim_instance = Some(self.nvim.clone());
             info!("got nvim_instance");
+        }
+        {
+            self.data.selected_interpreters = values[3]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|v| v.as_str().unwrap().to_owned())
+                .collect();
+            info!("got selected interpreters");
         }
     }
 }

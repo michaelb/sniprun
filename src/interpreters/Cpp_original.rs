@@ -1,4 +1,8 @@
-#[derive(Debug, Clone)]
+//Interpreter:| Cpp_original        | cpp         |
+//############|_____________________|_____________|________________<- delimiters to help formatting,
+//###########| Interpretername      | language    | comment
+// Keep (but modify the first line after the :) if you wish to have this interpreter listedvia SnipList
+#[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Cpp_original {
     support_level: SupportLevel,

@@ -54,6 +54,11 @@ impl Interpreter for Lua_nvim {
     }
 
     fn fallback(&mut self) -> Option<Result<String, SniprunError>> {
+        //do not fallback if one's is explicitely selected
+        if self.support_level == SupportLevel::Selected {
+            return None;
+        }
+
         self.fetch_code().expect("could not fetch code");
         if !(self.code.contains("nvim")) {
             //then this is not lua_nvim code but pure lua one
