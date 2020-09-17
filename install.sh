@@ -7,10 +7,12 @@ name="sniprun"
 
 cargo_build() {
   if command -v cargo >/dev/null; then
-    echo "Trying to build Sniprun locally using Cargo.."
-    cargo build --release
+    echo "Trying to build Sniprun locally using Cargo."
+    echo "Building..."
+    cargo build --release 2>/dev/null
+    echo "Done"
   else
-    echo "Could not start Cargo. Your installation might be corrupt."
+    echo "Could not find cargo in \$PATH: the Rust toolchain is required to build Sniprun"
     return 1
   fi
 }
@@ -30,7 +32,7 @@ fetch_prebuilt_binary() {
     chmod a+x target/release/sniprun
     return
   else
-    cargo_build || echo "Prebuilt binaries are not ready for this platform."
+    cargo_build || echo "Prebuilt binaries are not available for this platform."
   fi
 }
 

@@ -84,8 +84,7 @@ Alternatively, exit Neovim.
 
 ### Configuration
 
-(Still WIP)
-You can add interpreters you want to use above the others in case multiples interpreters are available for one file type by adding to your config file / init.vim :
+You can add interpreters you want to always use in case multiples interpreters are available for one file type by adding to your config file / init.vim :
 
 `let g:SnipRun_select_interpreters += ['name_of_the_interpreter']`
 For example to always select Lua_original and Rust_original over others,

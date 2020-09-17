@@ -8,7 +8,9 @@ use std::fs::{read_to_string, write, DirBuilder, File};
 use std::io::prelude::*;
 use std::process::Command;
 
-use tree_sitter::{Language, Node, Parser, Query, QueryCaptures, QueryCursor};
+use tree_sitter::{Language, Node, Parser, Point, Query, QueryCaptures, QueryCursor, Range};
+
+use neovim_lib::NeovimApi;
 
 //python-specific
 use pyo3::types::PyDict;

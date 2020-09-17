@@ -9,6 +9,8 @@ pub struct Rust_advanced {
     data: DataHolder,
     code: String,
     code_deps: String,
+    resolved_range: Vec<Range>,
+    unresolved_symbols: Vec<symbols>,
 
     ///specific to rust
     rust_work_dir: String,
@@ -18,6 +20,24 @@ pub struct Rust_advanced {
 
 extern "C" {
     fn tree_sitter_rust() -> Language;
+}
+fn geq(point1: Point, point2: Point) -> bool {
+    // return if point1 if after or eq point2
+    return point1.row >= point2.row && point1.column >= point2.column;
+}
+fn leq(point1: Point, point2: Point) -> bool {
+    // return if point1 precede or eq point2
+    return point1.row <= point2.row && point1.column <= point2.column;
+}
+
+///symbols that need to be resolved
+#[derive(Debug, Clone)]
+enum symbols {
+    Imports(String),
+    Function(String),
+    Variable(String),
+    Method(String), //methods + static methods have to pull the whole class with them
+    StaticMethod(String),
 }
 
 impl Rust_advanced {
@@ -30,47 +50,36 @@ impl Rust_advanced {
 
         info!("created parser & language");
 
-        let tree = parser.parse(source_code, None).unwrap();
+        let tree = parser.parse(source_code.clone(), None).unwrap();
         info!("created tree");
         let root_node = tree.root_node();
 
+        info!("created root node");
         let query = Query::new(
             language,
             "(call_expression
-            function: (identifier) @thefunctionid)",
+            function: (identifier) @capturename)",
         )
         .unwrap();
-        let query2 = Query::new(language, "(function_declaration)").unwrap();
         info!("created query");
 
         let mut querycursor = QueryCursor::new();
 
         info!("tree {:?} ", tree);
         // info!(" root_node {:?}", root_node.to_sexp());
-        // info!("query {:?}", query);
-        // for capture in querycursor.captures(&query, root_node, |node| "lol") {
-        //     info!("querycatpured {:?}", capture.0.captures[0].node);
-        //     info!("querycatpured {:?}", capture.0.captures[0].node.to_sexp());
-        //     info!("querycatpured {:?}", capture.0.captures[0].node.kind_id());
-        //     for c in capture.0.captures[0]
-        //         .node
-        //         .children(&mut capture.0.captures[0].node.walk())
-        //         info!("    child : {:?}", c);
-        //         info!("    child : {:?}", c.to_sexp());
-        //     }
-        // }
-        // for capture in querycursor.captures(&query2, root_node, |node| "lol") {
-        //     info!("querycatpured {:?}", capture.0.captures[0].node);
-        //     info!("querycatpured {:?}", capture.0.captures[0].node.to_sexp());
-        //     info!("querycatpured {:?}", capture.0.captures[0].node.kind_id());
-        //     for c in capture.0.captures[0]
-        //         .node
-        //         .children(&mut capture.0.captures[0].node.walk())
-        //     {
-        //         info!("    child : {:?}", c);
-        //         info!("    child : {:?}", c.to_sexp());
-        //     }
-        // }
+        info!("query {:?}", query);
+        for qmatch in querycursor.captures(&query, root_node, |_| "") {
+            info!(
+                "capture: {:?}",
+                qmatch.0.captures[0]
+                    .node
+                    .utf8_text(source_code.as_bytes())
+                    .unwrap()
+            );
+        }
+
+        info!("captured_names : {:?}", query.capture_names());
+
         Ok(())
     }
 }
@@ -92,6 +101,8 @@ impl Interpreter for Rust_advanced {
             support_level,
             code: String::from(""),
             code_deps: String::from(""),
+            unresolved_symbols: vec![],
+            resolved_range: vec![],
             rust_work_dir: rwd,
             bin_path: bp,
             main_file_path: mfp,
@@ -122,7 +133,7 @@ impl Interpreter for Rust_advanced {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::File
+        SupportLevel::Unsupported
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
