@@ -14,7 +14,7 @@ pub struct Lua_original {
 
 impl Interpreter for Lua_original {
     fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Lua_original> {
-        let bwd = data.work_dir.clone() + "/nvim-lua";
+        let bwd = data.work_dir.clone() + "/lua-original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
@@ -31,7 +31,7 @@ impl Interpreter for Lua_original {
     }
 
     fn get_name() -> String {
-        String::from("lua_original")
+        String::from("Lua_original")
     }
 
     fn get_supported_languages() -> Vec<String> {
@@ -54,6 +54,10 @@ impl Interpreter for Lua_original {
     }
 
     fn fallback(&mut self) -> Option<Result<String, SniprunError>> {
+        //do not fallback if one's is explicitely selected
+        if self.support_level == SupportLevel::Selected {
+            return None;
+        }
         self.fetch_code().expect("could not fetch code");
         if self.code.contains("nvim") {
             //then this is not pure lua code but  lua-nvim one
@@ -104,7 +108,7 @@ impl Interpreter for Lua_original {
             .expect("Unable to start process");
         info!("yay from lua interpreter");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stderr).unwrap());
+            return Ok(String::from_utf8(output.stdout).unwrap());
         } else {
             return Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),

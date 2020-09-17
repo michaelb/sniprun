@@ -31,7 +31,7 @@ impl Interpreter for Lua_nvim {
     }
 
     fn get_name() -> String {
-        String::from("lua_nvim")
+        String::from("Lua_nvim")
     }
 
     fn get_supported_languages() -> Vec<String> {
@@ -54,6 +54,11 @@ impl Interpreter for Lua_nvim {
     }
 
     fn fallback(&mut self) -> Option<Result<String, SniprunError>> {
+        //do not fallback if one's is explicitely selected
+        if self.support_level == SupportLevel::Selected {
+            return None;
+        }
+
         self.fetch_code().expect("could not fetch code");
         if !(self.code.contains("nvim")) {
             //then this is not lua_nvim code but pure lua one
@@ -98,21 +103,33 @@ impl Interpreter for Lua_nvim {
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("nvim")
-            .arg("--headless")
-            .arg("-c")
-            .arg(format!("luafile {}", &self.main_file_path))
-            .arg("-c")
-            .arg("q!")
-            .output()
-            .expect("Unable to start process");
-        info!("yay from lua interpreter");
-        if output.status.success() {
-            return Ok(String::from_utf8(output.stderr).unwrap());
+        // if current nvim instance is available, execute there
+        if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
+            let command_nvim = String::from("luafile ") + &self.main_file_path;
+            let res = real_nvim_instance.lock().unwrap().command(&command_nvim);
+            if res.is_ok() {
+                return Ok(String::from(""));
+            } else {
+                return Err(SniprunError::RuntimeError(String::from("")));
+            }
         } else {
-            return Err(SniprunError::RuntimeError(
-                String::from_utf8(output.stderr).unwrap(),
-            ));
+            //else, executing in another nvim instance
+            let output = Command::new("nvim")
+                .arg("--headless")
+                .arg("-c")
+                .arg(format!("luafile {}", &self.main_file_path))
+                .arg("-c")
+                .arg("q!")
+                .output()
+                .expect("Unable to start process");
+            info!("yay from lua interpreter");
+            if output.status.success() {
+                return Ok(String::from_utf8(output.stdout).unwrap());
+            } else {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr).unwrap(),
+                ));
+            }
         }
     }
 }

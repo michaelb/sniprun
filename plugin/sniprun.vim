@@ -50,7 +50,7 @@ endfunction
 function! s:run() range
   let s:fl=a:firstline
   let s:ll=a:lastline
-  call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir)
+  call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir, g:SnipRun_select_interpreters)
 endfunction
 
 function! s:terminate()

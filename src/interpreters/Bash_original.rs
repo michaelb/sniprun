@@ -31,7 +31,7 @@ impl Interpreter for Bash_original {
     }
 
     fn get_name() -> String {
-        String::from("bash_original")
+        String::from("Bash_original")
     }
 
     fn get_supported_languages() -> Vec<String> {

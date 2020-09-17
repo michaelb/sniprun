@@ -18,6 +18,9 @@ pub enum SupportLevel {
     Project = 20,
     ///Run a line/bloc of code, but include variable/function from the project and project or system-wide dependencies
     System = 30,
+
+    ///selected: don't use this support level, it is meant to communicate user's config choices
+    Selected = 255,
 }
 
 ///This is the trait all interpreters must implement.

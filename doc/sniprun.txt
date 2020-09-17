@@ -1,0 +1,29 @@
+*sniprun*
+
+Minimum version of neovim: 0.43
+
+Authors: Michael bleuez <michael.bleuez2@gmail.com>
+         Vigouroux Thomas <tomvig38@gmail.com>
+         https://github.com/michaelb/sniprun/graphs/contributors
+
+
+==============================================================================
+INTRODUCTION                                           *sniprun-intro*
+
+Sniprun is a code runner plugin that run, and if necessary, compile beforehand, snippets (visual selection) of your code.
+
+
+==============================================================================
+QUICK START                                       *sniprun-quickstart*
+
+
+Select a visual (line mode advised) block of code to run, or position yourself on the line:
+then run in normal or visual mode   :SnipRun
+
+If you crash SnipRun, you can :SnipTerminate (that will kill Sniprun, and restart it at next call), or :SnipReset , (that will clear the cache that helps SnipRun compile faster)
+
+
+==============================================================================
+TROUBLESHOOTING                                  *sniprun-troubleshooting*
+
+If anything is not working; you should consult the README at github.com/michaelb/sniprun, as well as the documentation for every language in the doc/ folder at the same git repository.

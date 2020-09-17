@@ -84,10 +84,11 @@ Alternatively, exit Neovim.
 
 ### Configuration
 
-(Still WIP)
-You can add interpreters you want to use above the others in case multiples interpreters are available for one file type by adding to your config file / init.vim :
+You can add interpreters you want to always use in case multiples interpreters are available for one file type by adding to your config file / init.vim :
 
-`let g:SnipRun_select_interpreters += ['name_of_the_interpreter']`(WIP)
+`let g:SnipRun_select_interpreters += ['name_of_the_interpreter']`
+For example to always select Lua_original and Rust_original over others,
+`let g:SnipRun_select_interpreters +=['Lua_original', 'Rust_original']`
 
 A list of all available interpreters can be displayed by running `:SnipList`
 
@@ -123,26 +124,25 @@ println!("hello n° {}", i+1);
 - **Project** : Sniprun will detect the root of your project, and get the necessary code from files in your project.
 - **System** : Sniprun will use local (and system) libraries, such as jar files, to run your what you want.
 
-| Language    | Support level |     | Language   | Support level |
-| ----------- | ------------- | --- | ---------- | ------------- |
-| Assembly    | Unsupported\* |     | Idris      | Unsupported\* |
-| ats         | Unsupported\* |     | JavaScript | Bloc          |
-| Bash/Shell  | Bloc          |     | Java       | Bloc          |
-| C           | Bloc          |     | Julia      | Unsupported\* |
-| Clojure     | Unsupported\* |     | Lua        | Bloc          |
-| COBOL       | Unsupported\* |     | Lua-nvim   | Bloc          |
-| Coffescript | Unsupported\* |     | OCaml      | Unsupported\* |
-| C#          | Unsupported\* |     | Perl6      | Unsupported\* |
-| C++         | Unsupported\* |     | Perl       | Unsupported\* |
-| D           | Unsupported\* |     | PHP        | Unsupported   |
-| Elixir      | Unsupported\* |     | Python3    | Import        |
-| Elm         | Unsupported\* |     | Ruby       | Unsupported\* |
-| Erlang      | Unsupported\* |     | R          | Unsupported\* |
-| F#          | Unsupported\* |     | Rust       | Bloc          |
-| Go          | Unsupported\* |     | Scala      | Unsupported\* |
-| Groovy      | Unsupported\* |     | Scilab     | Unsupported\* |
-| Haskell     | Unsupported\* |     | Swift      | Unsupported\* |
-
+| Language     | Support level |     | Language   | Support level |
+| ------------ | ------------- | --- | ---------- | ------------- |
+| Assembly     | Unsupported\* |     | JavaScript | Bloc          |
+| ats          | Unsupported\* |     | Java       | Bloc          |
+| Bash/Shell   | Bloc          |     | Julia      | Unsupported\* |
+| C            | Bloc          |     | Lisp       | Unsupported\* |
+| COBOL        | Unsupported\* |     | Lua        | Bloc          |
+| Coffeescript | Unsupported\* |     | Lua-nvim   | Bloc          |
+| C#           | Unsupported\* |     | OCaml      | Unsupported\* |
+| C++          | Bloc          |     | Perl6      | Line          |
+| D            | Unsupported\* |     | Perl       | Line          |
+| Elixir       | Unsupported\* |     | PHP        | Unsupported   |
+| Elm          | Unsupported\* |     | Python3    | Import        |
+| Erlang       | Unsupported\* |     | Ruby       | Unsupported\* |
+| F#           | Unsupported\* |     | R          | Unsupported\* |
+| Go           | Bloc          |     | Rust       | Bloc          |
+| Groovy       | Unsupported\* |     | Scala      | Unsupported\* |
+| Haskell      | Unsupported\* |     | Scilab     | Unsupported\* |
+| Idris        | Unsupported\* |     | Swift      | Unsupported\* |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 

@@ -42,6 +42,9 @@ pub struct DataHolder {
 
     ///neovim instance
     nvim_instance: Option<Arc<Mutex<Neovim>>>,
+
+    ///user config: selected interpreters
+    selected_interpreters: Vec<String>,
 }
 
 impl DataHolder {
@@ -65,6 +68,7 @@ impl DataHolder {
             work_dir: format!("{}/{}", cache_dir().unwrap().to_str().unwrap(), "sniprun"),
             sniprun_root_dir: String::from(""),
             nvim_instance: None,
+            selected_interpreters: vec![],
         }
     }
     ///remove and recreate the cache directory (is invoked by `:SnipReset`)
@@ -165,6 +169,15 @@ impl EventHandler {
             self.data.nvim_instance = Some(self.nvim.clone());
             info!("got nvim_instance");
         }
+        {
+            self.data.selected_interpreters = values[3]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|v| v.as_str().unwrap().to_owned())
+                .collect();
+            info!("got selected interpreters");
+        }
     }
 }
 enum HandleAction {
@@ -225,20 +238,26 @@ fn main() {
                     // return Ok(result) or Err(sniprunerror)
                     match result {
                         Ok(answer_str) => {
-                            let mut answer_str = answer_str.clone();
-                            answer_str = answer_str.replace("\\\"", "\"");
-                            answer_str = answer_str.replace("\"", "\\\"");
-                            //make sure there is no lone "
-                            let len_without_newline = answer_str.trim_end().len();
-                            answer_str.truncate(len_without_newline);
+                            // do not display anything if string empty, as it may means the
+                            // interpreter used the nvim handle directly
+                            if !answer_str.is_empty() {
+                                let mut answer_str = answer_str.clone();
+                                answer_str = answer_str.replace("\\\"", "\"");
+                                answer_str = answer_str.replace("\"", "\\\"");
+                                //make sure there is no lone "
+                                let len_without_newline = answer_str.trim_end().len();
+                                answer_str.truncate(len_without_newline);
 
-                            info!("[MAINLOOP] Returning stdout of code run: {}", answer_str);
+                                info!("[MAINLOOP] Returning stdout of code run: {}", answer_str);
 
-                            let _ = event_handler2
-                                .nvim
-                                .lock()
-                                .unwrap()
-                                .command(&format!("echo \"{}\"", answer_str));
+                                {
+                                    let _ = event_handler2
+                                        .nvim
+                                        .lock()
+                                        .unwrap()
+                                        .command(&format!("echo \"{}\"", answer_str));
+                                }
+                            }
                         }
                         Err(e) => {
                             info!("[MAINLOOP] Returning an error");

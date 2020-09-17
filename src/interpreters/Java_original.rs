@@ -43,7 +43,7 @@ impl Interpreter for Java_original {
     }
 
     fn get_name() -> String {
-        String::from("java_original")
+        String::from("Java_original")
     }
 
     fn get_current_level(&self) -> SupportLevel {
