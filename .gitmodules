@@ -1,3 +1,0 @@
-[submodule "ressources/tree-sitter-rust"]
-	path = ressources/tree-sitter-rust
-	url = https://github.com/tree-sitter/tree-sitter-rust

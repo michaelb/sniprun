@@ -105,6 +105,7 @@ impl Interpreter for Lua_nvim {
     fn execute(&mut self) -> Result<String, SniprunError> {
         // if current nvim instance is available, execute there
         if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
+            info!("yay from lua interpreter - in current nvim instance");
             let command_nvim = String::from("luafile ") + &self.main_file_path;
             let res = real_nvim_instance.lock().unwrap().command(&command_nvim);
             if res.is_ok() {
@@ -122,7 +123,7 @@ impl Interpreter for Lua_nvim {
                 .arg("q!")
                 .output()
                 .expect("Unable to start process");
-            info!("yay from lua interpreter");
+            info!("yay from lua interpreter - in another nvim instance");
             if output.status.success() {
                 return Ok(String::from_utf8(output.stdout).unwrap());
             } else {
