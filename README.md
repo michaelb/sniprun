@@ -137,11 +137,11 @@ println!("hello n° {}", i+1);
 | D            | Unsupported\* |     | Perl       | Line          |
 | Elixir       | Unsupported\* |     | PHP        | Unsupported   |
 | Elm          | Unsupported\* |     | Python3    | Import        |
-| Erlang       | Unsupported\* |     | Ruby       | Unsupported\* |
-| F#           | Unsupported\* |     | R          | Unsupported\* |
+| Erlang       | Unsupported\* |     | Ruby       | Bloc          |
+| F#           | Unsupported\* |     | R          | Bloc          |
 | Go           | Bloc          |     | Rust       | Bloc          |
 | Groovy       | Unsupported\* |     | Scala      | Unsupported\* |
-| Haskell      | Unsupported\* |     | Scilab     | Unsupported\* |
+| Haskell      | Bloc          |     | Scilab     | Unsupported\* |
 | Idris        | Unsupported\* |     | Swift      | Unsupported\* |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
