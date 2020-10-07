@@ -6,9 +6,9 @@ Just in case: to compile `cargo build --release`, to create and show the documen
 
 ### How hard it is?
 
-Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 13min (my best time, for C_original) to 1h30.
+Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 13min (my best time, for C_original) to 1h30. You can then submit your proposed changes to the dev branch.
 
-Higher support levels gets exponentially harder (depends on the languages though).
+Higher support levels gets exponentially harder (depends on the languages though). 
 
 ### Understanding the framework
 
