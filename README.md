@@ -181,3 +181,5 @@ It's super easy: see [contributing](CONTRIBUTING.md)
 All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file, and cannot make use of your project's Makefile (or compilation config).
 
 Sniprun also add the typical boilerplate so you only need to select the lines that really do the job, rather than those plus everything in the enclosing `int main() {` or equivalent.
+
+[vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender, but there is WIP to enable REPL-like behavior on sniprun
