@@ -1,5 +1,6 @@
 use crate::error::SniprunError;
-use crate::DataHolder;
+use crate::{DataHolder, InterpreterData};
+use log::info;
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 #[allow(dead_code)]
@@ -67,6 +68,11 @@ pub trait Interpreter {
     /// of the project
     fn fetch_code(&mut self) -> Result<(), SniprunError>; //mut to allow modification of the current_level
 
+    ///Disable REPL-like behavior by default
+    fn behave_repl_like_default() -> bool {
+        false
+    }
+
     /// This should add code that does not originate from the project to the code field in the
     /// interpreter
     fn add_boilerplate(&mut self) -> Result<(), SniprunError>;
@@ -93,5 +99,59 @@ pub trait Interpreter {
     /// default run function ran from the launcher (run_at_level(max_level))
     fn run(&mut self) -> Result<String, SniprunError> {
         self.run_at_level(self.get_current_level())
+    }
+}
+
+pub trait InterpreterUtils: Interpreter {
+    ///read previously saved code from the interpreterdata object
+    fn read_previous_code(&self) -> String;
+    ///append code to the interpreterdata object
+    fn save_code(&self, code: String);
+    fn clear(&self);
+}
+
+impl<T: Interpreter> InterpreterUtils for T {
+    fn read_previous_code(&self) -> String {
+        let data = self.get_data();
+        if data.interpreter_data.is_none() {
+            return String::new();
+        } else {
+            let content_owner = T::get_name();
+            let interpreter_data = data.interpreter_data.unwrap().lock().unwrap().clone();
+            return interpreter_data.content;
+        }
+    }
+
+    fn save_code(&self, code: String) {
+        let previous_code = self.read_previous_code();
+        let data = self.get_data();
+        if data.interpreter_data.is_none() {
+            info!("Unable to save code for next usage");
+            return;
+        } else {
+            {
+                data.interpreter_data.clone().unwrap().lock().unwrap().owner = T::get_name();
+            }
+            data.interpreter_data.unwrap().lock().unwrap().content = previous_code + "\n" + &code;
+        }
+    }
+
+    fn clear(&self) {
+        let data = self.get_data();
+        if data.interpreter_data.is_some() {
+            data.interpreter_data
+                .clone()
+                .unwrap()
+                .lock()
+                .unwrap()
+                .owner
+                .clear();
+            data.interpreter_data
+                .unwrap()
+                .lock()
+                .unwrap()
+                .content
+                .clear();
+        }
     }
 }
