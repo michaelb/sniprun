@@ -8,6 +8,7 @@ let s:SnipRun = 'run'
 let s:SnipTerminate = 'terminate'
 let s:SnipClean = "clean"
 let s:SnipList = "showlist"
+let s:SnipReplMemoryClean = "clearrepl"
 
 let s:scriptdir = resolve(expand('<sfile>:p:h') . '/..')
 let s:bin= s:scriptdir.'/target/release/sniprun'
@@ -45,6 +46,7 @@ function! s:configureCommands()
   command! SnipTerminate :call s:terminate()
   command! SnipReset :call s:clean()| :call s:terminate()
   command! SnipList :call s:showlist()
+  command! SnipReplMemoryClean :call s:clearReplMemory()
 endfunction
 
 
@@ -63,12 +65,14 @@ endfunction
 
 function! s:clean()
   call rpcnotify(s:sniprunJobId, s:SnipClean)
-  sleep 200m
+  sleep 500m
   " necessary to give enough time to clean the sniprun work directory
 endfunction
 
 
-
+function! s:clearReplMemory()
+  call rpcnotify(s:sniprunJobId, s:SnipReplMemoryClean)
+endfunction
 
 " Initialize RPC
 function! s:initRpc()

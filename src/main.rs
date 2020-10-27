@@ -109,6 +109,7 @@ struct EventHandler {
 enum Messages {
     Run,
     Clean,
+    ClearReplMemory,
     Unknown(String),
 }
 
@@ -117,6 +118,7 @@ impl From<String> for Messages {
         match &event[..] {
             "run" => Messages::Run,
             "clean" => Messages::Clean,
+            "clearrepl" => Messages::ClearReplMemory,
             _ => Messages::Unknown(event),
         }
     }
@@ -329,6 +331,16 @@ fn main() {
             Messages::Clean => {
                 info!("[MAINLOOP] Clean command received");
                 event_handler.data.clean_dir()
+            }
+            Messages::ClearReplMemory => {
+                info!("[MAINLOOP] ClearReplMemory command received");
+                event_handler.interpreter_data.lock().unwrap().owner.clear();
+                event_handler
+                    .interpreter_data
+                    .lock()
+                    .unwrap()
+                    .content
+                    .clear();
             }
 
             Messages::Unknown(event) => {
