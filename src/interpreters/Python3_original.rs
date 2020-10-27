@@ -158,3 +158,5 @@ exit_value1428571999 = str(mystdout1427851999.getvalue())";
         }
     }
 }
+
+impl ReplLikeInterpreter for Python3_original {}

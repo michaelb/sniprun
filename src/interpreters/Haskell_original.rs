@@ -14,7 +14,7 @@ pub struct Haskell_original {
     bin_path: String,
     main_file_path: String,
 }
-
+impl ReplLikeInterpreter for Haskell_original {}
 impl Interpreter for Haskell_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Haskell_original> {
         //create a subfolder in the cache folder

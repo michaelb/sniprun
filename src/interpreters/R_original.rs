@@ -11,7 +11,7 @@ pub struct R_original {
     r_work_dir: String,
     main_file_path: String,
 }
-
+impl ReplLikeInterpreter for R_original {}
 impl Interpreter for R_original {
     fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<R_original> {
         let bwd = data.work_dir.clone() + "/R-original";

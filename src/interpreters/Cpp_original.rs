@@ -13,7 +13,7 @@ pub struct Cpp_original {
     main_file_path: String,
     compiler: String,
 }
-
+impl ReplLikeInterpreter for Cpp_original {}
 impl Interpreter for Cpp_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Cpp_original> {
         let rwd = data.work_dir.clone() + "/c_original";

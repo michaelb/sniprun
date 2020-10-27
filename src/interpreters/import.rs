@@ -1,5 +1,5 @@
 use crate::error::SniprunError;
-use crate::interpreter::{Interpreter, SupportLevel};
+use crate::interpreter::{Interpreter, InterpreterUtils, ReplLikeInterpreter, SupportLevel};
 use crate::DataHolder;
 use log::info;
 use serde_json::Value;
