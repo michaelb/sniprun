@@ -14,7 +14,7 @@ pub struct Go_original {
     bin_path: String,
     main_file_path: String,
 }
-
+impl ReplLikeInterpreter for Go_original {}
 impl Interpreter for Go_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Go_original> {
         //create a subfolder in the cache folder

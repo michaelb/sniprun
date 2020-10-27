@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 // fn build_tree_sitter(language_name: &str) {
 //     let dir: PathBuf = ["ressources", language_name, "src"].iter().collect();

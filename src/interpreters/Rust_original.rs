@@ -14,7 +14,7 @@ pub struct Rust_original {
     bin_path: String,
     main_file_path: String,
 }
-
+impl ReplLikeInterpreter for Rust_original {}
 impl Interpreter for Rust_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Rust_original> {
         //create a subfolder in the cache folder

@@ -11,7 +11,7 @@ pub struct Lua_nvim {
     lua_work_dir: String,
     main_file_path: String,
 }
-
+impl ReplLikeInterpreter for Lua_nvim {}
 impl Interpreter for Lua_nvim {
     fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Lua_nvim> {
         let bwd = data.work_dir.clone() + "/nvim-lua";

@@ -27,6 +27,7 @@ pub struct DataHolder {
     ///This contains the current block of text, if the user selected a bloc of code and ran snirpun
     ///on it
     current_bloc: String,
+
     ///The inclusive limits of the selected block (line numbers)
     range: [i64; 2],
     /// path of the current file that's being edited
@@ -45,6 +46,22 @@ pub struct DataHolder {
 
     ///user config: selected interpreters
     selected_interpreters: Vec<String>,
+    ///user config: repl behavior enabled list of interpreters
+    repl_enabled: Vec<String>,
+    ///user config: repl behavior disabled list of interpreters
+    repl_disabled: Vec<String>,
+
+    ///interpreter data
+    interpreter_data: Option<Arc<Mutex<InterpreterData>>>,
+}
+
+#[derive(Clone, Default)]
+///data that can be saved/accessed between Arc 2 interpreter runs
+pub struct InterpreterData {
+    ///indentifies the current interpreter (so that data from another interpreter does not get used
+    owner: String,
+    ///actual data, usually previous code selection for repl behavior
+    content: String,
 }
 
 impl DataHolder {
@@ -58,17 +75,20 @@ impl DataHolder {
         .unwrap();
 
         DataHolder {
-            filetype: String::from(""),
-            current_line: String::from(""),
-            current_bloc: String::from(""),
+            filetype: String::new(),
+            current_line: String::new(),
+            current_bloc: String::new(),
             range: [-1, -1],
-            filepath: String::from(""),
-            projectroot: String::from(""),
+            filepath: String::new(),
+            projectroot: String::new(),
             dependencies_path: vec![],
             work_dir: format!("{}/{}", cache_dir().unwrap().to_str().unwrap(), "sniprun"),
-            sniprun_root_dir: String::from(""),
+            sniprun_root_dir: String::new(),
             nvim_instance: None,
             selected_interpreters: vec![],
+            repl_enabled: vec![],
+            repl_disabled: vec![],
+            interpreter_data: None,
         }
     }
     ///remove and recreate the cache directory (is invoked by `:SnipReset`)
@@ -83,11 +103,13 @@ impl DataHolder {
 struct EventHandler {
     nvim: Arc<Mutex<Neovim>>,
     data: DataHolder,
+    interpreter_data: Arc<Mutex<InterpreterData>>,
 }
 
 enum Messages {
     Run,
     Clean,
+    ClearReplMemory,
     Unknown(String),
 }
 
@@ -96,6 +118,7 @@ impl From<String> for Messages {
         match &event[..] {
             "run" => Messages::Run,
             "clean" => Messages::Clean,
+            "clearrepl" => Messages::ClearReplMemory,
             _ => Messages::Unknown(event),
         }
     }
@@ -105,15 +128,27 @@ impl EventHandler {
     fn new() -> EventHandler {
         let session = Session::new_parent().unwrap();
         let nvim = Neovim::new(session);
-        let data = DataHolder::new();
+        let mut data = DataHolder::new();
+        let interpreter_data = Arc::new(Mutex::new(InterpreterData {
+            owner: String::new(),
+            content: String::new(),
+        }));
+        data.interpreter_data = Some(interpreter_data.clone());
+
         EventHandler {
             nvim: Arc::new(Mutex::new(nvim)),
             data,
+            interpreter_data: interpreter_data,
         }
     }
 
     /// fill the DataHolder with data from sniprun and Neovim
     fn fill_data(&mut self, values: Vec<Value>) {
+        {
+            info!("getting back eventual interpreter data");
+            self.data.interpreter_data = Some(self.interpreter_data.clone());
+        }
+
         {
             info!("filling data");
             self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
@@ -171,6 +206,24 @@ impl EventHandler {
         }
         {
             self.data.selected_interpreters = values[3]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|v| v.as_str().unwrap().to_owned())
+                .collect();
+            info!("got selected interpreters");
+        }
+        {
+            self.data.repl_enabled = values[4]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|v| v.as_str().unwrap().to_owned())
+                .collect();
+            info!("got selected interpreters");
+        }
+        {
+            self.data.repl_disabled = values[5]
                 .as_array()
                 .unwrap()
                 .iter()
@@ -278,6 +331,16 @@ fn main() {
             Messages::Clean => {
                 info!("[MAINLOOP] Clean command received");
                 event_handler.data.clean_dir()
+            }
+            Messages::ClearReplMemory => {
+                info!("[MAINLOOP] ClearReplMemory command received");
+                event_handler.interpreter_data.lock().unwrap().owner.clear();
+                event_handler
+                    .interpreter_data
+                    .lock()
+                    .unwrap()
+                    .content
+                    .clear();
             }
 
             Messages::Unknown(event) => {

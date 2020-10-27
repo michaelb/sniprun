@@ -1,6 +1,6 @@
 # Sniprun
 
-![](https://img.shields.io/badge/sniprun-v0.3.1-green.svg)
+![](https://img.shields.io/badge/sniprun-v0.4.0-green.svg)
 
 Sniprun is a code runner plugin. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standart save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
@@ -22,13 +22,13 @@ Even if as-is your code won't even compile/run because it's unfinished (but to f
 
 Quickly grab a line or some visual range, `:'<,'>SnipRun` it and... that's it!
 
-(And there's more to come...)
+Some (soon, most) languages also have some kind of (fake) REPL behavior: a code snippet containing variable / import previously sniprun'd will be re-run (expect for print statements) at your next `:Sniprun` command. This means you can 'sniprun' separately functions and their calls etc...
 
 ## Installation
 
 ### Prerequisites
 
-- Sniprun is Linux-only for now (as of v0.3.0)
+- Sniprun is Linux-only for now (as of v0.4.0)
 - Neovim version >= 0.44 preferably, but should work with older version
 - cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)). Those are needed to build sniprun, for as long as the project is not distributed as binary (see the release section).
 - Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools are required, those are documented in the doc folder
@@ -82,6 +82,22 @@ Under the hood, what it does is just kill Sniprun (and its child processes) and 
 
 Alternatively, exit Neovim.
 
+### REPL-like behavior
+
+All languages, including compiled ones, can be fitted with this (fake) REPL-like behavior.
+For many languages that have an interpreter already available, a real one can be used.
+
+Many interpreted languages will have this behavior enabled by default, but you can always disable those (or enable them) with the `g:SnipRun_repl_behavior_disable` and `g:SnipRun_repl_behavior_enable` blocklist / allowlist:
+
+```vimrc
+let g:SnipRun_repl_behavior_disable += ["Bash_original"]
+let g:SnipRun_repl_behavior_enable += ["Rust_original", "Lua_original"]
+```
+
+REPL-like behavior is experimental and will work better with interpreted languages and with side-effect-free code (including prints in functions). By default, it will re-run all your non-print-statements sniprun'd correct lines of code.
+
+Hopefully, if it does not work, or if the 'memory' is corrupted by bad code (for example, in C you can't define the same function twice), you can clear the REPL memory with `:SnipReplMemoryClean` that is a faster and less error-prone alternative to `:SnipReset` for this use case.
+
 ### Configuration
 
 You can add interpreters you want to always use in case multiples interpreters are available for one file type by adding to your config file / init.vim :
@@ -102,6 +118,11 @@ vnoremap f :SnipRun<CR>
 ```
 
 - For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire code.
+- If you use the REPL-like behavior for some languages, mapping the repl reset to a short command is strongly recommended.
+
+```
+nnoremap fc :SnipReplMemoryClean<CR>
+```
 
 ## Support levels and languages
 
@@ -126,27 +147,27 @@ println!("hello n° {}", i+1);
 
 | Language     | Support level |     | Language   | Support level |
 | ------------ | ------------- | --- | ---------- | ------------- |
-| Assembly     | Unsupported\* |     | JavaScript | Bloc          |
-| ats          | Unsupported\* |     | Java       | Bloc          |
-| Bash/Shell   | Bloc          |     | Julia      | Unsupported\* |
-| C            | Bloc          |     | Lisp       | Unsupported\* |
-| COBOL        | Unsupported\* |     | Lua        | Bloc          |
-| Coffeescript | Unsupported\* |     | Lua-nvim   | Bloc          |
-| C#           | Unsupported\* |     | OCaml      | Unsupported\* |
+| Assembly     | Unsupported   |     | JavaScript | Bloc          |
+| ats          | Unsupported   |     | Java       | Bloc          |
+| Bash/Shell   | Bloc \*       |     | Julia      | Unsupported   |
+| C            | Bloc          |     | Lisp       | Unsupported   |
+| COBOL        | Unsupported   |     | Lua        | Bloc          |
+| Coffeescript | Unsupported   |     | Lua-nvim   | Bloc          |
+| C#           | Unsupported   |     | OCaml      | Unsupported   |
 | C++          | Bloc          |     | Perl6      | Line          |
-| D            | Unsupported\* |     | Perl       | Line          |
-| Elixir       | Unsupported\* |     | PHP        | Unsupported   |
-| Elm          | Unsupported\* |     | Python3    | Import        |
-| Erlang       | Unsupported\* |     | Ruby       | Bloc          |
-| F#           | Unsupported\* |     | R          | Bloc          |
+| D            | Unsupported   |     | Perl       | Line          |
+| Elixir       | Unsupported   |     | PHP        | Unsupported   |
+| Elm          | Unsupported   |     | Python3    | Import        |
+| Erlang       | Unsupported   |     | Ruby       | Bloc          |
+| F#           | Unsupported   |     | R          | Bloc          |
 | Go           | Bloc          |     | Rust       | Bloc          |
-| Groovy       | Unsupported\* |     | Scala      | Unsupported\* |
-| Haskell      | Bloc          |     | Scilab     | Unsupported\* |
-| Idris        | Unsupported\* |     | Swift      | Unsupported\* |
+| Groovy       | Unsupported   |     | Scala      | Unsupported   |
+| Haskell      | Bloc          |     | Scilab     | Unsupported   |
+| Idris        | Unsupported   |     | Swift      | Unsupported   |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
-\* SnipRun includes a _'fallback'_ generic interpreter that makes uses of [this](https://github.com/prasmussen/glot-code-runner) project. It allows to (unofficially) have line-level language support for many interpreted languages, though it has many limitations and differences for compiled languages. The reasons interpreted languages are still marked as Unsupported is because of a lack of testing.
+\* (Fake) REPL functionnality
 
 ## Known limitations
 
@@ -158,13 +179,6 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Purposely fails
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. Relative paths may cause issues, as the current working directory for neovim won't necessarily be the one from where the binary runs, or the good one for relative imports.
 - For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _saved_.
-
-#### Generic interpreter limitations:
-
-- All interpreted languages get only line level support.
-- Compiled languages necessitate to run a a line (!) containing a standart entry point (such as `int main(){....}` for C)
-- The detected filetype must match the language name as written on the [project](https://github.com/prasmussen/glot-code-runner) page.
-- The project is stale (no active development)
 
 ## Mentions & Support
 
@@ -179,6 +193,8 @@ It's super easy: see [contributing](CONTRIBUTING.md)
 ## Related projects
 
 All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file, and cannot make use of your project's Makefile (or compilation config).
+
+The [replvim](https://gitlab.com/HiPhish/repl.nvim) project is also related, as well as the [vimcmdline](https://github.com/jalvesaq/vimcmdline) one. [neoterm](https://github.com/kassio/neoterm) can also be used in such a way. They weren't enough for me though.
 
 Sniprun also add the typical boilerplate so you only need to select the lines that really do the job, rather than those plus everything in the enclosing `int main() {` or equivalent.
 
