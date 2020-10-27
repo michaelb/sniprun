@@ -137,9 +137,13 @@ impl<T: Interpreter> InterpreterUtils for T {
         if data.interpreter_data.is_none() {
             return String::new();
         } else {
-            let content_owner = T::get_name();
             let interpreter_data = data.interpreter_data.unwrap().lock().unwrap().clone();
-            return interpreter_data.content;
+            let content_owner = T::get_name();
+            if interpreter_data.owner == content_owner {
+                return interpreter_data.content;
+            } else {
+                return String::new();
+            }
         }
     }
 
