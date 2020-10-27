@@ -1,5 +1,5 @@
 use crate::error::SniprunError;
-use crate::{DataHolder, InterpreterData};
+use crate::DataHolder;
 use log::info;
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]

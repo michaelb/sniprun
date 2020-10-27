@@ -4,7 +4,7 @@ use crate::DataHolder;
 use log::info;
 use serde_json::Value;
 
-use std::fs::{read_to_string, write, DirBuilder, File};
+use std::fs::{write, DirBuilder, File};
 use std::io::prelude::*;
 use std::process::Command;
 

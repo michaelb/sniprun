@@ -152,7 +152,7 @@ impl ReplLikeInterpreter for Bash_original {
 
         let res = self.execute();
         if res.is_ok() {
-            self.fetch_code();
+            let _ = self.fetch_code();
             self.save_code(strip_prints(&self.code));
         }
 
