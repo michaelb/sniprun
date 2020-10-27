@@ -6,9 +6,9 @@ Just in case: to compile `cargo build --release`, to create and show the documen
 
 ### How hard it is?
 
-Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 13min (my best time, for C_original) to 1h30. You can then submit your proposed changes to the dev branch.
+Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 13min (my best time, for C_original) to 1h30. You can then submit your proposed changes as a PR to master branch.
 
-Higher support levels gets exponentially harder (depends on the languages though). 
+Higher support levels gets exponentially harder (depends on the languages though).
 
 ### Understanding the framework
 
@@ -68,6 +68,12 @@ Do I need to manage async running and compiling?
 My interpreter has some quirks that the end user should know
 
 -> Document limitations and features in doc/interpreter_name.md
+
+---
+
+I lack the ReplLikeInterpreter trait implementation and don't want to do REPL-like behavior:
+
+-> You don't have to do it but the boilerplate `impl ReplLikeInterpreter for MyInterpreter {}` is required. You can overwrite the default implementation later if you wish to do some REPL-like functionality.
 
 ### What's the deal with...
 

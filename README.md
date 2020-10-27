@@ -1,6 +1,6 @@
 # Sniprun
 
-![](https://img.shields.io/badge/sniprun-v0.3.1-green.svg)
+![](https://img.shields.io/badge/sniprun-v0.4.0-green.svg)
 
 Sniprun is a code runner plugin. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standart save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
@@ -22,13 +22,13 @@ Even if as-is your code won't even compile/run because it's unfinished (but to f
 
 Quickly grab a line or some visual range, `:'<,'>SnipRun` it and... that's it!
 
-(And there's more to come...)
+Some (soon, most) languages also have some kind of (fake) REPL behavior: a code snippet containing variable / import previously sniprun'd will be re-run (expect for print statements) at your next `:Sniprun` command. This means you can 'sniprun' separately functions and their calls etc...
 
 ## Installation
 
 ### Prerequisites
 
-- Sniprun is Linux-only for now (as of v0.3.0)
+- Sniprun is Linux-only for now (as of v0.4.0)
 - Neovim version >= 0.44 preferably, but should work with older version
 - cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)). Those are needed to build sniprun, for as long as the project is not distributed as binary (see the release section).
 - Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools are required, those are documented in the doc folder
@@ -82,6 +82,22 @@ Under the hood, what it does is just kill Sniprun (and its child processes) and 
 
 Alternatively, exit Neovim.
 
+### REPL-like behavior
+
+All languages, including compiled ones, can be fitted with this (fake) REPL-like behavior.
+For many languages that have an interpreter already available, a real one can be used.
+
+Many interpreted languages will have this behavior enabled by default, but you can always disable those (or enable them) with the `g:SnipRun_repl_behavior_disable` and `g:SnipRun_repl_behavior_enable` blocklist / allowlist:
+
+```vimrc
+let g:SnipRun_repl_behavior_disable += ["Bash_original"]
+let g:SnipRun_repl_behavior_enable += ["Rust_original", "Lua_original"]
+```
+
+REPL-like behavior is experimental and will work better with interpreted languages and with side-effect-free code (including prints in functions). By default, it will re-run all your non-print-statements sniprun'd correct lines of code.
+
+Hopefully, if it does not work, or if the 'memory' is corrupted by bad code (for example, in C you can't define the same function twice), you can clear the REPL memory with `:SnipReplMemoryClean` that is a faster and less error-prone alternative to `:SnipReset` for this use case.
+
 ### Configuration
 
 You can add interpreters you want to always use in case multiples interpreters are available for one file type by adding to your config file / init.vim :
@@ -102,6 +118,11 @@ vnoremap f :SnipRun<CR>
 ```
 
 - For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire code.
+- If you use the REPL-like behavior for some languages, mapping the repl reset to a short command is strongly recommended.
+
+```
+nnoremap fc :SnipReplMemoryClean<CR>
+```
 
 ## Support levels and languages
 
