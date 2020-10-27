@@ -147,6 +147,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "impls"
+version = "1.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a46645bbd70538861a90d0f26c31537cdf1e44aae99a794fb75a664b70951bc"
+
+[[package]]
 name = "indoc"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -497,6 +503,7 @@ version = "0.3.1"
 dependencies = [
  "cc",
  "dirs",
+ "impls",
  "lazy_static",
  "log",
  "neovim-lib",

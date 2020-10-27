@@ -26,7 +26,7 @@ pub enum SupportLevel {
 
 ///This is the trait all interpreters must implement.
 ///The launcher run fucntions new() and run() from this trait.
-pub trait Interpreter {
+pub trait Interpreter: ReplLikeInterpreter {
     //create
     fn new(data: DataHolder) -> Box<Self> {
         Self::new_with_level(data, Self::get_max_support_level())
@@ -98,11 +98,20 @@ pub trait Interpreter {
     }
     /// default run function ran from the launcher (run_at_level(max_level))
     fn run(&mut self) -> Result<String, SniprunError> {
-        self.run_at_level(self.get_current_level())
+        let name = Self::get_name();
+        let data = self.get_data();
+        // choose whether to use repl-like or normal
+        let decision = (Self::behave_repl_like_default() || data.repl_enabled.contains(&name))
+            && !data.repl_disabled.contains(&name);
+        if decision {
+            self.run_at_level_repl(self.get_current_level())
+        } else {
+            self.run_at_level(self.get_current_level())
+        }
     }
 }
 
-pub trait InterpreterUtils: Interpreter {
+pub trait InterpreterUtils {
     ///read previously saved code from the interpreterdata object
     fn read_previous_code(&self) -> String;
     ///append code to the interpreterdata object
@@ -153,5 +162,45 @@ impl<T: Interpreter> InterpreterUtils for T {
                 .content
                 .clear();
         }
+    }
+}
+
+pub trait ReplLikeInterpreter {
+    fn fetch_code_repl(&mut self) -> Result<(), SniprunError>;
+    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError>;
+    fn build_repl(&mut self) -> Result<(), SniprunError>;
+    fn execute_repl(&mut self) -> Result<String, SniprunError>;
+    fn run_at_level_repl(&mut self, level: SupportLevel) -> Result<String, SniprunError>;
+}
+
+impl<T: Interpreter + InterpreterUtils> ReplLikeInterpreter for T {
+    ///overwrite this to implement repl like behavior with the help of InterpreterUtils
+    fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
+        self.fetch_code()
+    }
+
+    ///add_boilerplate could need to be overwritten, it does the normal add_boilerplate oetherwise
+    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
+        self.add_boilerplate()
+    }
+
+    fn build_repl(&mut self) -> Result<(), SniprunError> {
+        self.build()
+    }
+
+    fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        self.execute()
+    }
+
+    /// set the current support level to the one provided, run fetch(), add_boilerplate(), build() and execute() in order if each step is successfull
+    fn run_at_level_repl(&mut self, level: SupportLevel) -> Result<String, SniprunError> {
+        self.set_current_level(level);
+        if let Some(res) = self.fallback() {
+            return res;
+        }
+        self.fetch_code_repl()
+            .and_then(|_| self.add_boilerplate_repl())
+            .and_then(|_| self.build_repl())
+            .and_then(|_| self.execute_repl())
     }
 }
