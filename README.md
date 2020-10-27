@@ -194,4 +194,6 @@ It's super easy: see [contributing](CONTRIBUTING.md)
 
 All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file, and cannot make use of your project's Makefile (or compilation config).
 
+The [replvim](https://gitlab.com/HiPhish/repl.nvim) project is also related, as well as the [vimcmdline](https://github.com/jalvesaq/vimcmdline) one. [neoterm](https://github.com/kassio/neoterm) can also be used in such a way. They weren't enough for me though.
+
 Sniprun also add the typical boilerplate so you only need to select the lines that really do the job, rather than those plus everything in the enclosing `int main() {` or equivalent.
