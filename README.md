@@ -147,27 +147,27 @@ println!("hello n° {}", i+1);
 
 | Language     | Support level |     | Language   | Support level |
 | ------------ | ------------- | --- | ---------- | ------------- |
-| Assembly     | Unsupported\* |     | JavaScript | Bloc          |
-| ats          | Unsupported\* |     | Java       | Bloc          |
-| Bash/Shell   | Bloc          |     | Julia      | Unsupported\* |
-| C            | Bloc          |     | Lisp       | Unsupported\* |
-| COBOL        | Unsupported\* |     | Lua        | Bloc          |
-| Coffeescript | Unsupported\* |     | Lua-nvim   | Bloc          |
-| C#           | Unsupported\* |     | OCaml      | Unsupported\* |
+| Assembly     | Unsupported   |     | JavaScript | Bloc          |
+| ats          | Unsupported   |     | Java       | Bloc          |
+| Bash/Shell   | Bloc \*       |     | Julia      | Unsupported   |
+| C            | Bloc          |     | Lisp       | Unsupported   |
+| COBOL        | Unsupported   |     | Lua        | Bloc          |
+| Coffeescript | Unsupported   |     | Lua-nvim   | Bloc          |
+| C#           | Unsupported   |     | OCaml      | Unsupported   |
 | C++          | Bloc          |     | Perl6      | Line          |
-| D            | Unsupported\* |     | Perl       | Line          |
-| Elixir       | Unsupported\* |     | PHP        | Unsupported   |
-| Elm          | Unsupported\* |     | Python3    | Import        |
-| Erlang       | Unsupported\* |     | Ruby       | Bloc          |
-| F#           | Unsupported\* |     | R          | Bloc          |
+| D            | Unsupported   |     | Perl       | Line          |
+| Elixir       | Unsupported   |     | PHP        | Unsupported   |
+| Elm          | Unsupported   |     | Python3    | Import        |
+| Erlang       | Unsupported   |     | Ruby       | Bloc          |
+| F#           | Unsupported   |     | R          | Bloc          |
 | Go           | Bloc          |     | Rust       | Bloc          |
-| Groovy       | Unsupported\* |     | Scala      | Unsupported\* |
-| Haskell      | Bloc          |     | Scilab     | Unsupported\* |
-| Idris        | Unsupported\* |     | Swift      | Unsupported\* |
+| Groovy       | Unsupported   |     | Scala      | Unsupported   |
+| Haskell      | Bloc          |     | Scilab     | Unsupported   |
+| Idris        | Unsupported   |     | Swift      | Unsupported   |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
-\* SnipRun includes a _'fallback'_ generic interpreter that makes uses of [this](https://github.com/prasmussen/glot-code-runner) project. It allows to (unofficially) have line-level language support for many interpreted languages, though it has many limitations and differences for compiled languages. The reasons interpreted languages are still marked as Unsupported is because of a lack of testing.
+\* (Fake) REPL functionnality
 
 ## Known limitations
 
@@ -179,13 +179,6 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Purposely fails
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. Relative paths may cause issues, as the current working directory for neovim won't necessarily be the one from where the binary runs, or the good one for relative imports.
 - For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _saved_.
-
-#### Generic interpreter limitations:
-
-- All interpreted languages get only line level support.
-- Compiled languages necessitate to run a a line (!) containing a standart entry point (such as `int main(){....}` for C)
-- The detected filetype must match the language name as written on the [project](https://github.com/prasmussen/glot-code-runner) page.
-- The project is stale (no active development)
 
 ## Mentions & Support
 
