@@ -198,4 +198,4 @@ The [replvim](https://gitlab.com/HiPhish/repl.nvim) project is also related, as 
 
 Sniprun also add the typical boilerplate so you only need to select the lines that really do the job, rather than those plus everything in the enclosing `int main() {` or equivalent.
 
-[vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender, but does things differently enough I made sniprun instead.
+[vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is [vim-slime](https://github.com/jpalardy/vim-slime), but they do things differently enough I made sniprun instead.
