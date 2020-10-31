@@ -6,7 +6,7 @@ use serde_json::Value;
 
 use std::fs::{write, DirBuilder, File};
 use std::io::prelude::*;
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 use neovim_lib::NeovimApi;
 

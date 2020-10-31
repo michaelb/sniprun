@@ -124,6 +124,8 @@ vnoremap f :SnipRun<CR>
 nnoremap fc :SnipReplMemoryClean<CR>
 ```
 
+Make sure that those remaps DO NOT overlap with your own existing maps or default ones (such as the 'find' usage for the suggested maps) in a workflow-breaking way!
+
 ## Support levels and languages
 
 As of writing, languages can be supported up to different extents:

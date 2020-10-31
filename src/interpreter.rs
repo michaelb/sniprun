@@ -129,6 +129,9 @@ pub trait InterpreterUtils {
     ///append code to the interpreterdata object
     fn save_code(&self, code: String);
     fn clear(&self);
+
+    fn set_pid(&self, pid: u32);
+    fn get_pid(&self) -> Option<u32>;
 }
 
 impl<T: Interpreter> InterpreterUtils for T {
@@ -177,6 +180,24 @@ impl<T: Interpreter> InterpreterUtils for T {
                 .unwrap()
                 .content
                 .clear();
+        }
+    }
+
+    fn set_pid(&self, pid: u32) {
+        if let Some(di) = self.get_data().interpreter_data {
+            di.lock().unwrap().pid = Some(pid);
+        }
+    }
+
+    fn get_pid(&self) -> Option<u32> {
+        if let Some(di) = self.get_data().interpreter_data {
+            if let Some(real_pid) = di.lock().unwrap().pid {
+                return Some(real_pid);
+            } else {
+                return None;
+            }
+        } else {
+            return None;
         }
     }
 }
