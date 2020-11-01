@@ -24,3 +24,4 @@ tree-sitter = "0.16.1"
 # Python3 interpreter
 pyo3="0.11.1"
 unindent="0.1.6"
+unix-named-pipe="0.2.0"

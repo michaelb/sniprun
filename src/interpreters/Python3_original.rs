@@ -79,39 +79,24 @@ try:\n" + "\t" + line
 
         info!("2");
         //create input& output fifo
-        Command::new("mkfifo").arg(&self.pipe_in_path).output();
-        Command::new("mkfifo").arg(&self.pipe_out_path).output();
-        Command::new("mkfifo").arg(&self.pipe_err_path).output();
-
-        info!("3");
-        // keep input pipe open
-        Command::new("sleep")
-            .arg("infinity")
-            .arg(&self.pipe_in_path)
-            .spawn();
-
-        info!("4"); //TODO ca plante ici
-        let pipe_in = File::open(&self.pipe_in_path).unwrap();
-        let pipe_out = File::open(&self.pipe_out_path).unwrap();
-        let pipe_err = File::open(&self.pipe_err_path).unwrap();
+        unix_named_pipe::create(&self.pipe_in_path, None);
+        unix_named_pipe::create(&self.pipe_out_path, None);
+        unix_named_pipe::create(&self.pipe_err_path, None);
 
         info!("5");
-        let child = Command::new("python")
-            .arg("-i")
-            .stdin(Stdio::from(pipe_in))
-            .stdout(Stdio::from(pipe_out))
-            .stderr(Stdio::from(pipe_err))
-            .spawn();
-        info!("repl inited");
+        let child = Command::new("./src/interpreters/Python3_original/backroung_repl.sh").spawn();
         return child.unwrap().id();
     }
 
-    pub fn link_or_init_repl(&self) {
-        if self.read_previous_code().is_empty() {
+    pub fn link_or_init_repl(&self) -> u32 {
+        //remove true || when tests are done
+        if true || self.read_previous_code().is_empty() {
             let repl_pid = self.init_repl();
             self.set_pid(repl_pid);
             self.save_code(String::from("being used by python3_original interpreter"));
+            return repl_pid;
         }
+        return 0;
     }
 }
 
@@ -127,9 +112,9 @@ impl Interpreter for Python3_original {
 
         //pre-create string pointing to main file's and binary's path
         let mfp = rwd.clone() + "/main.py";
-        let pfp_in = rwd.clone() + "/pipe_in";
-        let pfp_out = rwd.clone() + "/pipe_out";
-        let pfp_err = rwd.clone() + "/pipe_err";
+        let pfp_in = rwd.clone() + "/in.pipe";
+        let pfp_out = rwd.clone() + "/out.pipe";
+        let pfp_err = rwd.clone() + "/err.pipe";
 
         Box::new(Python3_original {
             data,
@@ -226,7 +211,6 @@ impl Interpreter for Python3_original {
 impl ReplLikeInterpreter for Python3_original {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
         info!("fetch_code_repl");
-        self.link_or_init_repl();
         self.fetch_code()
     }
 
@@ -240,6 +224,11 @@ impl ReplLikeInterpreter for Python3_original {
 
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
         info!("executing in repl");
+
+        let pid = self.link_or_init_repl(); // this opens in as read (allows opening as write)
+        info!("pid : {}", pid);
+        // but needs out and err to be opened as read
+
         Ok(String::from("ah"))
     }
 }
