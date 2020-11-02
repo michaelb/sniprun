@@ -84,7 +84,16 @@ try:\n" + "\t" + line
         unix_named_pipe::create(&self.pipe_err_path, None);
 
         info!("5");
-        let child = Command::new("./src/interpreters/Python3_original/backroung_repl.sh").spawn();
+        let command = String::from("")
+            + std::env::current_exe()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .trim_end_matches("sniprun")
+            + "../../src/interpreters/Python3_original/background_repl.sh";
+        let child = Command::new(command).spawn();
+
+        info!("succes spawn? {:?}", child);
         return child.unwrap().id();
     }
 
@@ -112,9 +121,9 @@ impl Interpreter for Python3_original {
 
         //pre-create string pointing to main file's and binary's path
         let mfp = rwd.clone() + "/main.py";
-        let pfp_in = rwd.clone() + "/in.pipe";
-        let pfp_out = rwd.clone() + "/out.pipe";
-        let pfp_err = rwd.clone() + "/err.pipe";
+        let pfp_in = rwd.clone() + "/in_pipe";
+        let pfp_out = rwd.clone() + "/out_pipe";
+        let pfp_err = rwd.clone() + "/err_pipe";
 
         Box::new(Python3_original {
             data,
@@ -227,8 +236,19 @@ impl ReplLikeInterpreter for Python3_original {
 
         let pid = self.link_or_init_repl(); // this opens in as read (allows opening as write)
         info!("pid : {}", pid);
-        // but needs out and err to be opened as read
+        // send to repl
+        let command = String::from("")
+            + std::env::current_exe()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .trim_end_matches("sniprun")
+            + "../../src/interpreters/Python3_original/run.sh";
 
+        let run_command = Command::new(&command).spawn();
+        info!("command = {:?}", run_command);
+
+        info!("got a result, returning ah");
         Ok(String::from("ah"))
     }
 }
