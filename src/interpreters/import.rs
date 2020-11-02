@@ -10,11 +10,5 @@ use std::process::{Command, Stdio};
 
 use neovim_lib::NeovimApi;
 
-//python-specific
-use pyo3::types::PyDict;
-
-//unix fifo management
-use unix_named_pipe;
-
 //indentation
 use unindent::unindent;

@@ -63,50 +63,6 @@ try:\n" + "\t" + line
         }
         Ok(())
     }
-
-    pub fn init_repl(&self) -> u32 {
-        //remove older files if exists
-        info!("1");
-        if std::path::Path::new(&self.pipe_in_path).exists() {
-            std::fs::remove_file(&self.pipe_in_path);
-        }
-        if std::path::Path::new(&self.pipe_out_path).exists() {
-            std::fs::remove_file(&self.pipe_out_path);
-        }
-        if std::path::Path::new(&self.pipe_err_path).exists() {
-            std::fs::remove_file(&self.pipe_err_path);
-        }
-
-        info!("2");
-        //create input& output fifo
-        unix_named_pipe::create(&self.pipe_in_path, None);
-        unix_named_pipe::create(&self.pipe_out_path, None);
-        unix_named_pipe::create(&self.pipe_err_path, None);
-
-        info!("5");
-        let command = String::from("")
-            + std::env::current_exe()
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .trim_end_matches("sniprun")
-            + "../../src/interpreters/Python3_original/background_repl.sh";
-        let child = Command::new(command).spawn();
-
-        info!("succes spawn? {:?}", child);
-        return child.unwrap().id();
-    }
-
-    pub fn link_or_init_repl(&self) -> u32 {
-        //remove true || when tests are done
-        if true || self.read_previous_code().is_empty() {
-            let repl_pid = self.init_repl();
-            self.set_pid(repl_pid);
-            self.save_code(String::from("being used by python3_original interpreter"));
-            return repl_pid;
-        }
-        return 0;
-    }
 }
 
 impl Interpreter for Python3_original {
@@ -142,7 +98,7 @@ impl Interpreter for Python3_original {
     }
 
     fn behave_repl_like_default() -> bool {
-        true
+        false
     }
 
     fn get_supported_languages() -> Vec<String> {
@@ -217,38 +173,4 @@ impl Interpreter for Python3_original {
         }
     }
 }
-impl ReplLikeInterpreter for Python3_original {
-    fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
-        info!("fetch_code_repl");
-        self.fetch_code()
-    }
-
-    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
-        self.add_boilerplate()
-    }
-
-    fn build_repl(&mut self) -> Result<(), SniprunError> {
-        self.build()
-    }
-
-    fn execute_repl(&mut self) -> Result<String, SniprunError> {
-        info!("executing in repl");
-
-        let pid = self.link_or_init_repl(); // this opens in as read (allows opening as write)
-        info!("pid : {}", pid);
-        // send to repl
-        let command = String::from("")
-            + std::env::current_exe()
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .trim_end_matches("sniprun")
-            + "../../src/interpreters/Python3_original/run.sh";
-
-        let run_command = Command::new(&command).spawn();
-        info!("command = {:?}", run_command);
-
-        info!("got a result, returning ah");
-        Ok(String::from("ah"))
-    }
-}
+impl ReplLikeInterpreter for Python3_original {}
