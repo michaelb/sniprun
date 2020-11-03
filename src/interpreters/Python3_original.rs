@@ -10,9 +10,8 @@ pub struct Python3_original {
     code: String,
     imports: String,
     main_file_path: String,
-    pipe_in_path: String,
-    pipe_out_path: String,
-    pipe_err_path: String,
+    plugin_root: String,
+    cache_dir: String,
 }
 
 fn module_used(line: &str, code: &str) -> bool {
@@ -77,19 +76,16 @@ impl Interpreter for Python3_original {
 
         //pre-create string pointing to main file's and binary's path
         let mfp = rwd.clone() + "/main.py";
-        let pfp_in = rwd.clone() + "/in_pipe";
-        let pfp_out = rwd.clone() + "/out_pipe";
-        let pfp_err = rwd.clone() + "/err_pipe";
 
+        let pgr = data.sniprun_root_dir.clone();
         Box::new(Python3_original {
             data,
             support_level: level,
             code: String::from(""),
             imports: String::from(""),
             main_file_path: mfp,
-            pipe_in_path: pfp_in,
-            pipe_out_path: pfp_out,
-            pipe_err_path: pfp_err,
+            plugin_root: pgr,
+            cache_dir: rwd,
         })
     }
 
@@ -98,7 +94,7 @@ impl Interpreter for Python3_original {
     }
 
     fn behave_repl_like_default() -> bool {
-        false
+        true
     }
 
     fn get_supported_languages() -> Vec<String> {
@@ -155,7 +151,7 @@ impl Interpreter for Python3_original {
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("python")
+        let output = Command::new("python3")
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
@@ -173,4 +169,55 @@ impl Interpreter for Python3_original {
         }
     }
 }
-impl ReplLikeInterpreter for Python3_original {}
+impl ReplLikeInterpreter for Python3_original {
+    fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
+        self.fetch_code()
+    }
+    fn build_repl(&mut self) -> Result<(), SniprunError> {
+        self.build()
+    }
+
+    fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        self.execute()
+    }
+    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
+        info!("begins add boilerplate repl");
+        //load save & load functions
+        let mut path_to_python_functions = self.plugin_root.clone();
+        path_to_python_functions.push_str("/src/interpreters/Python3_original/saveload.py");
+        let python_functions = std::fs::read_to_string(&path_to_python_functions).unwrap();
+        let klepto_memo = String::from("'") + &self.cache_dir.clone() + "/" + "memo" + "'";
+
+        let mut final_code = self.imports.clone();
+        final_code.push_str("\n");
+        final_code.push_str(&python_functions);
+        final_code.push_str("\n");
+        if self.read_previous_code().is_empty() {
+            //first run
+            self.save_code("Not the first run anymore".to_string());
+        } else {
+            //not the first run, should load old variables
+            {
+                final_code.push_str("sniprun142859_load(");
+                final_code.push_str(&klepto_memo);
+                final_code.push_str(")");
+            }
+            final_code.push_str("\n");
+        }
+
+        final_code.push_str(&self.code);
+        final_code.push_str("\n");
+        {
+            final_code.push_str("sniprun142859_save("); // if the run has not failed, save new variables
+            final_code.push_str(&klepto_memo);
+            final_code.push_str(")");
+        }
+
+        self.code = final_code.clone();
+        // info!("---{}---", &final_code);
+
+        Ok(())
+    }
+
+    // &unindent(&format!("{}{}", "\n", self.code.as_str()));
+}
