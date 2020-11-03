@@ -205,7 +205,7 @@ impl ReplLikeInterpreter for Python3_original {
             final_code.push_str("\n");
         }
 
-        final_code.push_str(&self.code);
+        final_code.push_str(&unindent(&format!("{}{}", "\n", self.code.as_str())));
         final_code.push_str("\n");
         {
             final_code.push_str("sniprun142859_save("); // if the run has not failed, save new variables
