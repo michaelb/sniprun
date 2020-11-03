@@ -14,6 +14,7 @@ REPL-like behavior is available for Python and Bash (simulated), coming soon for
 ![](demo_repl.gif)
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
+> Note: Python users are required to install the 'klepto' python package or to disable REPL behavior in their config files (to get the same behaviour than before 0.4.1)
 
 ## What does it do ?
 
@@ -29,18 +30,22 @@ Quickly grab a line or some visual range, `:'<,'>SnipRun` it and... that's it!
 
 Some languages, see support table, also have some kind of (real, or 'simulated') REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sniprun'd.
 
-Compiled languages can have this simulated REPL behavior too, thought there might be unavoidable side effects.
+Compiled languages can have this simulated REPL behavior too, though there might be unavoidable side effects.
 
 Interpreted languages may use a simulated or real REPL, depending on the implementation.
 
 ## Installation
 
-### Prerequisites
+### Prerequisites && dependencies
 
 - Sniprun is Linux-only for now (as of v0.4.0)
 - Neovim version >= 0.44 preferably, but should work with older version
 - cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)). Those are needed to build sniprun, for as long as the project is not distributed as binary (see the release section).
 - Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools are required, those are documented in the doc folder
+
+Additionally, you probably want:
+- the klepto package: `pip install --user klepto` if you use python with REPL enabled (default)
+
 
 ### Install Sniprun
 
@@ -87,9 +92,9 @@ No worries, the second and last command will kill everything Sniprun ran so far 
  :SnipTerminate
 ```
 
-Under the hood, what it does is just kill Sniprun (and its child processes) and relaunch it, thus a more mnemonic alias for the intention is set `:SnipReset` that does basically the same thing as terminate, but also cleans the cache directory.
+Under the hood, what it does is just kill Sniprun (and its child processes) and relaunch it, thus a more mnemonic alias for the intention is set `:SnipReset` that does basically the same thing as terminate, but also cleans the cache directory. `:SnipReset` is the hardest 'reset' you can throw on Sniprun to vent your frustration that's hopefully not due to the plugin.
 
-Alternatively, exit Neovim.
+Alternatively, exit & re-enter Neovim.
 
 ### REPL-like behavior
 
