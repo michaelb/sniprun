@@ -10,8 +10,5 @@ use std::process::Command;
 
 use neovim_lib::NeovimApi;
 
-//python-specific
-use pyo3::types::PyDict;
-
 //indentation
 use unindent::unindent;

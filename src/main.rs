@@ -62,6 +62,9 @@ pub struct InterpreterData {
     owner: String,
     ///actual data, usually previous code selection for repl behavior
     content: String,
+
+    /// PID of linked REPL if existing
+    pid: Option<u32>,
 }
 
 impl DataHolder {
@@ -132,6 +135,7 @@ impl EventHandler {
         let interpreter_data = Arc::new(Mutex::new(InterpreterData {
             owner: String::new(),
             content: String::new(),
+            pid: None,
         }));
         data.interpreter_data = Some(interpreter_data.clone());
 

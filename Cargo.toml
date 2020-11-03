@@ -1,6 +1,6 @@
 [package]
 name = "sniprun"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["michaelb <michael.bleuez2@gmail.com>"]
 edition = "2018"
 
@@ -19,8 +19,9 @@ lazy_static="1.4.0"
 serde_json="1.0.57"
 
 # tree-sitter stuff
-tree-sitter = "0.16.1"
+# tree-sitter = "0.16.1"
 
 # Python3 interpreter
-pyo3="0.11.1"
+# pyo3="0.11.1"
 unindent="0.1.6"
+# unix-named-pipe="0.2.0"

@@ -1,6 +1,6 @@
 # Sniprun
 
-![](https://img.shields.io/badge/sniprun-v0.4.0-green.svg)
+![](https://img.shields.io/badge/sniprun-v0.4.1-green.svg)
 
 Sniprun is a code runner plugin. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standart save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
@@ -9,6 +9,9 @@ Sniprun is a code runner plugin. It aims to provide stupidly fast partial code t
 (the exact same thing can also be done on **compiled** languages such as Rust, to the relevant support level's extent)
 
 ![](demo_rust.gif)
+
+REPL-like behavior is available for Python and Bash (simulated), coming soon for many other interpreted and compiled languages.
+![](demo_repl.gif)
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
 
@@ -22,7 +25,13 @@ Even if as-is your code won't even compile/run because it's unfinished (but to f
 
 Quickly grab a line or some visual range, `:'<,'>SnipRun` it and... that's it!
 
-Some (soon, most) languages also have some kind of (fake) REPL behavior: a code snippet containing variable / import previously sniprun'd will be re-run (expect for print statements) at your next `:Sniprun` command. This means you can 'sniprun' separately functions and their calls etc...
+## A quick word on REPL-like behavior
+
+Some languages, see support table, also have some kind of (real, or 'simulated') REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sniprun'd.
+
+Compiled languages can have this simulated REPL behavior too, thought there might be unavoidable side effects.
+
+Interpreted languages may use a simulated or real REPL, depending on the implementation.
 
 ## Installation
 
@@ -94,7 +103,7 @@ let g:SnipRun_repl_behavior_disable += ["Bash_original"]
 let g:SnipRun_repl_behavior_enable += ["Rust_original", "Lua_original"]
 ```
 
-REPL-like behavior is experimental and will work better with interpreted languages and with side-effect-free code (including prints in functions). By default, it will re-run all your non-print-statements sniprun'd correct lines of code.
+REPL-like behavior is experimental and will work better with interpreted languages and with side-effect-free code (including prints in functions).
 
 Hopefully, if it does not work, or if the 'memory' is corrupted by bad code (for example, in C you can't define the same function twice), you can clear the REPL memory with `:SnipReplMemoryClean` that is a faster and less error-prone alternative to `:SnipReset` for this use case.
 
@@ -123,6 +132,8 @@ vnoremap f :SnipRun<CR>
 ```
 nnoremap fc :SnipReplMemoryClean<CR>
 ```
+
+Make sure that those remaps DO NOT overlap with your own existing maps or default ones (such as the 'find' usage for the suggested maps) in a workflow-breaking way!
 
 ## Support levels and languages
 
@@ -157,7 +168,7 @@ println!("hello n° {}", i+1);
 | C++          | Bloc          |     | Perl6      | Line          |
 | D            | Unsupported   |     | Perl       | Line          |
 | Elixir       | Unsupported   |     | PHP        | Unsupported   |
-| Elm          | Unsupported   |     | Python3    | Import        |
+| Elm          | Unsupported   |     | Python3    | Import \*\*   |
 | Erlang       | Unsupported   |     | Ruby       | Bloc          |
 | F#           | Unsupported   |     | R          | Bloc          |
 | Go           | Bloc          |     | Rust       | Bloc          |
@@ -168,6 +179,7 @@ println!("hello n° {}", i+1);
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
 \* (Fake) REPL functionnality
+\*\* True REPL under the hood
 
 ## Known limitations
 
