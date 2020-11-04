@@ -4,23 +4,22 @@
 
 Sniprun is a code runner plugin. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standart save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
-- [Sniprun](README.md#sniprun)
-  - [Demos](README.md#demos)
-  - [What does it do ?](README.md#what-does-it-do-)
-  - [A quick word on REPL-like behavior](README.md#a-quick-word-on-repl-like-behavior)
-  - [Installation](README.md#installation)
-    - [Prerequisites &amp;&amp; dependencies](README.md#prerequisites--dependencies)
-    - [Install Sniprun](README.md#install-sniprun)
-  - [Usage](README.md#usage)
-    - [Running](README.md#running)
-    - [Stopping](README.md#stopping)
-    - [REPL-like behavior](README.md#repl-like-behavior)
-    - [Configuration](README.md#configuration)
-    - [My usage recommandation &amp; tricks](README.md#my-usage-recommandation--tricks)
-  - [Support levels and languages](README.md#support-levels-and-languages)
-  - [Known limitations](README.md#known-limitations)
-  - [Contribute](README.md#contribute)
-  - [Related projects](README.md#related-projects)
+- [Demos](README.md#demos)
+- [What does it do ?](README.md#what-does-it-do-)
+- [A quick word on REPL-like behavior](README.md#a-quick-word-on-repl-like-behavior)
+- [Installation](README.md#installation)
+  - [Prerequisites &amp;&amp; dependencies](README.md#prerequisites--dependencies)
+  - [Install Sniprun](README.md#install-sniprun)
+- [Usage](README.md#usage)
+  - [Running](README.md#running)
+  - [Stopping](README.md#stopping)
+  - [REPL-like behavior](README.md#repl-like-behavior)
+  - [Configuration](README.md#configuration)
+  - [My usage recommandation &amp; tricks](README.md#my-usage-recommandation--tricks)
+- [Support levels and languages](README.md#support-levels-and-languages)
+- [Known limitations](README.md#known-limitations)
+- [Contribute](README.md#contribute)
+- [Related projects](README.md#related-projects)
 
 ## Demos
 
@@ -65,11 +64,11 @@ Interpreted languages may use a simulated or real REPL, depending on the impleme
 - Sniprun is Linux-only for now (as of v0.4.0)
 - Neovim version >= 0.44 preferably, but should work with older version
 - cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)). Those are needed to build sniprun, for as long as the project is not distributed as binary (see the release section).
-- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look before getting started as it also contains the potential limitations of each interpreter.
+- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter.
 
-Additionally, you probably want:
+For example, most people will probably need:
 
-- the klepto package: `pip install --user klepto` if you use python with REPL enabled (default)
+- the klepto package: `pip install --user klepto` if they use python with REPL. (Python REPL behaviour is enabled by default, but klepto has to be manually installed)
 
 ### Install Sniprun
 
