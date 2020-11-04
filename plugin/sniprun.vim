@@ -20,8 +20,8 @@ function! s:showlist()
 endfunction
 
 
-let g:SnipRun_repl_behavior_enable = []
-let g:SnipRun_repl_behavior_disable = []
+let s:SnipRun_repl_behavior_enable = get(g: ,'SnipRun_repl_behavior_enable', [])
+let s:SnipRun_repl_behavior_disable = get(g: ,'SnipRun_repl_behavior_disable', [])
 
 " Entry point. Initialize RPC. If it succeeds, then attach commands to the `rpcnotify` invocations.
 function! s:connect()
@@ -53,7 +53,7 @@ endfunction
 function! s:run() range
   let s:fl=a:firstline
   let s:ll=a:lastline
-  call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir, g:SnipRun_select_interpreters, g:SnipRun_repl_behavior_enable, g:SnipRun_repl_behavior_disable)
+  call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir, g:SnipRun_select_interpreters, s:SnipRun_repl_behavior_enable, s:SnipRun_repl_behavior_disable)
 endfunction
 
 function! s:terminate()

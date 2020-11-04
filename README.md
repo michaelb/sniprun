@@ -104,8 +104,8 @@ For many languages that have an interpreter already available, a real one can be
 Many interpreted languages will have this behavior enabled by default, but you can always disable those (or enable them) with the `g:SnipRun_repl_behavior_disable` and `g:SnipRun_repl_behavior_enable` blocklist / allowlist:
 
 ```vimrc
-let g:SnipRun_repl_behavior_disable += ["Bash_original"]
-let g:SnipRun_repl_behavior_enable += ["Rust_original", "Lua_original"]
+let g:SnipRun_repl_behavior_disable = ["Bash_original"]
+let g:SnipRun_repl_behavior_enable = ["Rust_original", "Lua_original"]
 ```
 
 REPL-like behavior is experimental and will work better with interpreted languages and with side-effect-free code (including prints in functions).
