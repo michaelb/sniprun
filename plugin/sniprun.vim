@@ -14,7 +14,7 @@ let s:scriptdir = resolve(expand('<sfile>:p:h') . '/..')
 let s:bin= s:scriptdir.'/target/release/sniprun'
 
 
-let g:SnipRun_select_interpreters = []
+let s:SnipRun_select_interpreters = get(g: ,'SnipRun_select_interpreters', [])
 function! s:showlist()
   execute '!sh' s:scriptdir.'/ressources/list_script.sh' s:scriptdir.'/src/interpreters'
 endfunction
@@ -53,7 +53,7 @@ endfunction
 function! s:run() range
   let s:fl=a:firstline
   let s:ll=a:lastline
-  call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir, g:SnipRun_select_interpreters, s:SnipRun_repl_behavior_enable, s:SnipRun_repl_behavior_disable)
+  call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir, s:SnipRun_select_interpreters, s:SnipRun_repl_behavior_enable, s:SnipRun_repl_behavior_disable)
 endfunction
 
 function! s:terminate()
