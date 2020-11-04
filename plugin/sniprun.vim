@@ -8,6 +8,7 @@ let s:SnipRun = 'run'
 let s:SnipTerminate = 'terminate'
 let s:SnipClean = "clean"
 let s:SnipList = "showlist"
+let s:SnipReplMemoryClean = "clearrepl"
 
 let s:scriptdir = resolve(expand('<sfile>:p:h') . '/..')
 let s:bin= s:scriptdir.'/target/release/sniprun'
@@ -19,7 +20,8 @@ function! s:showlist()
 endfunction
 
 
-
+let g:SnipRun_repl_behavior_enable = []
+let g:SnipRun_repl_behavior_disable = []
 
 " Entry point. Initialize RPC. If it succeeds, then attach commands to the `rpcnotify` invocations.
 function! s:connect()
@@ -44,13 +46,14 @@ function! s:configureCommands()
   command! SnipTerminate :call s:terminate()
   command! SnipReset :call s:clean()| :call s:terminate()
   command! SnipList :call s:showlist()
+  command! SnipReplMemoryClean :call s:clearReplMemory()
 endfunction
 
 
 function! s:run() range
   let s:fl=a:firstline
   let s:ll=a:lastline
-  call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir, g:SnipRun_select_interpreters)
+  call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir, g:SnipRun_select_interpreters, g:SnipRun_repl_behavior_enable, g:SnipRun_repl_behavior_disable)
 endfunction
 
 function! s:terminate()
@@ -62,12 +65,14 @@ endfunction
 
 function! s:clean()
   call rpcnotify(s:sniprunJobId, s:SnipClean)
-  sleep 200m
+  sleep 500m
   " necessary to give enough time to clean the sniprun work directory
 endfunction
 
 
-
+function! s:clearReplMemory()
+  call rpcnotify(s:sniprunJobId, s:SnipReplMemoryClean)
+endfunction
 
 " Initialize RPC
 function! s:initRpc()

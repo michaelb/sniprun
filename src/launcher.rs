@@ -30,6 +30,7 @@ impl Launcher {
                 }
             }
         }
+        let _ = skip_all; //silence false unused warning
         info!(
             "[LAUNCHER] Selected interpreter : {} ; with support level {:?}",
             name_best_interpreter, max_level_support

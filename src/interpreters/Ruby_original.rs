@@ -11,7 +11,7 @@ pub struct Ruby_original {
     ruby_work_dir: String,
     main_file_path: String,
 }
-
+impl ReplLikeInterpreter for Ruby_original {}
 impl Interpreter for Ruby_original {
     fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Ruby_original> {
         let bwd = data.work_dir.clone() + "/ruby-original";

@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 // fn build_tree_sitter(language_name: &str) {
 //     let dir: PathBuf = ["ressources", language_name, "src"].iter().collect();
@@ -25,6 +25,10 @@ fn main() -> Result<(), std::io::Error> {
         if plugin == "mod.rs" {
             continue;
         }
+        if !plugin.ends_with(".rs") {
+            // not a rust file
+            continue;
+        }
 
         string_to_write.push_str(&format!(
             "include!(\"{}\");
@@ -43,6 +47,10 @@ fn main() -> Result<(), std::io::Error> {
     for path in fs::read_dir(out_dir).unwrap() {
         let mut plugin = path.unwrap().file_name().into_string().unwrap();
         if plugin == "mod.rs" || plugin == "import.rs" {
+            continue;
+        }
+        if !plugin.ends_with(".rs") {
+            // not a rust file
             continue;
         }
         plugin = plugin[..plugin.len() - 3].to_string();

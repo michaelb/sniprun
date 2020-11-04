@@ -1,5 +1,6 @@
 use crate::error::SniprunError;
 use crate::DataHolder;
+use log::info;
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 #[allow(dead_code)]
@@ -25,7 +26,7 @@ pub enum SupportLevel {
 
 ///This is the trait all interpreters must implement.
 ///The launcher run fucntions new() and run() from this trait.
-pub trait Interpreter {
+pub trait Interpreter: ReplLikeInterpreter {
     //create
     fn new(data: DataHolder) -> Box<Self> {
         Self::new_with_level(data, Self::get_max_support_level())
@@ -67,6 +68,11 @@ pub trait Interpreter {
     /// of the project
     fn fetch_code(&mut self) -> Result<(), SniprunError>; //mut to allow modification of the current_level
 
+    ///Disable REPL-like behavior by default
+    fn behave_repl_like_default() -> bool {
+        false
+    }
+
     /// This should add code that does not originate from the project to the code field in the
     /// interpreter
     fn add_boilerplate(&mut self) -> Result<(), SniprunError>;
@@ -90,8 +96,125 @@ pub trait Interpreter {
             .and_then(|_| self.build())
             .and_then(|_| self.execute())
     }
+
+    fn run_at_level_repl(&mut self, level: SupportLevel) -> Result<String, SniprunError> {
+        self.set_current_level(level);
+        if let Some(res) = self.fallback() {
+            return res;
+        }
+        self.fetch_code_repl()
+            .and_then(|_| self.add_boilerplate_repl())
+            .and_then(|_| self.build_repl())
+            .and_then(|_| self.execute_repl())
+    }
+
     /// default run function ran from the launcher (run_at_level(max_level))
     fn run(&mut self) -> Result<String, SniprunError> {
-        self.run_at_level(self.get_current_level())
+        let name = Self::get_name();
+        let data = self.get_data();
+        // choose whether to use repl-like or normal
+        let decision = (Self::behave_repl_like_default() || data.repl_enabled.contains(&name))
+            && !data.repl_disabled.contains(&name);
+        if decision {
+            self.run_at_level_repl(self.get_current_level())
+        } else {
+            self.run_at_level(self.get_current_level())
+        }
+    }
+}
+
+pub trait InterpreterUtils {
+    ///read previously saved code from the interpreterdata object
+    fn read_previous_code(&self) -> String;
+    ///append code to the interpreterdata object
+    fn save_code(&self, code: String);
+    fn clear(&self);
+
+    fn set_pid(&self, pid: u32);
+    fn get_pid(&self) -> Option<u32>;
+}
+
+impl<T: Interpreter> InterpreterUtils for T {
+    fn read_previous_code(&self) -> String {
+        let data = self.get_data();
+        if data.interpreter_data.is_none() {
+            return String::new();
+        } else {
+            let interpreter_data = data.interpreter_data.unwrap().lock().unwrap().clone();
+            let content_owner = T::get_name();
+            if interpreter_data.owner == content_owner {
+                return interpreter_data.content;
+            } else {
+                return String::new();
+            }
+        }
+    }
+
+    fn save_code(&self, code: String) {
+        let previous_code = self.read_previous_code();
+        let data = self.get_data();
+        if data.interpreter_data.is_none() {
+            info!("Unable to save code for next usage");
+            return;
+        } else {
+            {
+                data.interpreter_data.clone().unwrap().lock().unwrap().owner = T::get_name();
+            }
+            data.interpreter_data.unwrap().lock().unwrap().content = previous_code + "\n" + &code;
+        }
+    }
+
+    fn clear(&self) {
+        let data = self.get_data();
+        if data.interpreter_data.is_some() {
+            data.interpreter_data
+                .clone()
+                .unwrap()
+                .lock()
+                .unwrap()
+                .owner
+                .clear();
+            data.interpreter_data
+                .unwrap()
+                .lock()
+                .unwrap()
+                .content
+                .clear();
+        }
+    }
+
+    fn set_pid(&self, pid: u32) {
+        if let Some(di) = self.get_data().interpreter_data {
+            di.lock().unwrap().pid = Some(pid);
+        }
+    }
+
+    fn get_pid(&self) -> Option<u32> {
+        if let Some(di) = self.get_data().interpreter_data {
+            if let Some(real_pid) = di.lock().unwrap().pid {
+                return Some(real_pid);
+            } else {
+                return None;
+            }
+        } else {
+            return None;
+        }
+    }
+}
+
+pub trait ReplLikeInterpreter {
+    fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
+        Ok(())
+    }
+    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
+        Ok(())
+    }
+    fn build_repl(&mut self) -> Result<(), SniprunError> {
+        Ok(())
+    }
+    fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        Err(SniprunError::InterpreterLimitationError(String::from(
+            "REPL-like behavior is not implemented for this intepreter",
+        )))
     }
 }

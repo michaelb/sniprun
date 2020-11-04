@@ -11,7 +11,7 @@ pub struct Lua_original {
     lua_work_dir: String,
     main_file_path: String,
 }
-
+impl ReplLikeInterpreter for Lua_original {}
 impl Interpreter for Lua_original {
     fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Lua_original> {
         let bwd = data.work_dir.clone() + "/lua-original";

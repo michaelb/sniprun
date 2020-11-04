@@ -34,6 +34,10 @@ impl Interpreter for Bash_original {
         String::from("Bash_original")
     }
 
+    fn behave_repl_like_default() -> bool {
+        true
+    }
+
     fn get_supported_languages() -> Vec<String> {
         vec![
             String::from("bash"),
@@ -103,5 +107,56 @@ impl Interpreter for Bash_original {
                 String::from_utf8(output.stderr).unwrap(),
             ));
         }
+    }
+}
+
+impl ReplLikeInterpreter for Bash_original {
+    fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
+        self.fetch_code()?;
+        let previous_code = self.read_previous_code();
+        self.code = previous_code + "\n" + &self.code;
+        Ok(())
+    }
+
+    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
+        self.add_boilerplate()
+    }
+
+    fn build_repl(&mut self) -> Result<(), SniprunError> {
+        self.build()
+    }
+
+    fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        fn strip_prints(code: &str) -> String {
+            let mut striped_code = String::new();
+            let print_statements = vec!["echo ", "print "];
+            let mut count = 0;
+            for line in code.lines() {
+                //basic splitting only
+                let opening_bracket = line.matches("{").count();
+                let closing_bracket = line.matches("}").count();
+                count += opening_bracket - closing_bracket;
+                if count <= 0 {
+                    if print_statements.iter().all(|ps| !line.contains(ps)) {
+                        // does not contains any print statement
+                        striped_code.push_str(line);
+                        striped_code.push_str("\n");
+                    }
+                } else {
+                    striped_code.push_str(line);
+                    striped_code.push_str("\n");
+                }
+            }
+            return striped_code;
+        }
+
+        let res = self.execute();
+        if res.is_ok() {
+            let _ = self.fetch_code();
+            self.save_code(strip_prints(&self.code));
+        }
+
+        info!("executed as repl");
+        return res;
     }
 }

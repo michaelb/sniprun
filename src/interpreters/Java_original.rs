@@ -14,7 +14,7 @@ pub struct Java_original {
     bin_name: String,
     main_file_path: String,
 }
-
+impl ReplLikeInterpreter for Java_original {}
 impl Interpreter for Java_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Java_original> {
         //create a subfolder in the cache folder

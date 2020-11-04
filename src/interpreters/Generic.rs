@@ -12,7 +12,7 @@ pub struct Generic {
     glot_bin_path: String,
     main_file_path: String,
 }
-
+impl ReplLikeInterpreter for Generic {}
 impl Interpreter for Generic {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Generic> {
         let rwd = data.work_dir.clone() + "/generic";

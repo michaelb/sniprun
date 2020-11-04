@@ -13,6 +13,7 @@ pub struct C_original {
     main_file_path: String,
     compiler: String,
 }
+impl ReplLikeInterpreter for C_original {}
 
 impl Interpreter for C_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<C_original> {

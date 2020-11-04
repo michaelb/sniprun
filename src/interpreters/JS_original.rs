@@ -11,7 +11,7 @@ pub struct JS_original {
     js_work_dir: String,
     main_file_path: String,
 }
-
+impl ReplLikeInterpreter for JS_original {}
 impl Interpreter for JS_original {
     fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<JS_original> {
         let bwd = data.work_dir.clone() + "/js-original";
