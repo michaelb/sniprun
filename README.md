@@ -4,6 +4,26 @@
 
 Sniprun is a code runner plugin. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standart save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
+- [Sniprun](README.md#sniprun)
+  - [Demos](README.md#demos)
+  - [What does it do ?](README.md#what-does-it-do-)
+  - [A quick word on REPL-like behavior](README.md#a-quick-word-on-repl-like-behavior)
+  - [Installation](README.md#installation)
+    - [Prerequisites &amp;&amp; dependencies](README.md#prerequisites--dependencies)
+    - [Install Sniprun](README.md#install-sniprun)
+  - [Usage](README.md#usage)
+    - [Running](README.md#running)
+    - [Stopping](README.md#stopping)
+    - [REPL-like behavior](README.md#repl-like-behavior)
+    - [Configuration](README.md#configuration)
+    - [My usage recommandation &amp; tricks](README.md#my-usage-recommandation--tricks)
+  - [Support levels and languages](README.md#support-levels-and-languages)
+  - [Known limitations](README.md#known-limitations)
+  - [Contribute](README.md#contribute)
+  - [Related projects](README.md#related-projects)
+
+## Demos
+
 ![](demo.gif)
 
 (the exact same thing can also be done on **compiled** languages such as Rust, to the relevant support level's extent)
@@ -18,17 +38,21 @@ REPL-like behavior is available for Python, R (both real REPLs) and Bash (simula
 
 ## What does it do ?
 
-Basically, it allows you to run a part of your code.
-
-Printing the type of that obscure object, or that collection to check if it contains everything you expect mid-editing is not a pipe dream.
-
-Even if as-is your code won't even compile/run because it's unfinished (but to finish it you'd need to assert the first part)
+Basically, it allows you to run a part of your code, even if as-is your code won't even compile/run because it's unfinished (but to finish it you'd need to assert the first part)
 
 Quickly grab a line or some visual range, `:'<,'>SnipRun` it and... that's it!
 
+By selecting a visual range (always rounded line-wise) or positioning yourself on a particular line of code, and running the `SnipRun` command on it (I advise to map it), you can send the line(s) to Sniprun. Sniprun will then:
+
+- Optionnaly, get additional information if necessary (auto retrieve import when supported for example)
+- Add the boilerplate when it exists. In C, it surrounds your snip with "int main() {", "}".
+- Build (write to a script file, or compile) the code
+- Execute the code
+- Return stdout, or stderr
+
 ## A quick word on REPL-like behavior
 
-Some languages, see support table, also have some kind of (real, or 'simulated') REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sniprun'd.
+Some languages, see support [table](README.md#support-levels-and-languages), also have some kind of (real, or 'simulated') REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sniprun'd.
 
 Compiled languages can have this simulated REPL behavior too, though there might be unavoidable side effects.
 
@@ -41,7 +65,7 @@ Interpreted languages may use a simulated or real REPL, depending on the impleme
 - Sniprun is Linux-only for now (as of v0.4.0)
 - Neovim version >= 0.44 preferably, but should work with older version
 - cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)). Those are needed to build sniprun, for as long as the project is not distributed as binary (see the release section).
-- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools are required, those are documented in the doc folder
+- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look before getting started as it also contains the potential limitations of each interpreter.
 
 Additionally, you probably want:
 
@@ -63,8 +87,6 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 Sniprun is developped and maintained on Linux (-only for now), support for other platforms is not in my goals plans, though simple compatibility patches PR are welcome.
 
 ## Usage
-
-Sniprun is and will always (try to) be dead simple. `:SnipRun` a piece of code and the plugin will return its standart output. ( +stderr if supported)
 
 ### Running
 
@@ -144,7 +166,7 @@ Make sure that those remaps DO NOT overlap with your own existing maps or defaul
 
 As of writing, languages can be supported up to different extents:
 
-- **Unsupported** : You should not expect anything to work, except if the generic interpreter works correctly with it.
+- **Unsupported**/**Untested** : You should not expect anything to work, except if the generic interpreter works correctly with it (at most Line level support).
 - **Line** : Code contained in a single line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
 - **Bloc** : You can select any piece of code that is semantically correct (minus the eventual entry point) on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:
 
@@ -163,23 +185,23 @@ println!("hello n° {}", i+1);
 
 | Language     | Support level |     | Language   | Support level    |
 | ------------ | ------------- | --- | ---------- | ---------------- |
-| Assembly     | Unsupported   |     | JavaScript | Bloc             |
-| ats          | Unsupported   |     | Java       | Bloc             |
-| Bash/Shell   | Bloc + REPL\* |     | Julia      | Unsupported      |
-| C            | Bloc          |     | Lisp       | Unsupported      |
-| COBOL        | Unsupported   |     | Lua        | Bloc             |
-| Coffeescript | Unsupported   |     | Lua-nvim   | Bloc             |
-| C#           | Unsupported   |     | OCaml      | Unsupported      |
+| Assembly     | Untested      |     | JavaScript | Bloc             |
+| ats          | Untested      |     | Java       | Bloc             |
+| Bash/Shell   | Bloc + REPL\* |     | Julia      | Untested         |
+| C            | Bloc          |     | Lisp       | Untested         |
+| COBOL        | Untested      |     | Lua        | Bloc             |
+| Coffeescript | Untested      |     | Lua-nvim   | Bloc             |
+| C#           | Untested      |     | OCaml      | Untested         |
 | C++          | Bloc          |     | Perl6      | Line             |
-| D            | Unsupported   |     | Perl       | Line             |
-| Elixir       | Unsupported   |     | PHP        | Unsupported      |
-| Elm          | Unsupported   |     | Python3    | Import +REPL\*\* |
-| Erlang       | Unsupported   |     | Ruby       | Bloc             |
-| F#           | Unsupported   |     | R          | Bloc + REPL \*\* |
+| D            | Untested      |     | Perl       | Line             |
+| Elixir       | Untested      |     | PHP        | Untested         |
+| Elm          | Untested      |     | Python3    | Import +REPL\*\* |
+| Erlang       | Untested      |     | Ruby       | Bloc             |
+| F#           | Untested      |     | R          | Bloc + REPL \*\* |
 | Go           | Bloc          |     | Rust       | Bloc             |
-| Groovy       | Unsupported   |     | Scala      | Unsupported      |
-| Haskell      | Bloc          |     | Scilab     | Unsupported      |
-| Idris        | Unsupported   |     | Swift      | Unsupported      |
+| Groovy       | Untested      |     | Scala      | Untested         |
+| Haskell      | Bloc          |     | Scilab     | Untested         |
+| Idris        | Untested      |     | Swift      | Untested         |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
@@ -194,8 +216,7 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Meddle with standart output / stderr
 - Need to read from stdin
 - Prints double quotes ("), or incorrect UTF8 characters, or just too many lines
-- Purposely fails
-- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. Relative paths may cause issues, as the current working directory for neovim won't necessarily be the one from where the binary runs, or the good one for relative imports.
+- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for neovim won't necessarily be the one from where the binary runs, or the good one for relative imports.
 - For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _saved_.
 
 ## Contribute
@@ -204,14 +225,17 @@ It's super easy: see [contributing](CONTRIBUTING.md)
 
 ## Related projects
 
-This project is very similar to [this](https://github.com/formulahendry/vscode-code-runner) but is an attempt to make the same kind of plugin for Neovim, preferably simpler, and more complete.
+This project: [vscode-code-runner](https://github.com/formulahendry/vscode-code-runner) but sniprun is an attempt to make the same kind of plugin for Neovim, and more feature-complete. Actually, it already is (more complete, more extendable).
 
-For example, SnipRun Python support is (objectively) sligthly superior, and with some help, can get way, way better. Infrastructure to run code is also more feature-complete, with simple examples to implement basic support for new languages. Compared to the 'one-line-should-run-everything' approach of vs-code-runner, SnipRun can go further.
+All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file.
 
-All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file, and cannot make use of your project's Makefile (or compilation config).
-
-The [replvim](https://gitlab.com/HiPhish/repl.nvim) project is also related, as well as [neoterm](https://github.com/kassio/neoterm) that can also be used in such a way. They weren't enough for me though.
-
-Sniprun also add the typical boilerplate so you only need to select the lines that really do the job, rather than those plus everything in the enclosing `int main() {` or equivalent.
+The [replvim](https://gitlab.com/HiPhish/repl.nvim) project is also related, as well as [neoterm](https://github.com/kassio/neoterm) that can also be used in such a way.
 
 [vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is [vim-slime](https://github.com/jpalardy/vim-slime), but they do things differently enough I made sniprun instead.
+
+**Why should you use sniprun instead of these alternatives?**
+
+- All-language support. Sniprun can work with virtually any language, including compiled ones. If the language is not supported yet, anyone can create a sniprun interpreter for it!
+- Simpler user input & output. Sniprun doesn't use precious screen space (like [codi](https://github.com/metakirby5/codi.vim) or [vim-slime](https://github.com/jpalardy/vim-slime)).
+- Promising evolution of the project: treesitter usage is in the goals plan, to make testing/ running even better (with things like auto-fecthing variables & functions definitions). Those will comply at least with the File support level for a truly amazing experience. (I'll need some help with that though).
+- Fast, extendable and maintainable: this is not a 2k-lines vim script. It's a Rust project designed to be as clear and "contribuable" as possible.
