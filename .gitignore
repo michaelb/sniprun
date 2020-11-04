@@ -1,4 +1,5 @@
 src/interpreters/mod.rs
 test/
+download_dir/
 target/
 Cargo.lock

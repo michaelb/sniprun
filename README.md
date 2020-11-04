@@ -82,6 +82,7 @@ For example, `vim-plug`:
 
 ```vim
 Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
+" 'bash install.sh 1' to get the bleeding edge, but you'll compile sniprun at every update
 ```
 
 Sniprun is developped and maintained on Linux (-only for now), support for other platforms is not in my goals plans, though simple compatibility patches PR are welcome.
