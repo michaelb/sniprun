@@ -11,7 +11,6 @@ pub struct R_original {
     r_work_dir: String,
     main_file_path: String,
 }
-impl ReplLikeInterpreter for R_original {}
 impl Interpreter for R_original {
     fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<R_original> {
         let bwd = data.work_dir.clone() + "/R-original";
@@ -36,6 +35,9 @@ impl Interpreter for R_original {
 
     fn get_supported_languages() -> Vec<String> {
         vec![String::from("R"), String::from("r")]
+    }
+    fn behave_repl_like_default() -> bool {
+        true
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -97,5 +99,47 @@ impl Interpreter for R_original {
                 String::from_utf8(output.stderr).unwrap(),
             ));
         }
+    }
+}
+impl ReplLikeInterpreter for R_original {
+    fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
+        self.fetch_code()
+    }
+    fn build_repl(&mut self) -> Result<(), SniprunError> {
+        self.build()
+    }
+    fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        self.execute()
+    }
+
+    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
+        info!("repl mode");
+        let mut final_code = String::new();
+
+        let rdata_path = self.r_work_dir.clone() + "/sniprun.RData";
+
+        if self.read_previous_code().is_empty() {
+            //first run
+            self.save_code(String::from("Not the first R run anymore"));
+        } else {
+            // not first run, tell R to load old variables
+            {
+                &final_code.push_str("load('");
+                &final_code.push_str(&rdata_path);
+                &final_code.push_str("')");
+            }
+        }
+        &final_code.push_str("\n");
+        &final_code.push_str(&self.code);
+        &final_code.push_str("\n");
+
+        {
+            //save state
+            &final_code.push_str("save.image('");
+            &final_code.push_str(&rdata_path);
+            &final_code.push_str("')");
+        }
+        self.code = final_code;
+        Ok(())
     }
 }
