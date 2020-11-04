@@ -10,7 +10,7 @@ Sniprun is a code runner plugin. It aims to provide stupidly fast partial code t
 
 ![](demo_rust.gif)
 
-REPL-like behavior is available for Python and Bash (simulated), coming soon for many other interpreted and compiled languages.
+REPL-like behavior is available for Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages.
 ![](demo_repl.gif)
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
@@ -44,8 +44,8 @@ Interpreted languages may use a simulated or real REPL, depending on the impleme
 - Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools are required, those are documented in the doc folder
 
 Additionally, you probably want:
-- the klepto package: `pip install --user klepto` if you use python with REPL enabled (default)
 
+- the klepto package: `pip install --user klepto` if you use python with REPL enabled (default)
 
 ### Install Sniprun
 
@@ -161,29 +161,30 @@ println!("hello n° {}", i+1);
 - **Project** : Sniprun will detect the root of your project, and get the necessary code from files in your project.
 - **System** : Sniprun will use local (and system) libraries, such as jar files, to run your what you want.
 
-| Language     | Support level |     | Language   | Support level |
-| ------------ | ------------- | --- | ---------- | ------------- |
-| Assembly     | Unsupported   |     | JavaScript | Bloc          |
-| ats          | Unsupported   |     | Java       | Bloc          |
-| Bash/Shell   | Bloc \*       |     | Julia      | Unsupported   |
-| C            | Bloc          |     | Lisp       | Unsupported   |
-| COBOL        | Unsupported   |     | Lua        | Bloc          |
-| Coffeescript | Unsupported   |     | Lua-nvim   | Bloc          |
-| C#           | Unsupported   |     | OCaml      | Unsupported   |
-| C++          | Bloc          |     | Perl6      | Line          |
-| D            | Unsupported   |     | Perl       | Line          |
-| Elixir       | Unsupported   |     | PHP        | Unsupported   |
-| Elm          | Unsupported   |     | Python3    | Import \*\*   |
-| Erlang       | Unsupported   |     | Ruby       | Bloc          |
-| F#           | Unsupported   |     | R          | Bloc          |
-| Go           | Bloc          |     | Rust       | Bloc          |
-| Groovy       | Unsupported   |     | Scala      | Unsupported   |
-| Haskell      | Bloc          |     | Scilab     | Unsupported   |
-| Idris        | Unsupported   |     | Swift      | Unsupported   |
+| Language     | Support level |     | Language   | Support level    |
+| ------------ | ------------- | --- | ---------- | ---------------- |
+| Assembly     | Unsupported   |     | JavaScript | Bloc             |
+| ats          | Unsupported   |     | Java       | Bloc             |
+| Bash/Shell   | Bloc + REPL\* |     | Julia      | Unsupported      |
+| C            | Bloc          |     | Lisp       | Unsupported      |
+| COBOL        | Unsupported   |     | Lua        | Bloc             |
+| Coffeescript | Unsupported   |     | Lua-nvim   | Bloc             |
+| C#           | Unsupported   |     | OCaml      | Unsupported      |
+| C++          | Bloc          |     | Perl6      | Line             |
+| D            | Unsupported   |     | Perl       | Line             |
+| Elixir       | Unsupported   |     | PHP        | Unsupported      |
+| Elm          | Unsupported   |     | Python3    | Import +REPL\*\* |
+| Erlang       | Unsupported   |     | Ruby       | Bloc             |
+| F#           | Unsupported   |     | R          | Bloc + REPL \*\* |
+| Go           | Bloc          |     | Rust       | Bloc             |
+| Groovy       | Unsupported   |     | Scala      | Unsupported      |
+| Haskell      | Bloc          |     | Scilab     | Unsupported      |
+| Idris        | Unsupported   |     | Swift      | Unsupported      |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
-\* (Fake) REPL functionnality
+\* (fake) REPL-like functionnality, with potential unwanted side-effects
+
 \*\* True REPL under the hood
 
 ## Known limitations
@@ -202,10 +203,10 @@ Due to its nature, Sniprun may have trouble with programs that :
 It's super easy: see [contributing](CONTRIBUTING.md)
 
 ## Related projects
+
 This project is very similar to [this](https://github.com/formulahendry/vscode-code-runner) but is an attempt to make the same kind of plugin for Neovim, preferably simpler, and more complete.
 
 For example, SnipRun Python support is (objectively) sligthly superior, and with some help, can get way, way better. Infrastructure to run code is also more feature-complete, with simple examples to implement basic support for new languages. Compared to the 'one-line-should-run-everything' approach of vs-code-runner, SnipRun can go further.
-
 
 All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file, and cannot make use of your project's Makefile (or compilation config).
 
