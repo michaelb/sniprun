@@ -124,7 +124,7 @@ A list of all available interpreters can be displayed by running `:SnipList`
 
 ### My usage recommandation & tricks
 
-- Map the line and bloc mode to a simple command such as `ff` (or just `f` in visual mode).
+- Map the run command to a simple command such as `ff` (or just `f` in visual mode).
 
 ```
 nnoremap ff :SnipRun<CR>
