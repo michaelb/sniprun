@@ -14,7 +14,8 @@ REPL-like behavior is available for Python, R (both real REPLs) and Bash (simula
 ![](demo_repl.gif)
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
-> Note: Python users are required to install the 'klepto' python package or to disable REPL behavior in their config files (to get the same behaviour than before 0.4.1)
+
+> **Note: Python users are required to install the 'klepto' python package or to disable REPL behavior** in their config files (to get the same behaviour than before 0.4.1)
 
 ## What does it do ?
 
