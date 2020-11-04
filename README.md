@@ -33,7 +33,8 @@ REPL-like behavior is available for Python, R (both real REPLs) and Bash (simula
 ![](demo_repl.gif)
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
-> Note: Python users are required to install the 'klepto' python package or to disable REPL behavior in their config files (to get the same behaviour than before 0.4.1)
+
+> **Note: Python users are required to install the 'klepto' python package or to disable REPL behavior** in their config files (to get the same behaviour than before 0.4.1)
 
 ## What does it do ?
 
@@ -145,7 +146,7 @@ A list of all available interpreters can be displayed by running `:SnipList`
 
 ### My usage recommandation & tricks
 
-- Map the line and bloc mode to a simple command such as `ff` (or just `f` in visual mode).
+- Map the run command to a simple command such as `ff` (or just `f` in visual mode).
 
 ```
 nnoremap ff :SnipRun<CR>
