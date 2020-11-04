@@ -64,7 +64,7 @@ Interpreted languages may use a simulated or real REPL, depending on the impleme
 
 - Sniprun is Linux-only for now (as of v0.4.0)
 - Neovim version >= 0.44 preferably, but should work with older version
-- cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)). Those are needed to build sniprun, for as long as the project is not distributed as binary (see the release section).
+- [recommended, but optionnal] cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
 - Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter.
 
 For example, most people will probably need:
