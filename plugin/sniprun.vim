@@ -16,7 +16,7 @@ let s:bin= s:scriptdir.'/target/release/sniprun'
 
 let s:SnipRun_select_interpreters = get(g: ,'SnipRun_select_interpreters', [])
 function! s:showlist()
-  execute '!sh' s:scriptdir.'/ressources/list_script.sh' s:scriptdir.'/src/interpreters'
+  execute  '!sh' s:scriptdir.'/ressources/list_script.sh' s:scriptdir.'/src/interpreters'
 endfunction
 
 
