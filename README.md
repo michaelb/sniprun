@@ -30,6 +30,7 @@ Sniprun is a code runner plugin. It aims to provide stupidly fast partial code t
 ![](demo_rust.gif)
 
 REPL-like behavior is available for Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages.
+
 ![](demo_repl.gif)
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
