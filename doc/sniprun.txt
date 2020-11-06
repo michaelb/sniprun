@@ -22,6 +22,8 @@ then run in normal or visual mode   :SnipRun
 
 If you crash SnipRun, you can :SnipTerminate (that will kill Sniprun, and restart it at next call), or :SnipReset , (that will clear the cache that helps SnipRun compile faster)
 
+If you sent incorrect code to a interpreter with enabled REPL mode, you can clear the REPL 'memory' with :SnipReplMemoryClean
+
 
 ==============================================================================
 TROUBLESHOOTING                                  *sniprun-troubleshooting*

@@ -22,7 +22,7 @@ fn main() -> Result<(), std::io::Error> {
 
     for path in fs::read_dir(out_dir).unwrap() {
         let plugin = path.unwrap().file_name().into_string().unwrap();
-        if plugin == "mod.rs" {
+        if plugin == "mod.rs" || plugin == "example.rs" {
             continue;
         }
         if !plugin.ends_with(".rs") {
@@ -46,7 +46,7 @@ fn main() -> Result<(), std::io::Error> {
 
     for path in fs::read_dir(out_dir).unwrap() {
         let mut plugin = path.unwrap().file_name().into_string().unwrap();
-        if plugin == "mod.rs" || plugin == "import.rs" {
+        if plugin == "mod.rs" || plugin == "import.rs" || plugin == "example.rs" {
             continue;
         }
         if !plugin.ends_with(".rs") {
