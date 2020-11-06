@@ -2,7 +2,7 @@
 
 ![](https://img.shields.io/badge/sniprun-v0.4.1-green.svg)
 
-Sniprun is a code runner plugin. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standart save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
+Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
 - [Demos](README.md#demos)
 - [What does it do ?](README.md#what-does-it-do-)
@@ -29,7 +29,7 @@ Sniprun is a code runner plugin. It aims to provide stupidly fast partial code t
 
 ![](demo_rust.gif)
 
-REPL-like behavior is available for Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages.
+send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages.
 ![](demo_repl.gif)
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
@@ -65,7 +65,7 @@ Interpreted languages may use a simulated or real REPL, depending on the impleme
 - Sniprun is Linux-only for now (as of v0.4.0)
 - Neovim version >= 0.44 preferably, but should work with older version
 - cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)). Those are needed to build sniprun, for as long as the project is not distributed as binary (see the release section).
-- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter.
+- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or software are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter.
 
 For example, most people will probably need:
 
@@ -89,6 +89,8 @@ Sniprun is developped and maintained on Linux (-only for now), support for other
 
 ## Usage
 
+You can do basically two things: **run** (your code selection) and **stop** it (in the rare occasions it crashes, it takes too long or sniprun crashes). You'll probably be using only the first one, but the second can come in handy.
+
 ### Running
 
 Line mode: Place your cursor on the line you want to run, and type (in command mode):
@@ -108,14 +110,15 @@ Bloc mode: Select the code you want to execute in visual mode and type in:
 
 ### Stopping
 
-_ARGHHH_ I 'SnipRan' and infinite loop (or anything that takes too long)!
+_ARGHHH_ I Sniprun'd an infinite loop (or anything that takes too long)!
 No worries, the second and last command will kill everything Sniprun ran so far (and has not finished yet):
 
 ```vim
- :SnipTerminate
+ :SnipReset
 ```
 
-Under the hood, what it does is just kill Sniprun (and its child processes) and relaunch it, thus a more mnemonic alias for the intention is set `:SnipReset` that does basically the same thing as terminate, but also cleans the cache directory. `:SnipReset` is the hardest 'reset' you can throw on Sniprun to vent your frustration that's hopefully not due to the plugin.
+Under the hood, what it does is just kill Sniprun (and its child processes) and relaunch it, and also cleans the cache directory. `:SnipReset` is the hardest 'reset' you can throw on Sniprun to vent your frustration that's hopefully not due to the plugin.
+`:SnipTerminate` does the same thing but does not cleans the cache directory. (For faster recompiles, unless some data leftover in the cache was in fact the cause of the crash)
 
 Alternatively, exit & re-enter Neovim.
 
@@ -157,7 +160,7 @@ vnoremap f :SnipRun<CR>
 ```
 
 - For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire code.
-- If you use the REPL-like behavior for some languages, mapping the repl reset to a short command is strongly recommended.
+- If you use the REPL-like behavior for some languages, mapping the repl reset to a short command is advised.
 
 ```
 nnoremap fc :SnipReplMemoryClean<CR>
