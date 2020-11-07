@@ -1,41 +1,45 @@
-//Interpreter:| JS_original         | javascript  |
+//Interpreter:| CS_original         | javascript  |
 //############|_____________________|_____________|________________<- delimiters to help formatting,
 //###########| Interpretername      | language    | comment
 // Keep (but modify the first line after the :) if you wish to have this interpreter listedvia SnipList
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct JS_original {
+pub struct CS_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    js_work_dir: String,
+    cs_work_dir: String,
     main_file_path: String,
 }
-impl ReplLikeInterpreter for JS_original {}
-impl Interpreter for JS_original {
-    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<JS_original> {
-        let bwd = data.work_dir.clone() + "/js-original";
+impl ReplLikeInterpreter for CS_original {}
+impl Interpreter for CS_original {
+    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<CS_original> {
+        let bwd = data.work_dir.clone() + "/cs-original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
             .create(&bwd)
-            .expect("Could not create directory for js-original");
-        let mfp = bwd.clone() + "/main.js";
-        Box::new(JS_original {
+            .expect("Could not create directory for cs-original");
+        let mfp = bwd.clone() + "/main.coffee";
+        Box::new(CS_original {
             data,
             support_level: level,
             code: String::from(""),
-            js_work_dir: bwd,
+            cs_work_dir: bwd,
             main_file_path: mfp,
         })
     }
 
     fn get_name() -> String {
-        String::from("JS_original")
+        String::from("CS_original")
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("js"), String::from("javascript")]
+        vec![
+            String::from("cs"),
+            String::from("coffeescript"),
+            String::from("coffee"),
+        ]
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -78,18 +82,18 @@ impl Interpreter for JS_original {
 
     fn build(&mut self) -> Result<(), SniprunError> {
         let mut _file =
-            File::create(&self.main_file_path).expect("Failed to create file for js-original");
+            File::create(&self.main_file_path).expect("Failed to create file for cs-original");
 
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for js-original");
+        write(&self.main_file_path, &self.code).expect("Unable to write to file for cs-original");
         Ok(())
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("node")
+        let output = Command::new("coffee")
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
-        info!("yay from js interpreter");
+        info!("yay from cs interpreter");
         if output.status.success() {
             return Ok(String::from_utf8(output.stdout).unwrap());
         } else {

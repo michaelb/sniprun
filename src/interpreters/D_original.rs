@@ -1,41 +1,46 @@
-//Interpreter:| JS_original         | javascript  |
+//Interpreter:| D_original       | d        |
 //############|_____________________|_____________|________________<- delimiters to help formatting,
 //###########| Interpretername      | language    | comment
 // Keep (but modify the first line after the :) if you wish to have this interpreter listedvia SnipList
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct JS_original {
+pub struct D_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    js_work_dir: String,
+
+    ///specific to d
+    d_work_dir: String,
     main_file_path: String,
 }
-impl ReplLikeInterpreter for JS_original {}
-impl Interpreter for JS_original {
-    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<JS_original> {
-        let bwd = data.work_dir.clone() + "/js-original";
+impl ReplLikeInterpreter for D_original {}
+impl Interpreter for D_original {
+    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<D_original> {
+        //create a subfolder in the cache folder
+        let rwd = data.work_dir.clone() + "/d_original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
-            .create(&bwd)
-            .expect("Could not create directory for js-original");
-        let mfp = bwd.clone() + "/main.js";
-        Box::new(JS_original {
+            .create(&rwd)
+            .expect("Could not create directory for d-original");
+
+        //pre-create string pointing to main file's and binary's path
+        let mfp = rwd.clone() + "/main.d";
+        Box::new(D_original {
             data,
-            support_level: level,
+            support_level,
             code: String::from(""),
-            js_work_dir: bwd,
+            d_work_dir: rwd,
             main_file_path: mfp,
         })
     }
 
-    fn get_name() -> String {
-        String::from("JS_original")
+    fn get_supported_languages() -> Vec<String> {
+        vec![String::from("d"), String::from("dlang")]
     }
 
-    fn get_supported_languages() -> Vec<String> {
-        vec![String::from("js"), String::from("javascript")]
+    fn get_name() -> String {
+        String::from("D_original")
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -54,16 +59,17 @@ impl Interpreter for JS_original {
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
+        //add code from data to self.code
         if !self
             .data
             .current_bloc
             .replace(&[' ', '\t', '\n', '\r'][..], "")
             .is_empty()
-            && self.get_current_level() >= SupportLevel::Bloc
+            && self.support_level >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
         } else if !self.data.current_line.replace(" ", "").is_empty()
-            && self.get_current_level() >= SupportLevel::Line
+            && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
         } else {
@@ -73,23 +79,24 @@ impl Interpreter for JS_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
+        self.code = String::from("import std.stdio;\nvoid main() {") + &self.code + "}";
         Ok(())
     }
 
     fn build(&mut self) -> Result<(), SniprunError> {
+        //write code to file
         let mut _file =
-            File::create(&self.main_file_path).expect("Failed to create file for js-original");
-
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for js-original");
+            File::create(&self.main_file_path).expect("Failed to create file for d-original");
+        write(&self.main_file_path, &self.code).expect("Unable to write to file for d-original");
         Ok(())
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("node")
+        //run th binary and get the std output (or stderr)
+        let output = Command::new("rdmd")
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
-        info!("yay from js interpreter");
         if output.status.success() {
             return Ok(String::from_utf8(output.stdout).unwrap());
         } else {
