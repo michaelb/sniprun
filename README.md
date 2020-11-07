@@ -192,19 +192,19 @@ println!("hello n° {}", i+1);
 
 | Language     | Support level |     | Language   | Support level    |
 | ------------ | ------------- | --- | ---------- | ---------------- |
-| Ada          | Untested      |     | JavaScript | Bloc             |
-| Bash/Shell   | Bloc + REPL\* |     | Julia      | Untested         |
-| C            | Bloc          |     | Lisp       | Untested         |
-| C++          | Bloc          |     | Perl6      | Line             |
-| Clojure      | Untested      |     | Java       | Bloc             |
-| COBOL        | Untested      |     | Lua        | Bloc             |
-| Coffeescript | Bloc          |     | Lua-nvim   | Bloc             |
-| C#           | Untested      |     | OCaml      | Untested         |
+| Ada          | Untested      |     | Java       | Bloc             |
+| Bash/Shell   | Bloc + REPL\* |     | JavaScript | Bloc             |
+| C            | Bloc          |     | Julia      | Untested         |
+| C++          | Bloc          |     | Lisp       | Untested         |
+| Clojure      | Untested      |     | Lua        | Bloc             |
+| COBOL        | Untested      |     | Lua-nvim   | Bloc             |
+| Coffeescript | Bloc          |     | OCaml      | Untested         |
+| C#           | Untested      |     | Perl6      | Line             |
 | D            | Bloc          |     | Perl       | Line             |
 | Elixir       | Untested      |     | PHP        | Untested         |
 | Elm          | Untested      |     | Python3    | Import +REPL\*\* |
-| Erlang       | Untested      |     | Ruby       | Bloc             |
-| F#           | Untested      |     | R          | Bloc + REPL \*\* |
+| Erlang       | Untested      |     | R          | Bloc + REPL \*\* |
+| F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
 | Groovy       | Untested      |     | Scala      | Untested         |
 | Haskell      | Bloc          |     | Scilab     | Untested         |
@@ -236,7 +236,7 @@ This project: [vscode-code-runner](https://github.com/formulahendry/vscode-code-
 
 All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file.
 
-The [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](https://github.com/hanschen/vim-ipython-cell)  [codi](https://github.com/metakirby5/codi.vim) as well as [neoterm](https://github.com/kassio/neoterm) can also be used in such a way, though they are only working with languages that have a REPL.
+The [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](https://github.com/hanschen/vim-ipython-cell) [codi](https://github.com/metakirby5/codi.vim) as well as [neoterm](https://github.com/kassio/neoterm) can also be used in such a way, though they are only working with languages that have a REPL.
 
 [vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is [vim-slime](https://github.com/jpalardy/vim-slime), but they do things differently enough I made sniprun instead.
 
