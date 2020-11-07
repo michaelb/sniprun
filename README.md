@@ -236,7 +236,7 @@ This project: [vscode-code-runner](https://github.com/formulahendry/vscode-code-
 
 All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file.
 
-The [replvim](https://gitlab.com/HiPhish/repl.nvim) project is also related, as well as [neoterm](https://github.com/kassio/neoterm) that can also be used in such a way.
+The [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](https://github.com/hanschen/vim-ipython-cell)  [codi](https://github.com/metakirby5/codi.vim) as well as [neoterm](https://github.com/kassio/neoterm) can also be used in such a way, though they are only working with languages that have a REPL.
 
 [vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is [vim-slime](https://github.com/jpalardy/vim-slime), but they do things differently enough I made sniprun instead.
 
