@@ -186,15 +186,15 @@ println!("hello n° {}", i+1);
 
 | Language     | Support level |     | Language   | Support level    |
 | ------------ | ------------- | --- | ---------- | ---------------- |
-| Assembly     | Untested      |     | JavaScript | Bloc             |
-| ats          | Untested      |     | Java       | Bloc             |
+| Ada          | Untested      |     | JavaScript | Bloc             |
 | Bash/Shell   | Bloc + REPL\* |     | Julia      | Untested         |
 | C            | Bloc          |     | Lisp       | Untested         |
-| COBOL        | Untested      |     | Lua        | Bloc             |
-| Coffeescript | Untested      |     | Lua-nvim   | Bloc             |
-| C#           | Untested      |     | OCaml      | Untested         |
 | C++          | Bloc          |     | Perl6      | Line             |
-| D            | Untested      |     | Perl       | Line             |
+| Clojure      | Untested      |     | Java       | Bloc             |
+| COBOL        | Untested      |     | Lua        | Bloc             |
+| Coffeescript | Bloc          |     | Lua-nvim   | Bloc             |
+| C#           | Untested      |     | OCaml      | Untested         |
+| D            | Bloc          |     | Perl       | Line             |
 | Elixir       | Untested      |     | PHP        | Untested         |
 | Elm          | Untested      |     | Python3    | Import +REPL\*\* |
 | Erlang       | Untested      |     | Ruby       | Bloc             |
