@@ -1,0 +1,3 @@
+Beware of Bash_original, as it runs as script on your system, with access to your ENV variables and PATH etc...
+
+remove a file from absolute path will succeed!
