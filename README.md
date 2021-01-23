@@ -25,7 +25,7 @@ Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast par
 
 ![](demo.gif)
 
-(the exact same thing can also be done on **compiled** languages such as Rust, to the relevant support level's extent)
+(the exact same thing can also be done on **compiled** languages such as Rust, to the relevant support level's extent). A few lines of code (which maximum semantic complexity depends on the support level) are now within a print statement's reach.
 
 ![](demo_rust.gif)
 
@@ -156,7 +156,7 @@ A list of all available interpreters can be displayed by running `:SnipList`
 - Map the run command to a simple command such as `ff` (or just `f` in visual mode).
 
 ```
-nnoremap ff :SnipRun<CR>
+nnoremap <leader>f :SnipRun<CR>
 vnoremap f :SnipRun<CR>
 ```
 
@@ -164,10 +164,9 @@ vnoremap f :SnipRun<CR>
 - If you use the REPL-like behavior for some languages, mapping the repl reset to a short command is advised.
 
 ```
-nnoremap fc :SnipReplMemoryClean<CR>
+nnoremap <leader>c :SnipReplMemoryClean<CR>
 ```
 
-Make sure that those remaps DO NOT overlap with your own existing maps or default ones (such as the 'find' usage for the suggested maps) in a workflow-breaking way!
 
 ## Support levels and languages
 
