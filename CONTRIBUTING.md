@@ -20,7 +20,7 @@ What do I write, and where?
 
 Yeah cool but what _code_ goes inside?
 
--> Inside, you must define a struct that implement the **Interpreter** trait. Have a look at existing implementations to get the idea. Make sure to respect the [conventions](#conventions). The "example.rs" interpreter is a good starting point.
+-> Inside, you must define a struct that implement the **Interpreter** trait. Have a look at existing implementations to get the idea, though some current interpreters use pretty advanced features of Sniprun that you may not want to deal with. Prefer looking at 'Bloc' level support interpreters for a smooth start. Make sure to respect the [conventions](#conventions). The "example.rs" interpreter is a good starting point, with more comments to help you understand what's happening.
 
 I just compiled, how do I test my code quickly?
 
