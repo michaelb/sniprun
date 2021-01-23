@@ -12,6 +12,12 @@ impl Launcher {
     }
 
     pub fn select_and_run<'a>(&self) -> Result<String, SniprunError> {
+        if (self.data.filetype.is_empty()) {
+            return Err(SniprunError::CustomError(String::from(
+                "No filetype set for current file",
+            )));
+        }
+
         let mut max_level_support = SupportLevel::Unsupported;
         let mut name_best_interpreter = String::from("Generic");
         //select the best interpreter for the language
@@ -30,7 +36,7 @@ impl Launcher {
                 }
             }
         }
-        let _ = skip_all; //silence false unused warning
+        let _ = skip_all; //silence false unused variable warning
         info!(
             "[LAUNCHER] Selected interpreter : {} ; with support level {:?}",
             name_best_interpreter, max_level_support
