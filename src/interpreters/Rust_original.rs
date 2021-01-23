@@ -1,7 +1,7 @@
 //Interpreter:| Rust_original       | rust        |
 //############|_____________________|_____________|________________<- delimiters to help formatting,
-//###########| Interpretername      | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listedvia SnipList
+//############| Interpretername     | language    | comment
+// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipList
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Rust_original {

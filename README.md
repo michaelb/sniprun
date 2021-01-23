@@ -193,7 +193,7 @@ println!("hello n° {}", i+1);
 | ------------ | ------------- | --- | ---------- | ---------------- |
 | Ada          | Untested      |     | Java       | Bloc             |
 | Bash/Shell   | Bloc + REPL\* |     | JavaScript | Bloc             |
-| C            | Bloc          |     | Julia      | Untested         |
+| C            | Bloc          |     | Julia      | Bloc             |
 | C++          | Bloc          |     | Lisp       | Untested         |
 | Clojure      | Untested      |     | Lua        | Bloc             |
 | COBOL        | Untested      |     | Lua-nvim   | Bloc             |
