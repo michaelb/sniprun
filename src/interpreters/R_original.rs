@@ -1,7 +1,7 @@
 //Interpreter:| R_original          | R           |
 //############|_____________________|_____________|________________<- delimiters to help formatting,
 //############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listedvia SnipList
+// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipList
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct R_original {

@@ -1,6 +1,6 @@
 //Interpreter:| Name                | language    |
 //############|_____________________|_____________|________________<- delimiters to help formatting,
-//###########| Interpretername      | language    | comment
+//############| Interpretername     | language    | comment
 // Keep (but modify the first line after the :) if you wish to have this interpreter listed via
 // SnipList
 
@@ -8,7 +8,7 @@
 
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-// For example, Rust_original is a good name for a first rust interpreter
+// For example, Rust_original is a good name for the first rust interpreter
 pub struct Language_subname {
     support_level: SupportLevel,
     data: DataHolder,
@@ -25,7 +25,7 @@ pub struct Language_subname {
 //interpreter (the easiest && most common)
 impl ReplLikeInterpreter for Language_subname {}
 
-impl Interpreter for Rust_original {
+impl Interpreter for Language_subname {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Rust_original> {
         //create a subfolder in the cache folder
         let lwd = data.work_dir.clone() + "/language_subname";
@@ -42,7 +42,7 @@ impl Interpreter for Rust_original {
             data,
             support_level,
             code: String::new(),
-            rust_work_dir: lwd,
+            language_work_dir: lwd,
             bin_path: bp,
             main_file_path: mfp,
         })
@@ -59,7 +59,7 @@ impl Interpreter for Rust_original {
 
     fn get_name() -> String {
         // get your interpreter name
-        String::from("Language_subname")
+        String::from("Language_differenciator")
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -91,13 +91,17 @@ impl Interpreter for Rust_original {
             .is_empty()
             && self.support_level >= SupportLevel::Bloc
         {
-            // if bloc is not pseudo empty and has Bloc current support level
+            // if bloc is not pseudo empty and has Bloc current support level,
+            // add fetched code to self
             self.code = self.data.current_bloc.clone();
+
+        // if there is only data on current line / or Line is the max support level
         } else if !self.data.current_line.replace(" ", "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
         } else {
+            // no code was retrieved
             self.code = String::from("");
         }
 
@@ -114,10 +118,11 @@ impl Interpreter for Rust_original {
     fn build(&mut self) -> Result<(), SniprunError> {
         //write code to file
         let mut _file =
-            File::create(&self.main_file_path).expect("Failed to create file for rust-original");
+            File::create(&self.main_file_path).expect("Failed to create file for language_subname");
         // IO errors can be ignored, or handled into a proper SniprunError
         // If you panic, it should not be too dangerous for anyone
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for rust-original");
+        write(&self.main_file_path, &self.code)
+            .expect("Unable to write to file for language_subname");
 
         //compile it (to the bin_path that arleady points to the rigth path)
         let output = Command::new("compiler")
@@ -128,9 +133,11 @@ impl Interpreter for Rust_original {
             .output()
             .expect("Unable to start process");
 
-        //TODO if relevant, return the error number (parse it from stderr)
+        // if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            return Err(SniprunError::CompilationError("".to_string()));
+            return Err(SniprunError::CompilationError(
+                "some relevant feedback".to_string(),
+            ));
         } else {
             return Ok(());
         }

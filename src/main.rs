@@ -263,7 +263,10 @@ fn main() {
         let mut _handle: Option<thread::JoinHandle<()>> = None;
         loop {
             match recv.recv() {
-                Err(_) => panic!("Broken connection"),
+                Err(_) => {
+                    info!("Broken connection");
+                    panic!("Broken connection")
+                }
                 Ok(HandleAction::New(new)) => _handle = Some(new),
             }
         }
