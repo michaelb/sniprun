@@ -12,7 +12,7 @@ impl Launcher {
     }
 
     pub fn select_and_run<'a>(&self) -> Result<String, SniprunError> {
-        if (self.data.filetype.is_empty()) {
+        if self.data.filetype.is_empty() {
             return Err(SniprunError::CustomError(String::from(
                 "No filetype set for current file",
             )));
