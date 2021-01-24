@@ -6,7 +6,6 @@ Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast par
 
 - [Demos](README.md#demos)
 - [What does it do ?](README.md#what-does-it-do-)
-- [A quick word on REPL-like behavior](README.md#a-quick-word-on-repl-like-behavior)
 - [Installation](README.md#installation)
   - [Prerequisites &amp;&amp; dependencies](README.md#prerequisites--dependencies)
   - [Install Sniprun](README.md#install-sniprun)
@@ -23,9 +22,7 @@ Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast par
 
 ## Demos
 
-![](demo.gif)
-
-(the exact same thing can also be done on **compiled** languages such as Rust, to the relevant support level's extent). A few lines of code (which maximum semantic complexity depends on the support level) are now within a print statement's reach.
+Send to Sniprun snippets of **compiled** languages such as Rust. A few lines of code (which maximum semantic complexity depends on the support level) are now within a print statement's reach.
 
 ![](demo_rust.gif)
 
@@ -53,11 +50,6 @@ By selecting a visual range (always rounded line-wise) or positioning yourself o
 
 ## A quick word on REPL-like behavior
 
-Some languages, see support [table](README.md#support-levels-and-languages), also have some kind of (real, or 'simulated') REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sniprun'd.
-
-Compiled languages can have this simulated REPL behavior too, though there might be unavoidable side effects.
-
-Interpreted languages may use a simulated or real REPL, depending on the implementation.
 
 ## Installation
 
@@ -125,8 +117,13 @@ Alternatively, exit & re-enter Neovim.
 
 ### REPL-like behavior
 
-All languages, including compiled ones, can be fitted with this (fake) REPL-like behavior.
+Some languages, see support [table](README.md#support-levels-and-languages), also have some kind of (real, or 'simulated') REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sniprun'd.
+
+
+Interpreted languages may use a simulated or real REPL, depending on the implementation.
 For many languages that have an interpreter already available, a real one can be used.
+
+Compiled languages can have this simulated REPL behavior too, though there might be unavoidable side effects.
 
 Many interpreted languages will have this behavior enabled by default, but you can always disable those (or enable them) with the `g:SnipRun_repl_behavior_disable` and `g:SnipRun_repl_behavior_enable` blocklist / allowlist:
 
@@ -227,7 +224,9 @@ Due to its nature, Sniprun may have trouble with programs that :
 
 ## Contribute
 
-It's super easy: see [contributing](CONTRIBUTING.md)
+It's super easy: see [contributing](CONTRIBUTING.md).
+I actually thought out the project structure so you only have to worry about one file (yours), when creating an interpreter. All you have to do is copy the example.rs interpreter and modify some parts to suit the language you wish to support.
+
 
 ## Related projects
 
