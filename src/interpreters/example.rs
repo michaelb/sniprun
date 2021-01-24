@@ -160,3 +160,22 @@ impl Interpreter for Language_subname {
         }
     }
 }
+
+// You can add tests if you want to
+#[cfg(test)]
+mod test_language_subname {
+    use super::*;
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+
+        //inspired from Rust syntax
+        data.current_bloc = String::from("println!(\"HW, 1+1 = {}\", 1+1)");
+        let mut interpreter = Language_subname::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "HW, 1+1 = 2\n");
+    }
+}
