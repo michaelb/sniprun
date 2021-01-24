@@ -75,6 +75,15 @@ I lack the ReplLikeInterpreter trait implementation and don't want to do REPL-li
 
 -> You don't have to do it but the boilerplate `impl ReplLikeInterpreter for MyInterpreter {}` is required. You can overwrite the default implementation later if you wish to do some REPL-like functionality.
 
+
+---
+My tests are inconsistent ..?!?
+
+-> Rust tests are run in parallel, and so one a race condition may occur when writing to files and compiling.
+Run with `cargo test -- --test-threads=1`
+
+
+
 ### What's the deal with...
 
 - Support Levels? Those exists to document what the interpreter supports to the end user. They are also used for higher (file, project and system) levels as if an interpreter detects it does not need a support level that high, it can set down its own level and hopefully be faster [ since it won't need to open all files etc...]. **You don't have to worry about this too much if you are just getting started**.
