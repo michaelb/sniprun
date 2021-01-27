@@ -48,7 +48,10 @@ impl Python3_jupyter {
     }
 
     fn module_used(line: &str, code: &str) -> bool {
-        info!("checking for python module usage: line {} in code {}", line, code);
+        info!(
+            "checking for python module usage: line {} in code {}",
+            line, code
+        );
         if line.contains("*") {
             return true;
         }
@@ -157,13 +160,14 @@ impl Interpreter for Python3_jupyter {
         if !self.imports.is_empty() {
             let mut indented_imports = String::new();
             for import in self.imports.lines() {
-                indented_imports = indented_imports + "\t" + import+"\n";
+                indented_imports = indented_imports + "\t" + import + "\n";
             }
 
             self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
         }
 
-        self.code = self.imports.clone() + "\n" + &unindent(&format!("{}{}", "\n", self.code.as_str()));
+        self.code =
+            self.imports.clone() + "\n" + &unindent(&format!("{}{}", "\n", self.code.as_str()));
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {
@@ -234,7 +238,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
         if !self.imports.is_empty() {
             let mut indented_imports = String::new();
             for import in self.imports.lines() {
-                indented_imports = indented_imports + "\t" + import+"\n";
+                indented_imports = indented_imports + "\t" + import + "\n";
             }
 
             self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
@@ -290,16 +294,22 @@ impl ReplLikeInterpreter for Python3_jupyter {
         cleaned_result.remove(0);
 
         info!("cleaned result: {:?}", cleaned_result);
-        return Ok(cleaned_result.join("\n") + "\n");
-
-        // return Err(SniprunError::RuntimeError(
-        //     String::from_utf8(output.stdout.clone())
-        //         .unwrap()
-        //         .lines()
-        //         .last()
-        //         .unwrap_or(&String::from_utf8(output.stdout).unwrap())
-        //         .to_owned(),
-        // ));
-        // }
+        if String::from_utf8(output.stderr.clone()).unwrap().is_empty() {
+            return Ok(cleaned_result.join("\n") + "\n");
+        } else {
+            return Err(SniprunError::RuntimeError(
+                String::from_utf8(strip_ansi_escapes::strip(output.stderr.clone()).unwrap())
+                    .unwrap()
+                    .lines()
+                    .last()
+                    .unwrap_or(
+                        &String::from_utf8(
+                            strip_ansi_escapes::strip(output.stderr.clone()).unwrap(),
+                        )
+                        .unwrap(),
+                    )
+                    .to_owned(),
+            ));
+        }
     }
 }
