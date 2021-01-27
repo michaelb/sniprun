@@ -1,19 +1,22 @@
-//Interpreter:| Python3_original    | python3     |
+//Interpreter:| Python3_jupyter     | python3     | runs on jupyter kernel
 //############|_____________________|_____________|________________<- delimiters to help formatting,
 //############| Interpretername     | language    | comment
 // Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipList
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct Python3_original {
+pub struct Python3_jupyter {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
     imports: String,
+    kernel_file: String,
     main_file_path: String,
+    launcher_path: String,
     plugin_root: String,
     cache_dir: String,
 }
-impl Python3_original {
+
+impl Python3_jupyter {
     pub fn fetch_imports(&mut self) -> std::io::Result<()> {
         if self.support_level < SupportLevel::Import {
             return Ok(());
@@ -35,7 +38,7 @@ impl Python3_original {
             // info!("lines are : {}", line);
             if line.contains("import ") //basic selection
                 && line.trim().chars().next() != Some('#')
-            && Python3_original::module_used(line, &self.code)
+            && Python3_jupyter::module_used(line, &self.code)
             {
                 // embed in try catch blocs in case uneeded module is unavailable
                 self.imports = self.imports.clone() + "\n" + line;
@@ -43,11 +46,9 @@ impl Python3_original {
         }
         Ok(())
     }
+
     fn module_used(line: &str, code: &str) -> bool {
-        info!(
-            "checking for python module usage: line {} in code {}",
-            line, code
-        );
+        info!("checking for python module usage: line {} in code {}", line, code);
         if line.contains("*") {
             return true;
         }
@@ -71,33 +72,38 @@ impl Python3_original {
     }
 }
 
-impl Interpreter for Python3_original {
-    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Python3_original> {
+impl Interpreter for Python3_jupyter {
+    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Python3_jupyter> {
         //create a subfolder in the cache folder
-        let rwd = data.work_dir.clone() + "/python3_original";
+        let pwd = data.work_dir.clone() + "/python3_jupyter";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
-            .create(&rwd)
-            .expect("Could not create directory for python3-original");
+            .create(&pwd)
+            .expect("Could not create directory for python3-jupyter");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = rwd.clone() + "/main.py";
+        let mfp = pwd.clone() + "/main.py";
+        let lp = pwd.clone() + "/main.sh";
 
         let pgr = data.sniprun_root_dir.clone();
-        Box::new(Python3_original {
+
+        let kp = pwd.clone() + "/kernel_sniprun.json";
+        Box::new(Python3_jupyter {
             data,
             support_level: level,
-            code: String::from(""),
-            imports: String::from(""),
+            code: String::new(),
+            imports: String::new(),
+            kernel_file: kp,
             main_file_path: mfp,
+            launcher_path: lp,
             plugin_root: pgr,
-            cache_dir: rwd,
+            cache_dir: pwd,
         })
     }
 
     fn get_name() -> String {
-        String::from("Python3_original")
+        String::from("Python3_jupyter")
     }
 
     fn behave_repl_like_default() -> bool {
@@ -156,13 +162,14 @@ impl Interpreter for Python3_original {
 
             self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
         }
-        self.code = self.imports.clone() + &unindent(&format!("{}{}", "\n", self.code.as_str()));
+
+        self.code = self.imports.clone() + "\n" + &unindent(&format!("{}{}", "\n", self.code.as_str()));
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {
         // info!("python code:\n {}", self.code);
         write(&self.main_file_path, &self.code)
-            .expect("Unable to write to file for python3_original");
+            .expect("Unable to write to file for python3_jupyter");
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
@@ -184,55 +191,115 @@ impl Interpreter for Python3_original {
         }
     }
 }
-impl ReplLikeInterpreter for Python3_original {
+impl ReplLikeInterpreter for Python3_jupyter {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
-        self.fetch_code()
-    }
-    fn build_repl(&mut self) -> Result<(), SniprunError> {
-        self.build()
-    }
-
-    fn execute_repl(&mut self) -> Result<String, SniprunError> {
-        self.execute()
-    }
-    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
-        info!("begins add boilerplate repl");
-        //load save & load functions
-        let mut path_to_python_functions = self.plugin_root.clone();
-        path_to_python_functions.push_str("/src/interpreters/Python3_original/saveload.py");
-        let python_functions = std::fs::read_to_string(&path_to_python_functions).unwrap();
-        let klepto_memo = String::from("'") + &self.cache_dir.clone() + "/" + "memo" + "'";
-
-        let mut final_code = self.imports.clone();
-        final_code.push_str("\n");
-        final_code.push_str(&python_functions);
-        final_code.push_str("\n");
-        if self.read_previous_code().is_empty() {
-            //first run
-            self.save_code("Not the first run anymore".to_string());
+        self.fetch_code()?;
+        let saved_code = self.read_previous_code();
+        let mut saved_code: Vec<_> = saved_code.lines().collect();
+        if saved_code.is_empty() {
+            //initialize kernel
+            let _res = Command::new("jupyter-kernel")
+                .arg("--kernel='python3'")
+                .arg(String::from("--KernelManager.connection_file='") + &self.kernel_file + "'")
+                .spawn();
+            info!("Initialized kernel");
         } else {
-            //not the first run, should load old variables
-            {
-                final_code.push_str("sniprun142859_load(");
-                final_code.push_str(&klepto_memo);
-                final_code.push_str(")");
+            // kernel already running
+            info!(
+                "Using already loaded jupyter kernel at {}",
+                self.kernel_file
+            );
+        }
+        // do not re-import already loaded imports
+        let mut new_imports = String::new();
+        for import in self.imports.lines() {
+            if !saved_code.contains(&import) {
+                saved_code.push(import);
+                new_imports = new_imports + import + "\n";
+                info!("new import found: {}", import);
+            } else {
+                info!("import already loaded: {}", import);
             }
-            final_code.push_str("\n");
         }
 
-        final_code.push_str(&unindent(&format!("{}{}", "\n", self.code.as_str())));
-        final_code.push_str("\n");
-        {
-            final_code.push_str("sniprun142859_save("); // if the run has not failed, save new variables
-            final_code.push_str(&klepto_memo);
-            final_code.push_str(")");
-        }
+        // save kernel + seen_imports in sniprun memory
+        self.save_code(saved_code.join("\n"));
 
-        self.code = final_code.clone();
-        // info!("---{}---", &final_code);
+        self.imports = new_imports;
 
         Ok(())
     }
+    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
+        info!("begins add boilerplate repl");
+        if !self.imports.is_empty() {
+            let mut indented_imports = String::new();
+            for import in self.imports.lines() {
+                indented_imports = indented_imports + "\t" + import+"\n";
+            }
 
-    // &unindent(&format!("{}{}", "\n", self.code.as_str()));
+            self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
+        }
+        self.code = self.imports.clone() + "print(\"\")\n" + &self.code;
+        Ok(())
+    }
+
+    fn build_repl(&mut self) -> Result<(), SniprunError> {
+        let actual_command = String::from("echo")
+            + " "
+            + &String::from("'exec(open(\"")
+            + &self.main_file_path
+            + "\").read())"
+            + "' "
+            + "|"
+            + " "
+            + "jupyter-console"
+            + " "
+            + "--existing"
+            + " "
+            + &self.kernel_file.clone()
+            + " "
+            + "--simple-prompt"
+            + " "
+            + "-y"
+            + " "
+            + " --no-confirm"
+            + " "
+            + "--ZMQTerminalInteractiveShell.banner=\"\"";
+
+        write(&self.launcher_path, &actual_command)
+            .expect("Unable to write file for python3_jupyter");
+        info!("command written to launcher:\n{}\n", actual_command);
+        write(&self.main_file_path, &self.code)
+            .expect("Unable to write to file for python3_jupyter");
+        Ok(())
+    }
+
+    fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        let output = Command::new("sh")
+            .arg(&self.launcher_path)
+            .output()
+            .expect("Unable to start process");
+        let result = String::from_utf8(output.stdout).unwrap();
+        let mut cleaned_result: Vec<_> = result.lines().collect();
+
+        info!("result: {:?}", cleaned_result);
+
+        // first and last lines are the [In] x: prompts from jupyter-console
+        cleaned_result.remove(cleaned_result.len() - 1);
+        cleaned_result.remove(1);
+        cleaned_result.remove(0);
+
+        info!("cleaned result: {:?}", cleaned_result);
+        return Ok(cleaned_result.join("\n") + "\n");
+
+        // return Err(SniprunError::RuntimeError(
+        //     String::from_utf8(output.stdout.clone())
+        //         .unwrap()
+        //         .lines()
+        //         .last()
+        //         .unwrap_or(&String::from_utf8(output.stdout).unwrap())
+        //         .to_owned(),
+        // ));
+        // }
+    }
 }

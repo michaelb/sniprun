@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, Eq, PartialEq)]
 #[allow(dead_code)]
 pub enum SniprunError {
     ///this error should only be raised when something goes very wrong, and you can't figure out

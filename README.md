@@ -1,12 +1,11 @@
 # Sniprun
 
-![](https://img.shields.io/badge/sniprun-v0.4.3-green.svg) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg)
+![](https://img.shields.io/badge/sniprun-v0.4.4-green.svg) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg)
 
 Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
 - [Demos](README.md#demos)
 - [What does it do ?](README.md#what-does-it-do-)
-- [A quick word on REPL-like behavior](README.md#a-quick-word-on-repl-like-behavior)
 - [Installation](README.md#installation)
   - [Prerequisites &amp;&amp; dependencies](README.md#prerequisites--dependencies)
   - [Install Sniprun](README.md#install-sniprun)
@@ -23,9 +22,7 @@ Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast par
 
 ## Demos
 
-![](demo.gif)
-
-(the exact same thing can also be done on **compiled** languages such as Rust, to the relevant support level's extent). A few lines of code (which maximum semantic complexity depends on the support level) are now within a print statement's reach.
+Send to Sniprun snippets of **compiled** languages such as Rust. A few lines of code (which maximum semantic complexity depends on the support level) are now within a print statement's reach.
 
 ![](demo_rust.gif)
 
@@ -33,9 +30,12 @@ send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash
 
 ![](demo_repl.gif)
 
+Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed.
+
+![](error_example.png)
+
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
 
-> **Note: Python users are required to install the 'klepto' python package or to disable REPL behavior** in their config files (to get the same behaviour than before 0.4.1)
 
 ## What does it do ?
 
@@ -53,24 +53,16 @@ By selecting a visual range (always rounded line-wise) or positioning yourself o
 
 ## A quick word on REPL-like behavior
 
-Some languages, see support [table](README.md#support-levels-and-languages), also have some kind of (real, or 'simulated') REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sniprun'd.
-
-Compiled languages can have this simulated REPL behavior too, though there might be unavoidable side effects.
-
-Interpreted languages may use a simulated or real REPL, depending on the implementation.
 
 ## Installation
 
 ### Prerequisites && dependencies
 
-- Sniprun is Linux-only for now (as of v0.4.0)
-- Neovim version >= 0.44 preferably, but should work with older version
+- Sniprun is Linux-only for now (as of v0.4.4)
+- Neovim version >= 0.43 preferably, but should work with older versions
 - [recommended, but optionnal] cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
-- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter.
+- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the **[doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at** before getting started as it also contains the potential limitations of each interpreter.
 
-For example, most people will probably need:
-
-- the klepto package: `pip install --user klepto` if they use python with REPL. (Python REPL behaviour is enabled by default, but klepto has to be manually installed)
 
 ### Install Sniprun
 
@@ -125,8 +117,13 @@ Alternatively, exit & re-enter Neovim.
 
 ### REPL-like behavior
 
-All languages, including compiled ones, can be fitted with this (fake) REPL-like behavior.
+Some languages, see support [table](README.md#support-levels-and-languages), also have some kind of (real, or 'simulated') REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sniprun'd.
+
+
+Interpreted languages may use a simulated or real REPL, depending on the implementation.
 For many languages that have an interpreter already available, a real one can be used.
+
+Compiled languages can have this simulated REPL behavior too, though there might be unavoidable side effects.
 
 Many interpreted languages will have this behavior enabled by default, but you can always disable those (or enable them) with the `g:SnipRun_repl_behavior_disable` and `g:SnipRun_repl_behavior_enable` blocklist / allowlist:
 
@@ -143,11 +140,11 @@ Hopefully, if it does not work, or if the 'memory' is corrupted by bad code (for
 
 You can add interpreters you want to always use in case multiples interpreters are available for one file type by adding to your config file / init.vim :
 
-`let g:SnipRun_select_interpreters = ['name_of_the_interpreter']`
+`let g:SnipRun_select_interpreters = ["name_of_the_interpreter"]`
 
 For example to always select Lua_original and Rust_original over others,
 
-`let g:SnipRun_select_interpreters =['Lua_original', 'Rust_original']`
+`let g:SnipRun_select_interpreters =["Lua_original', 'Rust_original"]`
 
 A list of all available interpreters can be displayed by running `:SnipList`
 
@@ -227,7 +224,9 @@ Due to its nature, Sniprun may have trouble with programs that :
 
 ## Contribute
 
-It's super easy: see [contributing](CONTRIBUTING.md)
+It's super easy: see [contributing](CONTRIBUTING.md).
+I actually thought out the project structure so you only have to worry about one file (yours), when creating an interpreter. All you have to do is copy the example.rs interpreter and modify some parts to suit the language you wish to support.
+
 
 ## Related projects
 

@@ -127,3 +127,46 @@ impl Interpreter for Rust_original {
         }
     }
 }
+
+#[cfg(test)]
+mod test_rust_original {
+    use super::*;
+    use crate::error::SniprunError;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("println!(\"HW, 1+1 = {}\", 1+1);");
+        let mut interpreter = Rust_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "HW, 1+1 = 2\n");
+    }
+
+    #[test]
+    fn runtime_error() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from(
+            "
+            let mock_input = \"153.2\";
+            let parsed = mock_input.parse::<i32>().unwrap();
+            ",
+        );
+        let expected = String::from("ParseIntError { kind: InvalidDigit }");
+        let mut interpreter = Rust_original::new(data);
+        let res = interpreter.run();
+
+        assert!(res.is_err());
+        // should panic if not an Err()
+        if let Err(e) = res {
+            match e {
+                SniprunError::RuntimeError(full_message) => {
+                    assert!(full_message.contains(&expected))
+                }
+                _ => panic!("Not the right error message"),
+            }
+        }
+    }
+}
