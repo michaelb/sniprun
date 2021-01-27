@@ -17,6 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: cargo build --verbose
+      run: cargo build --verbose --release
+    - name: Unit tests
+      run: cargo test --release -- --test-threads=1
     - name: Installation tests
       run: ./install.sh
