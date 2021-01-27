@@ -1,6 +1,6 @@
 # Sniprun
 
-![](https://img.shields.io/badge/sniprun-v0.4.3-green.svg) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg)
+![](https://img.shields.io/badge/sniprun-v0.4.4-green.svg) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg)
 
 Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
@@ -30,9 +30,12 @@ send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash
 
 ![](demo_repl.gif)
 
+Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed.
+
+![](error_example.png)
+
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
 
-> **Note: Python users are required to install the 'klepto' python package or to disable REPL behavior** in their config files (to get the same behaviour than before 0.4.1)
 
 ## What does it do ?
 
@@ -55,14 +58,11 @@ By selecting a visual range (always rounded line-wise) or positioning yourself o
 
 ### Prerequisites && dependencies
 
-- Sniprun is Linux-only for now (as of v0.4.0)
-- Neovim version >= 0.44 preferably, but should work with older version
+- Sniprun is Linux-only for now (as of v0.4.4)
+- Neovim version >= 0.43 preferably, but should work with older versions
 - [recommended, but optionnal] cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
-- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter.
+- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the **[doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at** before getting started as it also contains the potential limitations of each interpreter.
 
-For example, most people will probably need:
-
-- the klepto package: `pip install --user klepto` if they use python with REPL. (Python REPL behaviour is enabled by default, but klepto has to be manually installed)
 
 ### Install Sniprun
 

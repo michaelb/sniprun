@@ -23,6 +23,14 @@ impl Python3_original {
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;
 
+        if !self
+            .data
+            .current_bloc
+            .replace(&[' ', '\t', '\n', '\r'][..], "")
+            .is_empty()
+        {
+            self.code = self.data.current_bloc.clone();
+        }
         for line in contents.lines() {
             // info!("lines are : {}", line);
             if line.contains("import ") //basic selection
@@ -30,18 +38,16 @@ impl Python3_original {
             && Python3_original::module_used(line, &self.code)
             {
                 // embed in try catch blocs in case uneeded module is unavailable
-                self.imports = self.imports.clone()
-                    + "\n
-try:\n" + "\t" + line
-                    + "\nexcept:\n\t"
-                    + "pass\n";
+                self.imports = self.imports.clone() + "\n" + line;
             }
         }
         Ok(())
     }
-
     fn module_used(line: &str, code: &str) -> bool {
-        info!("checking for python module usage: line {} in code {}", line, code);
+        info!(
+            "checking for python module usage: line {} in code {}",
+            line, code
+        );
         if line.contains("*") {
             return true;
         }
@@ -95,7 +101,7 @@ impl Interpreter for Python3_original {
     }
 
     fn behave_repl_like_default() -> bool {
-        true
+        false
     }
 
     fn get_supported_languages() -> Vec<String> {
@@ -142,6 +148,14 @@ impl Interpreter for Python3_original {
         Ok(())
     }
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
+        if !self.imports.is_empty() {
+            let mut indented_imports = String::new();
+            for import in self.imports.lines() {
+                indented_imports = indented_imports + "\t" + import+"\n";
+            }
+
+            self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
+        }
         self.code = self.imports.clone() + &unindent(&format!("{}{}", "\n", self.code.as_str()));
         Ok(())
     }

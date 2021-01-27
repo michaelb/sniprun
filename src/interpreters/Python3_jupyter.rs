@@ -107,7 +107,7 @@ impl Interpreter for Python3_jupyter {
     }
 
     fn behave_repl_like_default() -> bool {
-        true
+        false
     }
 
     fn get_supported_languages() -> Vec<String> {
@@ -154,7 +154,16 @@ impl Interpreter for Python3_jupyter {
         Ok(())
     }
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = self.imports.clone() + &unindent(&format!("{}{}", "\n", self.code.as_str()));
+        if !self.imports.is_empty() {
+            let mut indented_imports = String::new();
+            for import in self.imports.lines() {
+                indented_imports = indented_imports + "\t" + import+"\n";
+            }
+
+            self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
+        }
+
+        self.code = self.imports.clone() + "\n" + &unindent(&format!("{}{}", "\n", self.code.as_str()));
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {
@@ -266,7 +275,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
     }
 
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("bash")
+        let output = Command::new("sh")
             .arg(&self.launcher_path)
             .output()
             .expect("Unable to start process");
