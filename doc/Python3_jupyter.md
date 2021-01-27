@@ -1,5 +1,13 @@
 # Python3_jupyter
 
+## Dependencies
+- jupyter
+
+(more specifically, you must be able to run `jupyter-kernel` and `jupyter-console` from the command line)
+
+## Notes
+
+
 Due to the requirement of `jupyter-kernel` and `jupyter-console`, REPL behavior is disabled by default.
 To enable it include this in your configuration file
 
@@ -17,7 +25,7 @@ The code runs on a separate jupyter python3 kernel which will NOT interefere wit
 However, mind that the usual limitations of such kernels still apply: max duration of execution, etc... but you probably don't have to pay too much attention to this.
 
 
-The jupyter kernel also has a substantial overhead when it comes to running code, in addition to (well-managed) imports, that means the Python3_jupyter interpreter may feel a bit slow compared to others
+The jupyter kernel also has a substantial overhead when it comes to running code, in addition to (well-managed) imports, that means the Python3_jupyter interpreter may feel a bit slow compared to others, when the REPL functionnaluty relying on it.
 
 
 
