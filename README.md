@@ -1,6 +1,6 @@
 # Sniprun
 
-![](https://img.shields.io/badge/sniprun-v0.4.4-green.svg) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/michaelb/sniprun) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg) ![GitHub all releases](https://img.shields.io/github/downloads/michaelb/sniprun/total)
 
 Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
