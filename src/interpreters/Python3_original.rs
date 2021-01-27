@@ -13,29 +13,6 @@ pub struct Python3_original {
     plugin_root: String,
     cache_dir: String,
 }
-
-fn module_used(line: &str, code: &str) -> bool {
-    if line.contains("*") {
-        return true;
-    }
-    if line.contains(" as ") {
-        if let Some(name) = line.split(" ").last() {
-            return code.contains(name);
-        }
-    }
-    for name in line
-        .replace(",", " ")
-        .replace("from", " ")
-        .replace("import ", " ")
-        .split(" ")
-    {
-        if code.contains(name.trim()) {
-            return true;
-        }
-    }
-    return false;
-}
-
 impl Python3_original {
     pub fn fetch_imports(&mut self) -> std::io::Result<()> {
         if self.support_level < SupportLevel::Import {
@@ -50,7 +27,7 @@ impl Python3_original {
             // info!("lines are : {}", line);
             if line.contains("import ") //basic selection
                 && line.trim().chars().next() != Some('#')
-            && module_used(line, &contents)
+            && Python3_original::module_used(line, &self.code)
             {
                 // embed in try catch blocs in case uneeded module is unavailable
                 self.imports = self.imports.clone()
@@ -61,6 +38,30 @@ try:\n" + "\t" + line
             }
         }
         Ok(())
+    }
+
+    fn module_used(line: &str, code: &str) -> bool {
+        info!("checking for python module usage: line {} in code {}", line, code);
+        if line.contains("*") {
+            return true;
+        }
+        if line.contains(" as ") {
+            if let Some(name) = line.split(" ").last() {
+                return code.contains(name);
+            }
+        }
+        for name in line
+            .replace(",", " ")
+            .replace("from", " ")
+            .replace("import ", " ")
+            .split(" ")
+            .filter(|&x| !x.is_empty())
+        {
+            if code.contains(name.trim()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
