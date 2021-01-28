@@ -7,7 +7,7 @@ endif
 let s:SnipRun = 'run'
 let s:SnipTerminate = 'terminate'
 let s:SnipClean = "clean"
-let s:SnipList = "showlist"
+let s:SnipInfo = "showinfo"
 let s:SnipReplMemoryClean = "clearrepl"
 
 let s:scriptdir = resolve(expand('<sfile>:p:h') . '/..')
@@ -15,10 +15,6 @@ let s:bin= s:scriptdir.'/target/release/sniprun'
 
 
 let s:SnipRun_select_interpreters = get(g: ,'SnipRun_select_interpreters', [])
-function! s:showlist()
-  execute  '!sh' s:scriptdir.'/ressources/list_script.sh' s:scriptdir.'/src/interpreters'
-endfunction
-
 
 let s:SnipRun_repl_behavior_enable = get(g: ,'SnipRun_repl_behavior_enable', [])
 let s:SnipRun_repl_behavior_disable = get(g: ,'SnipRun_repl_behavior_disable', [])
@@ -45,10 +41,14 @@ function! s:configureCommands()
   command! -range SnipRun <line1>,<line2>call s:run()
   command! SnipTerminate :call s:terminate()
   command! SnipReset :call s:clean()| :call s:terminate()
-  command! SnipList :call s:showlist()
+  command! SnipInfo :call s:showinfo()
   command! SnipReplMemoryClean :call s:clearReplMemory()
 endfunction
 
+
+function! s:showinfo()
+  execute  '!sh' s:scriptdir.'/ressources/infoscript.sh' s:scriptdir.'/src/interpreters'
+endfunction
 
 function! s:run() range
   let s:fl=a:firstline

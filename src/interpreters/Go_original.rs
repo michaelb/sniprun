@@ -1,7 +1,7 @@
 //Interpreter:| Go_original         | go          |
 //############|_____________________|_____________|________________<- delimiters to help formatting,
 //############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipList
+// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Go_original {

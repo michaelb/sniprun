@@ -146,7 +146,7 @@ For example to always select Lua_original and Rust_original over others,
 
 `let g:SnipRun_select_interpreters =["Lua_original', 'Rust_original"]`
 
-A list of all available interpreters can be displayed by running `:SnipList`
+A list of all available interpreters can be displayed by running `:SnipInfo`
 
 ### My usage recommandation & tricks
 
