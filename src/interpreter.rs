@@ -19,7 +19,6 @@ pub enum SupportLevel {
     Project = 20,
     ///Run a line/bloc of code, but include variable/function from the project and project or system-wide dependencies
     System = 30,
-
     ///selected: don't use this support level, it is meant to communicate user's config choices
     Selected = 255,
 }
@@ -135,6 +134,7 @@ pub trait InterpreterUtils {
 }
 
 impl<T: Interpreter> InterpreterUtils for T {
+    ///Read a String previous saved to sniprun memory
     fn read_previous_code(&self) -> String {
         let data = self.get_data();
         if data.interpreter_data.is_none() {
@@ -150,6 +150,9 @@ impl<T: Interpreter> InterpreterUtils for T {
         }
     }
 
+    /// Save an unique String to Sniprun memory.
+    /// This will be emptied at neovim startup,
+    /// when sniprun is reset or memoryclean'd
     fn save_code(&self, code: String) {
         let previous_code = self.read_previous_code();
         let data = self.get_data();
@@ -164,6 +167,7 @@ impl<T: Interpreter> InterpreterUtils for T {
         }
     }
 
+    /// Clear sniprun memory
     fn clear(&self) {
         let data = self.get_data();
         if data.interpreter_data.is_some() {
@@ -183,12 +187,17 @@ impl<T: Interpreter> InterpreterUtils for T {
         }
     }
 
+    /// save a pid (of an external processus)
+    /// to sniprun memory
+    /// This will be emptied at neovim startup,
+    /// when sniprun is reset or memoryclean'd
     fn set_pid(&self, pid: u32) {
         if let Some(di) = self.get_data().interpreter_data {
             di.lock().unwrap().pid = Some(pid);
         }
     }
 
+    /// get a pid previously saved in sniprun memory
     fn get_pid(&self) -> Option<u32> {
         if let Some(di) = self.get_data().interpreter_data {
             if let Some(real_pid) = di.lock().unwrap().pid {
