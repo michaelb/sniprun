@@ -299,7 +299,8 @@ fn main() {
                     match result {
                         Ok(answer_str) => {
                             // do not display anything if string empty, as it may means the
-                            // interpreter used the nvim handle directly
+                            // interpreter used the nvim handle directly and you don't want 
+                            // to overwrite it!
                             if !answer_str.is_empty() {
                                 let mut answer_str = answer_str.clone();
                                 answer_str = answer_str.replace("\\\"", "\"");
