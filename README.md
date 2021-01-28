@@ -82,6 +82,8 @@ Sniprun is developped and maintained on Linux (-only for now), support for other
 
 ## Usage
 
+(you can of course see `:help sniprun` once installed)
+
 You can do basically two things: **run** (your code selection) and **stop** it (in the rare occasions it crashes, it takes too long or sniprun crashes). You'll probably be using only the first one, but the second can come in handy.
 
 ### Running

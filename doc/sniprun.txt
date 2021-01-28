@@ -10,22 +10,59 @@ Authors: Michael bleuez <michael.bleuez2@gmail.com>
 ==============================================================================
 INTRODUCTION                                           *sniprun-intro*
 
-Sniprun is a code runner plugin that run, and if necessary, compile beforehand, snippets (visual selection) of your code.
+Sniprun is a code runner plugin that run, and if necessary, compile beforehand, snippets (visual selection)
+of your code.
 
 
 ==============================================================================
 QUICK START                                       *sniprun-quickstart*
 
 
-Select a visual (line mode advised) block of code to run, or position yourself on the line:
-then run in normal or visual mode   :SnipRun
 
-If you crash SnipRun, you can :SnipTerminate (that will kill Sniprun, and restart it at next call), or :SnipReset , (that will clear the cache that helps SnipRun compile faster)
 
-If you sent incorrect code to a interpreter with enabled REPL mode, you can clear the REPL 'memory' with :SnipReplMemoryClean
+:'<'>Sniprun        Send current visual selection (line-wise) to Sniprun
+:SnipRun            Send the current line to Sniprun
 
+
+:SnipReset    Restart sniprun (that will also clear the cache that helps Sniprun compile faster)
+
+
+==============================================================================
+ALL COMMANDS                                       *sniprun-comands*
+
+:SnipRun                 Send the current line/visual selection to Sniprun
+
+:SnipReset               Restart sniprun (that will also clear the cache that helps Sniprun compile faster)
+
+:SnipReplMemoryClean     If you sent incorrect code to a interpreter with enabled REPL mode, you can clear the 
+                         REPL 'memory' with that. It will forget all variables you have defined previously etc..
+
+:SnipTerminate          Kill Sniprun and child processes (equivalent to SnipReset but does not clean the cache)
+
+:SnipInfo               Get Sniprun version info and info about the available intepreters
+
+
+==============================================================================
+CONFIGURATION                                       *sniprun-configuration*
+
+Sniprun interpreters can be chosen (in case multiple interpreters are available for one filetype) by 
+specifying the variable (a list) in your config:
+
+    let g:SnipRun_select_interpreters = ["name_of_favorite_interpreter"]
+
+so that (/these) will be chosen over any other when compatible with filetype.
+
+
+If you want to enable/disable REPL behavior of some interpreters, you can set:
+
+    g:SnipRun_repl_behavior_enable
+and
+    g:SnipRun_repl_behavior_disable
+
+to a list of interpreter names to force/forbid REPL behavior.
 
 ==============================================================================
 TROUBLESHOOTING                                  *sniprun-troubleshooting*
 
-If anything is not working; you should consult the README at github.com/michaelb/sniprun, as well as the documentation for every language in the doc/ folder at the same git repository.
+If anything is not working; you should consult the README at github.com/michaelb/sniprun, as well as the
+documentation for every language in the doc/ folder at the same git repository.
