@@ -243,7 +243,9 @@ impl ReplLikeInterpreter for Python3_jupyter {
 
             self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
         }
-        self.code = self.imports.clone() + "print(\"\")\n" + &self.code;
+        self.code =
+            self.imports.clone() + "\nprint(\"\")\n" + &unindent(&format!("{}{}", "\n", self.code.as_str()));
+
         Ok(())
     }
 
