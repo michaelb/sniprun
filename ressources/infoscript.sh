@@ -10,13 +10,14 @@ local_version=v$(cat Cargo.toml | grep version | cut -d "\"" -f 2)
 remote_version=$(get_latest_release)
 
 echo "
-  ______       _       ______
- / _____)     (_)     (_____ \
-( (____  ____  _ ____  _____) )_   _ ____
- \____ \|  _ \| |  _ \|  __  /| | | |  _ \
- _____) ) | | | | |_| | |  \ \| |_| | | | |
-(______/|_| |_|_|  __/|_|   |_|____/|_| |_|
-                |_|
+   _____       _       _____             
+  / ____|     (_)     |  __ \            
+ | (___  _ __  _ _ __ | |__) |   _ _ __  
+  \___ \| '_ \| | '_ \|  _  / | | | '_ \ 
+  ____) | | | | | |_) | | \ \ |_| | | | |
+ |_____/|_| |_|_| .__/|_|  \_\__,_|_| |_|
+                | |                      
+                |_|                      
 "
 
 echo -n "Version : " $local_version
@@ -31,7 +32,7 @@ echo -e "\n"
 echo "| Interpreter         | language    | comments"
 echo "|---------------------|-------------|---------"
 for file in $DIRECTORY/*.rs; do
-  if [[ $(basename $file) != "example.rs" ]]; then
+  if [ $(basename $file) != "example.rs" ]; then
     IFS= read -r line <$file
     if [[ ${line:0:14} == "//Interpreter:" ]]; then
       echo "${line:14}"
