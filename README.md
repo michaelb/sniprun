@@ -222,6 +222,9 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for neovim won't necessarily be the one from where the binary runs, or the good one for relative imports.
 - For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _saved_.
 
+## Changelog
+[changelog](CHANGELOG.md)
+
 ## Contribute
 
 It's super easy: see [contributing](CONTRIBUTING.md).
