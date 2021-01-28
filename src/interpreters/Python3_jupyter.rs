@@ -201,7 +201,9 @@ impl ReplLikeInterpreter for Python3_jupyter {
         let saved_code = self.read_previous_code();
         let mut saved_code: Vec<_> = saved_code.lines().collect();
         if saved_code.is_empty() {
-            //initialize kernel
+            //initialize kernel. Relying on self.read_previous_code to
+            //know when to start a new kernel is important as
+            //this will be cleared by the SnipReplMemoryClean command
             let _res = Command::new("jupyter-kernel")
                 .arg("--kernel='python3'")
                 .arg(String::from("--KernelManager.connection_file='") + &self.kernel_file + "'")
