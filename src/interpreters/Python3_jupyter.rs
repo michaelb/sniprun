@@ -167,7 +167,7 @@ impl Interpreter for Python3_jupyter {
         }
 
         self.code =
-            self.imports.clone() + "\n" + &unindent(&format!("{}{}", "\n", self.code.as_str()));
+            self.imports.clone() + "\nprint(\"\")\n" + &unindent(&format!("{}{}", "\n", self.code.as_str()));
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {
