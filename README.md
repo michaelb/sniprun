@@ -36,9 +36,10 @@ send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash
 
 ![](demo_repl.gif)
 
-Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed.
+Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely (be it 400 lines of compilation warnings, or a clean 'NameError: name 'a' is not defnied'). Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
 
 ![](error_example.png)
+
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
 
