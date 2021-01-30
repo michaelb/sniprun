@@ -162,15 +162,15 @@ A list of all available interpreters can be displayed by running `:SnipInfo`
   (if you don't know about a leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/).
 
 ```
-nnoremap <leader>f <Plug>SnipRun
-vnoremap f <Plug>SnipRun
+nmap <leader>f <Plug>SnipRun
+vmap f <Plug>SnipRun
 ```
 
 - For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire code.
 - If you use the REPL-like behavior for some languages, mapping the repl reset to a short command is advised.
 
 ```
-nnoremap <leader>c :SnipReplMemoryClean<CR>
+nmap <leader>c :SnipReplMemoryClean<CR>
 ```
 
 SnipRun has both `<Plug>`-style commands and old-style plugin-defined commands (`:SnipRun`). While both are here to stay, **please use the `<Plug>` style ones in yours mappings** and if using from another plugin. Bonus; with Plug mappings, if you also have Tim Pope's [vim-repeat](https://github.com/tpope/vim-repeat), you can repeat a SnipRun with "`.`"  .

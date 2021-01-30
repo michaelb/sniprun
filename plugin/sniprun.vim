@@ -91,12 +91,12 @@ call s:connect()
 
 " <Plug> mappings
 " command! -range SnipRun <line1>,<line2>call s:run()
-nnoremap <Plug>SnipRun :call <SID>run()<CR>
-vnoremap <Plug>SnipRun :'<'>call <SID>run()<CR>
-nnoremap <Plug>SnipTerminate :call <SID>terminate()<CR>
-nnoremap <Plug>SnipReset call <SID>clean()
-nnoremap <Plug>SnipInfo :call <SID>showinfo()<CR>
-nnoremap <Plug>SnipReplMemoryClean :call <SID>clearReplMemory()<CR>
+nnoremap <silent> <Plug>SnipRun :call <SID>run()<CR>
+vnoremap <silent> <Plug>SnipRun :'<'>call <SID>run()<CR>
+nnoremap <silent> <Plug>SnipTerminate :call <SID>terminate()<CR>
+nnoremap <silent> <Plug>SnipReset call <SID>clean()
+nnoremap <silent> <Plug>SnipInfo :call <SID>showinfo()<CR>
+nnoremap <silent> <Plug>SnipReplMemoryClean :call <SID>clearReplMemory()<CR>
 
 
 silent! call repeat#set("\<Plug>SnipRun", v:count)
