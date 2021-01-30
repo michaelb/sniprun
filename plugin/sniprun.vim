@@ -86,4 +86,4 @@ endfunction
 
 call s:connect()
 
-
+silent! call repeat#set("\<Plug>SnipRun", v:count)
