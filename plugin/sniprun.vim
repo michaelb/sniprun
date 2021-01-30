@@ -67,6 +67,8 @@ function! s:clean()
   call rpcnotify(s:sniprunJobId, s:SnipClean)
   sleep 500m
   " necessary to give enough time to clean the sniprun work directory
+  " in case diskis slow or something, will do something better later
+  call terminate()
 endfunction
 
 
@@ -85,5 +87,16 @@ function! s:initRpc()
 endfunction
 
 call s:connect()
+
+
+" <Plug> mappings
+" command! -range SnipRun <line1>,<line2>call s:run()
+nnoremap <Plug>SnipRun :call <SID>run()<CR>
+vnoremap <Plug>SnipRun :'<'>call <SID>run()<CR>
+nnoremap <Plug>SnipTerminate :call <SID>terminate()<CR>
+nnoremap <Plug>SnipReset call <SID>clean()
+nnoremap <Plug>SnipInfo :call <SID>showinfo()<CR>
+nnoremap <Plug>SnipReplMemoryClean :call <SID>clearReplMemory()<CR>
+
 
 silent! call repeat#set("\<Plug>SnipRun", v:count)

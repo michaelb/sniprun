@@ -4,6 +4,12 @@
 
 Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
+
+
+I know that this README is exhaustively long (bear with me), but Sniprun itself is and will remain rather simple: don't be afraid, questions are welcome too.
+
+
+
 - [Demos](README.md#demos)
 - [What does it do ?](README.md#what-does-it-do-)
 - [Installation](README.md#installation)
@@ -97,11 +103,11 @@ Line mode: Place your cursor on the line you want to run, and type (in command m
 
 Bloc mode: Select the code you want to execute in visual mode and type in:
 
-```vim
+```
 :'<,'>SnipRun
 ```
 
-(nota bene: the `:'<,'>` is often pre-typed and appears if you type in `:`)
+(nota bene: the `:'<,'>` is often pre-typed and appears if you type in `:` while in visual mode)
 
 ### Stopping
 
@@ -152,11 +158,12 @@ A list of all available interpreters can be displayed by running `:SnipInfo`
 
 ### My usage recommandation & tricks
 
-- Map the run command to a simple command such as `ff` (or just `f` in visual mode).
+- Map the run command to a simple command such as `<leader>f` (or just `f` in visual mode).
+  (if you don't know about a leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/).
 
 ```
-nnoremap <leader>f :SnipRun<CR>
-vnoremap f :SnipRun<CR>
+nnoremap <leader>f <Plug>SnipRun
+vnoremap f <Plug>SnipRun
 ```
 
 - For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire code.
@@ -165,6 +172,11 @@ vnoremap f :SnipRun<CR>
 ```
 nnoremap <leader>c :SnipReplMemoryClean<CR>
 ```
+
+SnipRun has both `<Plug>`-style commands and old-style plugin-defined commands (`:SnipRun`). While both are here to stay, **please use the `<Plug>` style ones in yours mappings** and if using from another plugin. Bonus; with Plug mappings, if you also have Tim Pope's [vim-repeat](https://github.com/tpope/vim-repeat), you can repeat a SnipRun with "`.`"  .
+
+
+Each `:` command matches exactly a `<Plug>` one.
 
 
 ## Support levels and languages
@@ -176,11 +188,11 @@ As of writing, languages can be supported up to different extents:
 - **Bloc** : You can select any piece of code that is semantically correct (minus the eventual entry point) on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:
 
 ```
-fn have_two() -> u16 {
-  return 2;
-}
-let i = std::iter::once(have_two() * 3).map(|u| u*u).next().unwrap();
-println!("hello n° {}", i+1);
+let alphabet = String::from_utf8(
+    (b'a'..=b'z').chain(b'A'..=b'Z').collect()
+).unwrap();
+
+println!("-> {}", alphabet);
 ```
 
 - **Import** : Support external imports, so you don't have to select the top-of-file import to test a 'bloc-mode-style' code selection somewhere else.
