@@ -24,7 +24,7 @@ echo -n "Version : " $local_version
 if [ $local_version == $remote_version ]; then
   echo " (up-to-date)"
 else
-  echo  " (update to v" $remote_version "is available)"
+  echo  " (update to " $remote_version "is available)"
 fi
 
 echo -e "\n"
