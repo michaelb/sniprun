@@ -48,6 +48,7 @@ endfunction
 
 
 function! s:showinfo()
+  silent execute '!sh'  s:scriptdir.'/ressources/infoscript.sh' s:scriptdir.'/src/interpreters' '>' s:scriptdir.'/ressources/infofile.txt'
   let infofile = s:scriptdir."/ressources/infofile.txt"
   let lines = readfile(infofile)
   for line in lines

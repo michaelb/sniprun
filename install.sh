@@ -77,4 +77,3 @@ else
 fi
 
 
-bash ./ressources/infoscript.sh src/interpreters > ./ressources/infofile.txt
