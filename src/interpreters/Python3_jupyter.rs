@@ -1,7 +1,7 @@
 //Interpreter:| Python3_jupyter     | python3     | runs on jupyter kernel
 //############|_____________________|_____________|________________<- delimiters to help formatting,
 //############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipList
+// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Python3_jupyter {
@@ -167,7 +167,7 @@ impl Interpreter for Python3_jupyter {
         }
 
         self.code =
-            self.imports.clone() + "\n" + &unindent(&format!("{}{}", "\n", self.code.as_str()));
+            self.imports.clone() + "\nprint(\"\")\n" + &unindent(&format!("{}{}", "\n", self.code.as_str()));
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {
@@ -201,7 +201,9 @@ impl ReplLikeInterpreter for Python3_jupyter {
         let saved_code = self.read_previous_code();
         let mut saved_code: Vec<_> = saved_code.lines().collect();
         if saved_code.is_empty() {
-            //initialize kernel
+            //initialize kernel. Relying on self.read_previous_code to
+            //know when to start a new kernel is important as
+            //this will be cleared by the SnipReplMemoryClean command
             let _res = Command::new("jupyter-kernel")
                 .arg("--kernel='python3'")
                 .arg(String::from("--KernelManager.connection_file='") + &self.kernel_file + "'")
@@ -243,7 +245,11 @@ impl ReplLikeInterpreter for Python3_jupyter {
 
             self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
         }
-        self.code = self.imports.clone() + "print(\"\")\n" + &self.code;
+        //empty print a newline, in case the jupyter prompt interferes.
+        //anyway, removed by sniprun itself before display
+        self.code =
+            self.imports.clone() + "\nprint(\"\")\n" + &unindent(&format!("{}{}", "\n", self.code.as_str()));
+
         Ok(())
     }
 

@@ -299,14 +299,16 @@ fn main() {
                     match result {
                         Ok(answer_str) => {
                             // do not display anything if string empty, as it may means the
-                            // interpreter used the nvim handle directly
+                            // interpreter used the nvim handle directly and you don't want 
+                            // to overwrite it!
                             if !answer_str.is_empty() {
+                                //make sure there is no lone "
                                 let mut answer_str = answer_str.clone();
                                 answer_str = answer_str.replace("\\\"", "\"");
                                 answer_str = answer_str.replace("\"", "\\\"");
-                                //make sure there is no lone "
-                                let len_without_newline = answer_str.trim_end().len();
-                                answer_str.truncate(len_without_newline);
+
+                                //remove trailing /starting newlines
+                                answer_str = answer_str.trim_start_matches('\n').trim_end_matches('\n').to_string();
 
                                 info!("[MAINLOOP] Returning stdout of code run: {}", answer_str);
 

@@ -4,6 +4,7 @@ set -o errexit
 
 # version="v0.2.0"
 
+echo "Runnning Sniprun Installer"
 local_version=vv$(cat Cargo.toml | grep version | cut -d "\"" -f 2)
 name="sniprun"
 force_build=$1
@@ -74,3 +75,5 @@ else
     fetch_prebuilt_binary # get an older release
   fi
 fi
+
+

@@ -1,8 +1,14 @@
 # Sniprun
 
-![](https://img.shields.io/badge/sniprun-v0.4.4-green.svg) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/michaelb/sniprun) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg) ![GitHub all releases](https://img.shields.io/github/downloads/michaelb/sniprun/total)
 
 Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
+
+
+
+I know that this README is exhaustively long (bear with me), but Sniprun itself is and will remain rather simple: don't be afraid, questions are welcome too.
+
+
 
 - [Demos](README.md#demos)
 - [What does it do ?](README.md#what-does-it-do-)
@@ -82,6 +88,8 @@ Sniprun is developped and maintained on Linux (-only for now), support for other
 
 ## Usage
 
+(you can of course see `:help sniprun` once installed)
+
 You can do basically two things: **run** (your code selection) and **stop** it (in the rare occasions it crashes, it takes too long or sniprun crashes). You'll probably be using only the first one, but the second can come in handy.
 
 ### Running
@@ -95,11 +103,11 @@ Line mode: Place your cursor on the line you want to run, and type (in command m
 
 Bloc mode: Select the code you want to execute in visual mode and type in:
 
-```vim
+```
 :'<,'>SnipRun
 ```
 
-(nota bene: the `:'<,'>` is often pre-typed and appears if you type in `:`)
+(nota bene: the `:'<,'>` is often pre-typed and appears if you type in `:` while in visual mode)
 
 ### Stopping
 
@@ -146,23 +154,29 @@ For example to always select Lua_original and Rust_original over others,
 
 `let g:SnipRun_select_interpreters =["Lua_original', 'Rust_original"]`
 
-A list of all available interpreters can be displayed by running `:SnipList`
+A list of all available interpreters can be displayed by running `:SnipInfo`
 
 ### My usage recommandation & tricks
 
-- Map the run command to a simple command such as `ff` (or just `f` in visual mode).
+- Map the run command to a simple command such as `<leader>f` (or just `f` in visual mode).
+  (if you don't know about a leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/).
 
 ```
-nnoremap <leader>f :SnipRun<CR>
-vnoremap f :SnipRun<CR>
+nmap <leader>f <Plug>SnipRun
+vmap f <Plug>SnipRun
 ```
 
 - For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire code.
 - If you use the REPL-like behavior for some languages, mapping the repl reset to a short command is advised.
 
 ```
-nnoremap <leader>c :SnipReplMemoryClean<CR>
+nmap <leader>c :SnipReplMemoryClean<CR>
 ```
+
+SnipRun has both `<Plug>`-style commands and old-style plugin-defined commands (`:SnipRun`). While both are here to stay, **please use the `<Plug>` style ones in yours mappings** and if using from another plugin. Bonus; with Plug mappings, if you also have Tim Pope's [vim-repeat](https://github.com/tpope/vim-repeat), you can repeat a SnipRun with "`.`"  .
+
+
+Each `:` command matches exactly a `<Plug>` one.
 
 
 ## Support levels and languages
@@ -174,11 +188,11 @@ As of writing, languages can be supported up to different extents:
 - **Bloc** : You can select any piece of code that is semantically correct (minus the eventual entry point) on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:
 
 ```
-fn have_two() -> u16 {
-  return 2;
-}
-let i = std::iter::once(have_two() * 3).map(|u| u*u).next().unwrap();
-println!("hello n° {}", i+1);
+let alphabet = String::from_utf8(
+    (b'a'..=b'z').chain(b'A'..=b'Z').collect()
+).unwrap();
+
+println!("-> {}", alphabet);
 ```
 
 - **Import** : Support external imports, so you don't have to select the top-of-file import to test a 'bloc-mode-style' code selection somewhere else.
@@ -218,9 +232,12 @@ Due to its nature, Sniprun may have trouble with programs that :
 
 - Meddle with standart output / stderr
 - Need to read from stdin
-- Prints double quotes ("), or incorrect UTF8 characters, or just too many lines
+- Prints incorrect UTF8 characters, or just too many lines
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for neovim won't necessarily be the one from where the binary runs, or the good one for relative imports.
 - For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _saved_.
+
+## Changelog
+[changelog](CHANGELOG.md)
 
 ## Contribute
 
