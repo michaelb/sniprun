@@ -245,6 +245,8 @@ impl ReplLikeInterpreter for Python3_jupyter {
 
             self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
         }
+        //empty print a newline, in case the jupyter prompt interferes.
+        //anyway, removed by sniprun itself before display
         self.code =
             self.imports.clone() + "\nprint(\"\")\n" + &unindent(&format!("{}{}", "\n", self.code.as_str()));
 
