@@ -4,6 +4,7 @@ if !exists('s:sniprunJobId')
 endif
 
 
+" items sent through RPC to the rust program
 let s:SnipRun = 'run'
 let s:SnipTerminate = 'terminate'
 let s:SnipClean = "clean"
@@ -47,7 +48,11 @@ endfunction
 
 
 function! s:showinfo()
-  execute  '!sh' s:scriptdir.'/ressources/infoscript.sh' s:scriptdir.'/src/interpreters'
+  let infofile = s:scriptdir."/ressources/infofile.txt"
+  let lines = readfile(infofile)
+  for line in lines
+    echo line
+  endfor
 endfunction
 
 function! s:run() range

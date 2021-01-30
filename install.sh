@@ -75,3 +75,6 @@ else
     fetch_prebuilt_binary # get an older release
   fi
 fi
+
+
+bash ./ressources/infoscript.sh src/interpreters > ./ressources/infofile.txt

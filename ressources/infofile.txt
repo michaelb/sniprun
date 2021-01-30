@@ -1,0 +1,33 @@
+
+   _____       _       _____             
+  / ____|     (_)     |  __ \            
+ | (___  _ __  _ _ __ | |__) |   _ _ __  
+  \___ \| '_ \| | '_ \|  _  / | | | '_ \ 
+  ____) | | | | | |_) | | \ \ |_| | | | |
+ |_____/|_| |_|_| .__/|_|  \_\__,_|_| |_|
+                | |                      
+                |_|                      
+
+Version :  v0.4.4 (up-to-date)
+
+
+| Interpreter         | language    | comments
+|---------------------|-------------|---------
+| Bash_original       | bash, shell |
+| C_original          | c           |
+| Cpp_original        | cpp         |
+| CS_original         | javascript  |
+| D_original          | d           |
+| Generic             | any         | many limitations!
+| Go_original         | go          |
+| Haskell_original    | haskell     |
+| Java_original       | java        |
+| JS_original         | javascript  |
+| Julia_original      | julia       |
+| Lua_nvim            | lua (nvim)  |
+| Lua_original        | lua         |
+| Python3_jupyter     | python3     | runs on jupyter kernel
+| Python3_original    | python3     |
+| R_original          | R           |
+| Ruby_original       | Ruby        |
+| Rust_original       | rust        |
