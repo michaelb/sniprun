@@ -1,3 +1,8 @@
+## v0.4.5
+- Plug mappings + vim-repeat support
+- Trailing characters fix
+
+
 ## v0.4.4
 - Jupyter kernel available in Python3_jupyter !
 - fixes a bug in Python3_original that imported too much modules
