@@ -36,6 +36,8 @@ jobs:
   codecov:
     runs-on: ubuntu-latest
     steps:
+    - name : allow add cargo to path
+      run: export ACTIONS_ALLOW_UNSECURE_COMMANDS=true
     - name: Code coverage
       uses: actions-rs/tarpaulin@v0.1.0
       with:
