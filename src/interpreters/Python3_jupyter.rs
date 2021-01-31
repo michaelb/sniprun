@@ -319,3 +319,26 @@ impl ReplLikeInterpreter for Python3_jupyter {
         }
     }
 }
+
+
+
+#[cfg(test)]
+mod test_python3_jupyter {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(\"a\",1)");
+        let mut interpreter = Python3_jupyter::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert!(string_result.contains(&"a 1"));
+    }
+}
+
+
+
+
