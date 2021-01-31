@@ -39,8 +39,9 @@ jobs:
     - name : allow add cargo to path
       run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
 
-    - name:  Add manifest to tarpaulin path
+    - name: Create dirs
       run: mkdir -p /home/runner/work/sniprun/sniprun
+    - name:  Add manifest to tarpaulin path
       run: cp Cargo.toml /home/runner/work/sniprun/sniprun/
     - name: Code coverage
       uses: actions-rs/tarpaulin@v0.1.0
