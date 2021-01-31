@@ -2,9 +2,9 @@ name: Rust
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, dev ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, dev]
 
 env:
   CARGO_TERM_COLOR: always
@@ -18,7 +18,40 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build
       run: cargo build --verbose --release
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v2
+
     - name: Unit tests
       run: cargo test --release -- --test-threads=1
+
+  install:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
     - name: Installation tests
       run: ./install.sh
+
+  codecov:
+    runs-on: ubuntu-latest
+    steps:
+    - name : allow add cargo to path
+      run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Code coverage
+      uses: actions-rs/tarpaulin@v0.1.0
+      with:
+        args: '-- --test-threads=1'
+
+    - name: Upload to codecov.io
+      uses: codecov/codecov-action@v1.0.2
+      with:
+          token: ${{secrets.CODECOV_TOKEN}}
+
+

@@ -112,3 +112,21 @@ impl Interpreter for Cpp_original {
         }
     }
 }
+
+#[cfg(test)]
+mod test_cpp_original {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("int a = 1;\nprintf(\"1=%i\\n\", a);");
+        let mut interpreter = Cpp_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "1=1\n");
+    }
+}
+

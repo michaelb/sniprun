@@ -1,6 +1,6 @@
 # Sniprun
 
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/michaelb/sniprun) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg) ![GitHub all releases](https://img.shields.io/github/downloads/michaelb/sniprun/total)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/release/michaelb/sniprun) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg) ![GitHub all releases](https://img.shields.io/github/downloads/michaelb/sniprun/total) ![](https://img.shields.io/github/downloads/michaelb/sniprun/latest/total?label=users%20on%20latest) [![codecov](https://codecov.io/gh/michaelb/sniprun/branch/master/graph/badge.svg?token=PQQV79XYVN)](https://codecov.io/gh/michaelb/sniprun)
 
 Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
@@ -36,9 +36,10 @@ send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash
 
 ![](demo_repl.gif)
 
-Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed.
+Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely (be it 400 lines of compilation warnings, or a clean 'NameError: name 'a' is not defined'). Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
 
 ![](error_example.png)
+
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
 
@@ -57,14 +58,12 @@ By selecting a visual range (always rounded line-wise) or positioning yourself o
 - Execute the code
 - Return stdout, or stderr
 
-## A quick word on REPL-like behavior
-
 
 ## Installation
 
 ### Prerequisites && dependencies
 
-- Sniprun is Linux-only for now (as of v0.4.4)
+- Sniprun is Linux-only for now (as of v0.4.5)
 - Neovim version >= 0.43 preferably, but should work with older versions
 - [recommended, but optionnal] cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
 - Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the **[doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at** before getting started as it also contains the potential limitations of each interpreter.
@@ -159,7 +158,7 @@ A list of all available interpreters can be displayed by running `:SnipInfo`
 ### My usage recommandation & tricks
 
 - Map the run command to a simple command such as `<leader>f` (or just `f` in visual mode).
-  (if you don't know about a leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/).
+  (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
 
 ```
 nmap <leader>f <Plug>SnipRun
@@ -177,6 +176,8 @@ SnipRun has both `<Plug>`-style commands and old-style plugin-defined commands (
 
 
 Each `:` command matches exactly a `<Plug>` one.
+
+SnipRun synergises exceptionnally well with plugins that help you creating print/debug statements, such as [vim-printer](https://github.com/meain/vim-printer).
 
 
 ## Support levels and languages

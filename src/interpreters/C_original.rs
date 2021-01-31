@@ -76,7 +76,7 @@ impl Interpreter for C_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("#include <stdio.h>\nint main() {") + &self.code + "return 0;}";
+        self.code = String::from("#include <stdio.h>\nint main() {") + &self.code + "\nreturn 0;}";
         Ok(())
     }
 
@@ -113,3 +113,22 @@ impl Interpreter for C_original {
         }
     }
 }
+
+#[cfg(test)]
+mod test_c_original {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("printf(\"1=1\\n\");");
+        let mut interpreter = C_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "1=1\n");
+    }
+}
+
+
