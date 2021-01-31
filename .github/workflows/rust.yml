@@ -22,12 +22,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - name : getdependencies
-      run: python3 -m pip install jupyter
-
-    - name: add jupyter to path
-      run: export PATH=$PATH:/home/runner/.local/bin
-
 
     - uses: actions/checkout@v2
 
@@ -46,12 +40,6 @@ jobs:
     steps:
     - name : allow add cargo to path
       run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
-
-    - name : getdependencies
-      run: python3 -m pip install jupyter
-
-    - name: add jupyter to path
-      run: export PATH=$PATH:/home/runner/.local/bin
 
     - name: Checkout repository
       uses: actions/checkout@v2
