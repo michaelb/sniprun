@@ -343,7 +343,7 @@ mod test_python3_jupyter {
         assert!(string_result.contains(&"a 1"));
     }
 
-    #[test]
+    // #[test]
     fn with_memory() {
         let interpreter_data = Arc::new(Mutex::new(InterpreterData {
             owner: String::new(),
