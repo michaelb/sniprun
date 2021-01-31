@@ -1,6 +1,6 @@
 # Sniprun
 
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/michaelb/sniprun) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg) ![GitHub all releases](https://img.shields.io/github/downloads/michaelb/sniprun/total)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/release/michaelb/sniprun) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg) ![GitHub all releases](https://img.shields.io/github/downloads/michaelb/sniprun/total) ![](https://img.shields.io/github/downloads/michaelb/sniprun/latest/total?label=users%20on%20latest)
 
 Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
@@ -36,7 +36,7 @@ send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash
 
 ![](demo_repl.gif)
 
-Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely (be it 400 lines of compilation warnings, or a clean 'NameError: name 'a' is not defnied'). Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
+Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely (be it 400 lines of compilation warnings, or a clean 'NameError: name 'a' is not defined'). Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
 
 ![](error_example.png)
 
@@ -57,8 +57,6 @@ By selecting a visual range (always rounded line-wise) or positioning yourself o
 - Build (write to a script file, or compile) the code
 - Execute the code
 - Return stdout, or stderr
-
-## A quick word on REPL-like behavior
 
 
 ## Installation
