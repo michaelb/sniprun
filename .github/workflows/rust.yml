@@ -22,6 +22,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+    - name : getdependencies
+      run: python3 -m pip install jupyter
     - uses: actions/checkout@v2
     - name: Unit tests
       run: cargo test --release -- --test-threads=1
