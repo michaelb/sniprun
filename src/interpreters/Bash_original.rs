@@ -160,3 +160,22 @@ impl ReplLikeInterpreter for Bash_original {
         return res;
     }
 }
+
+#[cfg(test)]
+mod test_bash_original {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("A=2 && echo $A");
+        let mut interpreter = Bash_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "2\n");
+    }
+}
+
+
