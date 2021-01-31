@@ -42,7 +42,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-      run: cp Cargo.toml /home/runner/work/sniprun/sniprun/
     - name: Code coverage
       uses: actions-rs/tarpaulin@v0.1.0
       with:
