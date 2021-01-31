@@ -24,7 +24,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Unit tests
-      run: cargo test --release -- --test-threads=1
+      run: cargo test --release --manifest-path Cargo.toml -- --test-threads=1
 
   install:
     runs-on: ubuntu-latest
