@@ -9,7 +9,8 @@ before_script:
   - sudo add-apt-repository ppa:neovim-ppa/stable -y
   - sudo apt-get update -y
   - sudo apt-get install neovim -y
-  # If your plugin depends on maktaba, clone maktaba into a sibling directory.
+  - pip install -U neovim
+  - pip install -U neovim-remote
 script:
   - vroom --crawl --neovim -u plugin/sniprun.vim
 
