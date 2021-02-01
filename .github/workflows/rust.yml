@@ -40,11 +40,21 @@ jobs:
       - name: install neovim
         run : python3 -m pip install -U neovim neovim-remote && sudo add-apt-repository ppa:neovim-ppa/stable -y  && sudo apt-get update -y && sudo apt-get install neovim -y
       - uses: actions/checkout@v2
+      - name: compile sniprun
+        run: ./install.sh 1
       - name: run vroom tests
         run : vroom --crawl --neovim -u plugin/sniprun.vim
 
   install:
-    name: install
+    name: install (dowload)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Installation tests
+      run: ./install.sh
+
+  install2:
+    name: install (build)
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
