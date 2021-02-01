@@ -26,13 +26,7 @@ jobs:
     steps:
 
     - name: install all fking compilers
-      run: sudo add-apt-repository -y ppa:longsleep/golang-backports  &&
-          sudo apt update &&
-          sudo apt install golang -y &&
-          sudo apt install haskell-platform -y &&
-          wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local &&
-          export PATH=$PATH:/usr/local/go/bin &&
-          source ~/.profile &&
+      run: sudo apt install haskell-platform -y &&
           sudo apt install -y nodejs npm &&
           sudo npm install -g coffee-script
 
