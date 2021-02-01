@@ -31,19 +31,19 @@ jobs:
       run: cargo test --release -- --test-threads=1
 
 
-  e2etests:
-    name: end-to-end tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: install vroom
-        run: git clone https://github.com/google/vroom && cd vroom && python3 setup.py build && sudo python3 setup.py install && cd ..
-      - name: install neovim
-        run : python3 -m pip install -U neovim neovim-remote && sudo add-apt-repository ppa:neovim-ppa/stable -y  && sudo apt-get update -y && sudo apt-get install neovim -y
-      - uses: actions/checkout@v2
-      - name: compile sniprun
-        run: ./install.sh 1
-      - name: run vroom tests
-        run : vroom --crawl --neovim -u plugin/sniprun.vim
+  # e2etests:
+  #   name: end-to-end tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: install vroom
+  #       run: git clone https://github.com/google/vroom && cd vroom && python3 setup.py build && sudo python3 setup.py install && cd ..
+  #     - name: install neovim
+  #       run : python3 -m pip install -U neovim neovim-remote && sudo add-apt-repository ppa:neovim-ppa/stable -y  && sudo apt-get update -y && sudo apt-get install neovim -y
+  #     - uses: actions/checkout@v2
+  #     - name: compile sniprun
+  #       run: ./install.sh 1
+  #     - name: run vroom tests
+  #       run : vroom --crawl --neovim -u plugin/sniprun.vim
 
   install:
     name: install (dowload)
@@ -59,7 +59,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Installation tests
-      run: ./install.sh
+      run: ./install.sh 1
 
   codecov:
     name : codecov
