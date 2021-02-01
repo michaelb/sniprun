@@ -25,15 +25,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - uses: cedrickring/golang-action@1.6.0
     - name: install all fking compilers
-      run: sudo npm install -g coffee && 
-          sudo add-apt-repository -y ppa:longsleep/golang-backports  &&
+      run: sudo add-apt-repository -y ppa:longsleep/golang-backports  &&
           sudo apt update &&
+          sudo apt install -y nodejs npm &&
           sudo apt install golang -y &&
           sudo apt install haskell-platform -y &&
           wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local &&
           export PATH=$PATH:/usr/local/go/bin &&
-          source ~/.profile
+          source ~/.profile &&
+          sudo npm install -g coffee-script
 
     - uses: actions/checkout@v2
 
