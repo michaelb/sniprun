@@ -73,6 +73,11 @@ jobs:
     - name : allow add cargo to path
       run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
 
+    - name: install all fking compilers
+      run: sudo apt install haskell-platform -y &&
+          sudo apt install -y nodejs npm &&
+          sudo npm install -g coffee-script
+
     - name: Checkout repository
       uses: actions/checkout@v2
 
