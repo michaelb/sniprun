@@ -4,10 +4,7 @@ before_script:
   - wget https://github.com/google/vroom/releases/download/v0.12.0/vroom_0.12.0-1_all.deb
   - sudo dpkg -i vroom_0.12.0-1_all.deb
   # Install vim.
-  - sudo apt-get install vim-gnome
-  # Vroom's vim mode currently requires a running X server.
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+  - sudo apt-get install neovim
   # If your plugin depends on maktaba, clone maktaba into a sibling directory.
 script:
   - vroom --crawl --neovim -u plugin/sniprun.vim
