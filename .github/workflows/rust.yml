@@ -36,7 +36,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: install vroom
-        run: git clone https://github.com/google/vroom && cd vroom && python3 setup.py build && sudo python3 setup.py install && cd .. && python3 -m pip install -U neovim neovim-remote
+        run: git clone https://github.com/google/vroom && cd vroom && python3 setup.py build && sudo python3 setup.py install && cd ..
+      - name: install neovim
+        run : python3 -m pip install -U neovim neovim-remote && sudo add-apt-repository ppa:neovim-ppa/stable -y  && sudo apt-get update -y && sudo apt-get install neovim -y
       - uses: actions/checkout@v2
       - name: run vroom tests
         run : vroom --crawl --neovim -u plugin/sniprun.vim
