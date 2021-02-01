@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: install all fking compilers
-      run: sudo npm install coffee && \
+      run: sudo npm install coffee && 
           sudo apt install go -y
 
     - uses: actions/checkout@v2
