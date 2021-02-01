@@ -218,7 +218,7 @@ println!("-> {}", alphabet);
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
 | Groovy       | Untested      |     | Scala      | Untested         |
-| Haskell      | Bloc          |     | Scilab     | Untested         |
+| Haskell      | Line          |     | Scilab     | Untested         |
 | Idris        | Untested      |     | Swift      | Untested         |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
