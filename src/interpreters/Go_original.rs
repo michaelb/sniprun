@@ -83,7 +83,7 @@ impl Interpreter for Go_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         self.code =
-            String::from("package main \n import \"fmt\"\n func main() {") + &self.code + "}";
+            String::from("package main \nimport \"fmt\"\nfunc main() {") + &self.code + "}";
         Ok(())
     }
 
@@ -122,5 +122,22 @@ impl Interpreter for Go_original {
                 String::from_utf8(output.stderr).unwrap(),
             ));
         }
+    }
+}
+
+#[cfg(test)]
+mod test_go_original {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("fmt.Println(\"Hello\")");
+        let mut interpreter = Go_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "Hello\n");
     }
 }

@@ -103,3 +103,20 @@ impl Interpreter for CS_original {
         }
     }
 }
+
+#[cfg(test)]
+mod test_cs_original {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("console.log(\"helo\")");
+        let mut interpreter = CS_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "helo\n");
+    }
+}
