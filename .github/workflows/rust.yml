@@ -27,7 +27,7 @@ jobs:
     - name: install all fking compilers
       run: sudo npm install coffee && 
           sudo add-apt-repository -y ppa:longsleep/golang-backports  &&
-          sudo apt-update -y
+          sudo apt update -y
           sudo apt install go -y
 
     - uses: actions/checkout@v2
