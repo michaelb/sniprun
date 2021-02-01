@@ -130,6 +130,7 @@ mod test_go_original {
     use super::*;
 
     #[test]
+    #[ignored]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("fmt.Println(\"Hello\")");

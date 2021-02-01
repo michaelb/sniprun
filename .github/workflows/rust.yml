@@ -40,8 +40,6 @@ jobs:
 
     - name: Unit tests
       run: cargo test --release -- --test-threads=1
-    - name : unit tests (ignored from coverage)
-      run: cargo test --release -- --test-threads=1 --ignored
 
 
   # e2etests:
