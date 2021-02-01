@@ -11,6 +11,7 @@ env:
 
 jobs:
   build:
+    name : build
 
     runs-on: ubuntu-latest
 
@@ -19,7 +20,8 @@ jobs:
     - name: Build
       run: cargo build --verbose --release
 
-  test:
+  unittest:
+    name: unit tests
     runs-on: ubuntu-latest
     steps:
 
@@ -28,7 +30,19 @@ jobs:
     - name: Unit tests
       run: cargo test --release -- --test-threads=1
 
+
+  e2etests:
+    name: end-to-end tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: install vroom
+        run: git clone https://github.com/google/vroom && cd vroom && python3 setup.py build && sudo python3 setup.py install && cd ..
+      - uses: actions/checkout@v2
+      - name: run vroom tests
+        run : vroom --crawl --neovim -u plugin/sniprun.vim
+
   install:
+    name: install
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -36,6 +50,7 @@ jobs:
       run: ./install.sh
 
   codecov:
+    name : codecov
     runs-on: ubuntu-latest
     steps:
     - name : allow add cargo to path
