@@ -4,6 +4,9 @@ before_script:
   - wget https://github.com/google/vroom/releases/download/v0.12.0/vroom_0.12.0-1_all.deb
   - sudo dpkg -i vroom_0.12.0-1_all.deb
   # Install vim.
+  #
+  -sudo add-apt-repository ppa:neovim-ppa/stable 
+  -sudo apt-get update
   - sudo apt-get install neovim
   # If your plugin depends on maktaba, clone maktaba into a sibling directory.
 script:
