@@ -1,3 +1,4 @@
+dist: focal
 language: minimal
 before_script:
   # Install your desired version of vroom.
