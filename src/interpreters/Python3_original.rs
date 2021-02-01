@@ -236,3 +236,20 @@ impl ReplLikeInterpreter for Python3_original {
 
     // &unindent(&format!("{}{}", "\n", self.code.as_str()));
 }
+
+#[cfg(test)]
+mod test_python3_original {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(\"lol\",1);");
+        let mut interpreter = Python3_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "lol 1\n");
+    }
+}

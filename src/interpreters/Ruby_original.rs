@@ -99,3 +99,21 @@ impl Interpreter for Ruby_original {
         }
     }
 }
+
+#[cfg(test)]
+mod test_ruby_original {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("puts \"hell\"");
+        let mut interpreter = Ruby_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "hell\n");
+    }
+
+}

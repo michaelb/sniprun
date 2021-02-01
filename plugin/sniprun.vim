@@ -4,6 +4,7 @@ if !exists('s:sniprunJobId')
 endif
 
 
+
 " items sent through RPC to the rust program
 let s:SnipRun = 'run'
 let s:SnipTerminate = 'terminate'

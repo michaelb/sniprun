@@ -205,9 +205,10 @@ impl ReplLikeInterpreter for Python3_jupyter {
             //initialize kernel. Relying on self.read_previous_code to
             //know when to start a new kernel is important as
             //this will be cleared by the SnipReplMemoryClean command
+            let _res = std::fs::remove_file(&self.kernel_file);
             let _res = Command::new("jupyter-kernel")
-                .arg("--kernel='python3'")
-                .arg(String::from("--KernelManager.connection_file='") + &self.kernel_file + "'")
+                .arg("--kernel=python3")
+                .arg(String::from("--KernelManager.connection_file=") + &self.kernel_file)
                 .spawn();
             info!("Initialized kernel");
         } else {
@@ -278,9 +279,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
             + " "
             + "--ZMQTerminalInteractiveShell.banner=\"\""
             + " "
-            + "--Application.log_level=0"
-            + " "
-            + "2>/dev/null";
+            + "--Application.log_level=0";
 
         write(&self.launcher_path, &actual_command)
             .expect("Unable to write file for python3_jupyter");
@@ -343,18 +342,21 @@ mod test_python3_jupyter {
         assert!(string_result.contains(&"a 1"));
     }
 
-    // #[test]
+    #[test] 
+    #[ignore]//code coverage fails on this, so ignore it, but not in tests real tests
     fn with_memory() {
         let interpreter_data = Arc::new(Mutex::new(InterpreterData {
             owner: String::new(),
             content: String::new(),
             pid: None,
         }));
+        let guard = interpreter_data.lock().unwrap();
+        drop(guard);
 
         {
             let mut data = DataHolder::new();
 
-            data.current_bloc = String::from("a=1");
+            data.current_bloc = String::from("a=1\nprint(a)");
             data.repl_enabled.push("Python3_jupyter".to_owned());
             data.interpreter_data = Some(interpreter_data.clone());
 
@@ -362,7 +364,8 @@ mod test_python3_jupyter {
             let res = interpreter.run();
 
             // should panic if not an Ok()
-            let _string_result = res.unwrap();
+            let string_result = res.unwrap();
+            assert!(string_result.contains("1\n"));
         }
 
         //separate block to avoid deadlocks
@@ -370,7 +373,7 @@ mod test_python3_jupyter {
         {
             //second run
             let mut data = DataHolder::new();
-            data.current_bloc = String::from("print(a)");
+            data.current_bloc = String::from("a+=1\nprint(a)");
             data.repl_enabled.push("Python3_jupyter".to_owned());
             data.interpreter_data = Some(interpreter_data.clone());
             let mut interpreter = Python3_jupyter::new(data);
@@ -379,7 +382,7 @@ mod test_python3_jupyter {
             // should panic if not an Ok()
             let string_result = res.unwrap();
 
-            assert!(string_result.contains("1\n"));
+            assert!(string_result.contains("2\n"));
         }
     }
 }

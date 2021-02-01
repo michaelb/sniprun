@@ -131,3 +131,20 @@ impl Interpreter for Java_original {
         }
     }
 }
+
+#[cfg(test)]
+mod test_java_original {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("System.out.println(\"hello\");");
+        let mut interpreter = Java_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "hello\n");
+    }
+}
