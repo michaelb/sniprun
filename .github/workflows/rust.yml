@@ -25,11 +25,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: install all fking compilers
-      run: sudo npm install coffee && 
+      run: sudo npm install -g coffee && 
           sudo add-apt-repository -y ppa:longsleep/golang-backports  &&
           sudo apt update &&
           sudo apt install golang -y &&
-          sudo apt install haskell-platform -y
+          sudo apt install haskell-platform -y &&
+          echo "GOPATH=$HOME/golang" >> ~/.bashrc &&
+          echo "export GOPATH" >> ~/.bashrc &&
+          echo "PATH=\$PATH:\$GOPATH/bin # Add GOPATH/bin to PATH for scripting" >> ~/.bashrc &&
+          source ~/.bashrc
 
     - uses: actions/checkout@v2
 
