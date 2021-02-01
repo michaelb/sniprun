@@ -52,7 +52,7 @@ function! s:showinfo()
   let infofile = s:scriptdir."/ressources/infofile.txt"
   let lines = readfile(infofile)
   for line in lines
-    echo line
+    echomsg line
   endfor
 endfunction
 

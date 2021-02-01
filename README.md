@@ -21,7 +21,7 @@ I know that this README is exhaustively long (bear with me), but Sniprun itself 
   - [REPL-like behavior](README.md#repl-like-behavior)
   - [Configuration](README.md#configuration)
   - [My usage recommandation &amp; tricks](README.md#my-usage-recommandation--tricks)
-- [Support levels and languages](README.md#support-levels-and-languages)
+- [Supported Languages + levels](README.md#support-levels-and-languages)
 - [Known limitations](README.md#known-limitations)
 - [Contribute](README.md#contribute)
 - [Related projects](README.md#related-projects)
