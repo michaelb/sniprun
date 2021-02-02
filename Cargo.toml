@@ -4,6 +4,8 @@ version = "0.4.5"
 authors = ["michaelb <michael.bleuez2@gmail.com>"]
 edition = "2018"
 
+[features]
+ignore_in_ci = []
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [build-dependencies]
 cc="*"
