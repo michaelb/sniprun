@@ -1,0 +1,7 @@
+  > :SnipInfo<CR><CR>
+  ! .*
+  ~ .* (regex)
+
+one system call : run infoscript
+multiple messages received : output of snipinfo
+

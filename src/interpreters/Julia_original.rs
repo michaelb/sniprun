@@ -115,3 +115,19 @@ impl Interpreter for Julia_original {
         }
     }
 }
+#[cfg(test)]
+mod test_julia_original {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("println(\"hello\")");
+        let mut interpreter = Julia_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "hello\n");
+    }
+}

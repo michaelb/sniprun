@@ -58,7 +58,7 @@ impl Interpreter for Haskell_original {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::Bloc
+        SupportLevel::Line
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -82,6 +82,7 @@ impl Interpreter for Haskell_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
+        self.code = String::from("main = ") + &self.code;
         Ok(())
     }
 
@@ -98,15 +99,17 @@ impl Interpreter for Haskell_original {
             &self.main_file_path, &self.bin_path
         );
         let output = Command::new("ghc")
+            .arg("-dynamic")
             .arg("-o")
             .arg(self.bin_path.clone())
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
 
+        info!("code : {:?}", &self.code);
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            return Err(SniprunError::CompilationError("".to_string()));
+            return Err(SniprunError::CompilationError(String::from_utf8(output.stderr).unwrap()));
         } else {
             return Ok(());
         }
@@ -126,3 +129,20 @@ impl Interpreter for Haskell_original {
         }
     }
 }
+#[cfg(test)]
+mod test_haskell_original {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_line = String::from("putStrLn \"Hi\"");
+        let mut interpreter = Haskell_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "Hi\n");
+    }
+}
+

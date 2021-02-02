@@ -11,6 +11,7 @@ env:
 
 jobs:
   build:
+    name : build
 
     runs-on: ubuntu-latest
 
@@ -19,27 +20,57 @@ jobs:
     - name: Build
       run: cargo build --verbose --release
 
-  test:
+  unittest:
+    name: unit tests
     runs-on: ubuntu-latest
     steps:
+
+    - name: install all fking compilers
+      run: sudo apt install haskell-platform -y &&
+          sudo apt install -y nodejs npm &&
+          sudo npm install -g coffee-script
 
     - uses: actions/checkout@v2
 
     - name: Unit tests
-      run: cargo test --release -- --test-threads=1
+      run: cargo test --features ignore_in_ci
+
+
+  # e2etests:
+  #   name: end-to-end tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: install vroom
+  #       run: git clone https://github.com/google/vroom && cd vroom && python3 setup.py build && sudo python3 setup.py install && cd ..
+  #     - name: install neovim
+  #       run : python3 -m pip install -U neovim neovim-remote && sudo add-apt-repository ppa:neovim-ppa/stable -y  && sudo apt-get update -y && sudo apt-get install neovim -y
+  #     - uses: actions/checkout@v2
+  #     - name: compile sniprun
+  #       run: ./install.sh 1
+  #     - name: run vroom tests
+  #       run : vroom --crawl --neovim -u plugin/sniprun.vim
 
   install:
+    name: install (dowload)
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Installation tests
       run: ./install.sh
 
+ 
+
   codecov:
+    name : codecov
     runs-on: ubuntu-latest
     steps:
     - name : allow add cargo to path
       run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+
+    - name: install all fking compilers
+      run: sudo apt install haskell-platform -y &&
+          sudo apt install -y nodejs npm &&
+          sudo npm install -g coffee-script
 
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -47,7 +78,7 @@ jobs:
     - name: Code coverage
       uses: actions-rs/tarpaulin@v0.1.0
       with:
-        args: '-- --test-threads=1'
+        args: --features ignore_in_ci
 
     - name: Upload to codecov.io
       uses: codecov/codecov-action@v1.0.2

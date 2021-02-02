@@ -21,7 +21,7 @@ I know that this README is exhaustively long (bear with me), but Sniprun itself 
   - [REPL-like behavior](README.md#repl-like-behavior)
   - [Configuration](README.md#configuration)
   - [My usage recommandation &amp; tricks](README.md#my-usage-recommandation--tricks)
-- [Support levels and languages](README.md#support-levels-and-languages)
+- [Supported Languages + levels](README.md#support-levels-and-languages)
 - [Known limitations](README.md#known-limitations)
 - [Contribute](README.md#contribute)
 - [Related projects](README.md#related-projects)
@@ -151,7 +151,7 @@ You can add interpreters you want to always use in case multiples interpreters a
 
 For example to always select Lua_original and Rust_original over others,
 
-`let g:SnipRun_select_interpreters =["Lua_original', 'Rust_original"]`
+`let g:SnipRun_select_interpreters =["Lua_original", "Rust_original"]`
 
 A list of all available interpreters can be displayed by running `:SnipInfo`
 
@@ -218,7 +218,7 @@ println!("-> {}", alphabet);
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
 | Groovy       | Untested      |     | Scala      | Untested         |
-| Haskell      | Bloc          |     | Scilab     | Untested         |
+| Haskell      | Line          |     | Scilab     | Untested         |
 | Idris        | Untested      |     | Swift      | Untested         |
 
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
@@ -252,9 +252,10 @@ This project: [vscode-code-runner](https://github.com/formulahendry/vscode-code-
 
 All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file.
 
-The [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](https://github.com/hanschen/vim-ipython-cell) [codi](https://github.com/metakirby5/codi.vim) as well as [neoterm](https://github.com/kassio/neoterm) can also be used in such a way, though they are only working with languages that have a REPL.
+The [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](https://github.com/hanschen/vim-ipython-cell) [codi](https://github.com/metakirby5/codi.vim) as well as [neoterm](https://github.com/kassio/neoterm) and [vim-slime](https://github.com/jpalardy/vim-slime) can also be used in such a way, though they are only working with languages that have a REPL.
 
-[vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is [vim-slime](https://github.com/jpalardy/vim-slime), but they do things differently enough I made sniprun instead.
+[vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is / will be [conjure](https://gtihub.com/Olical/conjure), but they do things differently enough I made sniprun instead
+
 
 **Why should you use sniprun instead of these alternatives?**
 

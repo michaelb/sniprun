@@ -99,3 +99,21 @@ impl Interpreter for JS_original {
         }
     }
 }
+
+#[cfg(test)]
+mod test_js_original {
+    use super::*;
+
+    #[test]
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("console.log(\"Hello, World!\");");
+        let mut interpreter = JS_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "Hello, World!\n");
+    }
+
+}
