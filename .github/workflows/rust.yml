@@ -33,7 +33,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Unit tests
-      run: cargo test --release -- --test-threads=1
+      run: cargo test
 
 
   # e2etests:
@@ -58,13 +58,7 @@ jobs:
     - name: Installation tests
       run: ./install.sh
 
-  install2:
-    name: install (build)
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Installation tests
-      run: ./install.sh 1
+ 
 
   codecov:
     name : codecov
@@ -83,8 +77,6 @@ jobs:
 
     - name: Code coverage
       uses: actions-rs/tarpaulin@v0.1.0
-      with:
-        args: '-- --test-threads=1'
 
     - name: Upload to codecov.io
       uses: codecov/codecov-action@v1.0.2
