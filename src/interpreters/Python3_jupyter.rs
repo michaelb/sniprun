@@ -331,6 +331,11 @@ mod test_python3_jupyter {
     use crate::*;
 
     #[test]
+    fn run_all() {
+        //run sequentially tests on same interpreter
+        simple_print();
+        with_memory();
+    }
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"a\",1)");
@@ -342,9 +347,7 @@ mod test_python3_jupyter {
         assert!(string_result.contains(&"a 1"));
     }
 
-    #[test] 
-    #[ignore]//code coverage fails on this, so ignore it, but not in tests real tests
-    fn with_memory() {
+    fn with_memory() { //warning:code coverage fails if test-threads=1
         let interpreter_data = Arc::new(Mutex::new(InterpreterData {
             owner: String::new(),
             content: String::new(),
