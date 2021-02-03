@@ -59,7 +59,7 @@ impl Interpreter for Lua_original {
             return None;
         }
         self.fetch_code().expect("could not fetch code");
-        if self.code.contains("nvim") {
+        if self.code.contains("nvim") || self.code.contains("vim") {
             //then this is not pure lua code but  lua-nvim one
             let mut good_interpreter = crate::interpreters::Lua_nvim::new_with_level(
                 self.data.clone(),
@@ -115,4 +115,27 @@ impl Interpreter for Lua_original {
             ));
         }
     }
+}
+
+#[cfg(test)]
+mod test_lua_original {
+    use super::*;
+
+    #[test]
+    fn run_all() { 
+        //nececssary to run sequentially 
+        //because of file access & shared things
+        simple_print();
+    }
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(\"Hi\")");
+        let mut interpreter = Lua_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "Hi\n");
+    }
+
 }
