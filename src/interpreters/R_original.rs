@@ -143,3 +143,27 @@ impl ReplLikeInterpreter for R_original {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod test_r_original {
+    use super::*;
+
+    #[test]
+    fn run_all() { 
+        //nececssary to run sequentially 
+        //because of file access & shared things
+        simple_print();
+        //should test memory as well
+    }
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(\"Hi\");");
+        let mut interpreter = R_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert!(string_result.contains("Hi"));
+    }
+
+}
