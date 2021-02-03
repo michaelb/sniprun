@@ -113,6 +113,7 @@ mod test_d_original {
     use super::*;
 
     #[test]
+    #[cfg_attr(feature = "ignore_in_ci", ignore)]
     fn run_all() { 
         //nececssary to run sequentially 
         //because of file access & shared things
