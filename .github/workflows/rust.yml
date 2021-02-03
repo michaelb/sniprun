@@ -25,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - uses: actions/checkout@v2
+
     - name: install all fking compilers
       run: sudo apt install haskell-platform -y &&
           sudo apt install -y nodejs npm &&
@@ -37,7 +39,6 @@ jobs:
           source ~/dlang/dmd-2.095.0/activate
 
 
-    - uses: actions/checkout@v2
 
     - name: Unit tests
       run: cargo test --features ignore_in_ci
@@ -74,6 +75,9 @@ jobs:
     - name : allow add cargo to path
       run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
 
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
     - name: install all fking compilers
       run: sudo apt install haskell-platform -y &&
           sudo apt install -y nodejs npm &&
@@ -85,8 +89,7 @@ jobs:
           bash ./ressources/d_install.sh &&
           source ~/dlang/dmd-2.095.0/activate
 
-    - name: Checkout repository
-      uses: actions/checkout@v2
+   
 
     - name: Code coverage
       uses: actions-rs/tarpaulin@v0.1.0
