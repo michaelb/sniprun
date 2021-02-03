@@ -106,3 +106,26 @@ impl Interpreter for D_original {
         }
     }
 }
+
+#[cfg(test)]
+mod test_d_original {
+    use super::*;
+
+    #[test]
+    fn run_all() { 
+        //nececssary to run sequentially 
+        //because of file access & shared things
+        simple_print();
+    }
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("string yourName = \"a\";\nwritefln(\"Hi %s!\", yourName);");
+        let mut interpreter = D_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "Hi a!\n");
+    }
+
+}
