@@ -35,8 +35,6 @@ jobs:
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' &&
           sudo apt install r-base &&
           sudo apt install lua5.3 &&
-          bash ./ressources/d_install.sh &&
-          source ~/dlang/dmd-2.095.0/activate
 
 
 
@@ -86,8 +84,6 @@ jobs:
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' &&
           sudo apt install r-base &&
           sudo apt install lua5.3 &&
-          bash ./ressources/d_install.sh &&
-          source ~/dlang/dmd-2.095.0/activate
 
    
 
