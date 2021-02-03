@@ -93,7 +93,8 @@ impl Interpreter for D_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let output = Command::new("rdmd")
+        let output = Command::new("dmd")
+            .arg("-run")
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
