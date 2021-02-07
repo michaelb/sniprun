@@ -64,10 +64,10 @@ impl Interpreter for Bash_original {
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
         if !self
             .data
-            .current_bloc
-            .replace(&[' ', '\t', '\n', '\r'][..], "")
-            .is_empty()
-            && self.get_current_level() >= SupportLevel::Bloc
+                .current_bloc
+                .replace(&[' ', '\t', '\n', '\r'][..], "")
+                .is_empty()
+                && self.get_current_level() >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
         } else if !self.data.current_line.replace(" ", "").is_empty()
@@ -104,7 +104,7 @@ impl Interpreter for Bash_original {
             return Ok(String::from_utf8(output.stdout).unwrap());
         } else {
             return Err(SniprunError::RuntimeError(
-                String::from_utf8(output.stderr).unwrap(),
+                    String::from_utf8(output.stderr).unwrap(),
             ));
         }
     }
@@ -166,6 +166,10 @@ mod test_bash_original {
     use super::*;
 
     #[test]
+    fn run_all() {
+        simple_print();
+        block_things();
+    }
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("A=2 && echo $A");
@@ -176,6 +180,19 @@ mod test_bash_original {
         let string_result = res.unwrap();
         assert_eq!(string_result, "2\n");
     }
+
+    fn block_things() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("A=2\nsleep $A\necho $A");
+        let mut interpreter = Bash_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "2\n");
+    }
+
+
 }
 
 
