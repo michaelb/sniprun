@@ -6,7 +6,7 @@ Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast par
 
 
 
-I know that this README is exhaustively long (bear with me), but Sniprun itself is and will remain rather simple: don't be afraid, questions are welcome too.
+I know that this README is exhaustively long (for the sake of clarity, bear with me), but Sniprun itself is and will remain rather simple: don't be afraid, questions are welcome too.
 
 
 
