@@ -107,7 +107,11 @@ impl Interpreter for Rust_original {
 
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            return Err(SniprunError::CompilationError("".to_string()));
+            let error_message = String::from_utf8(output.stderr).unwrap();
+            //
+            //take first line and remove first 'error' word (redondant)
+            let first_line = error_message.lines().next().unwrap_or_default().trim_start_matches("error: ").trim_start_matches("error");
+            return Err(SniprunError::CompilationError(first_line.to_owned()));
         } else {
             return Ok(());
         }
