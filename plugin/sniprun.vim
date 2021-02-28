@@ -46,14 +46,14 @@ function! s:configureCommands()
   command! SnipInfo :call s:showinfo()
   command! SnipReplMemoryClean :call s:clearReplMemory()
 
-  " <Plug> mappings
-  " command! -range SnipRun <line1>,<line2>call s:run()
-  nnoremap <silent> <Plug>SnipRun :call <SID>run()<CR>
-  vnoremap <silent> <Plug>SnipRun :'<'>call <SID>run()<CR>
-  nnoremap <silent> <Plug>SnipTerminate :call <SID>terminate()<CR>
-  nnoremap <silent> <Plug>SnipReset call <SID>clean()
-  nnoremap <silent> <Plug>SnipInfo :call <SID>showinfo()<CR>
-  nnoremap <silent> <Plug>SnipReplMemoryClean :call <SID>clearReplMemory()<CR>
+" <Plug> mappings
+" command! -range SnipRun <line1>,<line2>call s:run()
+nnoremap <silent> <Plug>SnipRun :call <SID>run()<CR>
+vnoremap <silent> <Plug>SnipRun :'<'>call <SID>run()<CR>
+nnoremap <silent> <Plug>SnipTerminate :call <SID>terminate()<CR>
+nnoremap <silent> <Plug>SnipReset call <SID>clean()
+nnoremap <silent> <Plug>SnipInfo :call <SID>showinfo()<CR>
+nnoremap <silent> <Plug>SnipReplMemoryClean :call <SID>clearReplMemory()<CR>
 
 
 endfunction
