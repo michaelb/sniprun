@@ -45,6 +45,17 @@ function! s:configureCommands()
   command! SnipReset :call s:clean()| :call s:terminate()
   command! SnipInfo :call s:showinfo()
   command! SnipReplMemoryClean :call s:clearReplMemory()
+
+  " <Plug> mappings
+  " command! -range SnipRun <line1>,<line2>call s:run()
+  nnoremap <silent> <Plug>SnipRun :call <SID>run()<CR>
+  vnoremap <silent> <Plug>SnipRun :'<'>call <SID>run()<CR>
+  nnoremap <silent> <Plug>SnipTerminate :call <SID>terminate()<CR>
+  nnoremap <silent> <Plug>SnipReset call <SID>clean()
+  nnoremap <silent> <Plug>SnipInfo :call <SID>showinfo()<CR>
+  nnoremap <silent> <Plug>SnipReplMemoryClean :call <SID>clearReplMemory()<CR>
+
+
 endfunction
 
 
@@ -94,16 +105,6 @@ function! s:initRpc()
 endfunction
 
 call s:connect()
-
-
-" <Plug> mappings
-" command! -range SnipRun <line1>,<line2>call s:run()
-nnoremap <silent> <Plug>SnipRun :call <SID>run()<CR>
-vnoremap <silent> <Plug>SnipRun :'<'>call <SID>run()<CR>
-nnoremap <silent> <Plug>SnipTerminate :call <SID>terminate()<CR>
-nnoremap <silent> <Plug>SnipReset call <SID>clean()
-nnoremap <silent> <Plug>SnipInfo :call <SID>showinfo()<CR>
-nnoremap <silent> <Plug>SnipReplMemoryClean :call <SID>clearReplMemory()<CR>
 
 
 silent! call repeat#set("\<Plug>SnipRun", v:count)
