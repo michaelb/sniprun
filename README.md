@@ -108,8 +108,6 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 " 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary, but you'll compile sniprun at every update & will need the rust toolchain
 ```
 
-Sniprun is developped and maintained on Linux (-only for now), support for other platforms is not in my goals plans, though simple compatibility patches PR are welcome.
-
 ## Usage
 
 (you can of course see `:help sniprun` once installed)
