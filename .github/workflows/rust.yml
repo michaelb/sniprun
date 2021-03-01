@@ -64,6 +64,16 @@ jobs:
     - name: Installation tests
       run: ./install.sh
 
+  vroom_end_to_end_tests:
+    name: Vroom end to end tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: install neovim 
+        run: sudo apt install neovim -y && sudo apt install python-neovim -y && sudo apt install python3-neovim
+
  
 
   codecov:
@@ -90,7 +100,7 @@ jobs:
     - name: Code coverage
       uses: actions-rs/tarpaulin@v0.1.0
       with:
-        args: --features ignore_in_ci
+        args: --features ignore_in_ci -- --test-threads=1
 
     - name: Upload to codecov.io
       uses: codecov/codecov-action@v1.0.2

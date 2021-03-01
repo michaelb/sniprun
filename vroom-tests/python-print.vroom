@@ -1,0 +1,10 @@
+let's add a print statement to our file (no need to even write it)
+  > iprint(1+3)<ESC>
+
+and set type as python file
+  :set ft=python<CR>
+
+now let's run SnipRun on the only line of the file
+
+  :SnipRun<CR> (1s)
+  ~ 4

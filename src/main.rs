@@ -317,7 +317,7 @@ fn main() {
                                         .nvim
                                         .lock()
                                         .unwrap()
-                                        .command(&format!("echo \"{}\"", answer_str));
+                                        .command(&format!("echomsg \"{}\"", answer_str));
                                 }
                             }
                         }
