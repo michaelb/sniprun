@@ -76,11 +76,12 @@ impl Interpreter for C_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("#include <stdio.h>\nint main() {") + &self.code + "\nreturn 0;}";
+        self.code = String::from("#include <stdio.h>\nint main() {\n") + &self.code + "\nreturn 0;}";
         Ok(())
     }
 
     fn build(&mut self) -> Result<(), SniprunError> {
+        info!("starting build");
         //write code to file
         let mut _file =
             File::create(&self.main_file_path).expect("Failed to create file for c-original");
@@ -94,7 +95,29 @@ impl Interpreter for C_original {
 
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            return Err(SniprunError::CompilationError("".to_string()));
+            let error_message = String::from_utf8(output.stderr).unwrap();
+            info!("Returning nice C error message: {}", error_message);
+            let mut relevant_error = String::new();
+
+            let mut break_loop = false;
+            for line in error_message.lines() {
+                if break_loop {
+                    relevant_error = relevant_error +"\n" + &line;
+                    return Err(SniprunError::CompilationError(relevant_error));
+                }
+                if line.contains("error") {
+                    // info!("breaking at position {:?}", line.split_at(line.find("error").unwrap()).1);
+                    relevant_error =relevant_error + 
+                        line.split_at(line.find("error")
+                            .unwrap()).1
+                            .trim_start_matches("error: ")
+                            .trim_end_matches("error:")
+                            .trim_start_matches("error");
+                    break_loop = true;
+                }
+            }
+
+            return Err(SniprunError::CompilationError(relevant_error));
         } else {
             return Ok(());
         }
