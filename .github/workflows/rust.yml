@@ -71,6 +71,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
 
+      - name: compile sniprun
+        run: ./install.sh
+
       - name: install neovim 
         run: sudo apt install neovim -y && sudo apt install python3-neovim
 
