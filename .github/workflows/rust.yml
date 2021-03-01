@@ -2,7 +2,7 @@ name: Rust
 
 on:
   push:
-    branches: [ master, dev ]
+    branches: [ master, ]
   pull_request:
     branches: [ master, dev]
 
@@ -55,6 +55,31 @@ jobs:
   #       run: ./install.sh 1
   #     - name: run vroom tests
   #       run : vroom --crawl --neovim -u plugin/sniprun.vim
+  #
+  #
+  # 2nd try
+  # vroom_end_to_end_tests:
+  #   name: Vroom end to end tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v2
+
+  #     - name: compile sniprun
+  #       run: ./install.sh
+
+  #     - name: workarounds
+  #       run: export DISPLAY=:99.0 && sudo sh -e /etc/init.d/xvfb start
+
+  #     - name: install neovim 
+  #       run: sudo apt install neovim -y && sudo apt install python3-neovim
+
+  #     - name: install vroom
+  #       run: wget https://github.com/google/vroom/releases/download/v0.14.0/vroom_0.14.0-1_all.deb && sudo apt install ./vroom_0.14.0-1_all.deb -y 
+
+  #     - name: run tests
+  #       run: vroom --crawl --neovim -u plugin/sniprun.vim --servername=FOO 
+
 
   install:
     name: install (download)
@@ -64,27 +89,6 @@ jobs:
     - name: Installation tests
       run: ./install.sh
 
-  vroom_end_to_end_tests:
-    name: Vroom end to end tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-
-      - name: compile sniprun
-        run: ./install.sh
-
-      - name: workarounds
-        run: export DISPLAY=:99.0 && sudo sh -e /etc/init.d/xvfb start
-
-      - name: install neovim 
-        run: sudo apt install neovim -y && sudo apt install python3-neovim
-
-      - name: install vroom
-        run: wget https://github.com/google/vroom/releases/download/v0.14.0/vroom_0.14.0-1_all.deb && sudo apt install ./vroom_0.14.0-1_all.deb -y 
-
-      - name: run tests
-        run: vroom --crawl --neovim -u plugin/sniprun.vim --servername=FOO 
 
  
 
