@@ -1,12 +1,39 @@
-# Sniprun
+<div style="text-align:center"><img src="ressources/visual_assets/Sniprun_transparent.png" /></div>
 
-![GitHub tag (latest by date)](https://img.shields.io/github/v/release/michaelb/sniprun) ![](https://github.com/michaelb/sniprun/workflows/Rust/badge.svg) ![GitHub all releases](https://img.shields.io/github/downloads/michaelb/sniprun/total) ![](https://img.shields.io/github/downloads/michaelb/sniprun/latest/total?label=users%20on%20latest) [![codecov](https://codecov.io/gh/michaelb/sniprun/branch/master/graph/badge.svg?token=PQQV79XYVN)](https://codecov.io/gh/michaelb/sniprun)
+<div align="center"><p>
+    <a href="">
+      <img alt="Latest release" src="https://img.shields.io/github/v/release/michaelb/sniprun" />
+    </a>
+     <a href="">
+      <img alt="CI build" src="https://github.com/michaelb/sniprun/workflows/Rust/badge.svg" />
+    </a>
+    <a href="">
+      <img alt="Total downloads" src="https://img.shields.io/github/downloads/michaelb/sniprun/total" />
+    </a>
+     <a href="">
+      <img alt="Users on latest snirun version" src="https://img.shields.io/github/downloads/michaelb/sniprun/latest/total?label=users%20on%20latest" />
+    </a>
+    <a href="">
+      <img alt="CI build" src="https://codecov.io/gh/michaelb/sniprun/branch/master/graph/badge.svg?token=PQQV79XYVN" />
+    </a>
 
+
+</p>
+</div>
+
+
+
+
+
+
+# Introduction
 Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
 
 
-I know that this README is exhaustively long (bear with me), but Sniprun itself is and will remain rather simple: don't be afraid, questions are welcome too.
+I know that this README is exhaustively long (for the sake of clarity, bear with me), but Sniprun itself is and will remain rather simple: don't be afraid, questions are welcome too.
+
+###### TLDR: ```Plug 'michaelb/sniprun', {'do': 'bash install.sh'} ```, ```:SnipRun```, ```:'<'>SnipRun```
 
 
 
@@ -30,15 +57,15 @@ I know that this README is exhaustively long (bear with me), but Sniprun itself 
 
 Send to Sniprun snippets of **compiled** languages such as Rust. A few lines of code (which maximum semantic complexity depends on the support level) are now within a print statement's reach.
 
-![](demo_rust.gif)
+![](ressources/visual_assets/demo_rust.gif)
 
 send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages.
 
-![](demo_repl.gif)
+![](ressources/visual_assets/demo_repl.gif)
 
 Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely (be it 400 lines of compilation warnings, or a clean 'NameError: name 'a' is not defined'). Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
 
-![](error_example.png)
+![](ressources/visual_assets/error_example.png)
 
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
@@ -80,10 +107,8 @@ For example, `vim-plug`:
 
 ```vim
 Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
-" 'bash install.sh 1' to get the bleeding edge, but you'll compile sniprun at every update
+" 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary, but you'll compile sniprun at every update & will need the rust toolchain
 ```
-
-Sniprun is developped and maintained on Linux (-only for now), support for other platforms is not in my goals plans, though simple compatibility patches PR are welcome.
 
 ## Usage
 

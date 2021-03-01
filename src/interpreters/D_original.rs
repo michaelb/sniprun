@@ -93,7 +93,8 @@ impl Interpreter for D_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let output = Command::new("rdmd")
+        let output = Command::new("dmd")
+            .arg("-run")
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
@@ -105,4 +106,28 @@ impl Interpreter for D_original {
             ));
         }
     }
+}
+
+#[cfg(test)]
+mod test_d_original {
+    use super::*;
+
+    #[test]
+    #[cfg_attr(feature = "ignore_in_ci", ignore)]
+    fn run_all() { 
+        //nececssary to run sequentially 
+        //because of file access & shared things
+        simple_print();
+    }
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("string yourName = \"a\";\nwritefln(\"Hi %s!\", yourName);");
+        let mut interpreter = D_original::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "Hi a!\n");
+    }
+
 }

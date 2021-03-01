@@ -54,7 +54,7 @@ impl Interpreter for Generic {
 
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Unsupported
-        //actually this has no importance
+        //actually this has no importance here
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -99,7 +99,7 @@ impl Interpreter for Generic {
         let output = Command::new(&self.glot_bin_path)
             .stdin(File::open(&self.main_file_path).unwrap())
             .output()
-            .expect("Unable to start process");
+            .expect(&format!("Unable to start process, bin path : {}", &self.glot_bin_path));
         info!(
             "generic executed, status.success?:{}",
             output.status.success()
@@ -132,4 +132,29 @@ impl Interpreter for Generic {
             ));
         }
     }
+}
+
+#[cfg(test)]
+mod test_generic {
+    use super::*;
+
+    #[test]
+    fn run_all() { 
+        //nececssary to run sequentially 
+        //because of file access & shared things
+        simple_print_python();
+    }
+    fn simple_print_python() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(3)");
+        data.filetype=  String::from("python");
+        data.sniprun_root_dir = std::env::current_dir().unwrap().display().to_string();
+        let mut interpreter = Generic::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert!(string_result.contains("3"));
+    }
+
 }

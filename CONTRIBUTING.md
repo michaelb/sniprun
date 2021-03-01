@@ -96,19 +96,19 @@ Run with `cargo test -- --test-threads=1`
 
 A program (struct with methods) that can fetch code, execute it and return the result is called an interpreter.
 
-- The interpreter main file is named \<language_name\>\_\<differentiator\>.rs; for example "Python3_lsp.rs", case-independent.
+- The interpreter main file is named \<Language_name\>\_\<Differentiator\>.rs; for example "Python3_Lsp.rs", case-independent.
 - The interpreter main file contains a struct has the **exact same name** as the file (minus the .rs extension).
 - Names for interpreters should be unique. Include filenames, and also the name returned by `get_name()` that should be identical (case difference is tolerated).
 - Extra files for the same interpreter go into a subdfolder alongside the interpreter's main file. The subfolder has the same name as the file, minus the extension.
-- The interpreter try to follow (and create by itself) SupportLevel hints when possible; for example, will not try to parse an entire project into when it has been determined SupportLevel::Line is enough to run the submitted code.
-- The interpreter should try not to panic, it'll be nicer if the various errors can be converted and returned as SniprunError as defined in src/interpreter.rs and suggested by the Interpreter trait
+- The interpreter try to follow (and create by itself) SupportLevel hints when possible; for example, will not try to parse an entire project into when it has been determined SupportLevel::Line is enough to run the submitted code. Don't worry if you don't get this yet for your first bloc-level contribution.
+- The interpreter should try not to panic, it'll be nicer if the various errors can be converted and returned as SniprunError as defined in src/error.rs and suggested by the Interpreter trait
 
 ## Contribute to Sniprun itself
 
 Well you are welcome to submit a PR, as long as you mind those points:
 
 - Your changes do not break any interpreter, even partially.
-- If needed (eg for when your changes touches a core part of Sniprun such as the DataHolder), you have tested your changes with every interpreter.
+- If needed (eg for when your changes touches a core part of Sniprun such as the DataHolder), you have tested your changes with every interpreter (or the CI pipeline did).
 
 ## Sniprun Mindset
 

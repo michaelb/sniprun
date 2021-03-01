@@ -33,7 +33,7 @@ impl Interpreter for Language_subname {
         builder.recursive(true);
         builder
             .create(&lwd)
-            .expect("Could not create directory for rust-original");
+            .expect("Could not create directory for example");
 
         //pre-create string pointing to main file's and binary's path
         let mfp = lwd.clone() + "/main.extension";
@@ -166,6 +166,11 @@ impl Interpreter for Language_subname {
 mod test_language_subname {
     use super::*;
     #[test]
+    fn run_all(){
+        //test of the same interpreter MUST be run sequentially.
+        simple_print();
+        another_test();
+    }
     fn simple_print() {
         let mut data = DataHolder::new();
 
@@ -174,8 +179,13 @@ mod test_language_subname {
         let mut interpreter = Language_subname::new(data);
         let res = interpreter.run();
 
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert_eq!(string_result, "HW, 1+1 = 2\n");
+        // -> should panic if not an Ok()
+        // let string_result = res.unwrap();
+        
+        // -> compare result with predicted
+        // assert_eq!(string_result, "HW, 1+1 = 2\n");
+    }
+    fn another_test(){
+        //another test
     }
 }
