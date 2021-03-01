@@ -72,7 +72,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: install neovim 
-        run: sudo apt install neovim -y && sudo apt install python-neovim -y && sudo apt install python3-neovim
+        run: sudo apt install neovim -y && sudo apt install python3-neovim
 
  
 
