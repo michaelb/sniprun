@@ -173,7 +173,7 @@ REPL-like behavior is experimental and will work better with interpreted languag
 Hopefully, if it does not work, or if the 'memory' is corrupted by bad code (for example, in C you can't define the same function twice), you can clear the REPL memory with `:SnipReplMemoryClean` that is a faster and less error-prone alternative to `:SnipReset` for this use case.
 
 ![](ressources/visual_assets/760091.png)
-### Configuration
+## Configuration
 
 You can add interpreters you want to always use in case multiples interpreters are available for one file type by adding to your config file / init.vim :
 
