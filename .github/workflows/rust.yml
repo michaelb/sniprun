@@ -57,7 +57,7 @@ jobs:
   #       run : vroom --crawl --neovim -u plugin/sniprun.vim
 
   install:
-    name: install (dowload)
+    name: install (download)
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -75,7 +75,7 @@ jobs:
         run: sudo apt install neovim -y && sudo apt install python3-neovim
 
       - name: install vroom
-        run: wget https://github.com/google/vroom/releases/download/v0.14.0/vroom_0.14.0-1_all.deb && sudo apt install vroom_0.14.0-1_all.deb -y 
+        run: wget https://github.com/google/vroom/releases/download/v0.14.0/vroom_0.14.0-1_all.deb && sudo apt install ./vroom_0.14.0-1_all.deb -y 
 
       - name: run tests
         run: vroom --crawl --neovim -u plugin/sniprun.vim --servername=FOO 
