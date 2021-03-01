@@ -1,8 +1,8 @@
+let s:scriptdir = expand('<sfile>:p:h')."/../.." "root of the project
+let s:bin= s:scriptdir.'/target/release/sniprun'
+
 function health#sniprun#check()
 
-  let s:scriptdir = resolve(expand('<sfile>:p:h')) "root of the project
-  let s:bin= s:scriptdir.'/target/release/sniprun'
-  echo s:bin
 
   if !empty(glob(s:bin)) 
     "binary is present
