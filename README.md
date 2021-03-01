@@ -70,6 +70,7 @@ Does it deals with errors ? Yes,...somehow. In practice, very well; but consiste
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
 
+![](ressources/visual_assets/760091.png)
 
 ## What does it do ?
 
@@ -86,6 +87,7 @@ By selecting a visual range (always rounded line-wise) or positioning yourself o
 - Return stdout, or stderr
 
 
+![](ressources/visual_assets/760091.png)
 ## Installation
 
 ### Prerequisites && dependencies
@@ -107,25 +109,26 @@ For example, `vim-plug`:
 
 ```vim
 Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
-" 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary, but you'll compile sniprun at every update & will need the rust toolchain
+" 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary,
+"  but you'll compile sniprun at every update & will need the rust toolchain
 ```
 
+![](ressources/visual_assets/760091.png)
 ## Usage
 
 (you can of course see `:help sniprun` once installed)
 
 You can do basically two things: **run** (your code selection) and **stop** it (in the rare occasions it crashes, it takes too long or sniprun crashes). You'll probably be using only the first one, but the second can come in handy.
 
-### Running
+#### Running
 
-Line mode: Place your cursor on the line you want to run, and type (in command mode):
+**Line mode: Place your cursor on the line you want to run, and type (in command mode):**
 
 ```vim
 :SnipRun
-
 ```
 
-Bloc mode: Select the code you want to execute in visual mode and type in:
+**Bloc mode: Select the code you want to execute in visual mode and type in:**
 
 ```
 :'<,'>SnipRun
@@ -133,7 +136,7 @@ Bloc mode: Select the code you want to execute in visual mode and type in:
 
 (nota bene: the `:'<,'>` is often pre-typed and appears if you type in `:` while in visual mode)
 
-### Stopping
+#### Stopping
 
 _ARGHHH_ I Sniprun'd an infinite loop (or anything that takes too long)!
 No worries, the second and last command will kill everything Sniprun ran so far (and has not finished yet):
@@ -147,6 +150,7 @@ Under the hood, what it does is just kill Sniprun (and its child processes) and 
 
 Alternatively, exit & re-enter Neovim.
 
+![](ressources/visual_assets/760091.png)
 ### REPL-like behavior
 
 Some languages, see support [table](README.md#support-levels-and-languages), also have some kind of (real, or 'simulated') REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sniprun'd.
@@ -168,6 +172,7 @@ REPL-like behavior is experimental and will work better with interpreted languag
 
 Hopefully, if it does not work, or if the 'memory' is corrupted by bad code (for example, in C you can't define the same function twice), you can clear the REPL memory with `:SnipReplMemoryClean` that is a faster and less error-prone alternative to `:SnipReset` for this use case.
 
+![](ressources/visual_assets/760091.png)
 ### Configuration
 
 You can add interpreters you want to always use in case multiples interpreters are available for one file type by adding to your config file / init.vim :
@@ -205,6 +210,7 @@ Each `:` command matches exactly a `<Plug>` one.
 SnipRun synergises exceptionnally well with plugins that help you creating print/debug statements, such as [vim-printer](https://github.com/meain/vim-printer).
 
 
+![](ressources/visual_assets/760091.png)
 ## Support levels and languages
 
 As of writing, languages can be supported up to different extents:
@@ -252,6 +258,7 @@ Want support for your language? Submit a feature request, or even better, [contr
 
 \*\* True REPL under the hood
 
+![](ressources/visual_assets/760091.png)
 ## Known limitations
 
 Due to its nature, Sniprun may have trouble with programs that :
