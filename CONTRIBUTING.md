@@ -6,15 +6,15 @@ Just in case: to compile `cargo build --release`, to create and show the documen
 
 ### How hard it is?
 
-Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 13min (my best time, for C_original) to 1h30. You can then submit your proposed changes as a PR to master branch.
+Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 30min ( 13min my best time, for C_original) to 1h30. You can then submit your proposed changes as a PR to the master branch.
 
-Higher support levels gets exponentially harder (depends on the languages though).
+Higher support levels gets exponentially harder (depends on the languages though), so you should start out with Bloc.
 
 ### Understanding the framework
 
 What do I write, and where?
 
--> You have to write a file in src/interpreters/ that has the name of the interpreter, by convention; \<language_name\>\_\<differentiator\>.rs
+-> You only have to write a file in src/interpreters/ that has the name of the interpreter, by convention; \<language_name\>\_\<differentiator\>.rs
 
 ---
 
@@ -44,6 +44,12 @@ Can I panic!() ?
 
 -> Yes but preferably only when you encounter a fatal error (eg: you have to write a file, but there is no space left on the device).
 Failing compilation or incorrect code panicking should be handled via the SniprunError enum
+
+---
+
+My interpreter does not produce any output..?!
+
+-> It's because your code is panicking. (unwrapping a `None` or these kind of things). Check the logs at ~/.cache/sniprun/sniprun.log
 
 ---
 
@@ -79,10 +85,13 @@ I lack the ReplLikeInterpreter trait implementation and don't want to do REPL-li
 ---
 My tests are inconsistent ..?!?
 
--> Rust tests are run in parallel, and so one a race condition may occur when writing to files and compiling.
+-> Rust tests are run in parallel, and therefore a race condition may occur when writing to files and compiling.
 Run with `cargo test -- --test-threads=1`
 
+---
+I think I've done a good job, but am I ready to submit a PR?
 
+-> You should check beforehand that the output of `cargo test -- --test-threads=1`, `cargo tarpaulin -- --test-threads=1`, and `./ressources/vroomtests.sh` are satisfying. You've added the proper an necessary tests, and have documented any edge case.
 
 ### What's the deal with...
 

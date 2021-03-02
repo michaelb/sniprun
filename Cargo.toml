@@ -1,6 +1,6 @@
 [package]
 name = "sniprun"
-version = "0.4.6"
+version = "0.4.7"
 authors = ["michaelb <michael.bleuez2@gmail.com>"]
 edition = "2018"
 

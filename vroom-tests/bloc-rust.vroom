@@ -1,0 +1,8 @@
+let's do a bigger bloc test in rust
+  > ilet a:i32 = 5;<ESC>
+  > olet b = 10;<ESC>
+  > oprintln!("sum={}", a + b);<ESC>
+  :set ft=rust<CR>
+  :1,3SnipRun<CR> (1s)
+  ~ .* (regex)
+
