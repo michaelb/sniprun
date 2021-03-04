@@ -27,7 +27,7 @@
 
 
 # Introduction
-Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](#support-levels-and-languages) . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
+Sniprun is a code runner plugin for neovim. It aims to provide stupidly fast partial code testing for interpreted **and compiled [languages](#support-levels-and-languages)** . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, unit testing and REPL/interpreters.
 
 
 
@@ -55,15 +55,15 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
 
 ## Demos
 
-Send to Sniprun snippets of **compiled** languages such as Rust. A few lines of code (which maximum semantic complexity depends on the support level) are now within a print statement's reach.
+Send to Sniprun snippets of **compiled** languages such as Rust. A few lines of code are now within a print statement's reach.
 
 ![](ressources/visual_assets/demo_rust.gif)
 
-send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages.
+send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
 
 ![](ressources/visual_assets/demo_repl.gif)
 
-Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely (be it 400 lines of compilation warnings, or a clean 'NameError: name 'a' is not defined'). Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
+Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely. Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
 
 ![](ressources/visual_assets/error_example.png)
 
@@ -92,8 +92,8 @@ By selecting a visual range (always rounded line-wise) or positioning yourself o
 
 ### Prerequisites && dependencies
 
-- Sniprun is Linux-only for now (as of v0.4.5)
-- Neovim version >= 0.43 preferably, but should work with older versions
+- Sniprun is Linux-only for now (as of v0.4.7), so you need Linux.
+- Neovim version (>= 0.43 preferably), but should work with older versions
 - [recommended, but optionnal] cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
 - Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the **[doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at** before getting started as it also contains the potential limitations of each interpreter.
 
@@ -113,12 +113,17 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 "  but you'll compile sniprun at every update & will need the rust toolchain
 ```
 
+
+(Manual)
+
+I trust you know what you're doing, just don't forget to run `./install.sh`, or alternatively, `cargo build --release`.
+
 ![](ressources/visual_assets/760091.png)
 ## Usage
 
 (you can of course see `:help sniprun` once installed)
 
-You can do basically two things: **run** (your code selection) and **stop** it (in the rare occasions it crashes, it takes too long or sniprun crashes). You'll probably be using only the first one, but the second can come in handy.
+You can do basically two things: **run** your code selection and **stop** it (in the rare occasions it crashes, it takes too long or sniprun crashes). You'll probably be using only the first one, but the second can come in handy.
 
 #### Running
 
@@ -138,15 +143,12 @@ You can do basically two things: **run** (your code selection) and **stop** it (
 
 #### Stopping
 
-_ARGHHH_ I Sniprun'd an infinite loop (or anything that takes too long)!
-No worries, the second and last command will kill everything Sniprun ran so far (and has not finished yet):
+_ARGHHH_ I Sniprun'd an infinite loop (or anything that takes too long, or will crash, or anything)!
+No worries, the second and last command will kill everything Sniprun ran so far:
 
 ```vim
  :SnipReset
 ```
-
-Under the hood, what it does is just kill Sniprun (and its child processes) and relaunch it, and also cleans the cache directory. `:SnipReset` is the hardest 'reset' you can throw on Sniprun to vent your frustration that's hopefully not due to the plugin.
-`:SnipTerminate` does the same thing but does not cleans the cache directory. (For faster recompiles, unless some data leftover in the cache was in fact the cause of the crash)
 
 Alternatively, exit & re-enter Neovim.
 
@@ -202,10 +204,12 @@ vmap f <Plug>SnipRun
 nmap <leader>c :SnipReplMemoryClean<CR>
 ```
 
-SnipRun has both `<Plug>`-style commands and old-style plugin-defined commands (`:SnipRun`). While both are here to stay, **please use the `<Plug>` style ones in yours mappings** and if using from another plugin. Bonus; with Plug mappings, if you also have Tim Pope's [vim-repeat](https://github.com/tpope/vim-repeat), you can repeat a SnipRun with "`.`"  .
-
-
+SnipRun has both `<Plug>`-style commands and old-style plugin-defined commands (`:SnipRun`).
 Each `:` command matches exactly a `<Plug>` one.
+
+While both are here to stay, **please use the `<Plug>` style ones in yours mappings** or if using from another plugin. Bonus; with Plug mappings, if you also have Tim Pope's [vim-repeat](https://github.com/tpope/vim-repeat), you can repeat a SnipRun with "`.`"  .
+
+
 
 SnipRun synergises exceptionnally well with plugins that help you creating print/debug statements, such as [vim-printer](https://github.com/meain/vim-printer).
 
