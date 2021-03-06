@@ -38,6 +38,8 @@ jobs:
           sudo apt install lua5.3 &&
           ./ressources/go_install.sh &&
           export PATH=$PATH:$HOME/golang/go/bin/
+          ./ressources/d_install.sh install &&
+          source ~/dlang/dmd-2.095.1/activate
 
 
 
