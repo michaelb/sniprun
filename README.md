@@ -121,7 +121,7 @@ I trust you know what you're doing, just don't forget to run `./install.sh`, or 
 ![](ressources/visual_assets/760091.png)
 ## Usage
 
-(you can of course see `:help sniprun` once installed)
+(you can of course see `:help sniprun` once installed for the complete list of commands)
 
 You can do basically two things: **run** your code selection and **stop** it (in the rare occasions it crashes, it takes too long or sniprun crashes). You'll probably be using only the first one, but the second can come in handy.
 
