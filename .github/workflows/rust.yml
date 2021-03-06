@@ -36,7 +36,6 @@ jobs:
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' &&
           sudo apt install r-base &&
           sudo apt install lua5.3 &&
-
           export CURRENT_BUILD_PATH=$(pwd)  &&
           echo $PATH &&
           rm -rf $HOME/golang &&
