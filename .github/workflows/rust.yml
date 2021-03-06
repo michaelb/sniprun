@@ -40,7 +40,12 @@ jobs:
           export PATH=$PATH:$HOME/golang/go/bin/ &&
           ./ressources/d_install.sh install &&
           source ~/dlang/dmd-2.095.1/activate &&
-          export PATH=$PATH:$HOME/dlang/dmd-2.095.1/linux/bin64     
+          export PATH=$PATH:$HOME/dlang/dmd-2.095.1/linux/bin64 &&
+          export PATH=$PATH:$HOME/dlang/dmd-2.095.1/linux/bin64 &&
+          export PATH=$PATH:$HOME/dlang/dmd-2.095.1/linux/bin32 &&
+          export PATH=$PATH:$HOME/dlang/dmd-2.095.1/linux/lib64 &&
+          export PATH=$PATH:$HOME/dlang/dmd-2.095.1/linux/lib32 &&
+          which dmd
 
 
 
