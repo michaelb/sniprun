@@ -118,7 +118,8 @@ jobs:
           ./ressources/go_install.sh &&
           export PATH=$PATH:$HOME/golang/go/bin/ &&
           ./ressources/d_install.sh install &&
-          source ~/dlang/dmd-2.095.1/activate
+          source ~/dlang/dmd-2.095.1/activate &&
+          export PATH=$PATH:$HOME/dlang/linux/dmd-2.095.1/bin64
 
 
    
