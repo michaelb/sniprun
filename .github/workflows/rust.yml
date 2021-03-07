@@ -2,9 +2,10 @@ name: Rust
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master]
   pull_request:
     branches: [ master, dev]
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
@@ -27,14 +28,18 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - name: install all fking compilers
+    - name: install all compilers
       run: sudo apt install haskell-platform -y &&
           sudo apt install -y nodejs npm &&
           sudo npm install -g coffee-script &&
           sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && 
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' &&
           sudo apt install r-base &&
-          sudo apt install lua5.3 
+          sudo apt install lua5.3 &&
+          ./ressources/go_install.sh &&
+          export PATH=$PATH:$HOME/golang/go/bin/
+
+    - uses: dlang-community/setup-dlang@v1
 
 
 
@@ -109,7 +114,15 @@ jobs:
           sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && 
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' &&
           sudo apt install r-base &&
-          sudo apt install lua5.3
+          sudo apt install lua5.3 &&
+          ./ressources/go_install.sh &&
+          export PATH=$PATH:$HOME/golang/go/bin/ &&
+          ./ressources/d_install.sh install &&
+          source ~/dlang/dmd-2.095.1/activate &&
+          export PATH=$PATH:$HOME/dlang/dmd-2.095.1/linux/bin64     
+
+    - uses: dlang-community/setup-dlang@v1
+
 
    
 
