@@ -2,7 +2,7 @@ name: Rust
 
 on:
   push:
-    branches: [ master, dev]
+    branches: [ master]
   pull_request:
     branches: [ master, dev]
   workflow_dispatch:
@@ -120,6 +120,8 @@ jobs:
           ./ressources/d_install.sh install &&
           source ~/dlang/dmd-2.095.1/activate &&
           export PATH=$PATH:$HOME/dlang/dmd-2.095.1/linux/bin64     
+
+    - uses: dlang-community/setup-dlang@v1
 
 
    
