@@ -1,3 +1,9 @@
+## v0.4.8
+- More complete test pipeline
+- C++ Import
+
+
+
 ## v0.4.7
 - the first useful vroom tests
 - Fix the bug where the channel would broke and the terminate function had a typo
