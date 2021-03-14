@@ -12,7 +12,28 @@ pub struct C_original {
     bin_path: String,
     main_file_path: String,
     compiler: String,
+    imports: Vec<String>,
 }
+
+impl C_original {
+    pub fn fetch_imports(&mut self) -> std::io::Result<()> {
+        if self.support_level < SupportLevel::Import {
+            return Ok(());
+        }
+        let mut file = File::open(&self.data.filepath)?;
+        let mut contents = String::new();
+        file.read_to_string(&mut contents)?;
+
+        for line in contents.lines() {
+            if line.starts_with("#include <") {
+                self.imports.push(line.to_string());
+            }
+        }
+        info!("fecthed imports : {:?}", self.imports);
+        Ok(())
+    }
+}
+
 impl ReplLikeInterpreter for C_original {}
 
 impl Interpreter for C_original {
@@ -33,6 +54,7 @@ impl Interpreter for C_original {
             bin_path: bp,
             main_file_path: mfp,
             compiler: String::from("gcc"),
+            imports: vec![],
         })
     }
 
@@ -56,7 +78,7 @@ impl Interpreter for C_original {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::Bloc
+        SupportLevel::Import
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -76,7 +98,16 @@ impl Interpreter for C_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("#include <stdio.h>\nint main() {\n") + &self.code + "\nreturn 0;}";
+        let res = self.fetch_imports();
+        if res.is_err() {
+            return Err(SniprunError::FetchCodeError);
+        }
+        self.code = String::from("int main() {\n") + &self.code + &"\nreturn 0;}";
+        if !self.imports.iter().any(|s| s.contains("<stdio.h>")) {
+            self.code = String::from("#include <stdio.h>\n") + &self.code;
+        }
+        self.code = self.imports.join("\n") + &"\n" + &self.code;
+
         Ok(())
     }
 
@@ -102,14 +133,15 @@ impl Interpreter for C_original {
             let mut break_loop = false;
             for line in error_message.lines() {
                 if break_loop {
-                    relevant_error = relevant_error +"\n" + &line;
+                    relevant_error = relevant_error + "\n" + &line;
                     return Err(SniprunError::CompilationError(relevant_error));
                 }
                 if line.contains("error") {
                     // info!("breaking at position {:?}", line.split_at(line.find("error").unwrap()).1);
-                    relevant_error =relevant_error + 
-                        line.split_at(line.find("error")
-                            .unwrap()).1
+                    relevant_error = relevant_error
+                        + line
+                            .split_at(line.find("error").unwrap())
+                            .1
                             .trim_start_matches("error: ")
                             .trim_end_matches("error:")
                             .trim_start_matches("error");
@@ -146,12 +178,10 @@ mod test_c_original {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("printf(\"1=1\\n\");");
         let mut interpreter = C_original::new(data);
-        let res = interpreter.run();
+        let res = interpreter.run_at_level(SupportLevel::Bloc);
 
         // should panic if not an Ok()
         let string_result = res.unwrap();
         assert_eq!(string_result, "1=1\n");
     }
 }
-
-
