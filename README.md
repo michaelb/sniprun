@@ -240,7 +240,7 @@ println!("-> {}", alphabet);
 | ------------ | ------------- | --- | ---------- | ---------------- |
 | Ada          | Untested      |     | Java       | Bloc             |
 | Bash/Shell   | Bloc + REPL\* |     | JavaScript | Bloc             |
-| C            | Bloc          |     | Julia      | Bloc             |
+| C            | Import        |     | Julia      | Bloc             |
 | C++          | Import        |     | Lisp       | Untested         |
 | Clojure      | Untested      |     | Lua        | Bloc             |
 | COBOL        | Untested      |     | Lua-nvim   | Bloc             |

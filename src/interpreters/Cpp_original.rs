@@ -31,7 +31,6 @@ impl Cpp_original {
                 self.imports.push(line.to_string());
             }
         }
-        info!("fecthed imports : {:?}", self.imports);
         Ok(())
     }
 }
@@ -110,7 +109,6 @@ impl Interpreter for Cpp_original {
             self.code = String::from("#include <iostream>\n") + &self.code;
         }
         self.code = self.imports.join("\n") + &"\n" + &self.code;
-        info!("boilerplate added, code: {}", self.code);
         Ok(())
     }
 
