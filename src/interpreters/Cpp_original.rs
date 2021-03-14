@@ -19,6 +19,9 @@ pub struct Cpp_original {
 
 impl Cpp_original {
     pub fn fetch_imports(&mut self) -> std::io::Result<()> {
+        if self.support_level < SupportLevel::Import {
+            return Ok(());
+        }
         let mut file = File::open(&self.data.filepath)?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;
@@ -152,13 +155,13 @@ mod test_cpp_original {
     #[test]
     fn simple_print() {
         let mut data = DataHolder::new();
-        data.current_bloc = String::from("int a = 1;\nprintf(\"1=%i\\n\", a);");
+        data.current_bloc = String::from("int a = 1;\nstd::cout << a << std::endl;");
         let mut interpreter = Cpp_original::new(data);
-        let res = interpreter.run();
+        let res = interpreter.run_at_level(SupportLevel::Bloc);
 
         // should panic if not an Ok()
         let string_result = res.unwrap();
-        assert_eq!(string_result, "1=1\n");
+        assert_eq!(string_result, "1\n");
     }
 }
 
