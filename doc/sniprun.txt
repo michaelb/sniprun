@@ -61,6 +61,8 @@ and
 
 to a list of interpreter names to force/forbid REPL behavior.
 
+Style of the output messages can be tuned with the g:SnipRun_inline_messages variable, possible values are 1 (inline, better compatibility with strange configs), or 0 (default, can easily display more lines)
+
 ==============================================================================
 TROUBLESHOOTING                                  *sniprun-troubleshooting*
 

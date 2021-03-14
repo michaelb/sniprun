@@ -187,6 +187,8 @@ For example to always select Lua_original and Rust_original over others,
 
 A list of all available interpreters can be displayed by running `:SnipInfo`
 
+The variable `g:SnipRun_inline_messages` (0 or 1) determine whether the messages should be inlined (better compatibility with some configs, and based on echomsg) or be displayed as multiline (default, 0).
+
 ### My usage recommandation & tricks
 
 - Map the run command to a simple command such as `<leader>f` (or just `f` in visual mode).

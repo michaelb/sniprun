@@ -17,9 +17,9 @@ let s:bin= s:scriptdir.'/target/release/sniprun'
 
 
 let s:SnipRun_select_interpreters = get(g: ,'SnipRun_select_interpreters', [])
-
 let s:SnipRun_repl_behavior_enable = get(g: ,'SnipRun_repl_behavior_enable', [])
 let s:SnipRun_repl_behavior_disable = get(g: ,'SnipRun_repl_behavior_disable', [])
+let s:SnipRun_inline_messages = get(g: ,'SnipRun_inline_messages', 0)
 
 " Entry point. Initialize RPC. If it succeeds, then attach commands to the `rpcnotify` invocations.
 function! s:connect()
@@ -69,13 +69,13 @@ function! s:run() range
   try
     let s:fl=a:firstline
     let s:ll=a:lastline
-    call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir, s:SnipRun_select_interpreters, s:SnipRun_repl_behavior_enable, s:SnipRun_repl_behavior_disable)
+    call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir, s:SnipRun_select_interpreters, s:SnipRun_repl_behavior_enable, s:SnipRun_repl_behavior_disable, s:SnipRun_inline_messages)
   catch
     let s:sniprunJobId = 0
     call s:connect()
     let s:fl=a:firstline
     let s:ll=a:lastline
-    call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir, s:SnipRun_select_interpreters, s:SnipRun_repl_behavior_enable, s:SnipRun_repl_behavior_disable)
+    call rpcnotify(s:sniprunJobId, s:SnipRun, str2nr(s:fl), str2nr(s:ll), s:scriptdir, s:SnipRun_select_interpreters, s:SnipRun_repl_behavior_enable, s:SnipRun_repl_behavior_disable, s:SnipRun_inline_messages)
   endtry
 endfunction
 

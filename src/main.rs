@@ -3,6 +3,7 @@
 //! Sniprun is a neovim plugin that run parts of code.
 
 use dirs::cache_dir;
+use error::SniprunError;
 use log::{info, LevelFilter};
 use neovim_lib::{Neovim, NeovimApi, Session, Value};
 use simple_logging::log_to_file;
@@ -53,6 +54,10 @@ pub struct DataHolder {
 
     ///interpreter data
     interpreter_data: Option<Arc<Mutex<InterpreterData>>>,
+
+    /// whether to display echomsg-based messages (more compatibility)
+    /// or new ones (multiline support) (default)
+    return_message_type: ReturnMessageType,
 }
 
 #[derive(Clone, Default)]
@@ -65,6 +70,12 @@ pub struct InterpreterData {
 
     /// PID of linked REPL if existing
     pid: Option<u32>,
+}
+
+#[derive(Clone)]
+enum ReturnMessageType {
+    EchoMsg,
+    Multiline,
 }
 
 impl DataHolder {
@@ -92,6 +103,7 @@ impl DataHolder {
             repl_enabled: vec![],
             repl_disabled: vec![],
             interpreter_data: None,
+            return_message_type: ReturnMessageType::Multiline,
         }
     }
     ///remove and recreate the cache directory (is invoked by `:SnipReset`)
@@ -235,6 +247,13 @@ impl EventHandler {
                 .collect();
             info!("got selected interpreters");
         }
+        {
+            if values[6].as_i64().unwrap_or(0) == 1 {
+                self.data.return_message_type = ReturnMessageType::EchoMsg;
+            } else {
+                self.data.return_message_type = ReturnMessageType::Multiline;
+            }
+        }
     }
 }
 enum HandleAction {
@@ -298,36 +317,20 @@ fn main() {
                     // return Ok(result) or Err(sniprunerror)
                     match result {
                         Ok(answer_str) => {
-                            // do not display anything if string empty, as it may means the
-                            // interpreter used the nvim handle directly and you don't want 
-                            // to overwrite it!
-                            if !answer_str.is_empty() {
-                                //make sure there is no lone "
-                                let mut answer_str = answer_str.clone();
-                                answer_str = answer_str.replace("\\\"", "\"");
-                                answer_str = answer_str.replace("\"", "\\\"");
-
-                                //remove trailing /starting newlines
-                                answer_str = answer_str.trim_start_matches('\n').trim_end_matches('\n').to_string();
-
-                                info!("[MAINLOOP] Returning stdout of code run: {}", answer_str);
-
-                                {
-                                    let _ = event_handler2
-                                        .nvim
-                                        .lock()
-                                        .unwrap()
-                                        .command(&format!("echomsg \"{}\"", answer_str));
-                                }
-                            }
+                            info!("[MAINLOOP] Returning stdout of code run: {}", answer_str);
+                            return_message(
+                                event_handler2.nvim,
+                                Ok(answer_str),
+                                event_handler2.data.return_message_type,
+                            );
                         }
                         Err(e) => {
-                            info!("[MAINLOOP] Returning an error");
-                            let _ = event_handler2
-                                .nvim
-                                .lock()
-                                .unwrap()
-                                .err_writeln(&format!("{}", e));
+                            info!("[MAINLOOP] Returning an error : {:?}", e);
+                            return_message(
+                                event_handler2.nvim,
+                                Err(e),
+                                event_handler2.data.return_message_type,
+                            );
                         }
                     };
 
@@ -356,5 +359,62 @@ fn main() {
                 info!("[MAINLOOP] Unknown event received: {:?}", event);
             }
         }
+    }
+}
+
+fn return_message(
+    nvim: Arc<Mutex<Neovim>>,
+    message: Result<String, SniprunError>,
+    rmt: ReturnMessageType,
+) {
+    // do not display anything if string empty, as it may means the
+    // interpreter used the nvim handle directly and you don't want
+    // to overwrite it!
+    if let Ok(answer_ok) = &message {
+        if answer_ok.is_empty() {
+            return;
+        }
+    }
+
+    match message {
+        Ok(answer_ok) => {
+            //make sure there is no lone "
+            let mut answer_str = answer_ok.clone();
+            answer_str = answer_str.replace("\\\"", "\"");
+            answer_str = answer_str.replace("\"", "\\\"");
+
+            //remove trailing /starting newlines
+            answer_str = answer_str
+                .trim_start_matches('\n')
+                .trim_end_matches('\n')
+                .to_string();
+            info!("Final str {}", answer_str);
+
+            match rmt {
+                ReturnMessageType::Multiline => {
+                    let _ = nvim
+                        .lock()
+                        .unwrap()
+                        .command(&format!("echo \"{}\"", answer_str));
+                }
+                ReturnMessageType::EchoMsg => {
+                    let _ = nvim
+                        .lock()
+                        .unwrap()
+                        .command(&format!("echomsg \"{}\"", answer_str));
+                }
+            }
+        }
+        Err(e) => match rmt {
+            ReturnMessageType::Multiline => {
+                let _ = nvim.lock().unwrap().err_writeln(&format!("{}", e));
+            }
+            ReturnMessageType::EchoMsg => {
+                let _ = nvim
+                    .lock()
+                    .unwrap()
+                    .command(&format!("echohl ErrorMsg | echomsg \"{}\" | echohl None", e));
+            }
+        },
     }
 }
