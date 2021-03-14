@@ -12,7 +12,29 @@ pub struct Cpp_original {
     bin_path: String,
     main_file_path: String,
     compiler: String,
+    imports : Vec<String>, //using, namespaces, and includes
 }
+
+
+
+impl Cpp_original {
+    pub fn fetch_imports(&mut self) -> std::io::Result<()> {
+        let mut file = File::open(&self.data.filepath)?;
+        let mut contents = String::new();
+        file.read_to_string(&mut contents)?;
+        
+        for line in contents.lines() {
+            if line.starts_with("namespace") || line.starts_with("using") || line.starts_with("#include <") {
+                self.imports.push(line.to_string());
+            }
+        }
+        info!("fecthed imports : {:?}", self.imports);
+        Ok(())
+    }
+}
+
+
+
 impl ReplLikeInterpreter for Cpp_original {}
 impl Interpreter for Cpp_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Cpp_original> {
@@ -32,6 +54,7 @@ impl Interpreter for Cpp_original {
             bin_path: bp,
             main_file_path: mfp,
             compiler: String::from("g++"),
+            imports: vec!(),
         })
     }
 
@@ -55,7 +78,7 @@ impl Interpreter for Cpp_original {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::Bloc
+        SupportLevel::Import
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -75,7 +98,16 @@ impl Interpreter for Cpp_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("#include <iostream>\nint main() {") + &self.code + "return 0;}";
+        let res = self.fetch_imports();
+        if res.is_err() {
+            return Err(SniprunError::FetchCodeError);
+        }
+        self.code = String::from("int main() {\n") + &self.code + &"\nreturn 0;}";
+        if !self.imports.iter().any(|s| s.contains("<iostream>")) {
+            self.code = String::from("#include <iostream>\n") + &self.code;
+        }
+        self.code = self.imports.join("\n") + &"\n" + &self.code;
+        info!("boilerplate added, code: {}", self.code);
         Ok(())
     }
 

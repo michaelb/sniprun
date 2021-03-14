@@ -241,7 +241,7 @@ println!("-> {}", alphabet);
 | Ada          | Untested      |     | Java       | Bloc             |
 | Bash/Shell   | Bloc + REPL\* |     | JavaScript | Bloc             |
 | C            | Bloc          |     | Julia      | Bloc             |
-| C++          | Bloc          |     | Lisp       | Untested         |
+| C++          | Import        |     | Lisp       | Untested         |
 | Clojure      | Untested      |     | Lua        | Bloc             |
 | COBOL        | Untested      |     | Lua-nvim   | Bloc             |
 | Coffeescript | Bloc          |     | OCaml      | Untested         |
