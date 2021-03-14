@@ -1,3 +1,13 @@
+## v0.4.7
+- the first useful vroom tests
+- Fix the bug where the channel would broke and the terminate function had a typo
+- Compilation error messages (nicely truncated) for C and Rust
+
+## v0.4.6
+- Remove 'cc' dependency which caused issues with precompiled GLIBC i think
+- a lot of unit tests
+
+
 ## v0.4.5
 - Plug mappings + vim-repeat support
 - Trailing characters fix
