@@ -1,4 +1,6 @@
 let's do a bigger bloc test in rust
+  :let g:SnipRun_inline_messages=1
+  :source plugin/sniprun.vim
   > ilet a:i32 = 5;<ESC>
   > olet b = 10;<ESC>
   > oprintln!("sum={}", a + b);<ESC>

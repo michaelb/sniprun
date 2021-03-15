@@ -1,3 +1,4 @@
+  :source plugin/sniprun.vim
   > :SnipInfo<CR><CR> (0.1s)
   ! .*
   ~ .* (regex)
