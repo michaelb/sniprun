@@ -60,7 +60,7 @@ pub struct DataHolder {
     return_message_type: ReturnMessageType,
 }
 
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 ///data that can be saved/accessed between Arc 2 interpreter runs
 pub struct InterpreterData {
     ///indentifies the current interpreter (so that data from another interpreter does not get used
@@ -72,7 +72,7 @@ pub struct InterpreterData {
     pid: Option<u32>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 enum ReturnMessageType {
     EchoMsg,
     Multiline,
@@ -113,6 +113,7 @@ impl DataHolder {
         std::fs::create_dir_all(&work_dir_path).unwrap();
     }
 }
+
 
 #[derive(Clone)]
 struct EventHandler {
@@ -161,6 +162,7 @@ impl EventHandler {
     /// fill the DataHolder with data from sniprun and Neovim
     fn fill_data(&mut self, values: Vec<Value>) {
         info!("received data from RPC: {:?}", values);
+        let config = values[2].as_map().unwrap();
         {
             info!("getting back eventual interpreter data");
             self.data.interpreter_data = Some(self.interpreter_data.clone());
@@ -169,7 +171,8 @@ impl EventHandler {
         {
             info!("filling data");
             self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
-            self.data.sniprun_root_dir = String::from(values[2].as_str().unwrap());
+            assert_eq!(config[5].0.as_str().unwrap(), "sniprun_root_dir");
+            self.data.sniprun_root_dir = String::from(config[5].1.as_str().unwrap());
         }
 
         {
@@ -222,7 +225,9 @@ impl EventHandler {
             info!("got nvim_instance");
         }
         {
-            self.data.selected_interpreters = values[3]
+
+            assert_eq!(config[2].0.as_str().unwrap(), "selected_interpreters");
+            self.data.selected_interpreters = config[2].1
                 .as_array()
                 .unwrap()
                 .iter()
@@ -231,30 +236,34 @@ impl EventHandler {
             info!("got selected interpreters");
         }
         {
-            self.data.repl_enabled = values[4]
+            assert_eq!(config[0].0.as_str().unwrap(), "repl_enable");
+            self.data.repl_enabled = config[0].1
                 .as_array()
                 .unwrap()
                 .iter()
                 .map(|v| v.as_str().unwrap().to_owned())
                 .collect();
-            info!("got selected interpreters");
+            info!("got repl enabled interpreters");
         }
         {
-            self.data.repl_disabled = values[5]
+            assert_eq!(config[3].0.as_str().unwrap(), "repl_disable");
+            self.data.repl_disabled = config[3].1
                 .as_array()
                 .unwrap()
                 .iter()
                 .map(|v| v.as_str().unwrap().to_owned())
                 .collect();
-            info!("got selected interpreters");
+            info!("got repl disabled interpreters");
         }
         {
-            if values[6].as_i64().unwrap_or(0) == 1 {
+            assert_eq!(config[4].0.as_str().unwrap(), "inline_messages");
+            if config[4].1.as_i64().unwrap_or(0) == 1 {
                 self.data.return_message_type = ReturnMessageType::EchoMsg;
             } else {
                 self.data.return_message_type = ReturnMessageType::Multiline;
             }
         }
+        info!("Filed dataholder!");
     }
 }
 enum HandleAction {

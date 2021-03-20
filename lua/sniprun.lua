@@ -1,10 +1,11 @@
---nvim
 local M = {}
 
 -- See https://github.com/tjdevries/rofl.nvim/blob/632c10f2ec7c56882a3f7eda8849904bcac6e8af/lua/rofl.lua
 local binary_path = vim.fn.fnamemodify(
   vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":h:h")
   .. "/target/release/sniprun"
+
+local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.." 
 
 
 
@@ -73,6 +74,7 @@ end
 function M.run()
   range_begin = 1
   range_end = 1
+  M.config_values["sniprun_root_dir"] = sniprun_path
   M.notify('run', range_begin, range_end, M.config_values)
 end
 
