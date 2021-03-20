@@ -160,6 +160,7 @@ impl EventHandler {
 
     /// fill the DataHolder with data from sniprun and Neovim
     fn fill_data(&mut self, values: Vec<Value>) {
+        info!("received data from RPC: {:?}", values);
         {
             info!("getting back eventual interpreter data");
             self.data.interpreter_data = Some(self.interpreter_data.clone());
