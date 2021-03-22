@@ -72,11 +72,44 @@ function M.notify(method, ...)
 end
 
 function M.run()
-  range_begin = 1
-  range_end = 1
+  range_begin, range_end = M.get_range()
   M.config_values["sniprun_root_dir"] = sniprun_path
-  M.notify('run', range_begin, range_end, M.config_values)
+  -- M.notify('run', range_begin, range_end, M.config_values)
 end
 
+
+function M.get_range() 
+  
+  local mode = vim.api.nvim_get_mode().mode
+  print(mode)
+
+  local _, csrow, cscol, _ = unpack(vim.fn.getpos("'<"))
+  local _, cerow, cecol, _ = unpack(vim.fn.getpos("'>"))
+  if csrow < cerow or (csrow == cerow and cscol <= cecol) then
+    return csrow , cerow
+  else
+    return cerow , csrow 
+  end
+end
+
+
+function M.clean()
+  notify("clean")
+  vim.wait(200) -- let enough time for the rust binary to delete the cache before killing its process
+  M.terminate()
+end
+  
+function M.clear_repl()
+  norify("clearreapl")
+end
+
+function M.terminate()
+  vim.fn.jobstop(M.job_id)
+  M.job_id = nil
+end
+
+function M.test()
+  print(vim.api.nvim_get_mode()['mode'])
+end
 
 return M
