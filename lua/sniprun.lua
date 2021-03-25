@@ -72,17 +72,16 @@ function M.notify(method, ...)
 end
 
 function M.run()
-  range_begin, range_end = M.get_range()
+  range_from_lua_begin, range_from_lua_end = M.get_range() 
+  range_begin = range_b or range_from_lua_begin
+  range_end = range_e or range_from_lua_end
   M.config_values["sniprun_root_dir"] = sniprun_path
-  -- M.notify('run', range_begin, range_end, M.config_values)
+  M.notify('run', range_begin, range_end, M.config_values)
 end
 
 
+-- this does not yet works great with lua/nvim
 function M.get_range() 
-  
-  local mode = vim.api.nvim_get_mode().mode
-  print(mode)
-
   local _, csrow, cscol, _ = unpack(vim.fn.getpos("'<"))
   local _, cerow, cecol, _ = unpack(vim.fn.getpos("'>"))
   if csrow < cerow or (csrow == cerow and cscol <= cecol) then
@@ -93,6 +92,8 @@ function M.get_range()
 end
 
 
+
+
 function M.clean()
   notify("clean")
   vim.wait(200) -- let enough time for the rust binary to delete the cache before killing its process
@@ -100,7 +101,7 @@ function M.clean()
 end
   
 function M.clear_repl()
-  norify("clearreapl")
+  norify("clearrepl")
 end
 
 function M.terminate()

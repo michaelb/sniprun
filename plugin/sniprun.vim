@@ -5,28 +5,8 @@ endif
 
 
 
-" items sent through RPC to the rust program
-let s:SnipRun = 'run'
-let s:SnipTerminate = 'terminate'
-let s:SnipClean = "clean"
-let s:SnipInfo = "showinfo"
-let s:SnipReplMemoryClean = "clearrepl"
-
-let s:scriptdir = resolve(expand('<sfile>:p:h') . '/..')
-let s:bin= s:scriptdir.'/target/release/sniprun'
-
-
-let s:SnipRun_select_interpreters = get(g: ,'SnipRun_select_interpreters', [])
-let s:SnipRun_repl_behavior_enable = get(g: ,'SnipRun_repl_behavior_enable', [])
-let s:SnipRun_repl_behavior_disable = get(g: ,'SnipRun_repl_behavior_disable', [])
-let s:SnipRun_inline_messages = get(g: ,'SnipRun_inline_messages', 0)
-
-
-
-
-
 function! s:configure_commands()
-  command! -range SnipRun <line1>,<line2>run()
+  command! -range SnipRun <line1>,<line2>call s:run()
   command! SnipTerminate lua require"sniprun".terminate()
   command! SnipReset lua require"sniprun".clean()
   command! SnipInfo :call s:showinfo()
@@ -42,11 +22,15 @@ function! s:configure_commands()
 endfunction
 
 function s:run() range
-  echo "lol"
+  let s:fl = a:firstline
+  let s:ll = a:lastline
+  " lua print(vim.api.nvim_get_mode().mode)
+  echo mode()
 endfunction
 
 
 function! s:showinfo()
+  let s:scriptdir = resolve(expand('<sfile>:p:h') . '/..')
   silent execute '!sh'  s:scriptdir.'/ressources/infoscript.sh' s:scriptdir.'/src/interpreters' '>' s:scriptdir.'/ressources/infofile.txt'
   let infofile = s:scriptdir."/ressources/infofile.txt"
   let lines = readfile(infofile)
