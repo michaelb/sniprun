@@ -58,8 +58,18 @@ function M.setup(opts)
       M.config_values[key] = value
     end
   end
+  M.configure_keymaps()
 end
 
+function M.configure_keymaps()
+  vim.api.nvim_set_keymap("v", "<Plug>SnipRun", ":lua require'sniprun'.run('v')<CR>", {silent=true})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipRun", ":lua require'sniprun'.run()<CR>",{silent=true})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipRTerminate", ":lua require'sniprun'.terminate()<CR>",{silent=true})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipReset", ":lua require'sniprun'.reset()<CR>",{silent=true})
+  -- vim.api.nvim_set_keymap("n", "<Plug>SnipInfo", ":lua require'sniprun'.run()<CR>",{})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipReplMemoryClean", ":lua require'sniprun'.clear_repl()<CR>",{silent=true})
+
+end
 
 local function start()
   if M.job_id ~= nil then return end
@@ -71,37 +81,36 @@ function M.notify(method, ...)
   vim.rpcnotify(M.job_id, method, ...)
 end
 
-function M.run()
-  range_from_lua_begin, range_from_lua_end = M.get_range() 
-  range_begin = range_b or range_from_lua_begin
-  range_end = range_e or range_from_lua_end
+function M.run(mode)
+  range_begin, range_end = M.get_range(mode)
   M.config_values["sniprun_root_dir"] = sniprun_path
   M.notify('run', range_begin, range_end, M.config_values)
 end
 
 
--- this does not yet works great with lua/nvim
-function M.get_range() 
-  local _, csrow, cscol, _ = unpack(vim.fn.getpos("'<"))
-  local _, cerow, cecol, _ = unpack(vim.fn.getpos("'>"))
-  if csrow < cerow or (csrow == cerow and cscol <= cecol) then
-    return csrow , cerow
-  else
-    return cerow , csrow 
+function M.get_range(mode) 
+  if not mode then
+    line1 = vim.api.nvim_win_get_cursor(0)[1]
+    line2 = line1
+  elseif mode:match("[vV]") then
+    line1 = vim.api.nvim_buf_get_mark(0, "<")[1]
+    line2 = vim.api.nvim_buf_get_mark(0, ">")[1]
   end
+  if line1 > line2 then
+    line1, line2 = line2, line1
+  end
+  return line1, line2
 end
 
 
-
-
 function M.clean()
-  notify("clean")
+  M.notify("clean")
   vim.wait(200) -- let enough time for the rust binary to delete the cache before killing its process
   M.terminate()
 end
   
 function M.clear_repl()
-  norify("clearrepl")
+  M.notify("clearrepl")
 end
 
 function M.terminate()
@@ -109,8 +118,11 @@ function M.terminate()
   M.job_id = nil
 end
 
-function M.test()
-  print(vim.api.nvim_get_mode()['mode'])
+
+function M.info()
+  local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.." 
+  os.execute(sniprun_path.."/ressources/infoscript.sh "..sniprun_path.."/src/interpreters > "..sniprun_path.."/ressources/infofile.txt")
 end
+
 
 return M

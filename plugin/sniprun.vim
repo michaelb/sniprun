@@ -1,33 +1,19 @@
-" Initialize the channel
-if !exists('s:sniprunJobId')
-  let s:sniprunJobId = 0
-endif
-
-
 
 function! s:configure_commands()
-  command! -range SnipRun <line1>,<line2>call s:run()
-  command! SnipTerminate lua require"sniprun".terminate()
-  command! SnipReset lua require"sniprun".clean()
+  command! -range SnipRun :echo "replaced by lua require'sniprun'.run() and run('v')"
+  command! SnipTerminate :echo "replaced by lua require'sniprun'.terminate()"
+  command! SnipReset :echo "replaced by lua require'sniprun'.reset()"
   command! SnipInfo :call s:showinfo()
-  command! SnipReplMemoryClean :lua require"sniprun".clean_repl()
+  command! SnipReplMemoryClean :echo "replaced by lua require'sniprun'.clean_repl()"
 
-  " <Plug> mappings
-  nnoremap <silent> <Plug>SnipRun :call <SID>run()<CR>
-  vnoremap <silent> <Plug>SnipRun :'<'>call <SID>run()<CR>
-  nnoremap <silent> <Plug>SnipTerminate :call <SID>terminate()<CR>
-  nnoremap <silent> <Plug>SnipReset call <SID>clean()
+  " " <Plug> mappings
+  " nnoremap <silent> <Plug>SnipRun :lua require'sniprun'.run()
+  " vnoremap <silent> <Plug>SnipRun lua require'sniprun'.run('v')
+  " nnoremap <silent> <Plug>SnipTerminate lua require'sniprun'.terminate()
+  " nnoremap <silent> <Plug>SnipReset lua require'sniprun'.clean()
   nnoremap <silent> <Plug>SnipInfo :call <SID>showinfo()<CR>
-  nnoremap <silent> <Plug>SnipReplMemoryClean :call <SID>clearReplMemory()<CR>
+  " nnoremap <silent> <Plug>SnipReplMemoryClean lua require'sniprun'.clean_repl()
 endfunction
-
-function s:run() range
-  let s:fl = a:firstline
-  let s:ll = a:lastline
-  " lua print(vim.api.nvim_get_mode().mode)
-  echo mode()
-endfunction
-
 
 function! s:showinfo()
   let s:scriptdir = resolve(expand('<sfile>:p:h') . '/..')
