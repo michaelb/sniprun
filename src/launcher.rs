@@ -1,8 +1,9 @@
 use crate::*;
 use error::SniprunError;
 use interpreter::{Interpreter, SupportLevel};
-use std::{fs::File, io::Read};
 use std::process::Command;
+use std::{fs::File, io::Read};
+use std::io::prelude::*;
 
 pub struct Launcher {
     pub data: DataHolder,
@@ -14,10 +15,29 @@ impl Launcher {
     }
 
     pub fn select_and_run<'a>(&self) -> Result<String, SniprunError> {
-        if self.data.filetype.is_empty() {
+        let selection = self.select();
+        if let Some((name, level)) = selection {
+            //launch !
+            iter_types! {
+                if Current::get_name() == name {
+                    let mut inter = Current::new_with_level(self.data.clone(), level);
+                    return inter.run();
+                }
+            }
+            info!("Could not find/run the selected interpreter");
+            return Err(SniprunError::CustomError(
+                "could not find/run the selected interpreter".to_owned(),
+            ));
+        } else {
             return Err(SniprunError::CustomError(String::from(
                 "No filetype set for current file",
             )));
+        }
+    }
+
+    pub fn select(&self) -> Option<(String, SupportLevel)> {
+        if self.data.filetype.is_empty() {
+            return None;
         }
 
         let mut max_level_support = SupportLevel::Unsupported;
@@ -45,65 +65,71 @@ impl Launcher {
             }
         }
         let _ = skip_all; //silence false unused variable warning
-        info!(
-            "[LAUNCHER] Selected interpreter : {} ; with support level {:?}",
-            name_best_interpreter, max_level_support
-        );
-
-        //launch !
-        iter_types! {
-            if Current::get_name() == name_best_interpreter {
-                let mut inter = Current::new_with_level(self.data.clone(), max_level_support);
-                return inter.run();
-            }
-        }
-        panic!()
+        return Some((name_best_interpreter, max_level_support));
     }
 
-    pub fn info(&self) -> std::io::Result<String>{
-        let mut v : Vec<String> = vec![];
+    pub fn info(&self) -> std::io::Result<String> {
+        let mut v: Vec<String> = vec![];
         let filename = self.data.sniprun_root_dir.clone() + "/ressources/asciiart.txt";
-        let mut file  = File::open(filename)?;
+        let mut file = File::open(filename)?;
         let mut content = String::new();
         file.read_to_string(&mut content)?;
         info!("Retrieved asciiart");
         v.push(content);
-        v.push("\n".to_string());
+        v.push("\n".to_owned());
 
-
-        
         let gitscript = self.data.sniprun_root_dir.clone() + "/ressources/gitscript.sh";
         let mut get_version = Command::new(gitscript);
         get_version.current_dir(self.data.sniprun_root_dir.clone());
         let res = get_version.output().expect("process failed to execute");
-        if res.status.success(){
+        if res.status.success() {
             let online_version = String::from_utf8(res.stdout).unwrap();
-            info!("online version available: {}", online_version);
+            info!("online version available: {}", &online_version);
             v.push(online_version);
-            v.push("".to_string());
         }
 
+        if let Some((name, level)) = self.select() {
+            v.push(format!("\nCurrently selected interpreter: {}, at support level: {}\n", name, level));
+        } else {
+            v.push("No interpreter selected".to_string());
+        }
 
-        v.push("|--------------------------|--------------|-------------|------------|--------------|------------|".to_string());
-        v.push("| Interpreter              | Language     | Default for |    REPL    | REPL enabled | Treesitter |".to_string());
-        v.push("|                          |              |  filetype   | capability |  by default  | capability |".to_string());
-        v.push("|--------------------------|--------------|-------------|------------|--------------|------------|".to_string());
+        let separator = "|--------------------------|--------------|---------------|-------------|------------|--------------|------------|".to_string();
+        v.push(separator.clone());
+        v.push("| Interpreter              | Language     | Support Level | Default for |    REPL    | REPL enabled | Treesitter |".to_string());
+        v.push("|                          |              |               |  filetype   | capability |  by default  | capability |".to_string());
 
-
+        let mut counter = 0;
         iter_types! {
-            let line = String::new() + 
-                &format!("| {:<25}| {:<13}|{:^13}|{:^12}|{:^14}|{:^11}|",
-                    Current::get_name(), 
+            let line = format!("| {:<25}| {:<13}| {:<14}|{:^13}|{:^12}|{:^14}|{:^11}|",
+                    Current::get_name(),
                     Current::get_supported_languages().iter().next().unwrap_or(&"".to_string()),
+                    Current::get_max_support_level().to_string(),
                     match Current::default_for_filetype() {true => "✔" ,false => "✘"},
-                    match Current::behave_repl_like_default() { true => "✔" ,false => "✘"},
                     match Current::has_repl_capability() { true => "✔" ,false => "✘"},
+                    match Current::behave_repl_like_default() { true => "✔" ,false => "✘"},
                     match Current::has_treesitter_capability() { true => "✔" ,false => "✘"}
-                    );
+                    ).to_string();
+            if counter % 3 ==0 {
+                        v.push(separator.clone());
+            }
+            counter += 1;
+
             v.push(line);
         }
-        v.push("|--------------------------|--------------|-------------|------------|--------------|------------|\n".to_string());
+        let _ = counter; //silence false warning
 
-        Ok(v.join("\n"))
+        v.push(separator.clone());
+
+        if self.data.return_message_type == ReturnMessageType::Multiline {
+            return Ok(v.join("\n"));
+        } else {
+            //write to infofile
+            let filename = self.data.sniprun_root_dir.clone() + "/ressources/infofile.txt";
+            let mut file = File::create(filename).unwrap();
+            file.write_all(v.join("\n").as_bytes()).unwrap();
+            return Ok("".to_owned());
+        }
+
     }
 }

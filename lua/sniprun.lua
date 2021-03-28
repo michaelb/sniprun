@@ -135,7 +135,8 @@ function M.info()
   local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.." 
 
   if M.config_values.inline_messages ~= 0 then
-    vim.wait(100) -- let enough time for the sniprun binary to generate the file
+    vim.wait(500) -- let enough time for the sniprun binary to generate the file
+    print(" ")
     local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
     -- print all line numbers and their contents
     for k,v in pairs(lines) do

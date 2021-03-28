@@ -103,6 +103,9 @@ impl Interpreter for Python3_original {
     fn behave_repl_like_default() -> bool {
         false
     }
+    fn has_repl_capability() -> bool {
+        true
+    }
 
     fn get_supported_languages() -> Vec<String> {
         vec![
@@ -234,7 +237,6 @@ impl ReplLikeInterpreter for Python3_original {
         Ok(())
     }
 
-    // &unindent(&format!("{}{}", "\n", self.code.as_str()));
 }
 
 #[cfg(test)]

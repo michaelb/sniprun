@@ -72,7 +72,7 @@ pub struct InterpreterData {
     pid: Option<u32>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq,Eq)]
 enum ReturnMessageType {
     EchoMsg,
     Multiline,

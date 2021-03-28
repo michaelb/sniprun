@@ -39,6 +39,9 @@ impl Interpreter for R_original {
     fn behave_repl_like_default() -> bool {
         true
     }
+    fn has_repl_capability() -> bool {
+        true
+    }
 
     fn get_current_level(&self) -> SupportLevel {
         self.support_level

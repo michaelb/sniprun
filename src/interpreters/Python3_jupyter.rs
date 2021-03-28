@@ -110,7 +110,11 @@ impl Interpreter for Python3_jupyter {
     }
 
     fn behave_repl_like_default() -> bool {
-        false
+        true
+    }
+
+    fn has_repl_capability() -> bool {
+        true
     }
 
     fn get_supported_languages() -> Vec<String> {

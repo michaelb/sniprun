@@ -37,6 +37,9 @@ impl Interpreter for Bash_original {
     fn behave_repl_like_default() -> bool {
         true
     }
+    fn has_repl_capability() -> bool{
+        true
+    }
 
     fn get_supported_languages() -> Vec<String> {
         vec![
