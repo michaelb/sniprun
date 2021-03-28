@@ -24,6 +24,8 @@ M.config_values = {
   inline_messages = 0
 }
 
+M.config_up=0
+
 function M.load_vimscript_config()
   vimscript_config = {}
   vimscript_config["repl_enable"] = vim.g.SnipRun_repl_behavior_enable or M.config_values["repl_enable"]
@@ -34,6 +36,13 @@ function M.load_vimscript_config()
   return vimscript_config
 end
   
+
+function M.initial_setup()
+  if M.config_up == 1 then return end
+  M.setup()
+  M.config_up = 0
+end
+
 
 
 function M.setup(opts)
@@ -59,6 +68,7 @@ function M.setup(opts)
     end
   end
   M.configure_keymaps()
+  M.config_up = 1
 end
 
 function M.configure_keymaps()
@@ -66,9 +76,15 @@ function M.configure_keymaps()
   vim.api.nvim_set_keymap("n", "<Plug>SnipRun", ":lua require'sniprun'.run()<CR>",{silent=true})
   vim.api.nvim_set_keymap("n", "<Plug>SnipRTerminate", ":lua require'sniprun'.terminate()<CR>",{silent=true})
   vim.api.nvim_set_keymap("n", "<Plug>SnipReset", ":lua require'sniprun'.reset()<CR>",{silent=true})
-  -- vim.api.nvim_set_keymap("n", "<Plug>SnipInfo", ":lua require'sniprun'.run()<CR>",{})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipInfo", ":lua require'sniprun'.info()<CR>",{})
   vim.api.nvim_set_keymap("n", "<Plug>SnipReplMemoryClean", ":lua require'sniprun'.clear_repl()<CR>",{silent=true})
+  vim.cmd("command! SnipTerminate :lua require'sniprun'.terminate()")
+  vim.cmd("command! SnipReset :lua require'sniprun'.reset()")
+  vim.cmd("command! SnipInfo :lua require'sniprun'.info()")
+  vim.cmd("command! SnipReplMemoryClean :lua require'sniprun'.clear_repl()")
 
+  vim.cmd("function! SnipRunLauncher() range \n if a:firstline == a:lastline \n lua require'sniprun'.run() \n else \n lua require'sniprun'.run('v') \n endif \n endfunction") 
+  vim.cmd("command! -range SnipRun <line1>,<line2>call SnipRunLauncher()")
 end
 
 local function start()
