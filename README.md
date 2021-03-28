@@ -56,9 +56,10 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
 
 ## Demos
 
-Send to Sniprun snippets of **compiled** languages such as Rust. A few lines of code are now within a print statement's reach.
+Send to Sniprun snippets of any language. A few lines of code are now within a print statement's reach.
 
-![](ressources/visual_assets/demo_rust.gif)
+An example in C:
+![](ressources/visual_assets/demo_c.gif)
 
 send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
 
@@ -66,7 +67,7 @@ send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash
 
 Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely. Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
 
-![](ressources/visual_assets/error_example.png)
+![](ressources/visual_assets/rust_error.png)
 
 
 > Note: SnipRun is still under development, so expect new features to be introduced quickly, but also some other things may change and break your workflow.
@@ -75,12 +76,13 @@ Does it deals with errors ? Yes,...somehow. In practice, very well; but consiste
 
 ## What does it do ?
 
-Basically, it allows you to run a part of your code, even if as-is your code won't even compile/run because it's unfinished (but to finish it you'd need to assert the first part)
+Basically, it allows you to run a part of your code.
 
-Quickly grab a line or some visual range, `:'<,'>SnipRun` it and... that's it!
+Position the cursor on a line or select some visual range, `:'<,'>SnipRun` it and... that's it!
 
-By selecting a visual range (always rounded line-wise) or positioning yourself on a particular line of code, and running the `SnipRun` command on it (I advise to map it), you can send the line(s) to Sniprun. Sniprun will then:
+Sniprun will then:
 
+- Get the code you selected (selections are rounded line-wise)
 - Optionnaly, get additional information if necessary (auto retrieve import when supported for example)
 - Add the boilerplate when it exists. In C, it surrounds your snip with "int main() {", "}".
 - Build (write to a script file, or compile) the code
@@ -122,25 +124,28 @@ I trust you know what you're doing, just don't forget to run `./install.sh`, or 
 ![](ressources/visual_assets/760091.png)
 ## Usage
 
-(you can of course see `:help sniprun` once installed for the complete list of commands)
+(you can of course see `:help sniprun` once installed for the complete list of commands, and `:SnipInfo` will have a decent share of useful information too)
 
 You can do basically two things: **run** your code selection and **stop** it (in the rare occasions it crashes, it takes too long or sniprun crashes). You'll probably be using only the first one, but the second can come in handy.
 
 #### Running
 
-**Line mode: Place your cursor on the line you want to run, and type (in command mode):**
+**Line mode:** Place your cursor on the line you want to run, and type (in command mode):
 
 ```vim
 :SnipRun
+"OR
+:lua require'sniprun'.run()
+"the first command is only a shorthand, you should configure the <Plug>SnipRun mapping
 ```
+(see mapping [example](README.md#my-usage-recommandation--tricks)),
 
-**Bloc mode: Select the code you want to execute in visual mode and type in:**
+**Bloc mode:** Select the code you want to execute in visual mode and type in:
 
-```
-:'<,'>SnipRun
-```
+`:'<,'>SnipRun`
 
-(nota bene: the `:'<,'>` is often pre-typed and appears if you type in `:` while in visual mode)
+(the shorthand for ``` :lua require'sniprun'.run('v')```)
+
 
 #### Stopping
 
@@ -156,39 +161,55 @@ Alternatively, exit & re-enter Neovim.
 ![](ressources/visual_assets/760091.png)
 ### REPL-like behavior
 
-Some languages, see support [table](README.md#support-levels-and-languages), also have some kind of (real, or 'simulated') REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sniprun'd.
+Some languages, see support [table](README.md#support-levels-and-languages), also have some kind of REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sent to sniprun.
 
+While this is more easy/clean to implement on interpreted languages, **compiled languages can have a REPL-like behavior too!**
 
-Interpreted languages may use a simulated or real REPL, depending on the implementation.
-For many languages that have an interpreter already available, a real one can be used.
+Many interpreted languages will have this behavior enabled or disabled by default, you can change this with the
+`repl_enable = { 'Intepreter_name', 'Another_one' }` and `repl_disable = {'Disabled_interpreter'}` keys in the configuration. Relevant info is available in `:SnipInfo` / `:lua require'sniprun'.info()`
 
-Compiled languages can have this simulated REPL behavior too, though there might be unavoidable side effects.
-
-Many interpreted languages will have this behavior enabled by default, but you can always disable those (or enable them) with the `g:SnipRun_repl_behavior_disable` and `g:SnipRun_repl_behavior_enable` blocklist / allowlist:
-
-```vimrc
-let g:SnipRun_repl_behavior_disable = ["Bash_original"]
-let g:SnipRun_repl_behavior_enable = ["Rust_original", "Lua_original"]
-```
 
 REPL-like behavior is experimental and will work better with interpreted languages and with side-effect-free code (including prints in functions).
 
-Hopefully, if it does not work, or if the 'memory' is corrupted by bad code (for example, in C you can't define the same function twice), you can clear the REPL memory with `:SnipReplMemoryClean` that is a faster and less error-prone alternative to `:SnipReset` for this use case.
+Hopefully, if something does not work, or if the 'memory' is corrupted by bad code you can clear the REPL memory with `:SnipReplMemoryClean` that is a faster and less error-prone alternative to `:SnipReset` for this use case.
 
 ![](ressources/visual_assets/760091.png)
 ## Configuration
 
-You can add interpreters you want to always use in case multiples interpreters are available for one file type by adding to your config file / init.vim :
+Sniprun is a Lua plugin, but **you don't need** the usual boilerplate.
 
-`let g:SnipRun_select_interpreters = ["name_of_the_interpreter"]`
+However, if you want to change some options, you can add this snippet (the default config) to your configuration file:
 
-For example to always select Lua_original and Rust_original over others,
+```vim
+lua << EOF
+require'sniprun'.setup({
+  selected_interpreters = {},     --" use those instead of the default for the current filetype
+  repl_enable = {},               --" enable REPL-like behavior for the given interpreters
+  repl_disable = {},              --" disable REPL-like behavior for the given interpreters
 
-`let g:SnipRun_select_interpreters =["Lua_original", "Rust_original"]`
+  inline_messages = 0             --" inline_message (0/1) is a one-line way to display messages
+                                  --" to workaround sniprun not being able to display anything
+})
+EOF
+```
 
-A list of all available interpreters can be displayed by running `:SnipInfo`
+Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of the 'Python3_original' default], 
+`lua require'sniprun'.setup({selected_interpreters = {'Python3_jupyter'}})`
 
-The variable `g:SnipRun_inline_messages` (0 or 1) determine whether the messages should be inlined (better compatibility with some configs, and based on echomsg) or be displayed as multiline (default, 0).
+
+
+
+All of sniprun useful functionnalities:
+
+|Shorthand|Lua backend|\<Plug> mapping|
+|--|--|--|
+|:SnipRun| lua require'sniprun'.run()|\<Plug>SnipRun|
+|:'<,'>SnipRun (visual mode)|lua require'sniprun'.run('v') |\<Plug>SnipRun|
+|:SnipInfo| lua require'sniprun'.info()|\<Plug>SnipInfo|
+|:SnipReset| lua require'sniprun'.reset()|\<Plug>SnipReset|
+|:SnipReplMemoryClean| lua require'sniprun'.clear_repl()  |\<Plug>SnipReplMemoryClean|
+
+
 
 ### My usage recommandation & tricks
 
@@ -200,17 +221,12 @@ nmap <leader>f <Plug>SnipRun
 vmap f <Plug>SnipRun
 ```
 
-- For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire code.
-- If you use the REPL-like behavior for some languages, mapping the repl reset to a short command is advised.
+- For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire file.
 
-```
-nmap <leader>c :SnipReplMemoryClean<CR>
-```
 
-SnipRun has both `<Plug>`-style commands and old-style plugin-defined commands (`:SnipRun`).
-Each `:` command matches exactly a `<Plug>` one.
+While both shorthands and \<Plug> are here to stay, **please use the `<Plug>` style ones in your mappings** or if using from another plugin. 
 
-While both are here to stay, **please use the `<Plug>` style ones in yours mappings** or if using from another plugin. Bonus; with Plug mappings, if you also have Tim Pope's [vim-repeat](https://github.com/tpope/vim-repeat), you can repeat a SnipRun with "`.`"  .
+Bonus; with Plug mappings, if you also have Tim Pope's [vim-repeat](https://github.com/tpope/vim-repeat), you can repeat a SnipRun with "`.`"  .
 
 
 
@@ -273,11 +289,11 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Meddle with standart output / stderr
 - Need to read from stdin
 - Prints incorrect UTF8 characters, or just too many lines
-- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for neovim won't necessarily be the one from where the binary runs, or the good one for relative imports.
-- For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _saved_.
+- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache, and relative imports may miss.
+- For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _written_.
 
 ## Changelog
-[changelog](CHANGELOG.md)
+[Changelog](CHANGELOG.md)
 
 ## Contribute
 
