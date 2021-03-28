@@ -1,7 +1,3 @@
-//Interpreter:| Bash_original       | bash, shell |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Bash_original {
@@ -41,8 +37,13 @@ impl Interpreter for Bash_original {
         true
     }
 
+    fn default_for_filetype() -> bool {
+        true
+    }
+
     fn get_supported_languages() -> Vec<String> {
         vec![
+            String::from("Bash / Shell"),
             String::from("bash"),
             String::from("shell"),
             String::from("sh"),

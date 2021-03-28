@@ -101,14 +101,14 @@ impl Launcher {
 
         let mut counter = 0;
         iter_types! {
-            let line = format!("| {:<25}| {:<13}| {:<14}|{:^13}|{:^12}|{:^14}|{:^11}|",
+            let line = format!("| {:<25}| {:<13}| {:<14}|{:^13}|{:^12}|{:^14}|{:^12}|",
                     Current::get_name(),
                     Current::get_supported_languages().iter().next().unwrap_or(&"".to_string()),
                     Current::get_max_support_level().to_string(),
-                    match Current::default_for_filetype() {true => "✔" ,false => "✘"},
-                    match Current::has_repl_capability() { true => "✔" ,false => "✘"},
-                    match Current::behave_repl_like_default() { true => "✔" ,false => "✘"},
-                    match Current::has_treesitter_capability() { true => "✔" ,false => "✘"}
+                    match Current::default_for_filetype() {true => "yes" ,false => "no"},
+                    match Current::has_repl_capability() { true => "yes" ,false => "no"},
+                    match Current::behave_repl_like_default() { true => "yes" ,false => "no"},
+                    match Current::has_treesitter_capability() { true => "yes" ,false => "no"}
                     ).to_string();
             if counter % 3 ==0 {
                         v.push(separator.clone());

@@ -1,7 +1,3 @@
-//Interpreter:| Java_original       | java        |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Java_original {
@@ -39,7 +35,7 @@ impl Interpreter for Java_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("java")]
+        vec![String::from("Java"),String::from("java")]
     }
 
     fn get_name() -> String {
@@ -51,6 +47,10 @@ impl Interpreter for Java_original {
     }
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
+    }
+    
+    fn default_for_filetype() -> bool {
+        true
     }
 
     fn get_data(&self) -> DataHolder {

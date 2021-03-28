@@ -1,7 +1,3 @@
-//Interpreter:| Python3_jupyter     | python3     | runs on jupyter kernel
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Python3_jupyter {
@@ -119,6 +115,7 @@ impl Interpreter for Python3_jupyter {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
+            String::from("Python 3"),
             String::from("python"),
             String::from("python3"),
             String::from("py"),

@@ -1,7 +1,3 @@
-//Interpreter:| Julia_original      | julia       |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Julia_original {
@@ -45,12 +41,16 @@ impl Interpreter for Julia_original {
         String::from("Julia_original")
     }
 
+    fn default_for_filetype() -> bool {
+        true
+    }
+
     fn behave_repl_like_default() -> bool {
         false
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("julia"), String::from("jl")]
+        vec![String::from("Julia"),String::from("julia"), String::from("jl")]
     }
 
     fn get_current_level(&self) -> SupportLevel {

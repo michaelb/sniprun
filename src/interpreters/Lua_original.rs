@@ -1,7 +1,3 @@
-//Interpreter:| Lua_original        | lua         |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Lua_original {
@@ -35,7 +31,7 @@ impl Interpreter for Lua_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("lua")]
+        vec![String::from("Lua"),String::from("lua")]
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -45,6 +41,9 @@ impl Interpreter for Lua_original {
         self.support_level = level;
     }
 
+    fn default_for_filetype() -> bool {
+        true
+    }
     fn get_data(&self) -> DataHolder {
         self.data.clone()
     }
