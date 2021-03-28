@@ -1,10 +1,10 @@
 
 function! s:configure_commands()
-  command! -range SnipRun :echo "replaced by lua require'sniprun'.run() and run('v')"
-  command! SnipTerminate :echo "replaced by lua require'sniprun'.terminate()"
-  command! SnipReset :echo "replaced by lua require'sniprun'.reset()"
+  command! SnipRun :lua require'sniprun'.run()
+  command! SnipTerminate :lua require'sniprun'.terminate()
+  command! SnipReset :lua require'sniprun'.reset()
   command! SnipInfo :call s:showinfo()
-  command! SnipReplMemoryClean :echo "replaced by lua require'sniprun'.clean_repl()"
+  command! SnipReplMemoryClean :lua require'sniprun'.clear_repl()
 
   " " <Plug> mappings
   " nnoremap <silent> <Plug>SnipRun :lua require'sniprun'.run()

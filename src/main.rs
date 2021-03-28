@@ -126,6 +126,7 @@ enum Messages {
     Run,
     Clean,
     ClearReplMemory,
+    Info,
     Unknown(String),
 }
 
@@ -135,6 +136,7 @@ impl From<String> for Messages {
             "run" => Messages::Run,
             "clean" => Messages::Clean,
             "clearrepl" => Messages::ClearReplMemory,
+            "info" => Messages::Info,
             _ => Messages::Unknown(event),
         }
     }
@@ -155,9 +157,21 @@ impl EventHandler {
         EventHandler {
             nvim: Arc::new(Mutex::new(nvim)),
             data,
-            interpreter_data: interpreter_data,
+            interpreter_data,
         }
     }
+
+    fn index_from_name(&mut self, name: &str, config:&Vec<(Value,Value)>) -> usize {
+        for (i, kv) in config.iter().enumerate() {
+            if name == kv.0.as_str().unwrap() {
+                return i;
+            }
+        }
+        info!("key not found");
+        return 0;
+    }
+        
+
 
     /// fill the DataHolder with data from sniprun and Neovim
     fn fill_data(&mut self, values: Vec<Value>) {
@@ -171,8 +185,8 @@ impl EventHandler {
         {
             info!("filling data");
             self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
-            assert_eq!(config[5].0.as_str().unwrap(), "sniprun_root_dir");
-            self.data.sniprun_root_dir = String::from(config[5].1.as_str().unwrap());
+            let i =  self.index_from_name("sniprun_root_dir",config);
+            self.data.sniprun_root_dir = String::from(config[i].1.as_str().unwrap());
         }
 
         {
@@ -226,8 +240,8 @@ impl EventHandler {
         }
         {
 
-            assert_eq!(config[2].0.as_str().unwrap(), "selected_interpreters");
-            self.data.selected_interpreters = config[2].1
+            let i =  self.index_from_name("selected_interpreters",config);
+            self.data.selected_interpreters = config[i].1
                 .as_array()
                 .unwrap()
                 .iter()
@@ -236,8 +250,8 @@ impl EventHandler {
             info!("got selected interpreters");
         }
         {
-            assert_eq!(config[0].0.as_str().unwrap(), "repl_enable");
-            self.data.repl_enabled = config[0].1
+            let i =  self.index_from_name("repl_enable",config);
+            self.data.repl_enabled = config[i].1
                 .as_array()
                 .unwrap()
                 .iter()
@@ -246,8 +260,8 @@ impl EventHandler {
             info!("got repl enabled interpreters");
         }
         {
-            assert_eq!(config[3].0.as_str().unwrap(), "repl_disable");
-            self.data.repl_disabled = config[3].1
+            let i =  self.index_from_name("repl_disable",config);
+            self.data.repl_disabled = config[i].1
                 .as_array()
                 .unwrap()
                 .iter()
@@ -256,8 +270,8 @@ impl EventHandler {
             info!("got repl disabled interpreters");
         }
         {
-            assert_eq!(config[4].0.as_str().unwrap(), "inline_messages");
-            if config[4].1.as_i64().unwrap_or(0) == 1 {
+            let i =  self.index_from_name("inline_messages",config);
+            if config[i].1.as_i64().unwrap_or(0) == 1 {
                 self.data.return_message_type = ReturnMessageType::EchoMsg;
             } else {
                 self.data.return_message_type = ReturnMessageType::Multiline;
@@ -365,6 +379,18 @@ fn main() {
                     .clear();
             }
 
+            Messages::Info => {
+                info!("[MAINLOOP] Info command received");
+                let mut event_handler2 = event_handler.clone();
+                event_handler2.fill_data(values);
+                let launcher = launcher::Launcher::new(event_handler2.data.clone());
+                let result = launcher.info();
+                info!("info received: {:?}", result);
+                if let Ok(infomsg) = result {
+                    return_message(event_handler2.nvim,Ok(infomsg), ReturnMessageType::Multiline);
+                }
+            }
+
             Messages::Unknown(event) => {
                 info!("[MAINLOOP] Unknown event received: {:?}", event);
             }
@@ -390,6 +416,7 @@ fn return_message(
         Ok(answer_ok) => {
             //make sure there is no lone "
             let mut answer_str = answer_ok.clone();
+            answer_str = answer_str.replace("\\", "\\\\");
             answer_str = answer_str.replace("\\\"", "\"");
             answer_str = answer_str.replace("\"", "\\\"");
 

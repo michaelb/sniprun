@@ -103,7 +103,7 @@ function M.get_range(mode)
 end
 
 
-function M.clean()
+function M.reset()
   M.notify("clean")
   vim.wait(200) -- let enough time for the rust binary to delete the cache before killing its process
   M.terminate()
@@ -118,10 +118,30 @@ function M.terminate()
   M.job_id = nil
 end
 
+-- get all lines from a file, returns an empty 
+-- list/table if the file does not exist
+local function lines_from(file)
+  lines = {}
+  for line in io.lines(file) do 
+    lines[#lines + 1] = line
+  end
+  return lines
+end
 
 function M.info()
+  M.config_values["sniprun_root_dir"] = sniprun_path
+  M.notify("info",1,1,M.config_values)
+
   local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.." 
-  os.execute(sniprun_path.."/ressources/infoscript.sh "..sniprun_path.."/src/interpreters > "..sniprun_path.."/ressources/infofile.txt")
+
+  if M.config_values.inline_messages ~= 0 then
+    vim.wait(100) -- let enough time for the sniprun binary to generate the file
+    local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
+    -- print all line numbers and their contents
+    for k,v in pairs(lines) do
+      print(v)
+    end
+  end
 end
 
 

@@ -1,6 +1,7 @@
 use crate::error::SniprunError;
 use crate::DataHolder;
 use log::info;
+use std::fmt::Display;
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 #[allow(dead_code)]
@@ -23,6 +24,21 @@ pub enum SupportLevel {
     Selected = 255,
 }
 
+impl Display for SupportLevel {
+    fn fmt(&self, f: &mut  std::fmt::Formatter) -> std::result::Result<(), std::fmt::Error> {
+        match *self {
+            SupportLevel::Unsupported => f.write_str("Unsupported"),
+            SupportLevel::Line => f.write_str("Line"),
+            SupportLevel::Bloc => f.write_str("Bloc"),
+            SupportLevel::Import => f.write_str("Import"),
+            SupportLevel::File => f.write_str("File"),
+            SupportLevel::Project => f.write_str("Project"),
+            SupportLevel::System => f.write_str("System"),
+            SupportLevel::Selected => f.write_str("Selected"),
+        }
+    }
+}
+
 ///This is the trait all interpreters must implement.
 ///The launcher run fucntions new() and run() from this trait.
 pub trait Interpreter: ReplLikeInterpreter {
@@ -37,8 +53,16 @@ pub trait Interpreter: ReplLikeInterpreter {
     ///Return the (unique) name of your interpreter.
     fn get_name() -> String;
 
+    ///Return whether the interpreter is the default for a given filetype
+    fn default_for_filetype() -> bool {
+        false
+    }
+
+
     /// The languages (as filetype codes) supported by your interpreter; check ':set ft?' in neovim
-    /// on a file of your language if you are not sure
+    /// on a file of your language if you are not sure. You can put whatever (python and python3),
+    /// but I strongly recommend making the first element the name of the langage ("JavaScript"
+    /// instead of "js" for example)
     fn get_supported_languages() -> Vec<String>;
 
     fn get_current_level(&self) -> SupportLevel;
@@ -72,6 +96,16 @@ pub trait Interpreter: ReplLikeInterpreter {
         false
     }
 
+    /// Info only, indicates whether the interpreter has REPL-like behavior 
+    fn has_repl_capability() -> bool {
+        false
+    }
+
+    ///If the interpreter has treesitter capabilities
+    fn has_treesitter_capability() -> bool {
+        false
+    }
+
     /// This should add code that does not originate from the project to the code field in the
     /// interpreter
     fn add_boilerplate(&mut self) -> Result<(), SniprunError>;
@@ -97,6 +131,7 @@ pub trait Interpreter: ReplLikeInterpreter {
     }
 
     fn run_at_level_repl(&mut self, level: SupportLevel) -> Result<String, SniprunError> {
+        info!("REPL enabled");
         self.set_current_level(level);
         if let Some(res) = self.fallback() {
             return res;
