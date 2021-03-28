@@ -94,7 +94,12 @@ end
 
 function M.notify(method, ...)
   start()
-  vim.rpcnotify(M.job_id, method, ...)
+  local status, err = pcall(vim.rpcnotify, M.job_id, method, ...)
+  if not status then
+    M.terminate()
+    start()
+    vim.rpcnotify(M.job_id, method, ...)
+  end
 end
 
 function M.run(mode)
