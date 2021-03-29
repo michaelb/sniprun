@@ -332,11 +332,6 @@ mod test_python3_jupyter {
     use crate::*;
 
     #[test]
-    fn run_all() {
-        simple_print();
-        with_memory();
-    }
-
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"a\",1)");
@@ -348,6 +343,7 @@ mod test_python3_jupyter {
         assert!(string_result.contains(&"a 1"));
     }
 
+    #[test]
     #[allow(dead_code)]
     fn with_memory() { //race condition somewhere
         let interpreter_data = Arc::new(Mutex::new(InterpreterData {
