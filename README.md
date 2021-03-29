@@ -211,6 +211,7 @@ All of sniprun useful functionnalities:
 |:SnipReplMemoryClean| lua require'sniprun'.clear_repl()  |\<Plug>SnipReplMemoryClean|
 
 
+You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to configure sniprun, still compatible but may be deprecated at some point.
 
 ### My usage recommandation & tricks
 
