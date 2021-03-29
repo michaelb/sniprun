@@ -140,11 +140,22 @@ mod test_lua_nvim {
         //nececssary to run sequentially 
         //because of file access & shared things
         simple_print();
+        simple_print_fallback();
     }
     fn simple_print() {
         let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(\"Hi\") -- nvim code");
+        let mut interpreter = Lua_nvim::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "Hi\n");
+    }
+    fn simple_print_fallback() {
+        let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"Hi\")");
-        let mut interpreter = Lua_original::new(data);
+        let mut interpreter = Lua_nvim::new(data);
         let res = interpreter.run();
 
         // should panic if not an Ok()
