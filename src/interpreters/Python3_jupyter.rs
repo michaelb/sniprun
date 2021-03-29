@@ -332,7 +332,6 @@ mod test_python3_jupyter {
     use crate::*;
 
     #[test]
-    #[cfg_attr(feature = "ignore_in_ci", ignore)]
     fn run_all() {
         simple_print();
         with_memory();
@@ -342,7 +341,7 @@ mod test_python3_jupyter {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"a\",1)");
         let mut interpreter = Python3_jupyter::new(data);
-        let res = interpreter.run();
+        let res = interpreter.run_at_level(SupportLevel::Bloc);
 
         // should panic if not an Ok()
         let string_result = res.unwrap();
