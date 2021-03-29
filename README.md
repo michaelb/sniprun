@@ -154,7 +154,8 @@ No worries, the second and last command will kill everything Sniprun ran so far:
 
 ```vim
  :SnipReset
-```
+``` 
+
 
 Alternatively, exit & re-enter Neovim.
 
@@ -176,7 +177,7 @@ Hopefully, if something does not work, or if the 'memory' is corrupted by bad co
 ![](ressources/visual_assets/760091.png)
 ## Configuration
 
-Sniprun is a Lua plugin, but **you don't need** the usual boilerplate.
+Sniprun is a Lua plugin, but **you don't need** the usual boilerplate: if you don't need any special configuration, you don't need to do anything.
 
 However, if you want to change some options, you can add this snippet (the default config) to your configuration file:
 

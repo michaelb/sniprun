@@ -1,1 +1,1 @@
-Limitation: If your code do not contain "nvim" (even in comments) the Sniprun will fallback to the (pure) lua interpreter, which may be fine, or may not if you are using subtilities of the lua-nvim language the normal lua interpreter cannot grasp
+Limitation: If your code do not contain "nvim" or "vim" (even in comments) the Sniprun will fallback to the (pure) lua interpreter, which may be fine, or may not if you are using subtelties of the lua-nvim language the normal lua interpreter cannot grasp

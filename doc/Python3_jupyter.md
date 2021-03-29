@@ -8,14 +8,12 @@
 ## Notes
 
 
-Due to the requirement of `jupyter-kernel` and `jupyter-console`, REPL behavior is disabled by default.
-To enable it include this in your configuration file
-
-`let g:SnipRun_repl_behavior_enable = ["Python3_jupyter"]`
-
-As there is a different interpreter for Python, you may want to force the selection of Python3_jupyter with
-
-`let g:SnipRun_select_interpreters = ["Python3_jupyter"]`
+(As there is a different interpreter for Python, you may want to force the selection of Python3_jupyter with:)
+`lua <<EOF
+require'sniprun'.setup({
+  selected_interpreters={'Python3_jupyter'}
+})
+EOF`
 
 
 ## Limitations
