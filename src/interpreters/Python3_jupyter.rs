@@ -342,48 +342,4 @@ mod test_python3_jupyter {
         let string_result = res.unwrap();
         assert!(string_result.contains(&"a 1"));
     }
-
-    #[test]
-    #[allow(dead_code)]
-    fn with_memory() { //race condition somewhere
-        let interpreter_data = Arc::new(Mutex::new(InterpreterData {
-            owner: String::new(),
-            content: String::new(),
-            pid: None,
-        }));
-        let guard = interpreter_data.lock().unwrap();
-        drop(guard);
-
-        {
-            let mut data = DataHolder::new();
-
-            data.current_bloc = String::from("a=1\nprint(a)");
-            data.repl_enabled.push("Python3_jupyter".to_owned());
-            data.interpreter_data = Some(interpreter_data.clone());
-
-            let mut interpreter = Python3_jupyter::new(data);
-            let res = interpreter.run();
-
-            // should panic if not an Ok()
-            let string_result = res.unwrap();
-            assert!(string_result.contains("1\n"));
-        }
-
-        //separate block to avoid deadlocks
-
-        {
-            //second run
-            let mut data = DataHolder::new();
-            data.current_bloc = String::from("a+=1\nprint(a)");
-            data.repl_enabled.push("Python3_jupyter".to_owned());
-            data.interpreter_data = Some(interpreter_data.clone());
-            let mut interpreter = Python3_jupyter::new(data);
-            let res = interpreter.run();
-
-            // should panic if not an Ok()
-            let string_result = res.unwrap();
-
-            assert!(string_result.contains("2\n"));
-        }
-    }
 }
