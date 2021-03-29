@@ -1,7 +1,3 @@
-//Interpreter:| Ruby_original       | Ruby        |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Ruby_original {
@@ -35,7 +31,11 @@ impl Interpreter for Ruby_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("ruby"), String::from("rb")]
+        vec![String::from("Ruby"), String::from("ruby"), String::from("rb")]
+    }
+
+    fn default_for_filetype() -> bool {
+        true
     }
 
     fn get_current_level(&self) -> SupportLevel {

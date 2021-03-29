@@ -45,23 +45,21 @@ ALL COMMANDS                                       *sniprun-comands*
 ==============================================================================
 CONFIGURATION                                       *sniprun-configuration*
 
-Sniprun interpreters can be chosen (in case multiple interpreters are available for one filetype) by 
-specifying the variable (a list) in your config:
+Add the setup() call somewhere in your config files and modify the fields as needed, relevant info can be found with :SnipInfo
 
-    let g:SnipRun_select_interpreters = ["name_of_favorite_interpreter"]
+lua << EOF
+require'sniprun'.setup({
+  selected_interpreters = {},     --" use those instead of the default for the current filetype
+  repl_enable = {},               --" enable REPL-like behavior for the given interpreters
+  repl_disable = {},              --" disable REPL-like behavior for the given interpreters
 
-so that (/these) will be chosen over any other when compatible with filetype.
+  inline_messages = 0             --" inline_message (0/1) is a one-line way to display messages
+                                  --" to workaround sniprun not being able to display anything
+})
+EOF
 
 
-If you want to enable/disable REPL behavior of some interpreters, you can set:
 
-    g:SnipRun_repl_behavior_enable
-and
-    g:SnipRun_repl_behavior_disable
-
-to a list of interpreter names to force/forbid REPL behavior.
-
-Style of the output messages can be tuned with the g:SnipRun_inline_messages variable, possible values are 1 (inline, better compatibility with strange configs), or 0 (default, can easily display more lines)
 
 ==============================================================================
 TROUBLESHOOTING                                  *sniprun-troubleshooting*

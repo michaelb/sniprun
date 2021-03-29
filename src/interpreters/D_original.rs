@@ -1,7 +1,3 @@
-//Interpreter:| D_original          | d           |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct D_original {
@@ -36,7 +32,7 @@ impl Interpreter for D_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("d"), String::from("dlang")]
+        vec![String::from("D"),String::from("d"), String::from("dlang")]
     }
 
     fn get_name() -> String {
@@ -48,6 +44,10 @@ impl Interpreter for D_original {
     }
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
+    }
+
+    fn default_for_filetype() -> bool {
+        true
     }
 
     fn get_data(&self) -> DataHolder {

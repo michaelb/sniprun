@@ -1,7 +1,14 @@
+## v0.5.0
+- Sniprun becomes a Lua (+Rust) plugin!!
+- Lua backend, config, and checkhealth
+- Fully backward compatible with old configs
+
+## v0.4.9
+- inline_message functionnality
+
 ## v0.4.8
 - More complete test pipeline
 - C++ & C upgrade to support level Import
-
 
 
 ## v0.4.7

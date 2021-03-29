@@ -1,7 +1,3 @@
-//Interpreter:| R_original          | R           |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct R_original {
@@ -37,6 +33,13 @@ impl Interpreter for R_original {
         vec![String::from("R"), String::from("r")]
     }
     fn behave_repl_like_default() -> bool {
+        true
+    }
+    fn has_repl_capability() -> bool {
+        true
+    }
+
+    fn default_for_filetype() -> bool {
         true
     }
 

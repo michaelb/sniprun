@@ -1,7 +1,3 @@
-//Interpreter:| Haskell_original    | haskell     |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Haskell_original {
@@ -39,11 +35,15 @@ impl Interpreter for Haskell_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("haskell"), String::from("hs")]
+        vec![String::from("Haskell"),String::from("haskell"), String::from("hs")]
     }
 
     fn get_name() -> String {
         String::from("Haskell_original")
+    }
+
+    fn default_for_filetype() -> bool {
+        true
     }
 
     fn get_current_level(&self) -> SupportLevel {

@@ -1,7 +1,3 @@
-//Interpreter:| CS_original         | javascript  |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct CS_original {
@@ -36,6 +32,7 @@ impl Interpreter for CS_original {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
+            String::from("CoffeeScript"),
             String::from("cs"),
             String::from("coffeescript"),
             String::from("coffee"),
@@ -49,6 +46,9 @@ impl Interpreter for CS_original {
         self.support_level = level;
     }
 
+    fn default_for_filetype() -> bool {
+        true
+    }
     fn get_data(&self) -> DataHolder {
         self.data.clone()
     }

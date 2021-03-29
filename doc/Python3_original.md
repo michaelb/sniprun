@@ -1,8 +1,13 @@
-To get the REPL behaviour (active by default) working, you need to isntall the klepto python package: `pip install --user klepto`
+To get the REPL behaviour (inactive by default) working, you need to isntall the klepto python package: `pip install --user klepto`
 
-Alternatively, disable the REPL behaviour for python in your config file
+Then, to enable the REPL behavior for python in your config file
 
-let g:SnipRun_repl_behavior_disable = ["Python3_original"]
+`
+lua << EOF
+require'sniprun'.setup({
+  repl_enable = {'Python3_original'}
+})
+EOF`
 
 With the REPL enabled, sniprunning a \* (star) import `from module import *` may not work, indeed the imports needs to be correctly saved/loaded by klepto. klepto manages variables, functions and modules but very special things may fail.
 

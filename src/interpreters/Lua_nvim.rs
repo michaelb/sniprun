@@ -1,7 +1,3 @@
-//Interpreter:| Lua_nvim            | lua (nvim)  |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Lua_nvim {
@@ -35,7 +31,7 @@ impl Interpreter for Lua_nvim {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("lua")]
+        vec![String::from("Lua"),String::from("lua")]
     }
 
     fn get_current_level(&self) -> SupportLevel {

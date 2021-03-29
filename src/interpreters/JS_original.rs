@@ -1,7 +1,3 @@
-//Interpreter:| JS_original         | javascript  |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct JS_original {
@@ -35,7 +31,7 @@ impl Interpreter for JS_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("js"), String::from("javascript")]
+        vec![String::from("JavaScript"),String::from("js"), String::from("javascript")]
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -43,6 +39,10 @@ impl Interpreter for JS_original {
     }
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
+    }
+    
+    fn default_for_filetype() -> bool {
+        true
     }
 
     fn get_data(&self) -> DataHolder {

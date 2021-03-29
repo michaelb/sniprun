@@ -1,9 +1,3 @@
-//Interpreter:| Name                | language    | example interpreter
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via
-// SnipInfo
-
 // Be sure to read the CONTRIBUTING.md file :-)
 
 #[derive(Clone)]
@@ -50,11 +44,15 @@ impl Interpreter for Language_subname {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
+            String::from("Official language name"), // in 1st position of vector, used for info only
             //':set ft?' in nvim to get the filetype of opened file
             String::from("language_filetype"),
             String::from("extension"), //should not be necessary, but just in case
                                        // another similar name (like python and python3)?
         ]
+
+        // little explanation: only the filetype is necessary, but the 1st element of the Vec is
+        // displayed with SnipInfo, so put "JavaScript" instead of "js" for clarity's sake 
     }
 
     fn get_name() -> String {

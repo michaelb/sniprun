@@ -1,7 +1,3 @@
-//Interpreter:| Rust_original       | rust        |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Rust_original {
@@ -40,6 +36,7 @@ impl Interpreter for Rust_original {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
+            String::from("Rust"),
             String::from("rust"),
             String::from("rust-lang"),
             String::from("rs"),
@@ -50,6 +47,9 @@ impl Interpreter for Rust_original {
         String::from("Rust_original")
     }
 
+    fn default_for_filetype() -> bool {
+        true
+    }
     fn get_current_level(&self) -> SupportLevel {
         self.support_level
     }

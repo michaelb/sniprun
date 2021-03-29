@@ -4,3 +4,4 @@ download_dir/
 target/
 Cargo.lock
 ressources/infofile.txt
+ressources/cccccc.c

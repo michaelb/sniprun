@@ -1,8 +1,0 @@
-  :source plugin/sniprun.vim
-  > :SnipInfo<CR><CR> (0.1s)
-  ! .*
-  ~ .* (regex)
-
-one system call : run infoscript
-multiple messages received : output of snipinfo
-

@@ -1,7 +1,3 @@
-//Interpreter:| Python3_original    | python3     |
-//############|_____________________|_____________|________________<- delimiters to help formatting,
-//############| Interpretername     | language    | comment
-// Keep (but modify the first line after the :) if you wish to have this interpreter listed via SnipInfo
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Python3_original {
@@ -103,9 +99,17 @@ impl Interpreter for Python3_original {
     fn behave_repl_like_default() -> bool {
         false
     }
+    fn has_repl_capability() -> bool {
+        true
+    }
+
+    fn default_for_filetype() -> bool {
+        true
+    }
 
     fn get_supported_languages() -> Vec<String> {
         vec![
+            String::from("Python 3"),
             String::from("python"),
             String::from("python3"),
             String::from("py"),
@@ -234,7 +238,6 @@ impl ReplLikeInterpreter for Python3_original {
         Ok(())
     }
 
-    // &unindent(&format!("{}{}", "\n", self.code.as_str()));
 }
 
 #[cfg(test)]
