@@ -332,7 +332,7 @@ mod test_python3_jupyter {
     use crate::*;
 
     #[test]
-    #[ignore_in_ci]
+    #[cfg_attr(feature = "ignore_in_ci", ignore)]
     fn run_all() {
         simple_print();
         with_memory();
