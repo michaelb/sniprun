@@ -332,6 +332,7 @@ mod test_python3_jupyter {
     use crate::*;
 
     #[test]
+    #[ignore_in_ci]
     fn run_all() {
         simple_print();
         with_memory();
