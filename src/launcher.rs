@@ -99,7 +99,7 @@ impl Launcher {
         v.push("| Interpreter              | Language     | Support Level | Default for |    REPL    | REPL enabled | Treesitter |".to_string());
         v.push("|                          |              |               |  filetype   | capability |  by default  | capability |".to_string());
 
-        let mut counter = 0;
+        let mut temp_vec=vec![];
         iter_types! {
             let line = format!("| {:<25}| {:<13}| {:<14}|{:^13}|{:^12}|{:^14}|{:^12}|",
                     Current::get_name(),
@@ -110,14 +110,18 @@ impl Launcher {
                     match Current::behave_repl_like_default() { true => "yes" ,false => "no"},
                     match Current::has_treesitter_capability() { true => "yes" ,false => "no"}
                     ).to_string();
-            if counter % 3 ==0 {
-                        v.push(separator.clone());
-            }
-            counter += 1;
-
-            v.push(line);
+            temp_vec.push(line);
         }
-        let _ = counter; //silence false warning
+
+        temp_vec.sort();
+
+        for (i,line) in temp_vec.iter().enumerate() {
+            if i%3==0 {
+                v.push(separator.clone());
+            }
+            v.push(line.to_string());
+        }
+
 
         v.push(separator.clone());
 
