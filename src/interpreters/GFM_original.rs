@@ -67,6 +67,11 @@ impl Markdown_original {
             "rb" => String::from("ruby"),
             "jruby" => String::from("ruby"),
             "ruby" => String::from("ruby"),
+            "csharp" => String::from("csharp"),
+            "haskell" => String::from("haskell"),
+            "matlab" => String::from("matlab"),
+            "objectivec" => String::from("objcpp"),
+            "swift" => String::from("swift"),
             &_ => String::new(),
         }
     }
