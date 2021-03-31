@@ -77,6 +77,8 @@ impl Interpreter for Language_subname {
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
+        //note: you probably don't have to modify, or even understand this function
+
         //here if you detect conditions that make higher support level impossible,
         //or unecessary, you should set the current level down. Then you will be able to
         //ignore maybe-heavy code that won't be needed anyway
