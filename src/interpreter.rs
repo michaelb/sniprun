@@ -25,7 +25,7 @@ pub enum SupportLevel {
 }
 
 impl Display for SupportLevel {
-    fn fmt(&self, f: &mut  std::fmt::Formatter) -> std::result::Result<(), std::fmt::Error> {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::result::Result<(), std::fmt::Error> {
         match *self {
             SupportLevel::Unsupported => f.write_str("Unsupported"),
             SupportLevel::Line => f.write_str("Line"),
@@ -58,7 +58,6 @@ pub trait Interpreter: ReplLikeInterpreter {
         false
     }
 
-
     /// The languages (as filetype codes) supported by your interpreter; check ':set ft?' in neovim
     /// on a file of your language if you are not sure. You can put whatever (python and python3),
     /// but I strongly recommend making the first element the name of the langage ("JavaScript"
@@ -87,16 +86,12 @@ pub trait Interpreter: ReplLikeInterpreter {
         None
     }
 
-    /// This method should get the needed code from the data struct and eventually the files
-    /// of the project
-    fn fetch_code(&mut self) -> Result<(), SniprunError>; //mut to allow modification of the current_level
-
     ///Disable REPL-like behavior by default
     fn behave_repl_like_default() -> bool {
         false
     }
 
-    /// Info only, indicates whether the interpreter has REPL-like behavior 
+    /// Info only, indicates whether the interpreter has REPL-like behavior
     fn has_repl_capability() -> bool {
         false
     }
@@ -105,6 +100,10 @@ pub trait Interpreter: ReplLikeInterpreter {
     fn has_treesitter_capability() -> bool {
         false
     }
+    ///
+    /// This method should get the needed code from the data struct and eventually the files
+    /// of the project
+    fn fetch_code(&mut self) -> Result<(), SniprunError>; //mut to allow modification of the current_level
 
     /// This should add code that does not originate from the project to the code field in the
     /// interpreter
