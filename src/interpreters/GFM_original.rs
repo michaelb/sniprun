@@ -1,6 +1,6 @@
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct Markdown_original {
+pub struct GFM_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
@@ -8,7 +8,7 @@ pub struct Markdown_original {
     language_work_dir: String,
 }
 
-impl Markdown_original {
+impl GFM_original {
     pub fn get_filetype_of_embbeded_code(&mut self) -> String {
         let nvim_instance = self.data.nvim_instance.clone().unwrap();
         let mut real_nvim_instance = nvim_instance.lock().unwrap();
@@ -16,15 +16,38 @@ impl Markdown_original {
 
 
         //first check if we not on boundary of block
-        info!("current line : {}", self.data.current_line);
         if self.data.current_line.starts_with("```") {
-            return String::new();
-            //do nothing
-            //
-            //TODO in the future, maybe run the whole bloc if sniprun on boundary
-        }
+            let mut flavor = self.data.current_line[3..].to_owned();
+            let it: Box<dyn Iterator<Item=i64>>;
+            if self.data.current_line.trim() == "```" {
+                //end of bloc
+                it = Box::new((1..line_n).rev());
+            }else{
+                //start of bloc
+                let end_line = real_nvim_instance.get_current_buf().unwrap().line_count(&mut real_nvim_instance).unwrap();
+                let capped_end_line = std::cmp::min(line_n + 100, end_line); // in case there is a very long file, don't search for nothing up to line 500k
+                it = Box::new(line_n+1..capped_end_line+1);
+            }
 
+            let mut code_bloc = vec![];
+            for i in it {
+                let line_i = real_nvim_instance
+                    .get_current_buf()
+                    .unwrap()
+                    .get_lines(&mut real_nvim_instance, i - 1, i, false)
+                    .unwrap()
+                    .join("");
+                if line_i.starts_with("```") {
+                    flavor = flavor + &line_i[3..];
+                    self.data.current_bloc = code_bloc.join("\n");
+                    return self.filetype_from_str(flavor.trim());
+                } else {
+                    code_bloc.push(line_i.to_string());
+                }
+            }
+        }   
 
+        // if we are in a block
         for i in (1..line_n).rev() {
             {
                 let line_i = real_nvim_instance
@@ -33,7 +56,6 @@ impl Markdown_original {
                     .get_lines(&mut real_nvim_instance, i - 1, i, false)
                     .unwrap()
                     .join("");
-                info!("line tried: {}", line_i);
                 if line_i.starts_with("```") {
                     let ft = line_i[3..].trim().to_owned();
                     return self.filetype_from_str(&ft);
@@ -77,12 +99,12 @@ impl Markdown_original {
     }
 }
 
-impl ReplLikeInterpreter for Markdown_original {}
+impl ReplLikeInterpreter for GFM_original {}
 
-impl Interpreter for Markdown_original {
+impl Interpreter for GFM_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Self> {
         //create a subfolder in the cache folder
-        let lwd = data.work_dir.clone() + "/markdown_original";
+        let lwd = data.work_dir.clone() + "/gfm_original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
@@ -91,7 +113,7 @@ impl Interpreter for Markdown_original {
         let mut data_clone = data.clone();
         data_clone.work_dir = lwd.clone(); //trick other interpreter at creating their files here
 
-        Box::new(Markdown_original {
+        Box::new(GFM_original {
             data: data_clone,
             support_level,
             code: String::new(),
@@ -138,7 +160,9 @@ impl Interpreter for Markdown_original {
             .is_empty()
             && self.support_level >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            //special for markdown in case we try to run a bloc of markodwn that only has one line,
+            //an only Line level support
+            self.code = self.data.current_bloc.lines().next().unwrap_or(&String::new()).to_string();
         } else {
             // no code was retrieved
             self.code = String::from("");
