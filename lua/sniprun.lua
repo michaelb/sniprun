@@ -80,11 +80,15 @@ function M.configure_keymaps()
   vim.api.nvim_set_keymap("n", "<Plug>SnipReplMemoryClean", ":lua require'sniprun'.clear_repl()<CR>",{silent=true})
   vim.cmd("command! SnipTerminate :lua require'sniprun'.terminate()")
   vim.cmd("command! SnipReset :lua require'sniprun'.reset()")
-  vim.cmd("command! SnipInfo :lua require'sniprun'.info()")
   vim.cmd("command! SnipReplMemoryClean :lua require'sniprun'.clear_repl()")
+
+
+  vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('"..sniprun_path.."/doc/', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
+  vim.cmd("command! -nargs=* -complete=customlist,ListInterpreters SnipInfo :lua require'sniprun'.info(<q-args>)")
 
   vim.cmd("function! SnipRunLauncher() range \n if a:firstline == a:lastline \n lua require'sniprun'.run() \n else \n lua require'sniprun'.run('v') \n endif \n endfunction") 
   vim.cmd("command! -range SnipRun <line1>,<line2>call SnipRunLauncher()")
+
 end
 
 local function start()
@@ -149,17 +153,24 @@ local function lines_from(file)
   return lines
 end
 
-function M.info()
-  M.config_values["sniprun_root_dir"] = sniprun_path
-  M.notify("info",1,1,M.config_values)
+function M.info(arg)
+  if arg == nil or arg == "" then
+    M.config_values["sniprun_root_dir"] = sniprun_path
+    M.notify("info",1,1,M.config_values)
 
-  local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.." 
+    local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.." 
 
-  if M.config_values.inline_messages ~= 0 then
-    vim.wait(500) -- let enough time for the sniprun binary to generate the file
-    print(" ")
-    local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
-    -- print all line numbers and their contents
+    if M.config_values.inline_messages ~= 0 then
+      vim.wait(500) -- let enough time for the sniprun binary to generate the file
+      print(" ")
+      local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
+      -- print all lines content
+      for k,v in pairs(lines) do
+        print(v)
+      end
+    end
+  else --help about a particular interpreter
+      local lines = lines_from(sniprun_path.."/doc/"..arg..".md")
     for k,v in pairs(lines) do
       print(v)
     end

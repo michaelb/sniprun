@@ -98,7 +98,7 @@ Sniprun will then:
 - Sniprun is Linux-only for now (as of v0.4.7), so you need Linux.
 - Neovim version (>= 0.43 preferably), but should work with older versions
 - [recommended, but optionnal] cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
-- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the **[doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at** before getting started as it also contains the potential limitations of each interpreter.
+- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the **[doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at** before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
 
 ### Install Sniprun
@@ -119,7 +119,7 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 
 (Manual)
 
-I trust you know what you're doing, just don't forget to run `./install.sh`, or alternatively, `cargo build --release`.
+I trust you know how to add a plugin to the runtimepath, just don't forget to run `./install.sh`, or alternatively, `cargo build --release` to fetch/build the binary.
 
 ![](ressources/visual_assets/760091.png)
 ## Usage

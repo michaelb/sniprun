@@ -33,7 +33,21 @@ println!("test");
 
 -------------
 
-**the language name must be there at the bloc start** and has to match the github flavor syntax, and the underlying interpreter must be callable (no missing compiler etc...)
+**the language name must be there (otherwise the default * will be used) at the bloc start** and has to match the github flavor syntax, and the underlying interpreter must be callable (no missing compiler etc...)
+
+\* python, but you can ofc configure that: 
+
+```lua
+lua << EOF
+require'sniprun'.setup({
+  interpreter_options = {
+    GFM_original = { 
+      default_filetype = 'bash' -- default filetype (not github flavored markdown name)
+      }
+    }
+  })
+EOF
+
 
 
 
