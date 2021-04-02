@@ -299,7 +299,6 @@ fn main() {
         .unwrap()
         .session
         .start_event_loop_channel();
-    // let meh = Arc::new(Mutex::new(event_handler));
 
     let (send, recv) = mpsc::channel();
     thread::spawn(move || {

@@ -25,7 +25,6 @@ fn test_implements() {
 
 
 
-#[test]
 fn test_interpreter_utils() {
     let mut data = DataHolder::new();
     data.interpreter_data = Some(Arc::new(Mutex::new(InterpreterData {owner:String::new(), content: String::new(),pid:Some(0)})));
