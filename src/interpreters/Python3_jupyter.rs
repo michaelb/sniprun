@@ -334,7 +334,6 @@ mod test_python3_jupyter {
     #[test]
     fn run_all() {
         simple_print();
-        simple_print_repl();
     }
 
 
@@ -349,6 +348,9 @@ mod test_python3_jupyter {
         assert!(string_result.contains(&"a 1"));
     }
 
+    #[test]
+    #[cfg_attr(feature = "ignore_in_ci", ignore)]
+    #[ignore] // because we don't want to run this in // with simple_print
     fn simple_print_repl() {
         let id = Some(Arc::new(Mutex::new(InterpreterData {
             owner: String::from(""),
