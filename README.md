@@ -95,10 +95,10 @@ Sniprun will then:
 
 ### Prerequisites && dependencies
 
-- Sniprun is Linux-only for now (as of v0.4.7), so you need Linux.
+- Sniprun is Linux-only for now (as of v0.5.1), so you need Linux.
 - Neovim version (>= 0.43 preferably), but should work with older versions
 - [recommended, but optionnal] cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
-- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the **[doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at** before getting started as it also contains the potential limitations of each interpreter.
+- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the **[doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at** before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
 
 ### Install Sniprun
@@ -119,7 +119,7 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 
 (Manual)
 
-I trust you know what you're doing, just don't forget to run `./install.sh`, or alternatively, `cargo build --release`.
+I trust you know how to add a plugin to the runtimepath, just don't forget to run `./install.sh`, or alternatively, `cargo build --release` to fetch/build the binary.
 
 ![](ressources/visual_assets/760091.png)
 ## Usage
@@ -154,7 +154,7 @@ No worries, the second and last command will kill everything Sniprun ran so far:
 
 ```vim
  :SnipReset
-``` 
+```
 
 
 Alternatively, exit & re-enter Neovim.
@@ -194,7 +194,7 @@ require'sniprun'.setup({
 EOF
 ```
 
-Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of the 'Python3_original' default], 
+Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of the 'Python3_original' default],
 `lua require'sniprun'.setup({selected_interpreters = {'Python3_jupyter'}})`
 
 
@@ -213,6 +213,8 @@ All of sniprun useful functionnalities:
 
 You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to configure sniprun, still compatible but may be deprecated at some point.
 
+![](ressources/visual_assets/760091.png)
+
 ### My usage recommandation & tricks
 
 - Map the run command to a simple command such as `<leader>f` (or just `f` in visual mode).
@@ -226,7 +228,7 @@ vmap f <Plug>SnipRun
 - For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire file.
 
 
-While both shorthands and \<Plug> are here to stay, **please use the `<Plug>` style ones in your mappings** or if using from another plugin. 
+While both shorthands and \<Plug> are here to stay, **please use the `<Plug>` style ones in your mappings** or if using from another plugin.
 
 Bonus; with Plug mappings, if you also have Tim Pope's [vim-repeat](https://github.com/tpope/vim-repeat), you can repeat a SnipRun with "`.`"  .
 
@@ -265,7 +267,7 @@ println!("-> {}", alphabet);
 | C++          | Import        |     | Lisp       | Untested         |
 | Clojure      | Untested      |     | Lua        | Bloc             |
 | COBOL        | Untested      |     | Lua-nvim   | Bloc             |
-| Coffeescript | Bloc          |     | OCaml      | Untested         |
+| Coffeescript | Bloc          |     | Markdown (GFM)   | Bloc + REPL \***         |
 | C#           | Untested      |     | Perl6      | Line             |
 | D            | Bloc          |     | Perl       | Line             |
 | Elixir       | Untested      |     | PHP        | Untested         |
@@ -277,11 +279,14 @@ println!("-> {}", alphabet);
 | Haskell      | Line          |     | Scilab     | Untested         |
 | Idris        | Untested      |     | Swift      | Untested         |
 
+
 Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
 
 \* (fake) REPL-like functionnality, with potential unwanted side-effects
 
 \*\* True REPL under the hood
+
+\*\*\* if underlying language supports it
 
 ![](ressources/visual_assets/760091.png)
 ## Known limitations

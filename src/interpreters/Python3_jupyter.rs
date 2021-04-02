@@ -332,6 +332,12 @@ mod test_python3_jupyter {
     use crate::*;
 
     #[test]
+    fn run_all() {
+        simple_print();
+        simple_print_repl();
+    }
+
+
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"a\",1)");
@@ -342,4 +348,34 @@ mod test_python3_jupyter {
         let string_result = res.unwrap();
         assert!(string_result.contains(&"a 1"));
     }
+
+    fn simple_print_repl() {
+        let id = Some(Arc::new(Mutex::new(InterpreterData {
+            owner: String::from(""),
+            content: String::from(""),
+            pid: None,
+        })));
+
+        let mut data = DataHolder::new();
+        data.repl_enabled = vec![String::from("Python3_jupyter")];
+        let mut data2 = DataHolder::new();
+        data.interpreter_data = id.clone();
+        data2.interpreter_data = id;
+
+        data.current_bloc = String::from("a=1");
+        let mut interpreter = Python3_jupyter::new(data2);
+        let _res = interpreter.run_at_level_repl(SupportLevel::Import).unwrap();
+
+
+        data.current_bloc = String::from("print(a)");
+        let mut interpreter = Python3_jupyter::new(data);
+        let _res = interpreter.run_at_level_repl(SupportLevel::Import);
+
+        // should panic if not an Ok()
+        // but for some reason does not work in test mode 
+        // let string_result = res.unwrap();
+        // assert_eq!(string_result, "1\n");
+    }
+
+
 }

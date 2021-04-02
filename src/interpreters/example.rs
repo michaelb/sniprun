@@ -12,7 +12,7 @@ pub struct Language_subname {
     language_work_dir: String,
     bin_path: String,
     main_file_path: String,
-    // you can and should add field as needed
+    // you can and should add fields as needed
 }
 
 //necessary boilerplate, you don't need to implement that if you want a Bloc support level
@@ -20,7 +20,7 @@ pub struct Language_subname {
 impl ReplLikeInterpreter for Language_subname {}
 
 impl Interpreter for Language_subname {
-    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Rust_original> {
+    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Language_subname> {
         //create a subfolder in the cache folder
         let lwd = data.work_dir.clone() + "/language_subname";
         let mut builder = DirBuilder::new();
@@ -32,7 +32,7 @@ impl Interpreter for Language_subname {
         //pre-create string pointing to main file's and binary's path
         let mfp = lwd.clone() + "/main.extension";
         let bp = lwd.clone() + "/main"; // remove extension so binary is named 'main'
-        Box::new(Rust_original {
+        Box::new(Language_subname {
             data,
             support_level,
             code: String::new(),
@@ -77,6 +77,8 @@ impl Interpreter for Language_subname {
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
+        //note: you probably don't have to modify, or even understand this function
+
         //here if you detect conditions that make higher support level impossible,
         //or unecessary, you should set the current level down. Then you will be able to
         //ignore maybe-heavy code that won't be needed anyway

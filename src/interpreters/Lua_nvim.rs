@@ -56,7 +56,7 @@ impl Interpreter for Lua_nvim {
         }
 
         self.fetch_code().expect("could not fetch code");
-        if !(self.code.contains("nvim")) {
+        if !(self.code.contains("nvim") || self.code.contains("vim")) {
             //then this is not lua_nvim code but pure lua one
             let mut good_interpreter = crate::interpreters::Lua_original::new_with_level(
                 self.data.clone(),

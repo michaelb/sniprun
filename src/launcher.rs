@@ -20,11 +20,12 @@ impl Launcher {
             //launch !
             iter_types! {
                 if Current::get_name() == name {
+                    info!("[LAUNCHER] Selected interpreter: {}, at level {}", name, level);
                     let mut inter = Current::new_with_level(self.data.clone(), level);
                     return inter.run();
                 }
             }
-            info!("Could not find/run the selected interpreter");
+            info!("[LAUNCHER] Could not find a suitable interpreter");
             return Err(SniprunError::CustomError(
                 "could not find/run the selected interpreter".to_owned(),
             ));
@@ -74,7 +75,7 @@ impl Launcher {
         let mut file = File::open(filename)?;
         let mut content = String::new();
         file.read_to_string(&mut content)?;
-        info!("Retrieved asciiart");
+        info!("[INFO] Retrieved asciiart");
         v.push(content);
         v.push("\n".to_owned());
 
@@ -99,7 +100,7 @@ impl Launcher {
         v.push("| Interpreter              | Language     | Support Level | Default for |    REPL    | REPL enabled | Treesitter |".to_string());
         v.push("|                          |              |               |  filetype   | capability |  by default  | capability |".to_string());
 
-        let mut counter = 0;
+        let mut temp_vec=vec![];
         iter_types! {
             let line = format!("| {:<25}| {:<13}| {:<14}|{:^13}|{:^12}|{:^14}|{:^12}|",
                     Current::get_name(),
@@ -110,21 +111,27 @@ impl Launcher {
                     match Current::behave_repl_like_default() { true => "yes" ,false => "no"},
                     match Current::has_treesitter_capability() { true => "yes" ,false => "no"}
                     ).to_string();
-            if counter % 3 ==0 {
-                        v.push(separator.clone());
-            }
-            counter += 1;
-
-            v.push(line);
+            temp_vec.push(line);
         }
-        let _ = counter; //silence false warning
+
+        temp_vec.sort();
+
+        for (i,line) in temp_vec.iter().enumerate() {
+            if i%3==0 {
+                v.push(separator.clone());
+            }
+            v.push(line.to_string());
+        }
+
 
         v.push(separator.clone());
 
         if self.data.return_message_type == ReturnMessageType::Multiline {
+            info!("[INFO] Returning info directly");
             return Ok(v.join("\n"));
         } else {
             //write to infofile
+            info!("[INFO] Writing info to file");
             let filename = self.data.sniprun_root_dir.clone() + "/ressources/infofile.txt";
             let mut file = File::create(filename).unwrap();
             file.write_all(v.join("\n").as_bytes()).unwrap();
@@ -133,3 +140,37 @@ impl Launcher {
 
     }
 }
+
+
+#[cfg(test)]
+mod test_launcher {
+
+    use super::*;
+
+    #[test]
+    fn run() {
+        let mut data = DataHolder::new();
+        data.filetype = String::from("pyt");
+        data.current_line = String::from("println!(\"Hello\");");
+        data.current_bloc = String::from("println!(\"Hello\");");
+        data.range = [1,1];
+        
+        let launcher = Launcher::new(data);
+        let _res = launcher.select();
+    }
+
+    #[test]
+    fn info() {
+        let mut data = DataHolder::new();
+        data.filetype = String::from("rust");
+        data.current_line = String::from("println!(\"Hello\");");
+        data.current_bloc = String::from("println!(\"Hello\");");
+        data.range = [1,1];
+        
+        let launcher = Launcher::new(data);
+        let _res = launcher.info();
+    }
+
+
+}
+
