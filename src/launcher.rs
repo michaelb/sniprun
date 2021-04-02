@@ -20,11 +20,12 @@ impl Launcher {
             //launch !
             iter_types! {
                 if Current::get_name() == name {
+                    info!("[LAUNCHER] Selected interpreter: {}, at level {}", name, level);
                     let mut inter = Current::new_with_level(self.data.clone(), level);
                     return inter.run();
                 }
             }
-            info!("Could not find/run the selected interpreter");
+            info!("[LAUNCHER] Could not find a suitable interpreter");
             return Err(SniprunError::CustomError(
                 "could not find/run the selected interpreter".to_owned(),
             ));
@@ -74,7 +75,7 @@ impl Launcher {
         let mut file = File::open(filename)?;
         let mut content = String::new();
         file.read_to_string(&mut content)?;
-        info!("Retrieved asciiart");
+        info!("[INFO] Retrieved asciiart");
         v.push(content);
         v.push("\n".to_owned());
 
@@ -126,9 +127,11 @@ impl Launcher {
         v.push(separator.clone());
 
         if self.data.return_message_type == ReturnMessageType::Multiline {
+            info!("[INFO] Returning info directly");
             return Ok(v.join("\n"));
         } else {
             //write to infofile
+            info!("[INFO] Writing info to file");
             let filename = self.data.sniprun_root_dir.clone() + "/ressources/infofile.txt";
             let mut file = File::create(filename).unwrap();
             file.write_all(v.join("\n").as_bytes()).unwrap();

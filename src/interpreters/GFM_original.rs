@@ -17,7 +17,7 @@ impl GFM_original {
 
         //first check if we not on boundary of block
         if self.data.current_line.starts_with("```") {
-            let mut flavor = self.data.current_line[3..].to_owned();
+            let flavor = self.data.current_line[3..].to_owned();
             let end_line = real_nvim_instance
                 .get_current_buf()
                 .unwrap()

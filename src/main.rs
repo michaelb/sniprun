@@ -175,18 +175,18 @@ impl EventHandler {
 
     /// fill the DataHolder with data from sniprun and Neovim
     fn fill_data(&mut self, values: Vec<Value>) {
-        info!("received data from RPC: {:?}", values);
+        // info!("[FILLDATA] received data from RPC: {:?}", values);
         let config = values[2].as_map().unwrap();
         {
-            info!("getting back eventual interpreter data");
             self.data.interpreter_data = Some(self.interpreter_data.clone());
+            info!("[FILLDATA] got back eventual interpreter data");
         }
 
         {
-            info!("filling data");
             self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
             let i = self.index_from_name("sniprun_root_dir", config);
             self.data.sniprun_root_dir = String::from(config[i].1.as_str().unwrap());
+            info!("[FILLDATA] got sniprun root");
         }
 
         {
@@ -203,7 +203,7 @@ impl EventHandler {
             if let Ok(real_current_line) = current_line {
                 self.data.current_line = real_current_line;
             }
-            info!("got current_line");
+            info!("[FILLDATA] got current_line");
         }
 
         {
@@ -218,6 +218,7 @@ impl EventHandler {
             if let Ok(real_current_bloc) = current_bloc {
                 self.data.current_bloc = real_current_bloc.join("\n");
             }
+            info!("[FILLDATA] got current_bloc");
         }
 
         {
@@ -230,13 +231,13 @@ impl EventHandler {
             if let Ok(real_full_file_path) = full_file_path {
                 self.data.filepath = real_full_file_path;
             }
-            info!("got filepath");
+            info!("[FILLDATA] got filepath");
         }
 
         {
             //get nvim instance
             self.data.nvim_instance = Some(self.nvim.clone());
-            info!("got nvim_instance");
+            info!("[FILLDATA] got nvim_instance");
         }
         {
             let i = self.index_from_name("selected_interpreters", config);
@@ -247,7 +248,7 @@ impl EventHandler {
                 .iter()
                 .map(|v| v.as_str().unwrap().to_owned())
                 .collect();
-            info!("got selected interpreters");
+            info!("[FILLDATA] got selected interpreters");
         }
         {
             let i = self.index_from_name("repl_enable", config);
@@ -258,7 +259,7 @@ impl EventHandler {
                 .iter()
                 .map(|v| v.as_str().unwrap().to_owned())
                 .collect();
-            info!("got repl enabled interpreters");
+            info!("[FILLDATA] got repl enabled interpreters");
         }
         {
             let i = self.index_from_name("repl_disable", config);
@@ -269,7 +270,7 @@ impl EventHandler {
                 .iter()
                 .map(|v| v.as_str().unwrap().to_owned())
                 .collect();
-            info!("got repl disabled interpreters");
+            info!("[FILLDATA] got repl disabled interpreters");
         }
         {
             let i = self.index_from_name("inline_messages", config);
@@ -278,13 +279,14 @@ impl EventHandler {
             } else {
                 self.data.return_message_type = ReturnMessageType::Multiline;
             }
+            info!("[FILLDATA] got inline_messages setting");
         }
 
         {
             self.data.interpreter_options = Some(values[2].clone());
         }
 
-        info!("Filed dataholder!");
+        info!("[FILLDATA] Done!");
     }
 }
 enum HandleAction {
@@ -313,7 +315,7 @@ fn main() {
         loop {
             match recv.recv() {
                 Err(_) => {
-                    info!("Broken connection");
+                    info!("[MAIN] Broken connection");
                     panic!("Broken connection")
                 }
                 Ok(HandleAction::New(new)) => _handle = Some(new),
@@ -330,24 +332,24 @@ fn main() {
                 info!("[MAINLOOP] Run command received");
 
                 let mut event_handler2 = event_handler.clone();
-                info!("[MAINLOOP] clone event handler");
+                info!("[RUN] clone event handler");
                 let _res2 = send.send(HandleAction::New(thread::spawn(move || {
                     // get up-to-date data
                     //
-                    info!("[MAINLOOP] spawned thread");
+                    info!("[RUN] spawned thread");
                     event_handler2.fill_data(values);
-                    info!("[MAINLOOP] filled dataholder");
+                    info!("[RUN] filled dataholder");
 
                     //run the launcher (that selects, init and run an interpreter)
                     let launcher = launcher::Launcher::new(event_handler2.data.clone());
-                    info!("[MAINLOOP] created launcher");
+                    info!("[RUN] created launcher");
                     let result = launcher.select_and_run();
-                    info!("[MAINLOOP] Interpreter return a result");
+                    info!("[RUN] Interpreter return a result");
 
                     // return Ok(result) or Err(sniprunerror)
                     match result {
                         Ok(answer_str) => {
-                            info!("[MAINLOOP] Returning stdout of code run: {}", answer_str);
+                            info!("[RUN] Returning stdout of code run: {}", answer_str);
                             return_message(
                                 event_handler2.nvim,
                                 Ok(answer_str),
@@ -355,7 +357,7 @@ fn main() {
                             );
                         }
                         Err(e) => {
-                            info!("[MAINLOOP] Returning an error : {:?}", e);
+                            info!("[RUN] Returning an error : {:?}", e);
                             return_message(
                                 event_handler2.nvim,
                                 Err(e),
@@ -391,7 +393,6 @@ fn main() {
                 event_handler2.fill_data(values);
                 let launcher = launcher::Launcher::new(event_handler2.data.clone());
                 let result = launcher.info();
-                info!("info received: {:?}", result);
                 if let Ok(infomsg) = result {
                     return_message(
                         event_handler2.nvim,
