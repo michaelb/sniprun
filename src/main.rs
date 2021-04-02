@@ -51,6 +51,8 @@ pub struct DataHolder {
     repl_enabled: Vec<String>,
     ///user config: repl behavior disabled list of interpreters
     repl_disabled: Vec<String>,
+    ///interpreter options
+    interpreter_options: Option<Value>,
 
     ///interpreter data
     interpreter_data: Option<Arc<Mutex<InterpreterData>>>,
@@ -72,7 +74,7 @@ pub struct InterpreterData {
     pid: Option<u32>,
 }
 
-#[derive(Clone, Debug, PartialEq,Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 enum ReturnMessageType {
     EchoMsg,
     Multiline,
@@ -102,6 +104,7 @@ impl DataHolder {
             selected_interpreters: vec![],
             repl_enabled: vec![],
             repl_disabled: vec![],
+            interpreter_options: None,
             interpreter_data: None,
             return_message_type: ReturnMessageType::Multiline,
         }
@@ -113,7 +116,6 @@ impl DataHolder {
         std::fs::create_dir_all(&work_dir_path).unwrap();
     }
 }
-
 
 #[derive(Clone)]
 struct EventHandler {
@@ -161,7 +163,7 @@ impl EventHandler {
         }
     }
 
-    fn index_from_name(&mut self, name: &str, config:&Vec<(Value,Value)>) -> usize {
+    fn index_from_name(&mut self, name: &str, config: &Vec<(Value, Value)>) -> usize {
         for (i, kv) in config.iter().enumerate() {
             if name == kv.0.as_str().unwrap() {
                 return i;
@@ -170,8 +172,6 @@ impl EventHandler {
         info!("key not found");
         return 0;
     }
-        
-
 
     /// fill the DataHolder with data from sniprun and Neovim
     fn fill_data(&mut self, values: Vec<Value>) {
@@ -185,7 +185,7 @@ impl EventHandler {
         {
             info!("filling data");
             self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
-            let i =  self.index_from_name("sniprun_root_dir",config);
+            let i = self.index_from_name("sniprun_root_dir", config);
             self.data.sniprun_root_dir = String::from(config[i].1.as_str().unwrap());
         }
 
@@ -239,9 +239,9 @@ impl EventHandler {
             info!("got nvim_instance");
         }
         {
-
-            let i =  self.index_from_name("selected_interpreters",config);
-            self.data.selected_interpreters = config[i].1
+            let i = self.index_from_name("selected_interpreters", config);
+            self.data.selected_interpreters = config[i]
+                .1
                 .as_array()
                 .unwrap()
                 .iter()
@@ -250,8 +250,9 @@ impl EventHandler {
             info!("got selected interpreters");
         }
         {
-            let i =  self.index_from_name("repl_enable",config);
-            self.data.repl_enabled = config[i].1
+            let i = self.index_from_name("repl_enable", config);
+            self.data.repl_enabled = config[i]
+                .1
                 .as_array()
                 .unwrap()
                 .iter()
@@ -260,8 +261,9 @@ impl EventHandler {
             info!("got repl enabled interpreters");
         }
         {
-            let i =  self.index_from_name("repl_disable",config);
-            self.data.repl_disabled = config[i].1
+            let i = self.index_from_name("repl_disable", config);
+            self.data.repl_disabled = config[i]
+                .1
                 .as_array()
                 .unwrap()
                 .iter()
@@ -270,13 +272,18 @@ impl EventHandler {
             info!("got repl disabled interpreters");
         }
         {
-            let i =  self.index_from_name("inline_messages",config);
+            let i = self.index_from_name("inline_messages", config);
             if config[i].1.as_i64().unwrap_or(0) == 1 {
                 self.data.return_message_type = ReturnMessageType::EchoMsg;
             } else {
                 self.data.return_message_type = ReturnMessageType::Multiline;
             }
         }
+
+        {
+            self.data.interpreter_options = Some(values[2].clone());
+        }
+
         info!("Filed dataholder!");
     }
 }
@@ -386,7 +393,11 @@ fn main() {
                 let result = launcher.info();
                 info!("info received: {:?}", result);
                 if let Ok(infomsg) = result {
-                    return_message(event_handler2.nvim,Ok(infomsg), ReturnMessageType::Multiline);
+                    return_message(
+                        event_handler2.nvim,
+                        Ok(infomsg),
+                        ReturnMessageType::Multiline,
+                    );
                 }
             }
 
@@ -446,10 +457,10 @@ fn return_message(
                 let _ = nvim.lock().unwrap().err_writeln(&format!("{}", e));
             }
             ReturnMessageType::EchoMsg => {
-                let _ = nvim
-                    .lock()
-                    .unwrap()
-                    .command(&format!("echohl ErrorMsg | echomsg \"{}\" | echohl None", e));
+                let _ = nvim.lock().unwrap().command(&format!(
+                    "echohl ErrorMsg | echomsg \"{}\" | echohl None",
+                    e
+                ));
             }
         },
     }
@@ -457,4 +468,3 @@ fn return_message(
 
 #[cfg(test)]
 mod test;
-
