@@ -170,7 +170,7 @@ function M.info(arg)
       end
     end
   else --help about a particular interpreter
-      local lines = lines_from(sniprun_path.."/doc/"..arg..".md")
+      local lines = lines_from(sniprun_path.."/doc/"..string.gsub(arg,"%s+","")..".md")
     for k,v in pairs(lines) do
       print(v)
     end
