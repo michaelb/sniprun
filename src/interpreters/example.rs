@@ -8,7 +8,7 @@ pub struct Language_subname {
     data: DataHolder,
     code: String,
 
-    ///specific to compiled languages
+    ///specific to compiled languages, can be modified of course
     language_work_dir: String,
     bin_path: String,
     main_file_path: String,
@@ -167,7 +167,8 @@ mod test_language_subname {
     use super::*;
     #[test]
     fn run_all(){
-        //test of the same interpreter MUST be run sequentially.
+        // test of the same interpreter MUST be run sequentially usually, since they use a file 
+        // that can't be written  to concurrently
         simple_print();
         another_test();
     }
