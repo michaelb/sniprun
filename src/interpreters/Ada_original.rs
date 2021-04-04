@@ -88,7 +88,7 @@ impl Interpreter for Ada_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("with Ada.Text_IO,Ada.Integer_Text_IO; use Ada.Text_IO, Ada.Integer_Text_IO;\nprocedure main is\nbegin") + &self.code + "\nend main;";
+        self.code = String::from("with Ada.Text_IO,Ada.Integer_Text_IO; use Ada.Text_IO, Ada.Integer_Text_IO;\nprocedure main is\nbegin\n") + &self.code + "\nend main;";
         Ok(())
     }
 
