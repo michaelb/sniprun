@@ -162,7 +162,7 @@ impl Interpreter for GFM_original {
     }
 
     fn get_name() -> String {
-        String::from("Markdown_original")
+        String::from("GFM_original")
     }
 
     fn get_current_level(&self) -> SupportLevel {
