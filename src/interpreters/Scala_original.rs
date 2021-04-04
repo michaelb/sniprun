@@ -50,6 +50,10 @@ impl Interpreter for Scala_original {
         String::from("Scala_original")
     }
 
+    fn default_for_filetype() -> bool {
+        true
+    }
+
     fn get_current_level(&self) -> SupportLevel {
         self.support_level
     }

@@ -67,6 +67,10 @@ impl Interpreter for Ada_original {
         SupportLevel::Bloc
     }
 
+    fn default_for_filetype() -> bool {
+        true
+    }
+
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
         if !self
             .data
