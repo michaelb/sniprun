@@ -263,7 +263,7 @@ println!("-> {}", alphabet);
 
 | Language     | Support level |     | Language   | Support level    |
 | ------------ | ------------- | --- | ---------- | ---------------- |
-| Ada          | Untested      |     | Java       | Bloc             |
+| Ada          | Line          |     | Java       | Bloc             |
 | Bash/Shell   | Bloc + REPL\* |     | JavaScript | Bloc             |
 | C            | Import        |     | Julia      | Bloc             |
 | C++          | Import        |     | Lisp       | Untested         |
