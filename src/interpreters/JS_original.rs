@@ -104,7 +104,8 @@ impl Interpreter for JS_original {
 mod test_js_original {
     use super::*;
 
-    #[test]
+    // #[test] // this test is disabled because it is used in interpreter_utils tests which runs
+    // concurently
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("console.log(\"Hello, World!\");");
