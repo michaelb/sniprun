@@ -88,7 +88,7 @@ impl Interpreter for Ada_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("with Ada.Text_IO,Ada.Integer_Text_IO; use Ada.Text_IO, Ada.Integer_Text_IO;\nprocedure main is\nbegin\n") + &self.code + "\nend main;";
+        self.code = String::from("with Ada; use Ada;\nwith Text_IO\n; use Text_IO;\nprocedure main is\nbegin\n") + &self.code + "\nend main;";
         Ok(())
     }
 
@@ -142,7 +142,7 @@ mod test_ada_original {
     fn simple_print() {
         let mut data = DataHolder::new();
 
-        data.current_bloc = String::from("Text_IO.Put_Line(\"Hi\");");
+        data.current_bloc = String::from("Put_Line(\"Hi\");");
         let mut interpreter = Ada_original::new(data);
         let res = interpreter.run();
 
