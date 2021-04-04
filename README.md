@@ -61,6 +61,8 @@ Send to Sniprun snippets of any language. A few lines of code are now within a p
 An example in C:
 ![](ressources/visual_assets/demo_c.gif)
 
+⮤ result is displayed at the bottom of the window.
+
 send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
 
 ![](ressources/visual_assets/demo_repl.gif)
