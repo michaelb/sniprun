@@ -3,3 +3,5 @@ coverage:
     patch:
       default:
         target: 1%
+        threshold: 1%
+        path: "src"
