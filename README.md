@@ -277,7 +277,7 @@ println!("-> {}", alphabet);
 | Erlang       | Untested      |     | R          | Bloc + REPL \*\* |
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
-| Groovy       | Untested      |     | Scala      | Untested         |
+| Groovy       | Untested      |     | Scala      | Bloc             |
 | Haskell      | Line          |     | Scilab     | Untested         |
 | Idris        | Untested      |     | Swift      | Untested         |
 

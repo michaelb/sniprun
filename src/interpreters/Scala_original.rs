@@ -1,9 +1,6 @@
-// Be sure to read the CONTRIBUTING.md file :-)
-
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-// For example, Rust_original is a good name for the first rust interpreter
-pub struct Language_subname {
+pub struct Scala_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
@@ -17,12 +14,12 @@ pub struct Language_subname {
 
 //necessary boilerplate, you don't need to implement that if you want a Bloc support level
 //interpreter (the easiest && most common)
-impl ReplLikeInterpreter for Language_subname {}
+impl ReplLikeInterpreter for Scala_original {}
 
-impl Interpreter for Language_subname {
-    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Language_subname> {
+impl Interpreter for Scala_original {
+    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Scala_original> {
         //create a subfolder in the cache folder
-        let lwd = data.work_dir.clone() + "/language_subname";
+        let lwd = data.work_dir.clone() + "/scala_original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
@@ -30,9 +27,9 @@ impl Interpreter for Language_subname {
             .expect("Could not create directory for example");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = lwd.clone() + "/main.extension";
-        let bp = lwd.clone() + "/main"; // remove extension so binary is named 'main'
-        Box::new(Language_subname {
+        let mfp = lwd.clone() + "/Main.scala";
+        let bp = lwd.clone() + "/Main"; // remove extension so binary is named 'main'
+        Box::new(Scala_original {
             data,
             support_level,
             code: String::new(),
@@ -44,20 +41,13 @@ impl Interpreter for Language_subname {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
-            String::from("Official language name"), // in 1st position of vector, used for info only
-            //':set ft?' in nvim to get the filetype of opened file
-            String::from("language_filetype"),
-            String::from("extension"), //should not be necessary, but just in case
-                                       // another similar name (like python and python3)?
+            String::from("Scala"), // in 1st position of vector, used for info only
+            String::from("scala"),
         ]
-
-        // little explanation: only the filetype is necessary, but the 1st element of the Vec is
-        // displayed with SnipInfo, so put "JavaScript" instead of "js" for clarity's sake 
     }
 
     fn get_name() -> String {
-        // get your interpreter name
-        String::from("Language_subname")
+        String::from("Scala_original")
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -72,18 +62,10 @@ impl Interpreter for Language_subname {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        //define the max level support of the interpreter (see readme for definitions)
         SupportLevel::Bloc
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
-        //note: you probably don't have to modify, or even understand this function
-
-        //here if you detect conditions that make higher support level impossible,
-        //or unecessary, you should set the current level down. Then you will be able to
-        //ignore maybe-heavy code that won't be needed anyway
-
-        //add code from data to self.code
         if !self
             .data
             .current_bloc
@@ -104,19 +86,17 @@ impl Interpreter for Language_subname {
             // no code was retrieved
             self.code = String::from("");
         }
-
-        // now self.code contains the line or bloc of code wanted :-)
+        info!("scala interpreter fetched code");
         Ok(())
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         // an example following Rust's syntax
-        self.code = String::from("fn main() {") + &self.code + "}";
+        self.code = String::from("object Main {\ndef main(arg: Array[String]) = {") + &self.code + "}\n}";
         Ok(())
     }
 
     fn build(&mut self) -> Result<(), SniprunError> {
-        //write code to file
         let mut _file =
             File::create(&self.main_file_path).expect("Failed to create file for language_subname");
         // IO errors can be ignored, or handled into a proper SniprunError
@@ -125,9 +105,8 @@ impl Interpreter for Language_subname {
             .expect("Unable to write to file for language_subname");
 
         //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new("compiler")
-            .arg("--optimize") // for short snippets, that may contain a long loop
-            .arg("--out-dir")
+        let output = Command::new("scalac")
+            .arg("-d")
             .arg(&self.language_work_dir)
             .arg(&self.main_file_path)
             .output()
@@ -136,16 +115,19 @@ impl Interpreter for Language_subname {
         // if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
             return Err(SniprunError::CompilationError(
-                "some relevant feedback".to_string(), //such as output.stderr :-)
+                String::from_utf8(output.stderr).unwrap(),
             ));
         } else {
+            info!("scala compiled successfully");
             return Ok(());
         }
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let output = Command::new(&self.bin_path)
+        let output = Command::new("scala")
+            .arg("Main")
+            .current_dir(&self.language_work_dir)
             .output()
             .expect("Unable to start process");
 
@@ -161,32 +143,24 @@ impl Interpreter for Language_subname {
     }
 }
 
-// You can add tests if you want to
 #[cfg(test)]
-mod test_language_subname {
+mod test_scala_original {
     use super::*;
     #[test]
     fn run_all(){
-        // test of the same interpreter MUST be run sequentially usually, since they use a file 
-        // that can't be written  to concurrently
         simple_print();
-        another_test();
     }
     fn simple_print() {
         let mut data = DataHolder::new();
 
         //inspired from Rust syntax
-        data.current_bloc = String::from("println!(\"HW, 1+1 = {}\", 1+1)");
-        let mut interpreter = Language_subname::new(data);
+        data.current_bloc = String::from("println(\"Hi\")");
+        let mut interpreter = Scala_original::new(data);
         let res = interpreter.run();
 
-        // -> should panic if not an Ok()
-        // let string_result = res.unwrap();
+        let string_result = res.unwrap();
         
         // -> compare result with predicted
-        // assert_eq!(string_result, "HW, 1+1 = 2\n");
-    }
-    fn another_test(){
-        //another test
+        assert_eq!(string_result, "Hi\n");
     }
 }
