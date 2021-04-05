@@ -27,8 +27,8 @@ impl Interpreter for Ada_original {
             .expect("Could not create directory for example");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = awd.clone() + "/Main.adb";
-        let bp = awd.clone() + "/Main"; // remove extension so binary is named 'main'
+        let mfp = awd.clone() + "/main.adb";
+        let bp = awd.clone() + "/main"; // remove extension so binary is named 'main'
         Box::new(Ada_original {
             data,
             support_level,
@@ -91,9 +91,9 @@ impl Interpreter for Ada_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         self.code = String::from(
-            "with Ada.Text_IO;\nuse Ada.Text_IO;\nprocedure Main is\n\nbegin\n",
+            "with Ada.Text_IO;\nuse Ada.Text_IO;\nprocedure main is\n\nbegin\n",
         ) + &self.code
-            + "\nend Main;";
+            + "\nend main;";
         Ok(())
     }
 
