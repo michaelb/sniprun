@@ -155,7 +155,7 @@ impl Interpreter for Python3_original {
         if !self.imports.is_empty() {
             let mut indented_imports = String::new();
             for import in self.imports.lines() {
-                indented_imports = indented_imports + "\t" + import+"\n";
+                indented_imports = indented_imports + "\t" + import + "\n";
             }
 
             self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
@@ -237,7 +237,6 @@ impl ReplLikeInterpreter for Python3_original {
 
         Ok(())
     }
-
 }
 
 #[cfg(test)]
@@ -259,7 +258,7 @@ mod test_python3_original {
         let string_result = res.unwrap();
         assert_eq!(string_result, "lol 1\n");
     }
-    fn print_quote(){
+    fn print_quote() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"->\\\"\",1);");
         let mut interpreter = Python3_original::new(data);

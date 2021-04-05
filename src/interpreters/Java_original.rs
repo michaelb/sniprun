@@ -35,7 +35,7 @@ impl Interpreter for Java_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("Java"),String::from("java")]
+        vec![String::from("Java"), String::from("java")]
     }
 
     fn get_name() -> String {
@@ -48,7 +48,7 @@ impl Interpreter for Java_original {
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
     }
-    
+
     fn default_for_filetype() -> bool {
         true
     }

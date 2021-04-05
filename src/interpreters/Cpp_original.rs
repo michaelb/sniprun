@@ -8,10 +8,8 @@ pub struct Cpp_original {
     bin_path: String,
     main_file_path: String,
     compiler: String,
-    imports : Vec<String>, //using, namespaces, and includes
+    imports: Vec<String>, //using, namespaces, and includes
 }
-
-
 
 impl Cpp_original {
     pub fn fetch_imports(&mut self) -> std::io::Result<()> {
@@ -21,17 +19,18 @@ impl Cpp_original {
         let mut file = File::open(&self.data.filepath)?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;
-        
+
         for line in contents.lines() {
-            if line.starts_with("namespace") || line.starts_with("using") || line.starts_with("#include <") {
+            if line.starts_with("namespace")
+                || line.starts_with("using")
+                || line.starts_with("#include <")
+            {
                 self.imports.push(line.to_string());
             }
         }
         Ok(())
     }
 }
-
-
 
 impl ReplLikeInterpreter for Cpp_original {}
 impl Interpreter for Cpp_original {
@@ -52,12 +51,16 @@ impl Interpreter for Cpp_original {
             bin_path: bp,
             main_file_path: mfp,
             compiler: String::from("g++"),
-            imports: vec!(),
+            imports: vec![],
         })
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("C++"),String::from("cpp"), String::from("c++")]
+        vec![
+            String::from("C++"),
+            String::from("cpp"),
+            String::from("c++"),
+        ]
     }
 
     fn get_name() -> String {
@@ -162,4 +165,3 @@ mod test_cpp_original {
         assert_eq!(string_result, "1\n");
     }
 }
-

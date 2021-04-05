@@ -31,7 +31,11 @@ impl Interpreter for JS_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("JavaScript"),String::from("js"), String::from("javascript")]
+        vec![
+            String::from("JavaScript"),
+            String::from("js"),
+            String::from("javascript"),
+        ]
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -40,7 +44,7 @@ impl Interpreter for JS_original {
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
     }
-    
+
     fn default_for_filetype() -> bool {
         true
     }
@@ -116,5 +120,4 @@ mod test_js_original {
         let string_result = res.unwrap();
         assert_eq!(string_result, "Hello, World!\n");
     }
-
 }

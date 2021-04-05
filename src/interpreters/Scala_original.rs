@@ -96,7 +96,8 @@ impl Interpreter for Scala_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         // an example following Rust's syntax
-        self.code = String::from("object Main {\ndef main(arg: Array[String]) = {") + &self.code + "}\n}";
+        self.code =
+            String::from("object Main {\ndef main(arg: Array[String]) = {") + &self.code + "}\n}";
         Ok(())
     }
 
@@ -151,7 +152,7 @@ impl Interpreter for Scala_original {
 mod test_scala_original {
     use super::*;
     #[test]
-    fn run_all(){
+    fn run_all() {
         simple_print();
     }
     fn simple_print() {
@@ -163,7 +164,7 @@ mod test_scala_original {
         let res = interpreter.run();
 
         let string_result = res.unwrap();
-        
+
         // -> compare result with predicted
         assert_eq!(string_result, "Hi\n");
     }

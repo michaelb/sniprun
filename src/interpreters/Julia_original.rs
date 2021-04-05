@@ -50,7 +50,11 @@ impl Interpreter for Julia_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("Julia"),String::from("julia"), String::from("jl")]
+        vec![
+            String::from("Julia"),
+            String::from("julia"),
+            String::from("jl"),
+        ]
     }
 
     fn get_current_level(&self) -> SupportLevel {

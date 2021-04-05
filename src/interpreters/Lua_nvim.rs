@@ -31,7 +31,7 @@ impl Interpreter for Lua_nvim {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("Lua"),String::from("lua")]
+        vec![String::from("Lua"), String::from("lua")]
     }
 
     fn get_current_level(&self) -> SupportLevel {

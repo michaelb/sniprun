@@ -35,7 +35,11 @@ impl Interpreter for Go_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("Go"),String::from("go"), String::from("golang")]
+        vec![
+            String::from("Go"),
+            String::from("go"),
+            String::from("golang"),
+        ]
     }
 
     fn get_name() -> String {
@@ -82,8 +86,7 @@ impl Interpreter for Go_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code =
-            String::from("package main \nimport \"fmt\"\nfunc main() {") + &self.code + "}";
+        self.code = String::from("package main \nimport \"fmt\"\nfunc main() {") + &self.code + "}";
         Ok(())
     }
 

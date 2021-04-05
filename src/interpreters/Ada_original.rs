@@ -44,7 +44,6 @@ impl Interpreter for Ada_original {
             String::from("Ada"), // in 1st position of vector, used for info only
             String::from("ada"),
         ]
-
     }
 
     fn get_name() -> String {
@@ -80,7 +79,6 @@ impl Interpreter for Ada_original {
             && self.support_level >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-
         } else if !self.data.current_line.replace(" ", "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
@@ -92,7 +90,10 @@ impl Interpreter for Ada_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("with Ada; use Ada;\nwith Text_IO\n; use Text_IO;\nprocedure main is\nbegin\n") + &self.code + "\nend main;";
+        self.code = String::from(
+            "with Ada; use Ada;\nwith Text_IO\n; use Text_IO;\nprocedure main is\nbegin\n",
+        ) + &self.code
+            + "\nend main;";
         Ok(())
     }
 
@@ -113,7 +114,7 @@ impl Interpreter for Ada_original {
             return Err(SniprunError::CompilationError(
                 String::from_utf8(output.stderr).unwrap(),
             ));
-        } 
+        }
 
         return Ok(());
     }
@@ -140,7 +141,7 @@ impl Interpreter for Ada_original {
 mod test_ada_original {
     use super::*;
     #[test]
-    fn run_all(){
+    fn run_all() {
         simple_print();
     }
     fn simple_print() {
@@ -152,7 +153,7 @@ mod test_ada_original {
 
         // -> should panic if not an Ok()
         let string_result = res.unwrap();
-        
+
         // -> compare result with predicted
         assert_eq!(string_result, "Hi\n");
     }

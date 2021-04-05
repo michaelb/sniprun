@@ -336,7 +336,6 @@ mod test_python3_jupyter {
         simple_print();
     }
 
-
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"a\",1)");
@@ -368,16 +367,13 @@ mod test_python3_jupyter {
         let mut interpreter = Python3_jupyter::new(data2);
         let _res = interpreter.run_at_level_repl(SupportLevel::Import).unwrap();
 
-
         data.current_bloc = String::from("print(a)");
         let mut interpreter = Python3_jupyter::new(data);
         let _res = interpreter.run_at_level_repl(SupportLevel::Import);
 
         // should panic if not an Ok()
-        // but for some reason does not work in test mode 
+        // but for some reason does not work in test mode
         // let string_result = res.unwrap();
         // assert_eq!(string_result, "1\n");
     }
-
-
 }

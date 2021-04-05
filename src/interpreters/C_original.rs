@@ -197,8 +197,6 @@ mod test_c_original {
         data.filepath = String::from("ressources/cccccc.c");
         let mut file = File::create(&data.filepath).unwrap();
         file.write_all(b"#include <math.h>").unwrap();
-        
-
 
         let mut interpreter = C_original::new(data);
         let res = interpreter.run_at_level(SupportLevel::Import);

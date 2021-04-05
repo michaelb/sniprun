@@ -110,7 +110,12 @@ impl Interpreter for Rust_original {
             let error_message = String::from_utf8(output.stderr).unwrap();
             //
             //take first line and remove first 'error' word (redondant)
-            let first_line = error_message.lines().next().unwrap_or_default().trim_start_matches("error: ").trim_start_matches("error");
+            let first_line = error_message
+                .lines()
+                .next()
+                .unwrap_or_default()
+                .trim_start_matches("error: ")
+                .trim_start_matches("error");
             return Err(SniprunError::CompilationError(first_line.to_owned()));
         } else {
             return Ok(());
@@ -138,8 +143,8 @@ mod test_rust_original {
     use crate::error::SniprunError;
 
     #[test]
-    fn run_all() { 
-        //nececssary to run sequentially 
+    fn run_all() {
+        //nececssary to run sequentially
         //because of file access & shared things
         simple_print();
         runtime_error();
