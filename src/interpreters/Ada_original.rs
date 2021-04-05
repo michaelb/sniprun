@@ -64,7 +64,7 @@ impl Interpreter for Ada_original {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::Bloc
+        SupportLevel::Line
     }
 
     fn default_for_filetype() -> bool {
