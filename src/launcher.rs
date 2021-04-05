@@ -146,6 +146,7 @@ impl Launcher {
 mod test_launcher {
 
     use super::*;
+    use std::env;
 
     #[test]
     fn run() {
@@ -162,12 +163,15 @@ mod test_launcher {
     #[test]
     fn info() {
         let mut data = DataHolder::new();
+        let path = env::current_dir().unwrap();
+        data.sniprun_root_dir = path.display().to_string();
+
         data.filetype = String::from("rust");
         data.current_line = String::from("println!(\"Hello\");");
         data.current_bloc = String::from("println!(\"Hello\");");
         data.range = [1, 1];
 
         let launcher = Launcher::new(data);
-        let _res = launcher.info();
+        let _res = launcher.info().unwrap();
     }
 }
