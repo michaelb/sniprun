@@ -95,7 +95,7 @@ jobs:
     - name: Code coverage
       uses: actions-rs/tarpaulin@v0.1.0
       with:
-        args: --features ignore_in_ci -- --test-threads=1
+        args: --features ignore_in_ci --exclude-files src/interpreters/example.rs -- --test-threads=1
 
     - name: Upload to codecov.io
       uses: codecov/codecov-action@v1.0.2

@@ -243,3 +243,26 @@ impl Interpreter for GFM_original {
         )));
     }
 }
+
+
+#[cfg(test)]
+mod test_GFM_original {
+    use super::*;
+
+    #[test]
+    //actually safe to run in parrallel because GFM modify sniprun root and thus 
+    //where the underlying interpreter puts its files
+    fn simple_bloc(){
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(3)");
+        data.filepath = String::from("ressources/markdown.md");
+        data.filetype = String::from("python");
+        data.range = [1,3];
+        
+        let mut interpreter = GFM_original::new(data);
+        let res = interpreter.execute();
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "3\n");
+    }
+}
+        
