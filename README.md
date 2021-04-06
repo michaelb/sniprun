@@ -218,13 +218,16 @@ You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to 
 
 ![](ressources/visual_assets/760091.png)
 
-### My usage recommandation & tricks
+### Usage recommandation & tricks
 
-- Map the run command to a simple command such as `<leader>f` (or just `f` in visual mode).
+- Map the run command to a simple command such as `<leader>ff` (or just `f` in visual mode)
+- The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "<leader>f + j" will run sniprun on the current line + the line below.
+
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
 
 ```
-nmap <leader>f <Plug>SnipRun
+nmap <leader>ff <Plug>SnipRun
+nmap <leader>f <Plug>SnipRunOperator
 vmap f <Plug>SnipRun
 ```
 
