@@ -72,8 +72,10 @@ function M.setup(opts)
 end
 
 function M.configure_keymaps()
+
   vim.api.nvim_set_keymap("v", "<Plug>SnipRun", ":lua require'sniprun'.run('v')<CR>", {silent=true})
   vim.api.nvim_set_keymap("n", "<Plug>SnipRun", ":lua require'sniprun'.run()<CR>",{silent=true})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipRunOperator", ":set opfunc=SnipRunOperator<CR>g@",{silent=true})
   vim.api.nvim_set_keymap("n", "<Plug>SnipRTerminate", ":lua require'sniprun'.terminate()<CR>",{silent=true})
   vim.api.nvim_set_keymap("n", "<Plug>SnipReset", ":lua require'sniprun'.reset()<CR>",{silent=true})
   vim.api.nvim_set_keymap("n", "<Plug>SnipInfo", ":lua require'sniprun'.info()<CR>",{})
@@ -81,7 +83,7 @@ function M.configure_keymaps()
   vim.cmd("command! SnipTerminate :lua require'sniprun'.terminate()")
   vim.cmd("command! SnipReset :lua require'sniprun'.reset()")
   vim.cmd("command! SnipReplMemoryClean :lua require'sniprun'.clear_repl()")
-
+  vim.cmd("function! SnipRunOperator(...) \n lua require'sniprun'.run('n') \n endfunction")
 
   vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('"..sniprun_path.."/doc/', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
   vim.cmd("command! -nargs=* -complete=customlist,ListInterpreters SnipInfo :lua require'sniprun'.info(<q-args>)")
@@ -117,6 +119,9 @@ function M.get_range(mode)
   if not mode then
     line1 = vim.api.nvim_win_get_cursor(0)[1]
     line2 = line1
+  elseif mode:match("[n]") then
+    line1 = vim.api.nvim_buf_get_mark(0, '[')[1]
+    line2 = vim.api.nvim_buf_get_mark(0, ']')[1]
   elseif mode:match("[vV]") then
     line1 = vim.api.nvim_buf_get_mark(0, "<")[1]
     line2 = vim.api.nvim_buf_get_mark(0, ">")[1]

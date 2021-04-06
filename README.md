@@ -202,13 +202,14 @@ Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of 
 
 All of sniprun useful functionnalities:
 
-|Shorthand|Lua backend|\<Plug> mapping|
-|--|--|--|
-|:SnipRun| lua require'sniprun'.run()|\<Plug>SnipRun|
-|:'<,'>SnipRun (visual mode)|lua require'sniprun'.run('v') |\<Plug>SnipRun|
-|:SnipInfo| lua require'sniprun'.info()|\<Plug>SnipInfo|
-|:SnipReset| lua require'sniprun'.reset()|\<Plug>SnipReset|
-|:SnipReplMemoryClean| lua require'sniprun'.clear_repl()  |\<Plug>SnipReplMemoryClean|
+| Shorthand                   | Lua backend                       | \<Plug> mapping            |
+|-----------------------------|-----------------------------------|----------------------------|
+| :SnipRun                    | lua require'sniprun'.run()        | \<Plug>SnipRun             |
+| (normal node)               | lua require'sniprun'.run('n')     | \<Plug>SnipRunOperator     |
+| :'<,'>SnipRun (visual mode) | lua require'sniprun'.run('v')     | \<Plug>SnipRun             |
+| :SnipInfo                   | lua require'sniprun'.info()       | \<Plug>SnipInfo            |
+| :SnipReset                  | lua require'sniprun'.reset()      | \<Plug>SnipReset           |
+| :SnipReplMemoryClean        | lua require'sniprun'.clear_repl() | \<Plug>SnipReplMemoryClean |
 
 
 You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to configure sniprun, still compatible but may be deprecated at some point.
