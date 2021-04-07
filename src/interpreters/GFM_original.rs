@@ -93,7 +93,8 @@ impl GFM_original {
             "matlab" => "matlab",
             "objectivec" => "objcpp",
             "swift" => "swift",
-            &_ => &self.default_filetype,
+            "" => &self.default_filetype,
+            a => a,
         }
         .to_string()
     }
