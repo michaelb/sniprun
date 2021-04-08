@@ -1,6 +1,7 @@
 ## v0.5.2
 - Ada and Scala interpreters
 - Operator mode, courtesy of @DarwinSenior
+- Julia REPL via jupyter kernel
 
 
 ## v0.5.1 

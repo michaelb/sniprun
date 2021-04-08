@@ -291,6 +291,19 @@ impl ReplLikeInterpreter for Python3_jupyter {
     }
 
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        info!(
+            "json kernel file exists yet? {}",
+            std::path::Path::new(&self.kernel_file).exists()
+        );
+        while !std::path::Path::new(&self.kernel_file).exists() {
+            std::thread::sleep(std::time::Duration::from_millis(100));
+        }
+        info!(
+            "json kernel file exists yet? {}",
+            std::path::Path::new(&self.kernel_file).exists()
+        );
+
+
         let output = Command::new("sh")
             .arg(&self.launcher_path)
             .output()
