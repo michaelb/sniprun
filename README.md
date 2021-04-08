@@ -147,7 +147,11 @@ You can do basically two things: **run** your code selection and **stop** it (in
 
 `:'<,'>SnipRun`
 
-(the shorthand for ``` :lua require'sniprun'.run('v')```)
+(the shorthand for `:lua require'sniprun'.run('v')`)
+
+**Operator mode**:
+
+Configure a mapping to `<Plug>SnipRunOperator` and combine it with movements to sniprun 'text objects'. Every text-object will be rounded line-wise.
 
 
 #### Stopping
