@@ -61,6 +61,8 @@ Send to Sniprun snippets of any language. A few lines of code are now within a p
 An example in C:
 ![](ressources/visual_assets/demo_c.gif)
 
+⮤ result is displayed at the bottom of the window.
+
 send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
 
 ![](ressources/visual_assets/demo_repl.gif)
@@ -95,10 +97,11 @@ Sniprun will then:
 
 ### Prerequisites && dependencies
 
-- Sniprun is Linux-only for now (as of v0.5.1), so you need Linux.
-- Neovim version (>= 0.43 preferably), but should work with older versions
-- [recommended, but optionnal] cargo and the rust toolchain version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
-- Compiler / interpreter for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the **[doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at** before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
+- Sniprun is **Linux**-only for now (as of v0.5.2).
+- **Neovim** version (>= 0.5 for the latest goodies), but 0.4.x is supported up to sniprun v0.4.9 and the installer will take care of installing the latest version 'that works', though you may miss the latest goodies, and you will need to use the [old vimscript way to configure](ressources/old_configuration.md).
+- [recommended, but optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
+
+- **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
 
 ### Install Sniprun
@@ -144,7 +147,11 @@ You can do basically two things: **run** your code selection and **stop** it (in
 
 `:'<,'>SnipRun`
 
-(the shorthand for ``` :lua require'sniprun'.run('v')```)
+(the shorthand for `:lua require'sniprun'.run('v')`)
+
+**Operator mode**:
+
+Configure a mapping to `<Plug>SnipRunOperator` and combine it with movements to sniprun 'text objects'. Every text-object will be rounded line-wise.
 
 
 #### Stopping
@@ -216,13 +223,16 @@ You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to 
 
 ![](ressources/visual_assets/760091.png)
 
-### My usage recommandation & tricks
+### Usage recommandation & tricks
 
-- Map the run command to a simple command such as `<leader>f` (or just `f` in visual mode).
+- Map the run command to a simple command such as `<leader>ff` (or just `f` in visual mode)
+- The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "<leader>f + j" will run sniprun on the current line + the line below.
+
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
 
 ```
-nmap <leader>f <Plug>SnipRun
+nmap <leader>ff <Plug>SnipRun
+nmap <leader>f <Plug>SnipRunOperator
 vmap f <Plug>SnipRun
 ```
 
@@ -262,7 +272,7 @@ println!("-> {}", alphabet);
 
 | Language     | Support level |     | Language   | Support level    |
 | ------------ | ------------- | --- | ---------- | ---------------- |
-| Ada          | Untested      |     | Java       | Bloc             |
+| Ada          | Line          |     | Java       | Bloc             |
 | Bash/Shell   | Bloc + REPL\* |     | JavaScript | Bloc             |
 | C            | Import        |     | Julia      | Bloc             |
 | C++          | Import        |     | Lisp       | Untested         |
@@ -276,7 +286,7 @@ println!("-> {}", alphabet);
 | Erlang       | Untested      |     | R          | Bloc + REPL \*\* |
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
-| Groovy       | Untested      |     | Scala      | Untested         |
+| Groovy       | Untested      |     | Scala      | Bloc             |
 | Haskell      | Line          |     | Scilab     | Untested         |
 | Idris        | Untested      |     | Swift      | Untested         |
 

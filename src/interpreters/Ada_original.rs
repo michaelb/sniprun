@@ -1,45 +1,54 @@
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct Java_original {
+pub struct Ada_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
 
-    ///specific to java
-    java_work_dir: String,
-    bin_name: String,
+    ///specific to compiled languages, can be modified of course
+    ada_work_dir: String,
+    bin_path: String,
     main_file_path: String,
+    // you can and should add fields as needed
 }
-impl ReplLikeInterpreter for Java_original {}
-impl Interpreter for Java_original {
-    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Java_original> {
+
+//necessary boilerplate, you don't need to implement that if you want a Bloc support level
+//interpreter (the easiest && most common)
+impl ReplLikeInterpreter for Ada_original {}
+
+impl Interpreter for Ada_original {
+    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Ada_original> {
         //create a subfolder in the cache folder
-        let jwd = data.work_dir.clone() + "/java_original";
+        let awd = data.work_dir.clone() + "/ada_original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
-            .create(&jwd)
-            .expect("Could not create directory for java-original");
+            .create(&awd)
+            .expect("Could not create directory for example");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = jwd.clone() + "/Main.java";
-        let bn = "Main".to_string(); // remove extension so binary is named 'main'
-        Box::new(Java_original {
+        let mfp = awd.clone() + "/main.adb";
+        let bp = awd.clone() + "/main"; // remove extension so binary is named 'main'
+        Box::new(Ada_original {
             data,
             support_level,
-            code: String::from(""),
-            java_work_dir: jwd,
-            bin_name: bn,
+            code: String::new(),
+            ada_work_dir: awd,
+            bin_path: bp,
             main_file_path: mfp,
         })
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("Java"), String::from("java")]
+        vec![
+            String::from("Ada"), // in 1st position of vector, used for info only
+            String::from("ada"),
+        ]
     }
 
     fn get_name() -> String {
-        String::from("Java_original")
+        // get your interpreter name
+        String::from("Ada_original")
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -49,20 +58,19 @@ impl Interpreter for Java_original {
         self.support_level = level;
     }
 
-    fn default_for_filetype() -> bool {
-        true
-    }
-
     fn get_data(&self) -> DataHolder {
         self.data.clone()
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::Bloc
+        SupportLevel::Line
+    }
+
+    fn default_for_filetype() -> bool {
+        true
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
-        //add code from data to self.code
         if !self
             .data
             .current_bloc
@@ -83,48 +91,44 @@ impl Interpreter for Java_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         self.code = String::from(
-            "public class Main {
-            public static void main(String[] args) {
-                ",
+            "with Ada.Text_IO;\nuse Ada.Text_IO;\nprocedure main is\n\nbegin\n",
         ) + &self.code
-            + "}
-        }";
+            + "\nend main;";
         Ok(())
     }
 
     fn build(&mut self) -> Result<(), SniprunError> {
         //write code to file
         let mut _file =
-            File::create(&self.main_file_path).expect("Failed to create file for java-original");
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for java-original");
+            File::create(&self.main_file_path).expect("Failed to create file for language_subname");
+        write(&self.main_file_path, &self.code)
+            .expect("Unable to write to file for language_subname");
 
-        //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new("javac")
-            .arg("-d")
-            .arg(&self.java_work_dir)
+        let output = Command::new("gnatmake")
+            .arg("main")
             .arg(&self.main_file_path)
+            .current_dir(&self.ada_work_dir)
             .output()
             .expect("Unable to start process");
-
-        //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            return Err(SniprunError::CompilationError("".to_string()));
-        } else {
-            return Ok(());
+            return Err(SniprunError::CompilationError(
+                String::from_utf8(output.stderr).unwrap(),
+            ));
         }
+
+        return Ok(());
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        //run th binary and get the std output (or stderr)
-        let output = Command::new("java")
-            .arg("-cp")
-            .arg(&self.java_work_dir)
-            .arg(&self.bin_name)
+        let output = Command::new(&self.bin_path)
             .output()
             .expect("Unable to start process");
+
         if output.status.success() {
+            //return stdout
             return Ok(String::from_utf8(output.stdout).unwrap());
         } else {
+            // return stderr
             return Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
             ));
@@ -132,19 +136,22 @@ impl Interpreter for Java_original {
     }
 }
 
+// You can add tests if you want to
 #[cfg(test)]
-mod test_java_original {
+mod test_ada_original {
     use super::*;
-
     #[test]
     fn simple_print() {
         let mut data = DataHolder::new();
-        data.current_bloc = String::from("System.out.println(\"hello\");");
-        let mut interpreter = Java_original::new(data);
+
+        data.current_line = String::from("Put_Line(\"Hi\");");
+        let mut interpreter = Ada_original::new(data);
         let res = interpreter.run();
 
-        // should panic if not an Ok()
+        // -> should panic if not an Ok()
         let string_result = res.unwrap();
-        assert_eq!(string_result, "hello\n");
+
+        // -> compare result with predicted
+        assert_eq!(string_result, "Hi\n");
     }
 }

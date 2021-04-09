@@ -31,7 +31,11 @@ impl Interpreter for Ruby_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("Ruby"), String::from("ruby"), String::from("rb")]
+        vec![
+            String::from("Ruby"),
+            String::from("ruby"),
+            String::from("rb"),
+        ]
     }
 
     fn default_for_filetype() -> bool {
@@ -115,5 +119,4 @@ mod test_ruby_original {
         let string_result = res.unwrap();
         assert_eq!(string_result, "hell\n");
     }
-
 }

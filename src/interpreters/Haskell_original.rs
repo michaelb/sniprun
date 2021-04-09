@@ -35,7 +35,11 @@ impl Interpreter for Haskell_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("Haskell"),String::from("haskell"), String::from("hs")]
+        vec![
+            String::from("Haskell"),
+            String::from("haskell"),
+            String::from("hs"),
+        ]
     }
 
     fn get_name() -> String {
@@ -109,7 +113,9 @@ impl Interpreter for Haskell_original {
         info!("code : {:?}", &self.code);
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            return Err(SniprunError::CompilationError(String::from_utf8(output.stderr).unwrap()));
+            return Err(SniprunError::CompilationError(
+                String::from_utf8(output.stderr).unwrap(),
+            ));
         } else {
             return Ok(());
         }
@@ -145,4 +151,3 @@ mod test_haskell_original {
         assert_eq!(string_result, "Hi\n");
     }
 }
-

@@ -8,7 +8,7 @@ pub struct Language_subname {
     data: DataHolder,
     code: String,
 
-    ///specific to compiled languages
+    ///specific to compiled languages, can be modified of course
     language_work_dir: String,
     bin_path: String,
     main_file_path: String,
@@ -52,12 +52,12 @@ impl Interpreter for Language_subname {
         ]
 
         // little explanation: only the filetype is necessary, but the 1st element of the Vec is
-        // displayed with SnipInfo, so put "JavaScript" instead of "js" for clarity's sake 
+        // displayed with SnipInfo, so put "JavaScript" instead of "js" for clarity's sake
     }
 
     fn get_name() -> String {
         // get your interpreter name
-        String::from("Language_differenciator")
+        String::from("Language_subname")
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -136,7 +136,7 @@ impl Interpreter for Language_subname {
         // if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
             return Err(SniprunError::CompilationError(
-                "some relevant feedback".to_string(),
+                "some relevant feedback".to_string(), //such as output.stderr :-)
             ));
         } else {
             return Ok(());
@@ -166,8 +166,9 @@ impl Interpreter for Language_subname {
 mod test_language_subname {
     use super::*;
     #[test]
-    fn run_all(){
-        //test of the same interpreter MUST be run sequentially.
+    fn run_all() {
+        // test of the same interpreter MUST be run sequentially usually, since they use a file
+        // that can't be written  to concurrently
         simple_print();
         another_test();
     }
@@ -181,11 +182,11 @@ mod test_language_subname {
 
         // -> should panic if not an Ok()
         // let string_result = res.unwrap();
-        
+
         // -> compare result with predicted
         // assert_eq!(string_result, "HW, 1+1 = 2\n");
     }
-    fn another_test(){
+    fn another_test() {
         //another test
     }
 }
