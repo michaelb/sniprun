@@ -3,7 +3,6 @@
 
 echo "Runnning Sniprun Installer"
 local_version=v$(cat Cargo.toml | grep version | cut -d "\"" -f 2)
-local_version="v0.5.1"
 name="sniprun"
 force_build=$1
 

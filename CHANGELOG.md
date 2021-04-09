@@ -2,6 +2,7 @@
 - Ada and Scala interpreters
 - Operator mode, courtesy of @DarwinSenior
 - Julia REPL via jupyter kernel
+- Compatibility fix for nvim 0.4.x (will miss out on features >= sniprun v0.4.9)
 
 
 ## v0.5.1 
