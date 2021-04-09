@@ -35,6 +35,8 @@ jobs:
           sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && 
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' &&
           sudo apt install r-base &&
+          sudo apt install gnat &&
+          sudo apt install scala &&
           pip3 install jupyter &&
           sudo apt install lua5.3 &&
           ./ressources/go_install.sh &&
@@ -78,6 +80,8 @@ jobs:
           sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 && 
           sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' &&
           sudo apt install r-base &&
+          sudo apt install gnat &&
+          sudo apt install scala &&
           pip3 install jupyter &&
           sudo apt install lua5.3 &&
           ./ressources/go_install.sh &&
@@ -91,7 +95,7 @@ jobs:
     - name: Code coverage
       uses: actions-rs/tarpaulin@v0.1.0
       with:
-        args: --features ignore_in_ci -- --test-threads=1
+        args: --features ignore_in_ci --exclude-files src/interpreters/example.rs -- --test-threads=1
 
     - name: Upload to codecov.io
       uses: codecov/codecov-action@v1.0.2

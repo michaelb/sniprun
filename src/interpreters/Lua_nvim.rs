@@ -31,7 +31,7 @@ impl Interpreter for Lua_nvim {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("Lua"),String::from("lua")]
+        vec![String::from("Lua"), String::from("lua")]
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -128,5 +128,29 @@ impl Interpreter for Lua_nvim {
                 ));
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod test_lua_nvim {
+    use super::*;
+
+    #[test]
+    #[should_panic]
+    fn run_all() {
+        //nececssary to run sequentially
+        //because of file access & shared things
+        simple_print();
+    }
+
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(\"Hi\") --nvim vim");
+        let mut interpreter = Lua_nvim::new(data);
+        let res = interpreter.run();
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "Hi\n");
     }
 }

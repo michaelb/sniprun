@@ -184,6 +184,8 @@ impl EventHandler {
 
         {
             self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
+        }
+        {
             let i = self.index_from_name("sniprun_root_dir", config);
             self.data.sniprun_root_dir = String::from(config[i].1.as_str().unwrap());
             info!("[FILLDATA] got sniprun root");
@@ -466,6 +468,3 @@ fn return_message(
         },
     }
 }
-
-#[cfg(test)]
-mod test;

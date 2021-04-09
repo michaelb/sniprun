@@ -31,7 +31,7 @@ impl Interpreter for Lua_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("Lua"),String::from("lua")]
+        vec![String::from("Lua"), String::from("lua")]
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -121,8 +121,8 @@ mod test_lua_original {
     use super::*;
 
     #[test]
-    fn run_all() { 
-        //nececssary to run sequentially 
+    fn run_all() {
+        //nececssary to run sequentially
         //because of file access & shared things
         simple_print();
     }
@@ -136,5 +136,4 @@ mod test_lua_original {
         let string_result = res.unwrap();
         assert_eq!(string_result, "Hi\n");
     }
-
 }

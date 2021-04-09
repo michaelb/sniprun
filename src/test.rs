@@ -1,6 +1,6 @@
 use super::*;
-use interpreter::{Interpreter, SupportLevel, InterpreterUtils};
-use interpreters::Rust_original;
+use interpreter::{Interpreter, InterpreterUtils, SupportLevel};
+use interpreters::JS_original;
 
 #[test]
 fn test_implements() {
@@ -23,17 +23,29 @@ fn test_implements() {
     }
 }
 
-
-
+#[test]
 fn test_interpreter_utils() {
     let mut data = DataHolder::new();
-    data.interpreter_data = Some(Arc::new(Mutex::new(InterpreterData {owner:String::new(), content: String::new(),pid:Some(0)})));
-    let interpreter = Rust_original::new(data);
+    data.interpreter_data = Some(Arc::new(Mutex::new(InterpreterData {
+        owner: String::new(),
+        content: String::new(),
+        pid: Some(0),
+    })));
+    data.current_bloc = String::from("console.log(\"Hello, World!\");");
+    let mut interpreter = JS_original::new(data);
     interpreter.save_code(String::from("let a = 3;"));
-    assert_eq!(String::from("let a = 3;"), interpreter.read_previous_code().trim_matches('\n'));
+    assert_eq!(
+        String::from("let a = 3;"),
+        interpreter.read_previous_code().trim_matches('\n')
+    );
     interpreter.clear();
     assert!(interpreter.read_previous_code().is_empty());
 
     interpreter.set_pid(15);
     assert_eq!(Some(15), interpreter.get_pid());
+
+    // actually run the JS_original interpreter since we highjacked its test
+    let res = interpreter.run();
+    let string_result = res.unwrap();
+    assert_eq!(string_result, "Hello, World!\n");
 }
