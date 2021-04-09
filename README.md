@@ -98,7 +98,7 @@ Sniprun will then:
 ### Prerequisites && dependencies
 
 - Sniprun is **Linux**-only for now (as of v0.5.2).
-- **Neovim** version (>= 0.5 for the latest goodies), but 0.4.x is supported up to sniprun v0.4.9 and the installer will take care of installing the latest version 'that works', though you may miss the latest goodies.
+- **Neovim** version (>= 0.5 for the latest goodies), but 0.4.x is supported up to sniprun v0.4.9 and the installer will take care of installing the latest version 'that works', though you may miss the latest goodies, and you will need to use the [old vimscript way to configure](ressources/old_configuration.md).
 - [recommended, but optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
 
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
