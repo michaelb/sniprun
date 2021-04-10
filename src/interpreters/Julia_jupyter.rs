@@ -124,7 +124,7 @@ impl ReplLikeInterpreter for Julia_jupyter {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
         self.fetch_code()?;
         let saved_code = self.read_previous_code();
-        if false && saved_code.is_empty() {
+        if saved_code.is_empty() {
             //initialize kernel. Relying on self.read_previous_code to
             //know when to start a new kernel is important as
             //this will be cleared by the SnipReplMemoryClean command
