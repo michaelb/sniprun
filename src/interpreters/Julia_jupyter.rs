@@ -5,8 +5,6 @@ pub struct Julia_jupyter {
     data: DataHolder,
     code: String,
     kernel_file: String,
-    main_file_path: String,
-    launcher_path: String,
     plugin_root: String,
     cache_dir: String,
 }
@@ -21,10 +19,6 @@ impl Interpreter for Julia_jupyter {
             .create(&pwd)
             .expect("Could not create directory for julia-jupyter");
 
-        //pre-create string pointing to main file's and binary's path
-        let mfp = pwd.clone() + "/main.jl";
-        let lp = pwd.clone() + "/main.sh";
-
         let pgr = data.sniprun_root_dir.clone();
 
         let kp = pwd.clone() + "/kernel_sniprun.json";
@@ -33,8 +27,6 @@ impl Interpreter for Julia_jupyter {
             support_level: level,
             code: String::new(),
             kernel_file: kp,
-            main_file_path: mfp,
-            launcher_path: lp,
             plugin_root: pgr,
             cache_dir: pwd,
         })
@@ -91,33 +83,13 @@ impl Interpreter for Julia_jupyter {
         Ok(())
     }
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("\nprintln(\"\")\n")
-            + &unindent(&format!("{}{}", "\n", self.code.as_str()));
-        //add a print newline because the jupyter prompt interferers with fetching the result
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {
-        // info!("python code:\n {}", self.code);
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for julia_jupyter");
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("julia")
-            .arg(&self.main_file_path)
-            .output()
-            .expect("Unable to start process");
-        if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
-        } else {
-            return Err(SniprunError::RuntimeError(
-                String::from_utf8(output.stderr.clone())
-                    .unwrap()
-                    .lines()
-                    .last()
-                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                    .to_owned(),
-            ));
-        }
+        Err(SniprunError::CustomError(String::from("Julia_jupyter only works in REPL-enabled mode")))
     }
 }
 impl ReplLikeInterpreter for Julia_jupyter {
@@ -149,39 +121,12 @@ impl ReplLikeInterpreter for Julia_jupyter {
     }
     fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
         info!("begins add boilerplate repl");
-        self.code = String::from("\nprintln(\"\")\n")
-            + &unindent(&format!("{}{}", "\n", self.code.as_str()));
+        self.code = unindent(&format!("{}{}", "\n", self.code.as_str()));
 
         Ok(())
     }
 
     fn build_repl(&mut self) -> Result<(), SniprunError> {
-        let actual_command = String::from("echo")
-            + " "
-            + &String::from("'include(\"")
-            + &self.main_file_path
-            + "\")"
-            + "' "
-            + "|"
-            + " "
-            + "jupyter-console"
-            + " "
-            + "--existing"
-            + " "
-            + &self.kernel_file.clone()
-            + " "
-            + "--kernel=julia-1.5"
-            + " "
-            + "--simple-prompt"
-            + " "
-            + "--no-confirm"
-            + " "
-            + "--ZMQTerminalInteractiveShell.banner=\"\"";
-
-        write(&self.launcher_path, &actual_command)
-            .expect("Unable to write file for julia_jupyter");
-        info!("command written to launcher:\n{}\n", actual_command);
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for julia_jupyter");
         Ok(())
     }
 
@@ -193,48 +138,73 @@ impl ReplLikeInterpreter for Julia_jupyter {
         while !std::path::Path::new(&self.kernel_file).exists() {
             std::thread::sleep(std::time::Duration::from_millis(100));
         }
+        std::thread::sleep(std::time::Duration::from_millis(5000));
         info!(
             "json kernel file exists yet? {}",
             std::path::Path::new(&self.kernel_file).exists()
         );
 
-        info!("starting executing repl: bash {}",&self.launcher_path);
-        let output = Command::new("bash")
-            .arg(&self.launcher_path)
-            .output()
-            .expect("failed to run command");
-        info!(
-            "executed command!, stdout = {:?}, stder = {:?}",
-            output.stdout, output.stderr
-        );
-        let result = String::from_utf8(output.stdout).unwrap();
-        let mut cleaned_result: Vec<_> = result.lines().collect();
-        info!("collected result");
-
-        // first and last lines are the [In] x: prompts from jupyter-console
-        cleaned_result.remove(cleaned_result.len() - 1);
-        cleaned_result.remove(1);
-        cleaned_result.remove(0);
-        info!("result: {:?}", cleaned_result);
-
-        info!("cleaned result: {:?}", cleaned_result);
-        if String::from_utf8(output.stderr.clone()).unwrap().is_empty() {
-            return Ok(cleaned_result.join("\n") + "\n");
-        } else {
-            return Err(SniprunError::RuntimeError(
-                String::from_utf8(strip_ansi_escapes::strip(output.stderr.clone()).unwrap())
-                    .unwrap()
-                    .lines()
-                    .last()
-                    .unwrap_or(
-                        &String::from_utf8(
-                            strip_ansi_escapes::strip(output.stderr.clone()).unwrap(),
-                        )
-                        .unwrap(),
-                    )
-                    .to_owned(),
-            ));
+        let mut f = File::create(&self.kernel_file).expect("Unable to read kernel file");
+        let mut content = String::new();
+        f.read_to_string(&mut content);
+        info!("kernel file contents: {}", content);
+        info!("kernel file read");
+        let client_res = Client::from_reader(f);
+        if client_res.is_ok() {
+            info!("client is an ok()");
+        }else {
+            info!("client is not an ok()");
         }
+        let client = client_res.unwrap();
+
+        // Spawn an IOPub watcher
+        let receiver = client.iopub_subscribe().expect("Unable to subscribe to IOPub watcher");
+        std::thread::spawn(move || {
+            for msg in receiver {
+                info!("Received message from kernel: {:#?}", msg);
+            }
+        });
+
+
+
+
+        // Command to run
+        let command = jupyter_client::commands::Command::Execute {
+            code: "print(10)".to_string(),
+            silent: false,
+            store_history: true,
+            user_expressions: HashMap::new(),
+            allow_stdin: true,
+            stop_on_error: false,
+        };
+
+        Ok(String::new())
+
+//         let cleaned_result = String::new();
+//         // first and last lines are the [In] x: prompts from jupyter-console
+//         cleaned_result.remove(cleaned_result.len() - 1);
+//         cleaned_result.remove(1);
+//         cleaned_result.remove(0);
+//         info!("result: {:?}", cleaned_result);
+// 
+//         info!("cleaned result: {:?}", cleaned_result);
+//         if String::from_utf8(output.stderr.clone()).unwrap().is_empty() {
+//             return Ok(cleaned_result.join("\n") + "\n");
+//         } else {
+//             return Err(SniprunError::RuntimeError(
+//                 String::from_utf8(strip_ansi_escapes::strip(output.stderr.clone()).unwrap())
+//                     .unwrap()
+//                     .lines()
+//                     .last()
+//                     .unwrap_or(
+//                         &String::from_utf8(
+//                             strip_ansi_escapes::strip(output.stderr.clone()).unwrap(),
+//                         )
+//                         .unwrap(),
+//                     )
+//                     .to_owned(),
+//             ));
+//         }
     }
 }
 

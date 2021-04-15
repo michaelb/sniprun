@@ -20,6 +20,8 @@ regex="1.4.5"
 serde_json="1.0.64"
 strip-ansi-escapes="0.1.0"
 
+jupyter-client="0.1.0"
+
 # tree-sitter stuff
 # tree-sitter = "0.16.1"
 
