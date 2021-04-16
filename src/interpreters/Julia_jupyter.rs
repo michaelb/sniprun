@@ -9,6 +9,89 @@ pub struct Julia_jupyter {
     cache_dir: String,
 }
 
+impl Julia_jupyter {
+    fn wait_on_kernel(&self) -> Result<(), SniprunError> {
+        let step = std::time::Duration::from_millis(100);
+        let mut timeout = std::time::Duration::from_millis(10000);
+        loop {
+            if let Ok(content) = std::fs::read_to_string(&self.kernel_file) {
+                if !content.is_empty() {
+                    info!("kernel file not empty, contains: {}", content);
+                    return Ok(());
+                }
+            }
+            std::thread::sleep(step);
+            if let Some(remaining) = timeout.checked_sub(step) {
+                timeout = remaining;
+            } else {
+                info!("Timeout on jupyter kernel start expired");
+                return Err(SniprunError::CustomError(String::from(
+                    "Timeout on jupyter kernel start expired",
+                )));
+            }
+        }
+    }
+
+    fn init_kernel(&mut self) -> Result<(), SniprunError> {
+        let mut saved_code = self.read_previous_code();
+        if saved_code.is_empty() {
+            //initialize kernel. Relying on self.read_previous_code to
+            //know when to start a new kernel is important as
+            //this will be cleared by the SnipReplMemoryClean command
+            let _res = std::fs::remove_file(&self.kernel_file);
+            let _res = Command::new("jupyter-kernel")
+                .arg("--kernel=julia-1.5")
+                .arg(String::from("--KernelManager.connection_file=") + &self.kernel_file)
+                .spawn();
+
+            self.wait_on_kernel()?;
+            info!("Initialized kernel at {}", self.kernel_file);
+
+            // Spawn an IOPub watcher
+            let file_res = File::open(&self.kernel_file);
+            if file_res.is_err() {
+                info!("Failed to open kernel file");
+            }
+            info!("Opened kernel file");
+            let file = file_res.unwrap();
+            let client_res = Client::from_reader(file);
+            if client_res.is_err() {
+                info!("client_res is not ok");
+                return Err(SniprunError::CustomError(String::from(
+                    "Error while trying to connect to the jupyter kernel",
+                )));
+            }
+            info!("client_res is ok");
+            let client = client_res.unwrap();
+            info!("client_res is ok");
+            // let receiver_res = client.iopub_subscribe();
+            // if receiver_res.is_err() {
+            //     info!("receiver_res is not ok");
+            //     return Err(SniprunError::CustomError(String::from(
+            //         "Error while trying to connect to the jupyter kernel",
+            //     )));
+            // }
+            // let receiver = receiver_res.unwrap();
+            // std::thread::spawn(move || {
+            //     info!("Listener thread initialized");
+            //     for msg in receiver {
+            //         info!("Received message from kernel: {:#?}", msg);
+            //     }
+            // });
+            saved_code = self.kernel_file.to_string();
+        } else {
+            // kernel already running
+            info!(
+                "Using already loaded jupyter kernel at {}",
+                self.kernel_file
+            );
+        }
+        // save kernel
+        self.save_code(saved_code);
+        Ok(())
+    }
+}
+
 impl Interpreter for Julia_jupyter {
     fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Julia_jupyter> {
         //create a subfolder in the cache folder
@@ -89,40 +172,20 @@ impl Interpreter for Julia_jupyter {
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
-        Err(SniprunError::CustomError(String::from("Julia_jupyter only works in REPL-enabled mode")))
+        Err(SniprunError::CustomError(
+            "Please enable REPL mode for the Julia_jupyter interpreter".to_string(),
+        ))
     }
 }
 impl ReplLikeInterpreter for Julia_jupyter {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
         self.fetch_code()?;
-        let saved_code = self.read_previous_code();
-        if saved_code.is_empty() {
-            //initialize kernel. Relying on self.read_previous_code to
-            //know when to start a new kernel is important as
-            //this will be cleared by the SnipReplMemoryClean command
-            let _res = std::fs::remove_file(&self.kernel_file);
-            let _res = Command::new("jupyter-kernel")
-                .arg("--kernel=julia-1.5")
-                .arg(String::from("--KernelManager.connection_file=") + &self.kernel_file)
-                .spawn();
-            info!("Initialized kernel at {}", self.kernel_file);
-        } else {
-            // kernel already running
-            info!(
-                "Using already loaded jupyter kernel at {}",
-                self.kernel_file
-            );
-        }
-
-        // save kernel
-        self.save_code(saved_code);
-
+        self.init_kernel()?;
         Ok(())
     }
     fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
         info!("begins add boilerplate repl");
         self.code = unindent(&format!("{}{}", "\n", self.code.as_str()));
-
         Ok(())
     }
 
@@ -131,46 +194,23 @@ impl ReplLikeInterpreter for Julia_jupyter {
     }
 
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
-        info!(
-            "json kernel file exists yet? {}",
-            std::path::Path::new(&self.kernel_file).exists()
-        );
-        while !std::path::Path::new(&self.kernel_file).exists() {
-            std::thread::sleep(std::time::Duration::from_millis(100));
-        }
-        std::thread::sleep(std::time::Duration::from_millis(5000));
-        info!(
-            "json kernel file exists yet? {}",
-            std::path::Path::new(&self.kernel_file).exists()
-        );
+        self.wait_on_kernel()?;
 
-        let mut f = File::create(&self.kernel_file).expect("Unable to read kernel file");
-        let mut content = String::new();
-        f.read_to_string(&mut content);
-        info!("kernel file contents: {}", content);
-        info!("kernel file read");
-        let client_res = Client::from_reader(f);
-        if client_res.is_ok() {
-            info!("client is an ok()");
-        }else {
-            info!("client is not an ok()");
+        let file = File::open(&self.kernel_file).unwrap();
+        let client_res = Client::from_reader(file);
+        if client_res.is_err() {
+            info!("client_res is not ok");
+            return Err(SniprunError::CustomError(String::from(
+                "Error while trying to connect to the jupyter kernel",
+            )));
         }
+
         let client = client_res.unwrap();
-
-        // Spawn an IOPub watcher
-        let receiver = client.iopub_subscribe().expect("Unable to subscribe to IOPub watcher");
-        std::thread::spawn(move || {
-            for msg in receiver {
-                info!("Received message from kernel: {:#?}", msg);
-            }
-        });
-
-
 
 
         // Command to run
         let command = jupyter_client::commands::Command::Execute {
-            code: "print(10)".to_string(),
+            code: "println(3)".to_string(),
             silent: false,
             store_history: true,
             user_expressions: HashMap::new(),
@@ -178,33 +218,32 @@ impl ReplLikeInterpreter for Julia_jupyter {
             stop_on_error: false,
         };
 
-        Ok(String::new())
+        // Run some code on the kernel
+        let response_res = client.send_shell_command(command);
 
-//         let cleaned_result = String::new();
-//         // first and last lines are the [In] x: prompts from jupyter-console
-//         cleaned_result.remove(cleaned_result.len() - 1);
-//         cleaned_result.remove(1);
-//         cleaned_result.remove(0);
-//         info!("result: {:?}", cleaned_result);
-// 
-//         info!("cleaned result: {:?}", cleaned_result);
-//         if String::from_utf8(output.stderr.clone()).unwrap().is_empty() {
-//             return Ok(cleaned_result.join("\n") + "\n");
-//         } else {
-//             return Err(SniprunError::RuntimeError(
-//                 String::from_utf8(strip_ansi_escapes::strip(output.stderr.clone()).unwrap())
-//                     .unwrap()
-//                     .lines()
-//                     .last()
-//                     .unwrap_or(
-//                         &String::from_utf8(
-//                             strip_ansi_escapes::strip(output.stderr.clone()).unwrap(),
-//                         )
-//                         .unwrap(),
-//                     )
-//                     .to_owned(),
-//             ));
-//         }
+        if response_res.is_err() {
+            info!("response_res is err");
+            return Err(SniprunError::InternalError("could not send fetched code to the kernel".to_owned()));
+        }
+        let response = response_res.unwrap();
+
+
+
+        let mut cleaned_result = vec![String::new()];
+
+        // first and last lines are the [In] x: prompts from jupyter-console
+        cleaned_result.remove(cleaned_result.len() - 1);
+        cleaned_result.remove(1);
+        cleaned_result.remove(0);
+        info!("result: {:?}", cleaned_result);
+
+        let success = true;
+        info!("cleaned result: {:?}", cleaned_result);
+        if success {
+            return Ok(cleaned_result.join("\n") + "\n");
+        } else {
+            return Err(SniprunError::RuntimeError("whoops".to_owned()));
+        }
     }
 }
 
