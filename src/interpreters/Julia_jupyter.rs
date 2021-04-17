@@ -12,7 +12,7 @@ pub struct Julia_jupyter {
 impl Julia_jupyter {
     fn wait_on_kernel(&self) -> Result<(), SniprunError> {
         let step = std::time::Duration::from_millis(100);
-        let mut timeout = std::time::Duration::from_millis(10000);
+        let mut timeout = std::time::Duration::from_millis(18000);
         loop {
             if let Ok(content) = std::fs::read_to_string(&self.kernel_file) {
                 if !content.is_empty() {
@@ -52,7 +52,6 @@ impl Julia_jupyter {
             if file_res.is_err() {
                 info!("Failed to open kernel file");
             }
-            info!("Opened kernel file");
             let file = file_res.unwrap();
             let client_res = Client::from_reader(file);
             if client_res.is_err() {
@@ -61,21 +60,26 @@ impl Julia_jupyter {
                     "Error while trying to connect to the jupyter kernel",
                 )));
             }
-            info!("client_res is ok");
             let client = client_res.unwrap();
-            info!("client_res is ok");
-            // let receiver_res = client.iopub_subscribe();
-            // if receiver_res.is_err() {
-            //     info!("receiver_res is not ok");
-            //     return Err(SniprunError::CustomError(String::from(
-            //         "Error while trying to connect to the jupyter kernel",
-            //     )));
-            // }
+            let receiver_res = client.iopub_subscribe();
+            if receiver_res.is_err() {
+                info!("receiver_res is not ok");
+                return Err(SniprunError::CustomError(String::from(
+                    "Error while trying to connect to the jupyter kernel",
+                )));
+            }
             // let receiver = receiver_res.unwrap();
             // std::thread::spawn(move || {
             //     info!("Listener thread initialized");
             //     for msg in receiver {
             //         info!("Received message from kernel: {:#?}", msg);
+            //     }
+            // });
+            // Set up the heartbeat watcher
+            // let hb_receiver = client.heartbeat().unwrap();
+            // std::thread::spawn(move || {
+            //     for _ in hb_receiver {
+            //         info!("Received heartbeat from kernel");
             //     }
             // });
             saved_code = self.kernel_file.to_string();
@@ -209,18 +213,24 @@ impl ReplLikeInterpreter for Julia_jupyter {
 
 
         // Command to run
+        info!("running command");
         let command = jupyter_client::commands::Command::Execute {
             code: "println(3)".to_string(),
             silent: false,
-            store_history: true,
+            store_history: false,
             user_expressions: HashMap::new(),
-            allow_stdin: true,
+            allow_stdin: false,
             stop_on_error: false,
         };
+        info!("command to send : {:?}", command);
 
         // Run some code on the kernel
+        std::thread::sleep_ms(1000);
         let response_res = client.send_shell_command(command);
 
+        std::thread::sleep_ms(1000);
+        info!("command sent");
+        std::thread::sleep_ms(1000);
         if response_res.is_err() {
             info!("response_res is err");
             return Err(SniprunError::InternalError("could not send fetched code to the kernel".to_owned()));
