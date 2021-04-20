@@ -21,6 +21,8 @@ M.config_values = {
     }
   },
 
+  display = {"Classic", "VirtualText"},
+
   inline_messages = 0
 }
 
@@ -68,8 +70,20 @@ function M.setup(opts)
     end
   end
   M.configure_keymaps()
+  M.setup_highlights()
+
   M.config_up = 1
 end
+
+function M.setup_highlights()
+  vim.cmd("if !hlexists('SniprunVirtualTextOk')  \n hi SniprunVirtualTextOk	ctermbg=Cyan guibg=#66eeff ctermfg=Black guifg=#000000 \nendif")
+  vim.cmd("if !hlexists('SniprunVirtualTextErr') \n hi SniprunVirtualTextErr	ctermbg=DarkRed guibg=#881515 ctermfg=Black guifg=#000000 ")
+end
+
+function M.clear_virtual_text()
+  vim.cmd("let sniprun_namespace_id = nvim_create_namespace('sniprun')\n nvim_clear_namespace(0,sniprun_namespace_id, 0 ,-1)")
+end
+
 
 function M.configure_keymaps()
 

@@ -33,7 +33,7 @@ Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to p
 
 I know that this README is exhaustively long (for the sake of clarity, bear with me), but Sniprun itself is and will remain rather simple: don't be afraid, questions are welcome too.
 
-###### TLDR: ```Plug 'michaelb/sniprun', {'do': 'bash install.sh'} ```, ```:SnipRun```, ```:'<,'>SnipRun```,
+###### TLDR: ```Plug 'michaelb/sniprun', {'do': 'bash install.sh'} ```, ```:SnipRun```, ```:'<,'>SnipRun```,```:SnipInfo```
 ###### (but please configure the \<Plug> mappings)
 
 
@@ -84,11 +84,11 @@ Position the cursor on a line or select some visual range, `:'<,'>SnipRun` it an
 
 Sniprun will then:
 
-- Get the code you selected (selections are rounded line-wise)
+- **Get the code** you selected (selections are rounded line-wise)
 - Optionnaly, get additional information if necessary (auto retrieve import when supported for example)
-- Add the boilerplate when it exists. In C, it surrounds your snip with "int main() {", "}".
-- Build (write to a script file, or compile) the code
-- Execute the code
+- **Add boilerplate** when it exists. In C, it surrounds your snip with "int main() {", "}". (disclaimer: oversimplifed)
+- **Build** (write to a script file, or compile) the code
+- **Execute** the code
 - Return stdout, or stderr
 
 
@@ -97,9 +97,11 @@ Sniprun will then:
 
 ### Prerequisites && dependencies
 
-- Sniprun is **Linux**-only for now (as of v0.5.2).
+- Sniprun is compatible with **Linux** and **Mac**. (Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install))
+
 - **Neovim** version (>= 0.5 for the latest goodies), but 0.4.x is supported up to sniprun v0.4.9 and the installer will take care of installing the latest version 'that works', though you may miss the latest goodies, and you will need to use the [old vimscript way to configure](ressources/old_configuration.md).
-- [recommended, but optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
+
+- [optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
 
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
@@ -111,7 +113,7 @@ Sniprun will then:
 Use your favorite plugin manager.
 (Run `install.sh` as a post-installation script, it will download or compile the sniprun binary)
 
-For example, `vim-plug`:
+For example, with `vim-plug`:
 
 ```vim
 Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
@@ -122,8 +124,9 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 
 (Manual)
 
-I trust you know how to add a plugin to the runtimepath, just don't forget to run `./install.sh`, or alternatively, `cargo build --release` to fetch/build the binary.
 
+
+I trust you know how to add a plugin to the runtimepath, just don't forget to run `./install.sh`, or alternatively, `cargo build --release` to fetch/build the binary.
 ![](ressources/visual_assets/760091.png)
 ## Usage
 
@@ -226,7 +229,7 @@ You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to 
 ### Usage recommandation & tricks
 
 - Map the run command to a simple command such as `<leader>ff` (or just `f` in visual mode)
-- The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "<leader>f + j" will run sniprun on the current line + the line below.
+- The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "\<leader>f + j" will run sniprun on the current line + the line below.
 
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
 
@@ -240,8 +243,6 @@ vmap f <Plug>SnipRun
 
 
 While both shorthands and \<Plug> are here to stay, **please use the `<Plug>` style ones in your mappings** or if using from another plugin.
-
-Bonus; with Plug mappings, if you also have Tim Pope's [vim-repeat](https://github.com/tpope/vim-repeat), you can repeat a SnipRun with "`.`"  .
 
 
 
@@ -327,7 +328,7 @@ All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quick
 
 The [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](https://github.com/hanschen/vim-ipython-cell) [codi](https://github.com/metakirby5/codi.vim) as well as [neoterm](https://github.com/kassio/neoterm) and [vim-slime](https://github.com/jpalardy/vim-slime) can also be used in such a way, though they are only working with languages that have a REPL.
 
-[vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is / will be [conjure](https://gtihub.com/Olical/conjure), but they do things differently enough I made sniprun instead.
+[vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is / will be [conjure](https://github.com/Olical/conjure), but they do things differently enough I made sniprun instead.
 
 
 **Why should you use sniprun instead of these alternatives?**

@@ -215,7 +215,7 @@ impl ReplLikeInterpreter for Julia_jupyter {
         // Command to run
         info!("running command");
         let command = jupyter_client::commands::Command::Execute {
-            code: "println(3)".to_string(),
+            code: "a=1".to_string(),
             silent: false,
             store_history: false,
             user_expressions: HashMap::new(),

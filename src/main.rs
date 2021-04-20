@@ -3,17 +3,19 @@
 //! Sniprun is a neovim plugin that run parts of code.
 
 use dirs::cache_dir;
-use error::SniprunError;
 use log::{info, LevelFilter};
 use neovim_lib::{Neovim, NeovimApi, Session, Value};
 use simple_logging::log_to_file;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
+use display::{DisplayType,display, return_message_classic};
+use std::str::FromStr;
 
 mod error;
 mod interpreter;
 mod interpreters;
 mod launcher;
+mod display;
 
 ///This struct holds (with ownership) the data Sniprun and neovim
 ///give to the interpreter.
@@ -60,6 +62,9 @@ pub struct DataHolder {
     /// whether to display echomsg-based messages (more compatibility)
     /// or new ones (multiline support) (default)
     return_message_type: ReturnMessageType,
+
+    /// different way of displaying results
+    display_type: Vec<DisplayType>,
 }
 
 #[derive(Clone, Default, Debug)]
@@ -75,7 +80,7 @@ pub struct InterpreterData {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-enum ReturnMessageType {
+pub enum ReturnMessageType {
     EchoMsg,
     Multiline,
 }
@@ -107,6 +112,7 @@ impl DataHolder {
             interpreter_options: None,
             interpreter_data: None,
             return_message_type: ReturnMessageType::Multiline,
+            display_type: vec![DisplayType::Classic],
         }
     }
     ///remove and recreate the cache directory (is invoked by `:SnipReset`)
@@ -275,6 +281,22 @@ impl EventHandler {
             info!("[FILLDATA] got repl disabled interpreters");
         }
         {
+            let i = self.index_from_name("display", config);
+            self.data.display_type = config[i]
+                .1
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|v| v.as_str().unwrap())
+                .map(|v| DisplayType::from_str(v))
+                .inspect(|x| info!("[FILLDATA] display type found : {:?}", x))
+                .filter(|x| x.is_ok())
+                .map(|x| x.unwrap())
+                .collect();
+            info!("[FILLDATA] got display types");
+        }
+
+        {
             let i = self.index_from_name("inline_messages", config);
             if config[i].1.as_i64().unwrap_or(0) == 1 {
                 self.data.return_message_type = ReturnMessageType::EchoMsg;
@@ -348,28 +370,8 @@ fn main() {
                     let result = launcher.select_and_run();
                     info!("[RUN] Interpreter return a result");
 
-                    // return Ok(result) or Err(sniprunerror)
-                    match result {
-                        Ok(answer_str) => {
-                            info!("[RUN] Returning stdout of code run: {}", answer_str);
-                            return_message(
-                                event_handler2.nvim,
-                                Ok(answer_str),
-                                event_handler2.data.return_message_type,
-                            );
-                        }
-                        Err(e) => {
-                            info!("[RUN] Returning an error : {:?}", e);
-                            return_message(
-                                event_handler2.nvim,
-                                Err(e),
-                                event_handler2.data.return_message_type,
-                            );
-                        }
-                    };
-
-                    //display ouput in nvim
-
+                    display(result, event_handler2.nvim, &event_handler2.data);
+                    
                     //clean data
                     event_handler2.data = DataHolder::new();
                 })));
@@ -396,10 +398,10 @@ fn main() {
                 let launcher = launcher::Launcher::new(event_handler2.data.clone());
                 let result = launcher.info();
                 if let Ok(infomsg) = result {
-                    return_message(
-                        event_handler2.nvim,
-                        Ok(infomsg),
-                        ReturnMessageType::Multiline,
+                    return_message_classic(
+                        &Ok(infomsg),
+                        &event_handler2.nvim,
+                        &ReturnMessageType::Multiline,
                     );
                 }
             }
@@ -411,60 +413,3 @@ fn main() {
     }
 }
 
-fn return_message(
-    nvim: Arc<Mutex<Neovim>>,
-    message: Result<String, SniprunError>,
-    rmt: ReturnMessageType,
-) {
-    // do not display anything if string empty, as it may means the
-    // interpreter used the nvim handle directly and you don't want
-    // to overwrite it!
-    if let Ok(answer_ok) = &message {
-        if answer_ok.is_empty() {
-            return;
-        }
-    }
-
-    match message {
-        Ok(answer_ok) => {
-            //make sure there is no lone "
-            let mut answer_str = answer_ok.clone();
-            answer_str = answer_str.replace("\\", "\\\\");
-            answer_str = answer_str.replace("\\\"", "\"");
-            answer_str = answer_str.replace("\"", "\\\"");
-
-            //remove trailing /starting newlines
-            answer_str = answer_str
-                .trim_start_matches('\n')
-                .trim_end_matches('\n')
-                .to_string();
-            info!("Final str {}", answer_str);
-
-            match rmt {
-                ReturnMessageType::Multiline => {
-                    let _ = nvim
-                        .lock()
-                        .unwrap()
-                        .command(&format!("echo \"{}\"", answer_str));
-                }
-                ReturnMessageType::EchoMsg => {
-                    let _ = nvim
-                        .lock()
-                        .unwrap()
-                        .command(&format!("echomsg \"{}\"", answer_str));
-                }
-            }
-        }
-        Err(e) => match rmt {
-            ReturnMessageType::Multiline => {
-                let _ = nvim.lock().unwrap().err_writeln(&format!("{}", e));
-            }
-            ReturnMessageType::EchoMsg => {
-                let _ = nvim.lock().unwrap().command(&format!(
-                    "echohl ErrorMsg | echomsg \"{}\" | echohl None",
-                    e
-                ));
-            }
-        },
-    }
-}

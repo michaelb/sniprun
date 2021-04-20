@@ -45,13 +45,14 @@ fetch_prebuilt_binary() {
 
 arch=$(uname)
 if [ $arch != "Linux" ]; then
-  echo "Warning: Doesn't look like you are on Linux. Sniprun is not tested on Mac and will not work on windows"
+  echo "Looks you are not running Linux: Mac users have to compile sniprun themselves and thus need the Rust toolchain"
+  force_build=1
 fi
 
 remote_version=$(get_latest_release)
 
 if [ $force_build ]; then
-  echo "Always compiling the latest commit (most bleeding-edge option)"
+  echo "Compiling sniprun locally:"
   neovim_version=$(nvim --version | head -n 1 | cut -d . -f 2) # 4 -> neovim 0.4.x
   if [ $neovim_version == "4" ]; then
     echo "Sniprun 0.4.9 is the highest version supported on neovim 0.4.x"

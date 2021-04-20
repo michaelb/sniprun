@@ -1,9 +1,10 @@
 *sniprun*
 
-Minimum version of neovim: 0.43
+Minimum version of neovim: 0.43, recommended >= 0.5
 
 Authors: Michael bleuez <michael.bleuez2@gmail.com>
          Vigouroux Thomas <tomvig38@gmail.com>
+         Dingcheng Yue <DarwinSenior@gmail.com>
          https://github.com/michaelb/sniprun/graphs/contributors
 
 
@@ -25,14 +26,16 @@ QUICK START                                       *sniprun-quickstart*
 
 
 :SnipReset    Restart sniprun (that will also clear the cache that helps Sniprun compile faster)
+:SnipInfo     Get info about sniprun and the available / current interpreter
 
 
 ==============================================================================
-ALL COMMANDS                                       *sniprun-comands*
+ALL COMMANDS                                       *sniprun-commands*
 
-:SnipRun                 Send the current line/visual selection to Sniprun
+:SnipRun                 Send the current line  to Sniprun
+:'<'>Sniprun             Send current visual selection (line-wise) to Sniprun
 
-:SnipReset               Restart sniprun (that will also clear the cache that helps Sniprun compile faster)
+:SnipReset               Restart sniprun (that will also clear the cache that may help Sniprun compile faster)
 
 :SnipReplMemoryClean     If you sent incorrect code to a interpreter with enabled REPL mode, you can clear the 
                          REPL 'memory' with that. It will forget all variables you have defined previously etc..
@@ -65,4 +68,4 @@ EOF
 TROUBLESHOOTING                                  *sniprun-troubleshooting*
 
 If anything is not working; you should consult the README at github.com/michaelb/sniprun, as well as the
-documentation for every language in the doc/ folder at the same git repository.
+documentation for every interpreter through :SnipInfo <name>
