@@ -63,7 +63,7 @@ pub fn display_virtual_text(
 
     let last_line = data.range[1]-1;
     let res = nvim.lock().unwrap().command(&format!(
-        "call nvim_clear_namespace(0,{},{},{})",
+        "call nvim_buf_clear_namespace(0,{},{},{})",
         namespace_id,
         last_line,
         last_line + 1
@@ -90,7 +90,7 @@ pub fn display_virtual_text(
 
 fn shorten_ok(message: &str) -> String{
     let marker = "<-";
-    marker.to_string() + message.lines().last().unwrap()
+    marker.to_string() + message.lines().filter(|&s| !s.is_empty()).last().unwrap()
 }
 
 fn shorten_err(message: &str) -> String {
