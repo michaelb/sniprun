@@ -21,7 +21,7 @@ M.config_values = {
     }
   },
 
-  display = {"Classic", "VirtualText"},
+  display = {"Classic", "VirtualTextOk", "VirtualTextErr"},
 
   inline_messages = 0
 }
