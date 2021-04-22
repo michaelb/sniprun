@@ -23,7 +23,7 @@ M.config_values = {
 
   display = {
     -- "Classic",
-    -- "VirtualTextOk",
+    "VirtualTextOk",
     -- "LongTempFloatingWindow",
     -- "TempFloatingWindow",
     -- "VirtualTextErr",

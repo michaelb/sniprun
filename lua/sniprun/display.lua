@@ -5,6 +5,8 @@ M.term.opened = 0
 M.term.buffer = -1
 M.term.window_handle = 0
 M.term.current_line = -1
+M.term.chan = -1
+M.term.width = 45
 
 function M.fw_open(row, column, message, ok, temp)
   M.fw_close()
@@ -36,48 +38,45 @@ end
 
 function M.term_open()
   if M.term.opened ~= 0 then return end
-  vim.cmd(':45vsplit')
+  vim.cmd(':'..M.term.width..'vsplit')
+  local buf = vim.api.nvim_create_buf(false,true)
   local win = vim.api.nvim_get_current_win()
-  local buf = vim.api.nvim_create_buf(false, true)
+  local width = vim.api.nvim_win_get_width(win)  
   vim.api.nvim_win_set_buf(win,buf)
-  vim.cmd('set nonumber')
-  vim.cmd('wincmd p')
+  local chan = vim.api.nvim_open_term(buf, {})
+  vim.cmd("set scrollback=1")
+
+  vim.cmd("wincmd p")
   M.term.opened = 1
   M.term.window_handle = win
   M.term.buffer = buf
+  M.term.chan = chan
+  M.term.width = width
 end
 
 function M.write_to_term(message, ok)
   M.term_open()
 
-  hl_ok = "SniprunTermOk"
-  hl_err = "SniprunTermErr"
-  hl_ok = "SniprunFloatingWinOk"
-  hl_err = "SniprunFloatingWinErr"
-  if ok then
-    hl = hl_ok
-  else
-    hl = hl_err
-  end
-
   h = M.term.current_line or -1
 
-  namespace_id = vim.api.nvim_create_namespace("sniprun_term")
-
-  message = "-----\n"..message
+  status = "------"
+  if ok then
+    status = "--OK--"
+  else
+    status = "ERROR-"
+  end
+  
+  half_width = (M.term.width - 6) / 2
+  message = string.rep("-",half_width)..status..string.rep("-", half_width).."\n"..message
 
   for line in message:gmatch("([^\n]*)\n?") do
     h = h +1
-    vim.api.nvim_buf_set_lines(M.term.buffer,h,h+1,false,{line}) 
-    vim.api.nvim_buf_add_highlight(M.term.buffer, namespace_id, hl, h, 0, -1) -- highlight lines in floating window
+    vim.api.nvim_chan_send(M.term.chan, line)     
+    vim.api.nvim_chan_send(M.term.chan, "\n\r");
   end
+  vim.api.nvim_chan_send(M.term.chan, "\n\r");
   M.term.current_line = h 
 
-  --scroll to end of buffer
-  old_win = vim.api.nvim_get_current_win()
---   vim.api.nvim_set_current_win(M.term.window_handle)
---   vim.api.nvim_feedkeys("G",'n',true)
-  vim.api.nvim_set_current_win(old_win)
 end
 
 
@@ -106,6 +105,7 @@ function M.term_close()
   M.term.window_handle = 0
   M.term.buffer = -1
   M.term.current_line = 0
+  M.term.chan=-1
 end
 
 
