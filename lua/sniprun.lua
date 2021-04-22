@@ -23,11 +23,11 @@ M.config_values = {
 
   display = {
     -- "Classic",
-    "VirtualTextOk",
+    -- "VirtualTextOk",
     -- "LongTempFloatingWindow",
-    "TempFloatingWindow",
+    -- "TempFloatingWindow",
     -- "VirtualTextErr",
-    --"Terminal"
+    "Terminal"
     },
 
   inline_messages = 0
@@ -98,7 +98,19 @@ function M.setup_autocommands()
 
   vim.cmd("augroup sniprun_fw_close")
   vim.cmd("autocmd!")
-  vim.cmd("autocmd CursorMoved * call Sniprun_fw_close_wrapper()")
+  vim.cmd("autocmd CursorMoved,BufWinLeave * call Sniprun_fw_close_wrapper()")
+  vim.cmd("augroup END")
+
+  vim.cmd("function! Sniprun_clear_vt_on_leave()\n lua require'sniprun.display'.clear_virtual_text()\n endfunction")
+  vim.cmd("augroup sniprun_clear_vt")
+  vim.cmd("autocmd!")
+  vim.cmd("autocmd BufWinLeave * call Sniprun_clear_vt_on_leave()")
+  vim.cmd("augroup END")
+
+  vim.cmd("function! Sniprun_close_term_on_leave()\n lua require'sniprun.display'.term_close()\n endfunction")
+  vim.cmd("augroup sniprun_close_term")
+  vim.cmd("autocmd!")
+  vim.cmd("autocmd VimLeave,QuitPre,BufWinLeave * call Sniprun_close_term_on_leave()")
   vim.cmd("augroup END")
 end
 

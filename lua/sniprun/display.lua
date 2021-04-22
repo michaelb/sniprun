@@ -60,10 +60,11 @@ function M.write_to_term(message, ok)
     hl = hl_err
   end
 
-  print(vim.inspect(M))
   h = M.term.current_line or -1
 
   namespace_id = vim.api.nvim_create_namespace("sniprun_term")
+
+  message = "-----\n"..message
 
   for line in message:gmatch("([^\n]*)\n?") do
     h = h +1
@@ -72,6 +73,11 @@ function M.write_to_term(message, ok)
   end
   M.term.current_line = h 
 
+  --scroll to end of buffer
+  old_win = vim.api.nvim_get_current_win()
+--   vim.api.nvim_set_current_win(M.term.window_handle)
+--   vim.api.nvim_feedkeys("G",'n',true)
+  vim.api.nvim_set_current_win(old_win)
 end
 
 

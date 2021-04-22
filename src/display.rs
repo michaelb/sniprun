@@ -59,7 +59,7 @@ pub fn display(result: Result<String, SniprunError>, nvim: Arc<Mutex<Neovim>>, d
             Classic => return_message_classic(&result, &nvim, &data.return_message_type),
             VirtualTextOk => display_virtual_text(&result, &nvim, &data, true),
             VirtualTextErr => display_virtual_text(&result, &nvim, &data, false),
-            Terminal => display_terminal(),
+            Terminal => display_terminal(&result, &nvim),
             LongTempFloatingWindow => display_floating_window(&result, &nvim, &data, true),
             TempFloatingWindow => display_floating_window(&result, &nvim, &data, false),
         }
@@ -108,7 +108,19 @@ pub fn display_virtual_text(
     info!("done displaying virtual text, {:?}", res);
 }
 
-pub fn display_terminal() {}
+pub fn display_terminal(message: &Result<String, SniprunError>, nvim:&Arc<Mutex<Neovim>>) {
+    let res = match message {
+        Ok(result) => nvim.lock().unwrap().command(&format!(
+            "lua require\"sniprun.display\".write_to_term(\"{}\", true)",
+            cleanup_and_escape(&result),
+        )),
+        Err(result) => nvim.lock().unwrap().command(&format!(
+            "lua require\"sniprun.display\".write_to_term(\"{}\", false)",
+            cleanup_and_escape(&result.to_string()) ,
+        )),
+    };
+    info!("res = {:?}", res);
+}
 
 pub fn display_floating_window(
     message: &Result<String, SniprunError>,
@@ -139,7 +151,7 @@ pub fn display_floating_window(
         row, col
     );
 
-    let _res = match message {
+    let res = match message {
         Ok(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", true)",
             row,
@@ -153,7 +165,7 @@ pub fn display_floating_window(
             cleanup_and_escape(&result.to_string()),
         )),
     };
-    info!("res = {:?}", _res);
+    info!("res = {:?}", res);
 }
 
 pub fn return_message_classic(
