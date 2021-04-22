@@ -225,17 +225,17 @@ impl ReplLikeInterpreter for Julia_jupyter {
         info!("command to send : {:?}", command);
 
         // Run some code on the kernel
-        std::thread::sleep_ms(1000);
+        // std::thread::sleep_ms(1000);
         let response_res = client.send_shell_command(command);
 
-        std::thread::sleep_ms(1000);
+        // std::thread::sleep_ms(1000);
         info!("command sent");
-        std::thread::sleep_ms(1000);
+        // std::thread::sleep_ms(1000);
         if response_res.is_err() {
             info!("response_res is err");
             return Err(SniprunError::InternalError("could not send fetched code to the kernel".to_owned()));
         }
-        let response = response_res.unwrap();
+        let _response = response_res.unwrap();
 
 
 

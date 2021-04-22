@@ -12,6 +12,7 @@ pub enum DisplayType {
     VirtualTextOk,
     VirtualTextErr,
     Terminal,
+    LongTempFloatingWindow,
     TempFloatingWindow,
 }
 use DisplayType::*;
@@ -24,6 +25,7 @@ impl FromStr for DisplayType {
             "VirtualTextOk" => Ok(VirtualTextOk),
             "VirtualTextErr" => Ok(VirtualTextErr),
             "Terminal" => Ok(Terminal),
+            "LongTempFloatingWindow" => Ok(LongTempFloatingWindow),
             "TempFloatingWindow" => Ok(TempFloatingWindow),
             _ => Err(SniprunError::InternalError(
                 "Invalid display type: ".to_string() + &s,
@@ -39,6 +41,7 @@ impl fmt::Display for DisplayType {
             DisplayType::VirtualTextOk => "VirtualTextOk",
             DisplayType::VirtualTextErr => "VirtualTextErr",
             DisplayType::Terminal => "Terminal",
+            DisplayType::LongTempFloatingWindow => "LongTempFloatingWindow",
             DisplayType::TempFloatingWindow => "TempFloatingWindow",
         };
         write!(f, "{}", name)
@@ -57,7 +60,8 @@ pub fn display(result: Result<String, SniprunError>, nvim: Arc<Mutex<Neovim>>, d
             VirtualTextOk => display_virtual_text(&result, &nvim, &data, true),
             VirtualTextErr => display_virtual_text(&result, &nvim, &data, false),
             Terminal => display_terminal(),
-            TempFloatingWindow => display_temp_floating_window(&result, &nvim, &data),
+            LongTempFloatingWindow => display_floating_window(&result, &nvim, &data, true),
+            TempFloatingWindow => display_floating_window(&result, &nvim, &data, false),
         }
     }
 }
@@ -78,7 +82,7 @@ pub fn display_virtual_text(
     let res = nvim.lock().unwrap().command(&format!(
         "call nvim_buf_clear_namespace(0,{},{},{})",
         namespace_id,
-        last_line,
+        data.range[0] - 1,
         last_line + 1
     ));
     info!("cleared previous virtual_text? {:?}", res);
@@ -104,45 +108,28 @@ pub fn display_virtual_text(
     info!("done displaying virtual text, {:?}", res);
 }
 
-fn shorten_ok(message: &str) -> String {
-    let marker = "<- ";
-    marker.to_string()
-        + message
-            .lines()
-            .filter(|&s| !s.is_empty())
-            .last()
-            .unwrap_or("()")
-}
-
-fn shorten_err(message: &str) -> String {
-    let marker = "<- ";
-    marker.to_string() + message.lines().next().unwrap_or("()")
-}
-
-fn cleanup_and_escape(message: &str) -> String {
-    let answer_str = message.replace("\\", "\\\\");
-    let answer_str = answer_str.replace("\\\"", "\"");
-    let answer_str = answer_str.replace("\"", "\\\"");
-
-    //remove trailing /starting newlines
-    let answer_str = answer_str
-        .trim_start_matches('\n')
-        .trim_end_matches('\n')
-        .to_string();
-    let answer_str = answer_str.replace("\n", "\\\n");
-    answer_str
-}
-
 pub fn display_terminal() {}
 
-pub fn display_temp_floating_window(
+pub fn display_floating_window(
     message: &Result<String, SniprunError>,
     nvim: &Arc<Mutex<Neovim>>,
     data: &DataHolder,
+    long_only: bool,
 ) {
+    if long_only {
+        let do_no_display = match message {
+            Ok(message_ok) => message_ok.lines().count() <= 1,
+            Err(message_err) => message_err.to_string().lines().count() <= 1,
+        };
+        if do_no_display {
+            return; //do not display short messages
+        }
+    }
+
     let col = data
         .current_bloc
         .lines()
+        .filter(|&line| !line.is_empty())
         .last()
         .unwrap_or(&data.current_line)
         .len();
@@ -151,29 +138,19 @@ pub fn display_temp_floating_window(
         "trying to open a floating window on row, col = {}, {}",
         row, col
     );
-    let mes = message.as_ref().unwrap();
-    info!(
-        "message = {}",
-        &format!(
-            "lua require\"sniprun.display\".fw_open({},{},\"{}\", true)",
-            row,
-            col,
-            cleanup_and_escape(&mes)
-        )
-    );
 
     let _res = match message {
         Ok(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", true)",
             row,
             col,
-            cleanup_and_escape(&result)
+            cleanup_and_escape(&result),
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", false)",
             row,
             col,
-            cleanup_and_escape(&result.to_string())
+            cleanup_and_escape(&result.to_string()),
         )),
     };
     info!("res = {:?}", _res);
@@ -187,7 +164,7 @@ pub fn return_message_classic(
     match message {
         Ok(answer_ok) => {
             //make sure there is no lone "
-            let mut answer_str = cleanup_and_escape(answer_ok);
+            let answer_str = cleanup_and_escape(answer_ok);
             info!("Final str {}", answer_str);
 
             match rmt {
@@ -217,4 +194,40 @@ pub fn return_message_classic(
             }
         },
     }
+}
+
+fn shorten_ok(message: &str) -> String {
+    let mut marker = String::from("<- ");
+    if message.lines().count() > 1 {
+        marker += &".".repeat(std::cmp::max(2, std::cmp::min(6, message.lines().count())));
+    }
+
+    marker.to_string()
+        + message
+            .lines()
+            .filter(|&s| !s.is_empty())
+            .last()
+            .unwrap_or("(no output)")
+}
+
+fn shorten_err(message: &str) -> String {
+    let mut marker = String::from("<- ") + message.lines().next().unwrap_or("(empty error)");
+    if message.lines().count() > 1 {
+        marker += &".".repeat(std::cmp::max(3, std::cmp::min(10, message.lines().count())));
+    }
+    marker
+}
+
+fn cleanup_and_escape(message: &str) -> String {
+    let answer_str = message.replace("\\", "\\\\");
+    let answer_str = answer_str.replace("\\\"", "\"");
+    let answer_str = answer_str.replace("\"", "\\\"");
+
+    //remove trailing /starting newlines
+    let answer_str = answer_str
+        .trim_start_matches('\n')
+        .trim_end_matches('\n')
+        .to_string();
+    let answer_str = answer_str.replace("\n", "\\\n");
+    answer_str
 }

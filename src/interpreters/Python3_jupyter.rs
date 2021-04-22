@@ -69,23 +69,24 @@ impl Python3_jupyter {
         }
         return false;
     }
-    fn wait_on_kernel(&self) -> Result<(), SniprunError> {
-        let step = std::time::Duration::from_millis(100);
-        let mut timeout = std::time::Duration::from_millis(15000);
-        loop {
-            if let Ok(content) = std::fs::read_to_string(&self.kernel_file) {
-                if !content.is_empty() {
-                    return Ok(());
-                }
-            }
-            std::thread::sleep(step);
-            if let Some(remaining) = timeout.checked_sub(step) {
-                timeout = remaining;
-            } else {
-                return Err(SniprunError::CustomError(String::from("Timeout on jupyter kernel start expired")));
-            }
-        }
-    }
+    // /// In theory, is a good idea, but somehow doesn't work
+    // fn wait_on_kernel(&self) -> Result<(), SniprunError> {
+    //     let step = std::time::Duration::from_millis(100);
+    //     let mut timeout = std::time::Duration::from_millis(15000);
+    //     loop {
+    //         if let Ok(content) = std::fs::read_to_string(&self.kernel_file) {
+    //             if !content.is_empty() {
+    //                 return Ok(());
+    //             }
+    //         }
+    //         std::thread::sleep(step);
+    //         if let Some(remaining) = timeout.checked_sub(step) {
+    //             timeout = remaining;
+    //         } else {
+    //             return Err(SniprunError::CustomError(String::from("Timeout on jupyter kernel start expired")));
+    //         }
+    //     }
+    // }
 }
 
 impl Interpreter for Python3_jupyter {
@@ -312,7 +313,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
             "json kernel file exists yet? {}",
             std::path::Path::new(&self.kernel_file).exists()
         );
-        self.wait_on_kernel()?;
+        // self.wait_on_kernel()?;
 
         let output = Command::new("sh")
             .arg(&self.launcher_path)
