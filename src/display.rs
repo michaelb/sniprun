@@ -145,7 +145,7 @@ pub fn display_floating_window(
         .last()
         .unwrap_or(&data.current_line)
         .len();
-    let row = data.range[1] - 1;
+    let row = data.range[0] + data.current_bloc.trim_end_matches("\n").lines().count() as i64;
     info!(
         "trying to open a floating window on row, col = {}, {}",
         row, col

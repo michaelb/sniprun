@@ -24,10 +24,10 @@ M.config_values = {
 
   display = {
     -- "Classic",
-    "VirtualTextOk",
+    -- "VirtualTextOk",
+    -- "VirtualTextErr",
     -- "LongTempFloatingWindow",
     -- "TempFloatingWindow",
-    -- "VirtualTextErr",
     "Terminal"
     },
 
@@ -89,9 +89,6 @@ function M.setup_highlights()
   vim.cmd("if !hlexists('SniprunVirtualTextErr') \n hi SniprunVirtualTextErr	ctermbg=DarkRed guibg=#881515 ctermfg=Black guifg=#000000 ")
   vim.cmd("if !hlexists('SniprunFloatingWinErr') \n hi SniprunFloatingWinErr	guifg=#881515 ctermfg=DarkRed")
   vim.cmd("if !hlexists('SniprunFloatingWinOk')  \n hi SniprunFloatingWinOk	ctermfg=Cyan guifg=#66eeff")
-  vim.cmd("if !hlexists('SniprunTermOk')  \n hi SniprunTermOk	ctermfg=Cyan guifg=#66eeff")
-  vim.cmd("if !hlexists('SniprunTermErr')  \n hi SniprunTermErr	guifg=#881515 ctermfg=DarkRed")
-
 end
 
 function M.setup_autocommands()

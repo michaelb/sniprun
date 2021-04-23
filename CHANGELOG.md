@@ -1,3 +1,9 @@
+## v0.5.3
+- Display results in "Classic', "VirtualText", "Floating Windows", and "Terminal" mode
+- Checkhealth pings binary to check compatibility
+- Fix for the AUR packaged version
+
+
 ## v0.5.2
 - Ada and Scala interpreters
 - Operator mode, courtesy of @DarwinSenior
