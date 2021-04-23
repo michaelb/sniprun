@@ -6,7 +6,6 @@ M.term.buffer = -1
 M.term.window_handle = 0
 M.term.current_line = -1
 M.term.chan = -1
-M.term.width = 45
 
 function M.fw_open(row, column, message, ok, temp)
   M.fw_close()
@@ -38,10 +37,9 @@ end
 
 function M.term_open()
   if M.term.opened ~= 0 then return end
-  vim.cmd(':'..M.term.width..'vsplit')
+  vim.cmd(':rightb45vsplit')
   local buf = vim.api.nvim_create_buf(false,true)
   local win = vim.api.nvim_get_current_win()
-  local width = vim.api.nvim_win_get_width(win)  
   vim.api.nvim_win_set_buf(win,buf)
   local chan = vim.api.nvim_open_term(buf, {})
   vim.cmd("set scrollback=1")
@@ -51,7 +49,6 @@ function M.term_open()
   M.term.window_handle = win
   M.term.buffer = buf
   M.term.chan = chan
-  M.term.width = width
 end
 
 function M.write_to_term(message, ok)
@@ -66,7 +63,8 @@ function M.write_to_term(message, ok)
     status = "ERROR-"
   end
   
-  half_width = (M.term.width - 6) / 2
+  local width = vim.api.nvim_win_get_width(M.term.window_handle)  
+  half_width = (width - 6) / 2
   message = string.rep("-",half_width)..status..string.rep("-", half_width).."\n"..message
 
   for line in message:gmatch("([^\n]*)\n?") do
