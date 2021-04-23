@@ -64,7 +64,7 @@ An example in C:
 
 ##### The result can be displayed in multiple (even at the same time) ways: 
 
-[Classic](ressources/display_classic.md)|  [Virtual Text](ressources/display_virtual_text.md)
+[Classic](ressources/display_classic.md)|  [Virtual Text](ressources/display_virtualtext.md)
 :------------------------------------------:|:------------------:
 ![](ressources/visual_assets/classic.png)   | ![](ressources/visual_assets/virtual_text.png)
 [**Temporary Floating Window**](ressources/display_floating_window.md)  |  [**Terminal**](ressources/display_terminal.md)
