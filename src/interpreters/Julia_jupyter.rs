@@ -256,25 +256,3 @@ impl ReplLikeInterpreter for Julia_jupyter {
         }
     }
 }
-
-#[cfg(test)]
-mod test_julia_jupyter {
-    use super::*;
-    use crate::*;
-
-    #[test]
-    fn run_all() {
-        simple_print();
-    }
-
-    fn simple_print() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("println(\"a\")");
-        let mut interpreter = Julia_jupyter::new(data);
-        let res = interpreter.run_at_level(SupportLevel::Bloc);
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert!(string_result.contains(&"a"));
-    }
-}
