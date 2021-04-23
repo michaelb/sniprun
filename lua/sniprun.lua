@@ -1,4 +1,5 @@
 local M = {}
+M.ping_anwsered=0
 
 -- See https://github.com/tjdevries/rofl.nvim/blob/632c10f2ec7c56882a3f7eda8849904bcac6e8af/lua/rofl.lua
 local binary_path = vim.fn.fnamemodify(
@@ -130,6 +131,7 @@ function M.configure_keymaps()
   vim.cmd("command! SnipReset :lua require'sniprun'.reset()")
   vim.cmd("command! SnipReplMemoryClean :lua require'sniprun'.clear_repl()")
   vim.cmd("function! SnipRunOperator(...) \n lua require'sniprun'.run('n') \n endfunction")
+  vim.cmd("command! SnipClose :lua require'sniprun.display'.close_all()")
 
   vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('"..sniprun_path.."/doc/', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
   vim.cmd("command! -nargs=* -complete=customlist,ListInterpreters SnipInfo :lua require'sniprun'.info(<q-args>)")
@@ -137,21 +139,20 @@ function M.configure_keymaps()
   vim.cmd("function! SnipRunLauncher() range \n if a:firstline == a:lastline \n lua require'sniprun'.run() \n else \n lua require'sniprun'.run('v') \n endif \n endfunction")
   vim.cmd("command! -range SnipRun <line1>,<line2>call SnipRunLauncher()")
 
-  vim.cmd("command! SnipClose :lua require'sniprun.display'.close_all()")
 
 end
 
-local function start()
+function M.start()
   if M.job_id ~= nil then return end
   M.job_id = vim.fn.jobstart({ binary_path }, { rpc = true })
 end
 
 function M.notify(method, ...)
-  start()
+  M.start()
   local status, err = pcall(vim.rpcnotify, M.job_id, method, ...)
   if not status then
     M.terminate()
-    start()
+    M.start()
     vim.rpcnotify(M.job_id, method, ...)
   end
 end
@@ -189,6 +190,10 @@ end
 
 function M.clear_repl()
   M.notify("clearrepl")
+end
+
+function M.ping()
+  M.notify("ping")
 end
 
 function M.terminate()
@@ -247,12 +252,30 @@ function M.health()
     health_ok('`tree-sitter` found '..version..' (parser generator, only needed for :TSInstallFromGrammar)')
   end
 
-  if vim.fn.executable(binary_path) == 0 then health_error("sniprun binary not found!")
-  else health_ok("sniprun binary found") end
-
 
   if vim.fn.executable('cargo') == 0 then health_warn("Rust toolchain not available", {"[optionnal] Install the rust toolchain https://www.rust-lang.org/tools/install"})
   else health_ok("Rust toolchain found") end
+
+  if vim.fn.executable(binary_path) == 0 then health_error("sniprun binary not found!")
+  else health_ok("sniprun binary found") end
+
+  terminate_after = M.job_id == nil
+  path_log_file = os.getenv('HOME').."/.cache/sniprun/sniprun.log"
+  os.remove(path_log_file)
+
+  -- check if the log is recreated
+  M.ping()
+  os.execute("sleep 0.1")
+  if not M.file_exists(path_log_file)  then health_error("sniprun binary incompatible or crash at start", {"Compile sniprun locally, with a clean reinstall and 'bash ./install.sh 1' as post-install command."})
+  else health_ok("sniprun binary runs correctly")
+  end
 end
+
+function M.file_exists(name)
+   local f=io.open(name,"r")
+   if f~=nil then io.close(f) return true else return false end
+end
+
+
 
 return M

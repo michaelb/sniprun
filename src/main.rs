@@ -135,6 +135,7 @@ enum Messages {
     Clean,
     ClearReplMemory,
     Info,
+    Ping,
     Unknown(String),
 }
 
@@ -144,6 +145,7 @@ impl From<String> for Messages {
             "run" => Messages::Run,
             "clean" => Messages::Clean,
             "clearrepl" => Messages::ClearReplMemory,
+            "ping" => Messages::Ping,
             "info" => Messages::Info,
             _ => Messages::Unknown(event),
         }
@@ -389,6 +391,9 @@ fn main() {
                     .unwrap()
                     .content
                     .clear();
+            }
+            Messages::Ping => {
+                info!("[MAINLOOP] Ping command received");
             }
 
             Messages::Info => {
