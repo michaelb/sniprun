@@ -16,5 +16,5 @@ use neovim_lib::NeovimApi;
 //indentation
 use unindent::unindent;
 
-use jupyter_client::Client;
-use std::collections::HashMap;
+// use jupyter_client::Client;
+// use std::collections::HashMap;

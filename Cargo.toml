@@ -20,7 +20,7 @@ regex="*"
 serde_json="*"
 strip-ansi-escapes="*"
 
-jupyter-client = { git = "https://gitlab.com/srwalker101/rust-jupyter-client.git", branch = "dev" }
+# jupyter-client = { git = "https://gitlab.com/srwalker101/rust-jupyter-client.git", branch = "dev" }
 
 # tree-sitter stuff
 # tree-sitter = "0.16.1"
