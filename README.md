@@ -7,7 +7,7 @@
      <a href="https://github.com/michaelb/sniprun/actions">
       <img alt="CI build" src="https://github.com/michaelb/sniprun/workflows/Rust/badge.svg" />
     </a>
-    <a href="">
+    <a href="https://github.com/michaelb/sniprun/releases">
       <img alt="Total downloads" src="https://img.shields.io/github/downloads/michaelb/sniprun/total" />
     </a>
     <a href="https://github.com/michaelb/sniprun/pulse">
@@ -139,6 +139,8 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 " 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary,
 "  but you'll compile sniprun at every update & will need the rust toolchain
 ```
+<!---- a nice spacer ---->
+$~~~~~~~~~~~~$
 
 (AUR)
 
@@ -147,8 +149,9 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 An independently maintained [AUR package](https://aur.archlinux.org/packages/neovim-sniprun/) is available for Arch users. ([legacy](https://aur.archlinux.org/packages/neovim-sniprun-legacy/) package for neovim < 0.5 users)
 
 
-(Manual)
+$~~~~~~~~~~~~$
 
+(Manual)
 
 
 I trust you know how to add a plugin to the runtimepath, just don't forget to run `./install.sh`, or alternatively, `cargo build --release` to fetch/build the binary.
