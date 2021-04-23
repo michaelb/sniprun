@@ -262,7 +262,7 @@ function M.health()
 
   -- check if the log is recreated
   M.ping()
-  os.execute("sleep 0.1")
+  os.execute("sleep 0.2")
   if not M.file_exists(path_log_file)  then health_error("sniprun binary incompatible or crash at start", {"Compile sniprun locally, with a clean reinstall and 'bash ./install.sh 1' as post-install command."})
   else health_ok("sniprun binary runs correctly")
   end
