@@ -11,14 +11,14 @@ ignore_in_ci = []
 # cc="*"
 
 [dependencies]
-neovim-lib="0.6.1"
-log="0.4.14"
-simple-logging="2.0.2"
-thiserror="1.0.24"
-dirs="3.0.1"
-regex="1.4.6"
-serde_json="1.0.64"
-strip-ansi-escapes="0.1.0"
+neovim-lib="*"
+log="*"
+simple-logging="*"
+thiserror="*"
+dirs="*"
+regex="*"
+serde_json="*"
+strip-ansi-escapes="*"
 
 jupyter-client = { git = "https://gitlab.com/srwalker101/rust-jupyter-client.git", branch = "dev" }
 
@@ -26,4 +26,4 @@ jupyter-client = { git = "https://gitlab.com/srwalker101/rust-jupyter-client.git
 # tree-sitter = "0.16.1"
 
 # Python3 interpreter
-unindent="0.1.7"
+unindent="*"
