@@ -1,23 +1,24 @@
 <div style="text-align:center"><img src="ressources/visual_assets/Sniprun_transparent.png" /></div>
 
 <div align="center"><p>
-    <a href="">
+    <a href="https://github.com/michaelb/sniprun/releases/latest">
       <img alt="Latest release" src="https://img.shields.io/github/v/release/michaelb/sniprun" />
     </a>
-     <a href="">
+     <a href="https://github.com/michaelb/sniprun/actions">
       <img alt="CI build" src="https://github.com/michaelb/sniprun/workflows/Rust/badge.svg" />
     </a>
     <a href="">
       <img alt="Total downloads" src="https://img.shields.io/github/downloads/michaelb/sniprun/total" />
     </a>
-     <a href="">
-      <img alt="Users on latest snirun version" src="https://img.shields.io/github/downloads/michaelb/sniprun/latest/total?label=users%20on%20latest" />
+    <a href="https://github.com/michaelb/sniprun/pulse">
+      <img alt="Last commit" src="https://img.shields.io/github/last-commit/michaelb/sniprun"/>
     </a>
-    <a href="">
+    <a href="https://aur.archlinux.org/packages/neovim-sniprun/">
+      <img alt="AUR last modified" src="https://img.shields.io/aur/last-modified/sniprun?label=AUR%20package%20updated"/>
+    </a>
+    <a href="https://app.codecov.io/gh/michaelb/sniprun">
       <img alt="CI build" src="https://codecov.io/gh/michaelb/sniprun/branch/master/graph/badge.svg?token=PQQV79XYVN" />
     </a>
-
-
 </p>
 </div>
 
@@ -57,9 +58,9 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
 ## Demos
 
 ##### Send to Sniprun snippets of any language.
-A few lines of code are now within a print statement's reach :-) ([hint](https://github.com/meain/vim-printer)
+A few lines of code are now within a print statement's reach :-) ([this may be cool](https://github.com/meain/vim-printer))
 
-An example in C:
+An example in C, look in the command area:
 ![](ressources/visual_assets/demo_c.gif)
 
 ##### The result can be displayed in multiple (even at the same time) ways: 
@@ -90,7 +91,15 @@ Yes,...somehow. In practice, very well; but consistency among all languages and 
 
 Basically, it allows you to run a part of your code.
 
-Position the cursor on a line or select some visual range, `:'<,'>SnipRun` it and... that's it!
+Do either of:
+
+- Position the cursor on a line `:SnipRun`
+- Select some visual range, `:'<,'>SnipRun` 
+- Combine a motion with the operator
+
+  (preferably through a shortcut!)
+
+and ... that's it!
 
 Sniprun will then:
 
@@ -99,7 +108,7 @@ Sniprun will then:
 - **Add boilerplate** when it exists. In C, it surrounds your snip with "int main() {", "}". (disclaimer: oversimplifed)
 - **Build** (write to a script file, or compile) the code
 - **Execute** the code
-- Return stdout, or stderr
+- Return stdout, or stderr using the 
 
 
 ![](ressources/visual_assets/760091.png)
@@ -130,6 +139,12 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 " 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary,
 "  but you'll compile sniprun at every update & will need the rust toolchain
 ```
+
+(AUR)
+
+![](https://img.shields.io/aur/maintainer/sniprun)
+
+An independently maintained [AUR package](https://aur.archlinux.org/packages/neovim-sniprun/) is available for Arch users. ([legacy](https://aur.archlinux.org/packages/neovim-sniprun-legacy/) package for neovim < 0.5 users)
 
 
 (Manual)

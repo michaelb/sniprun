@@ -1,4 +1,5 @@
-Virtual text is permanently displayed at the right of the line (/ last line of bloc)
+Virtual text is permanently displayed at the right of the line (/ last line of bloc), and can be cleared with
+`:SnipClose` (or a shortcut to `<Plug>SnipClose`).
 
 Output for ok and error results are highlighted with the groups
 `SniprunVirtualTextOk` and `SniprunVirtualTextErr`
