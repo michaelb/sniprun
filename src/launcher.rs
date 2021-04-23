@@ -72,21 +72,31 @@ impl Launcher {
     pub fn info(&self) -> std::io::Result<String> {
         let mut v: Vec<String> = vec![];
         let filename = self.data.sniprun_root_dir.clone() + "/ressources/asciiart.txt";
-        let mut file = File::open(filename)?;
-        let mut content = String::new();
-        file.read_to_string(&mut content)?;
-        info!("[INFO] Retrieved asciiart");
-        v.push(content);
-        v.push("\n".to_owned());
+
+        if let Ok(mut file) = File::open(filename) {
+            let mut content = String::new();
+            file.read_to_string(&mut content)?;
+            info!("[INFO] Retrieved asciiart");
+            v.push(content);
+            v.push("\n".to_owned());
+        } else {
+            v.push(String::from("SNIPRUN\n"));
+        }
 
         let gitscript = self.data.sniprun_root_dir.clone() + "/ressources/gitscript.sh";
         let mut get_version = Command::new(gitscript);
         get_version.current_dir(self.data.sniprun_root_dir.clone());
-        let res = get_version.output().expect("process failed to execute");
-        if res.status.success() {
-            let online_version = String::from_utf8(res.stdout).unwrap();
-            info!("online version available: {}", &online_version);
-            v.push(online_version);
+        if let Ok(res) = get_version.output(){
+            info!("gitscript result: {:?}", res);
+            if res.status.success() {
+                let online_version = String::from_utf8(res.stdout).unwrap();
+                info!("online version available: {}", &online_version);
+                v.push(online_version);
+            } else {
+                v.push(String::from("Could not determine up-to-date status\n"));
+            }
+        } else {
+            v.push(String::from("Could not determine up-to-date status\n"));
         }
 
         if let Some((name, level)) = self.select() {
@@ -95,7 +105,7 @@ impl Launcher {
                 name, level
             ));
         } else {
-            v.push("No interpreter selected".to_string());
+            v.push("No interpreter selected\n".to_string());
         }
 
         let separator = "|--------------------------|--------------|---------------|-------------|------------|--------------|------------|".to_string();

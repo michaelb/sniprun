@@ -1,11 +1,12 @@
 local M = {}
+M.ping_anwsered=0
 
 -- See https://github.com/tjdevries/rofl.nvim/blob/632c10f2ec7c56882a3f7eda8849904bcac6e8af/lua/rofl.lua
 local binary_path = vim.fn.fnamemodify(
   vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":h:h")
   .. "/target/release/sniprun"
 
-local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.." 
+local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.."
 
 
 
@@ -21,6 +22,15 @@ M.config_values = {
     }
   },
 
+  display = {
+    "Classic",
+    "VirtualTextOk",
+    -- "VirtualTextErr",
+    -- "LongTempFloatingWindow",
+    -- "TempFloatingWindow",
+    -- "Terminal"
+    },
+
   inline_messages = 0
 }
 
@@ -35,7 +45,7 @@ function M.load_vimscript_config()
 
   return vimscript_config
 end
-  
+
 
 function M.initial_setup()
   if M.config_up == 1 then return end
@@ -68,8 +78,40 @@ function M.setup(opts)
     end
   end
   M.configure_keymaps()
+  M.setup_highlights()
+  M.setup_autocommands()
+
   M.config_up = 1
 end
+
+function M.setup_highlights()
+  vim.cmd("if !hlexists('SniprunVirtualTextOk')  \n hi SniprunVirtualTextOk	ctermbg=Cyan guibg=#66eeff ctermfg=Black guifg=#000000 \nendif")
+  vim.cmd("if !hlexists('SniprunVirtualTextErr') \n hi SniprunVirtualTextErr	ctermbg=DarkRed guibg=#881515 ctermfg=Black guifg=#000000 ")
+  vim.cmd("if !hlexists('SniprunFloatingWinErr') \n hi SniprunFloatingWinErr	guifg=#881515 ctermfg=DarkRed")
+  vim.cmd("if !hlexists('SniprunFloatingWinOk')  \n hi SniprunFloatingWinOk	ctermfg=Cyan guifg=#66eeff")
+end
+
+function M.setup_autocommands()
+  vim.cmd("function! Sniprun_fw_close_wrapper()\n lua require'sniprun.display'.fw_close()\n endfunction")
+
+  vim.cmd("augroup sniprun_fw_close")
+  vim.cmd("autocmd!")
+  vim.cmd("autocmd CursorMoved,BufWinLeave * call Sniprun_fw_close_wrapper()")
+  vim.cmd("augroup END")
+
+  vim.cmd("function! Sniprun_clear_vt_on_leave()\n lua require'sniprun.display'.clear_virtual_text()\n endfunction")
+  vim.cmd("augroup sniprun_clear_vt")
+  vim.cmd("autocmd!")
+  vim.cmd("autocmd BufWinLeave * call Sniprun_clear_vt_on_leave()")
+  vim.cmd("augroup END")
+
+  vim.cmd("function! Sniprun_close_term_on_leave()\n lua require'sniprun.display'.term_close()\n endfunction")
+  vim.cmd("augroup sniprun_close_term")
+  vim.cmd("autocmd!")
+  vim.cmd("autocmd VimLeave,QuitPre,BufWinLeave * call Sniprun_close_term_on_leave()")
+  vim.cmd("augroup END")
+end
+
 
 function M.configure_keymaps()
 
@@ -80,30 +122,34 @@ function M.configure_keymaps()
   vim.api.nvim_set_keymap("n", "<Plug>SnipReset", ":lua require'sniprun'.reset()<CR>",{silent=true})
   vim.api.nvim_set_keymap("n", "<Plug>SnipInfo", ":lua require'sniprun'.info()<CR>",{})
   vim.api.nvim_set_keymap("n", "<Plug>SnipReplMemoryClean", ":lua require'sniprun'.clear_repl()<CR>",{silent=true})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipClose", ":lua require'sniprun.display'.close_all()<CR>",{silent=true})
+
   vim.cmd("command! SnipTerminate :lua require'sniprun'.terminate()")
   vim.cmd("command! SnipReset :lua require'sniprun'.reset()")
   vim.cmd("command! SnipReplMemoryClean :lua require'sniprun'.clear_repl()")
   vim.cmd("function! SnipRunOperator(...) \n lua require'sniprun'.run('n') \n endfunction")
+  vim.cmd("command! SnipClose :lua require'sniprun.display'.close_all()")
 
   vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('"..sniprun_path.."/doc/', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
   vim.cmd("command! -nargs=* -complete=customlist,ListInterpreters SnipInfo :lua require'sniprun'.info(<q-args>)")
 
-  vim.cmd("function! SnipRunLauncher() range \n if a:firstline == a:lastline \n lua require'sniprun'.run() \n else \n lua require'sniprun'.run('v') \n endif \n endfunction") 
+  vim.cmd("function! SnipRunLauncher() range \n if a:firstline == a:lastline \n lua require'sniprun'.run() \n else \n lua require'sniprun'.run('v') \n endif \n endfunction")
   vim.cmd("command! -range SnipRun <line1>,<line2>call SnipRunLauncher()")
+
 
 end
 
-local function start()
+function M.start()
   if M.job_id ~= nil then return end
   M.job_id = vim.fn.jobstart({ binary_path }, { rpc = true })
 end
 
 function M.notify(method, ...)
-  start()
+  M.start()
   local status, err = pcall(vim.rpcnotify, M.job_id, method, ...)
   if not status then
     M.terminate()
-    start()
+    M.start()
     vim.rpcnotify(M.job_id, method, ...)
   end
 end
@@ -115,7 +161,7 @@ function M.run(mode)
 end
 
 
-function M.get_range(mode) 
+function M.get_range(mode)
   if not mode then
     line1 = vim.api.nvim_win_get_cursor(0)[1]
     line2 = line1
@@ -138,9 +184,13 @@ function M.reset()
   vim.wait(200) -- let enough time for the rust binary to delete the cache before killing its process
   M.terminate()
 end
-  
+
 function M.clear_repl()
   M.notify("clearrepl")
+end
+
+function M.ping()
+  M.notify("ping")
 end
 
 function M.terminate()
@@ -148,11 +198,11 @@ function M.terminate()
   M.job_id = nil
 end
 
--- get all lines from a file, returns an empty 
+-- get all lines from a file, returns an empty
 -- list/table if the file does not exist
 local function lines_from(file)
   lines = {}
-  for line in io.lines(file) do 
+  for line in io.lines(file) do
     lines[#lines + 1] = line
   end
   return lines
@@ -163,7 +213,7 @@ function M.info(arg)
     M.config_values["sniprun_root_dir"] = sniprun_path
     M.notify("info",1,1,M.config_values)
 
-    local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.." 
+    local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.."
 
     if M.config_values.inline_messages ~= 0 then
       vim.wait(500) -- let enough time for the sniprun binary to generate the file
@@ -199,12 +249,30 @@ function M.health()
     health_ok('`tree-sitter` found '..version..' (parser generator, only needed for :TSInstallFromGrammar)')
   end
 
-  if vim.fn.executable(binary_path) == 0 then health_error("sniprun binary not found!")
-  else health_ok("sniprun binary found") end
-
 
   if vim.fn.executable('cargo') == 0 then health_warn("Rust toolchain not available", {"[optionnal] Install the rust toolchain https://www.rust-lang.org/tools/install"})
   else health_ok("Rust toolchain found") end
+
+  if vim.fn.executable(binary_path) == 0 then health_error("sniprun binary not found!")
+  else health_ok("sniprun binary found") end
+
+  terminate_after = M.job_id == nil
+  path_log_file = os.getenv('HOME').."/.cache/sniprun/sniprun.log"
+  os.remove(path_log_file)
+
+  -- check if the log is recreated
+  M.ping()
+  os.execute("sleep 0.1")
+  if not M.file_exists(path_log_file)  then health_error("sniprun binary incompatible or crash at start", {"Compile sniprun locally, with a clean reinstall and 'bash ./install.sh 1' as post-install command."})
+  else health_ok("sniprun binary runs correctly")
+  end
 end
+
+function M.file_exists(name)
+   local f=io.open(name,"r")
+   if f~=nil then io.close(f) return true else return false end
+end
+
+
 
 return M

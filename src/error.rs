@@ -7,7 +7,7 @@ pub enum SniprunError {
     ///what
     #[error("Unknown error: {0}")]
     UnknownError(String),
-    ///internal error, should only be raised by Sniprun-specifi code; *not* in languages
+    ///internal error, should only be raised by Sniprun-specific code; *not* in languages
     ///interpreters
     #[error("Internal error: {0}")]
     InternalError(String),

@@ -33,7 +33,7 @@ Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to p
 
 I know that this README is exhaustively long (for the sake of clarity, bear with me), but Sniprun itself is and will remain rather simple: don't be afraid, questions are welcome too.
 
-###### TLDR: ```Plug 'michaelb/sniprun', {'do': 'bash install.sh'} ```, ```:SnipRun```, ```:'<,'>SnipRun```,
+###### TLDR: ```Plug 'michaelb/sniprun', {'do': 'bash install.sh'} ```, ```:SnipRun```, ```:'<,'>SnipRun```,```:SnipInfo```
 ###### (but please configure the \<Plug> mappings)
 
 
@@ -56,18 +56,28 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
 
 ## Demos
 
-Send to Sniprun snippets of any language. A few lines of code are now within a print statement's reach.
+##### Send to Sniprun snippets of any language.
+A few lines of code are now within a print statement's reach :-) ([hint](https://github.com/meain/vim-printer)
 
 An example in C:
 ![](ressources/visual_assets/demo_c.gif)
 
-⮤ result is displayed at the bottom of the window.
+##### The result can be displayed in multiple (even at the same time) ways: 
 
-send-to-REPL-like behavior is available for Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
+[Classic](ressources/display_classic.md)|  [Virtual Text](ressources/display_virtual_text.md)
+:------------------------------------------:|:------------------:
+![](ressources/visual_assets/classic.png)   | ![](ressources/visual_assets/virtual_text.png)
+[**Temporary Floating Window**](ressources/display_floating_window.md)  |  [**Terminal**](ressources/display_terminal.md)
+![](ressources/visual_assets/floating_window.png) | ![](ressources/visual_assets/terminal.png)
+
+
+##### send-to-REPL-like behavior is available for some languages
+Python, R (both real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
 
 ![](ressources/visual_assets/demo_repl.gif)
 
-Does it deals with errors ? Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely. Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
+##### Does it deals with errors ?
+Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely. Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
 
 ![](ressources/visual_assets/rust_error.png)
 
@@ -84,11 +94,11 @@ Position the cursor on a line or select some visual range, `:'<,'>SnipRun` it an
 
 Sniprun will then:
 
-- Get the code you selected (selections are rounded line-wise)
+- **Get the code** you selected (selections are rounded line-wise)
 - Optionnaly, get additional information if necessary (auto retrieve import when supported for example)
-- Add the boilerplate when it exists. In C, it surrounds your snip with "int main() {", "}".
-- Build (write to a script file, or compile) the code
-- Execute the code
+- **Add boilerplate** when it exists. In C, it surrounds your snip with "int main() {", "}". (disclaimer: oversimplifed)
+- **Build** (write to a script file, or compile) the code
+- **Execute** the code
 - Return stdout, or stderr
 
 
@@ -97,9 +107,11 @@ Sniprun will then:
 
 ### Prerequisites && dependencies
 
-- Sniprun is **Linux**-only for now (as of v0.5.2).
-- **Neovim** version (>= 0.5 for the latest goodies), but 0.4.x is supported up to sniprun v0.4.9 and the installer will take care of installing the latest version 'that works', though you may miss the latest goodies, and you will need to use the [old vimscript way to configure](ressources/old_configuration.md).
-- [recommended, but optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
+- Sniprun is compatible with **Linux** and **Mac**. (Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install))
+
+- **Neovim** version (>= 0.5 for the latest goodies), but 0.4.x is supported up to sniprun v0.4.9 and the installer will take care of installing the latest version 'that works', though you may miss on new features, and you will need to use the [old vimscript way to configure](ressources/old_configuration.md).
+
+- [optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
 
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
@@ -111,7 +123,7 @@ Sniprun will then:
 Use your favorite plugin manager.
 (Run `install.sh` as a post-installation script, it will download or compile the sniprun binary)
 
-For example, `vim-plug`:
+For example, with `vim-plug`:
 
 ```vim
 Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
@@ -122,8 +134,9 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 
 (Manual)
 
-I trust you know how to add a plugin to the runtimepath, just don't forget to run `./install.sh`, or alternatively, `cargo build --release` to fetch/build the binary.
 
+
+I trust you know how to add a plugin to the runtimepath, just don't forget to run `./install.sh`, or alternatively, `cargo build --release` to fetch/build the binary.
 ![](ressources/visual_assets/760091.png)
 ## Usage
 
@@ -162,9 +175,17 @@ No worries, the second and last command will kill everything Sniprun ran so far:
 ```vim
  :SnipReset
 ```
-
-
 Alternatively, exit & re-enter Neovim.
+
+
+#### Clearing
+You may want to clear virtual text, close a terminal or a floating window created by Sniprun: for this, one command to rule them all:
+
+`:SnipClose`
+
+(plug mapping : `<Plug>SnipClose`)
+
+
 
 ![](ressources/visual_assets/760091.png)
 ### REPL-like behavior
@@ -186,7 +207,7 @@ Hopefully, if something does not work, or if the 'memory' is corrupted by bad co
 
 Sniprun is a Lua plugin, but **you don't need** the usual boilerplate: if you don't need any special configuration, you don't need to do anything.
 
-However, if you want to change some options, you can add this snippet (the default config) to your configuration file:
+However, if you want to change some options, you can add this snippet (the default config) to your configuration file and modify if at will:
 
 ```vim
 lua << EOF
@@ -197,6 +218,17 @@ require'sniprun'.setup({
 
   inline_messages = 0             --" inline_message (0/1) is a one-line way to display messages
                                   --" to workaround sniprun not being able to display anything
+
+  -- " you can combo different display modes as desired
+  display = {
+    "Classic",                    -- "display results in the command-line  area
+    "VirtualTextOk",              -- "display ok results as virtual text (multiline is shortened)
+    -- "VirtualTextErr",          -- "display error results as virtual text
+    -- "TempFloatingWindow",      -- "display results in a floating window
+    -- "LongTempFloatingWindow",  -- "same as above, but only long results. To use with VirtualText__
+    -- "Terminal"                 -- "display results in a vertical split
+    },
+
 })
 EOF
 ```
@@ -207,16 +239,17 @@ Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of 
 
 
 
-All of sniprun useful functionnalities:
+All of sniprun functionnalities:
 
-| Shorthand                   | Lua backend                       | \<Plug> mapping            |
-|-----------------------------|-----------------------------------|----------------------------|
-| :SnipRun                    | lua require'sniprun'.run()        | \<Plug>SnipRun             |
-| (normal node)               | lua require'sniprun'.run('n')     | \<Plug>SnipRunOperator     |
-| :'<,'>SnipRun (visual mode) | lua require'sniprun'.run('v')     | \<Plug>SnipRun             |
-| :SnipInfo                   | lua require'sniprun'.info()       | \<Plug>SnipInfo            |
-| :SnipReset                  | lua require'sniprun'.reset()      | \<Plug>SnipReset           |
-| :SnipReplMemoryClean        | lua require'sniprun'.clear_repl() | \<Plug>SnipReplMemoryClean |
+| Shorthand                   | Lua backend                          | \<Plug> mapping            |
+|-----------------------------|--------------------------------------|----------------------------|
+| :SnipRun                    | lua require'sniprun'.run()           | \<Plug>SnipRun             |
+| (normal node)               | lua require'sniprun'.run('n')        | \<Plug>SnipRunOperator     |
+| :'<,'>SnipRun (visual mode) | lua require'sniprun'.run('v')        | \<Plug>SnipRun             |
+| :SnipInfo                   | lua require'sniprun'.info()          | \<Plug>SnipInfo            |
+| :SnipReset                  | lua require'sniprun'.reset()         | \<Plug>SnipReset           |
+| :SnipReplMemoryClean        | lua require'sniprun'.clear_repl()    | \<Plug>SnipReplMemoryClean |
+| :SnipClose                  | lua require'sniprun.display'.close() | \<Plug>SnipClose           |
 
 
 You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to configure sniprun, still compatible but may be deprecated at some point.
@@ -226,7 +259,7 @@ You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to 
 ### Usage recommandation & tricks
 
 - Map the run command to a simple command such as `<leader>ff` (or just `f` in visual mode)
-- The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "<leader>f + j" will run sniprun on the current line + the line below.
+- The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "\<leader>f + j" will run sniprun on the current line + the line below.
 
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
 
@@ -240,8 +273,6 @@ vmap f <Plug>SnipRun
 
 
 While both shorthands and \<Plug> are here to stay, **please use the `<Plug>` style ones in your mappings** or if using from another plugin.
-
-Bonus; with Plug mappings, if you also have Tim Pope's [vim-repeat](https://github.com/tpope/vim-repeat), you can repeat a SnipRun with "`.`"  .
 
 
 
@@ -327,12 +358,12 @@ All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quick
 
 The [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](https://github.com/hanschen/vim-ipython-cell) [codi](https://github.com/metakirby5/codi.vim) as well as [neoterm](https://github.com/kassio/neoterm) and [vim-slime](https://github.com/jpalardy/vim-slime) can also be used in such a way, though they are only working with languages that have a REPL.
 
-[vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is / will be [conjure](https://gtihub.com/Olical/conjure), but they do things differently enough I made sniprun instead.
+[vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is / will be [conjure](https://github.com/Olical/conjure), but they do things differently enough I made sniprun instead.
 
 
 **Why should you use sniprun instead of these alternatives?**
 
 - All-language support. Sniprun can work with virtually any language, including compiled ones. If the language is not supported yet, anyone can create a sniprun interpreter for it!
-- Simpler user input & output. Sniprun doesn't use precious screen space (like [codi](https://github.com/metakirby5/codi.vim) or [vim-slime](https://github.com/jpalardy/vim-slime)).
+- Simpler user input & output. Sniprun doesn't use precious screen space (like [codi](https://github.com/metakirby5/codi.vim) or [vim-slime](https://github.com/jpalardy/vim-slime)) by default (but it can).
 - Promising evolution of the project: treesitter usage is in the goals plan, to make testing/ running even better (with things like auto-fecthing variables & functions definitions). Those will comply at least with the File support level for a truly amazing experience. (I'll need some help with that though).
 - Fast, extendable and maintainable: this is not a 2k-lines vim script, nor an inherently limited one-liner. It's a Rust project designed to be as clear and "contribuable" as possible.
