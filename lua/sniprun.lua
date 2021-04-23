@@ -23,12 +23,12 @@ M.config_values = {
   },
 
   display = {
-    -- "Classic",
-    -- "VirtualTextOk",
+    "Classic",
+    "VirtualTextOk",
     -- "VirtualTextErr",
     -- "LongTempFloatingWindow",
     -- "TempFloatingWindow",
-    "Terminal"
+    -- "Terminal"
     },
 
   inline_messages = 0
