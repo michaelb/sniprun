@@ -145,7 +145,7 @@ pub fn display_floating_window(
         .last()
         .unwrap_or(&data.current_line)
         .len();
-    let row = data.range[0] + data.current_bloc.trim_end_matches("\n").lines().count() as i64;
+    let row = data.range[0] + data.current_bloc.trim_end_matches("\n").lines().count() as i64 - 1;
     info!(
         "trying to open a floating window on row, col = {}, {}",
         row, col
@@ -154,13 +154,13 @@ pub fn display_floating_window(
     let res = match message {
         Ok(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", true)",
-            row,
+            row -1,
             col,
             cleanup_and_escape(&result),
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", false)",
-            row,
+            row -1,
             col,
             cleanup_and_escape(&result.to_string()),
         )),
