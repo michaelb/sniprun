@@ -350,14 +350,17 @@ Want support for your language? Submit a feature request, or even better, [contr
 \*\*\* if underlying language supports it
 
 ![](ressources/visual_assets/760091.png)
-# Hilight Groups
+## Hilight Groups
 
 Add These hilight group in your Colorscheme
 to change the default colors
 
 •SniprunVirtualTextOk
+
 •SniprunVirtualTextErr
+
 •SniprunFloatingWinErr
+
 •SniprunFloatingWinOk
 
 ```lua
