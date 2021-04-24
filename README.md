@@ -140,8 +140,7 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 " 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary,
 "  but you'll compile sniprun at every update & will need the rust toolchain
 ```
-<!---- a nice spacer ---->
-$~~~~~~~~~~~~$
+.
 
 (AUR)
 
@@ -149,8 +148,7 @@ $~~~~~~~~~~~~$
 
 An independently maintained [AUR package](https://aur.archlinux.org/packages/neovim-sniprun/) is available for Arch users. ([legacy](https://aur.archlinux.org/packages/neovim-sniprun-legacy/) package for neovim < 0.5 users)
 
-
-$~~~~~~~~~~~~$
+.
 
 (Manual)
 
@@ -214,7 +212,7 @@ Some languages, see support [table](README.md#support-levels-and-languages), als
 While this is more easy/clean to implement on interpreted languages, **compiled languages can have a REPL-like behavior too!**
 
 Many interpreted languages will have this behavior enabled or disabled by default, you can change this with the
-`repl_enable = { 'Intepreter_name', 'Another_one' }` and `repl_disable = {'Disabled_interpreter'}` keys in the configuration. Relevant info is available in `:SnipInfo` / `:lua require'sniprun'.info()`
+`repl_enable = { 'Intepreter_name', 'Another_one' }` and `repl_disable = {'Disabled_interpreter'}` keys in the configuration. Relevant info is available in `:SnipInfo` / `:SnipInfo <name> `
 
 
 REPL-like behavior is experimental and will work better with interpreted languages and with side-effect-free code (including prints in functions).
