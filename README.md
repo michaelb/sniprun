@@ -61,6 +61,7 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
 A few lines of code are now within a print statement's reach :-) ([this may be cool](https://github.com/meain/vim-printer))
 
 An example in C, look in the command area:
+
 ![](ressources/visual_assets/demo_c.gif)
 
 ##### The result can be displayed in multiple (even at the same time) ways: 

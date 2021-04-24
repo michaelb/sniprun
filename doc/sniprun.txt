@@ -44,6 +44,8 @@ ALL COMMANDS                                       *sniprun-commands*
 
 :SnipInfo               Get Sniprun version info and info about the available intepreters
 
+:SnipClose              Clear virtual text and close splits and floating windows created by sniprun
+
 
 ==============================================================================
 CONFIGURATION                                       *sniprun-configuration*
@@ -58,6 +60,16 @@ require'sniprun'.setup({
 
   inline_messages = 0             --" inline_message (0/1) is a one-line way to display messages
                                   --" to workaround sniprun not being able to display anything
+
+  -- " you can combo different display modes as desired
+  display = {
+    "Classic",                    -- "display results in the command-line  area
+    "VirtualTextOk",              -- "display ok results as virtual text (multiline is shortened)
+    -- "VirtualTextErr",          -- "display error results as virtual text
+    -- "TempFloatingWindow",      -- "display results in a floating window
+    -- "LongTempFloatingWindow",  -- "same as above, but only long results. To use with VirtualText__
+    -- "Terminal"                 -- "display results in a vertical split
+  },
 })
 EOF
 
