@@ -350,6 +350,41 @@ Want support for your language? Submit a feature request, or even better, [contr
 \*\*\* if underlying language supports it
 
 ![](ressources/visual_assets/760091.png)
+# Hilight Groups
+
+Add These hilight group in your Colorscheme
+to change the default colors
+
+•SniprunVirtualTextOk
+•SniprunVirtualTextErr
+•SniprunFloatingWinErr
+•SniprunFloatingWinOk
+
+```lua
+-- or add something along the lines of this
+-- in your sniprun configuration file
+
+local function highlight(group, styles)
+  local gui = styles.gui and 'gui='..styles.gui or 'gui=NONE'
+  local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
+  local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
+  local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
+  vim.api.nvim_command('highlight! '..group..' '..gui..' '..sp..' '..fg..' '..bg)
+end
+
+local SnipRunColors={
+  SniprunVirtualTextOk = {bg=green,fg=bg_dark,style='italic'},
+  SniprunVirtualTextErr = {bg=orange,fg=bg_dark,style='bold'},
+  SniprunFloatingWinErr = {bg=orange,fg=bg_dark,style='bold'},
+  SniprunFloatingWinOk = {bg=green,fg=bg_dark,style='italic'},
+}
+
+for group, styles in pairs(SnipRunColors) do
+  highlight(group, styles)
+end
+
+```
+
 ## Known limitations
 
 Due to its nature, Sniprun may have trouble with programs that :
