@@ -133,7 +133,7 @@ function M.configure_keymaps()
   vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('"..sniprun_path.."/doc/', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
   vim.cmd("command! -nargs=* -complete=customlist,ListInterpreters SnipInfo :lua require'sniprun'.info(<q-args>)")
 
-  vim.cmd("function! SnipRunLauncher() range \n if a:firstline == a:lastline \n lua require'sniprun'.run() \n else \n lua require'sniprun'.run('v') \n endif \n endfunction")
+  vim.cmd("function! SnipRunLauncher() range \nif a:firstline == a:lastline \n lua require'sniprun'.run() \n elseif a:firstline == 1 && a:lastline == line(\"$\")\n lua require'sniprun'.run('w') \n else \n lua require'sniprun'.run('v') \n endif \n endfunction")
   vim.cmd("command! -range SnipRun <line1>,<line2>call SnipRunLauncher()")
 
 
@@ -165,6 +165,9 @@ function M.get_range(mode)
   if not mode then
     line1 = vim.api.nvim_win_get_cursor(0)[1]
     line2 = line1
+  elseif mode:match("[w]") then
+    line1 = 1
+    line2 = vim.fn.eval("line('$')")
   elseif mode:match("[n]") then
     line1 = vim.api.nvim_buf_get_mark(0, '[')[1]
     line2 = vim.api.nvim_buf_get_mark(0, ']')[1]
