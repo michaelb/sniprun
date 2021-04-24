@@ -63,19 +63,7 @@ function M.setup(opts)
       error(string.format('[Sniprun] Key %s not exist in config values',key))
       return
     end
-    if type(M.config_values[key]) == 'table' then
-      for k,v in pairs(value) do
-        if type(M.config_values[key][k]) == 'table' then
-          for k2,v2 in pairs(v) do
-            M.config_values[key][k][k2] = v2
-          end
-        else
-          M.config_values[key][k] = v
-        end
-      end
-    else
       M.config_values[key] = value
-    end
   end
   M.configure_keymaps()
   M.setup_highlights()
