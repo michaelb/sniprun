@@ -4,4 +4,14 @@ Errors are displayed in red, and multiline output is supported
 
 
 
+Activated by default, to change activate, add or remove "Classic" to the 'display' key in sniprun configuration:
+
+```
+lua << EOF
+require'sniprun'.setup({
+  display = { "Classic" },
+})
+```
+
+
 ![](visual_assets/classic.png)

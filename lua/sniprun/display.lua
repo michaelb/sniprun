@@ -64,8 +64,8 @@ function M.write_to_term(message, ok)
   end
   
   local width = vim.api.nvim_win_get_width(M.term.window_handle)  
-  half_width = (width - 6) / 2
-  message = string.rep("-",half_width)..status..string.rep("-", half_width).."\n"..message
+  half_width = (width - 6 - 4) / 2
+  message = "  "..string.rep("-",half_width)..status..string.rep("-", half_width).."  ".."\n"..message
 
   for line in message:gmatch("([^\n]*)\n?") do
     h = h +1
