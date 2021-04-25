@@ -30,7 +30,7 @@ jobs:
 
     - uses: airvzxf/cache-anything-new-action@v1.0.1
       with:
-        script: '../../ressources/install_all_compiler_ci.sh'
+        script: '../../ressources/install_all_compilers_ci.sh'
         is_cached: ${{ steps.cache-id.outputs.cache-hit }}
         cache: ${{ runner.temp }}/cache-directory-example
         snapshot: '/'
@@ -69,7 +69,7 @@ jobs:
 
     - uses: airvzxf/cache-anything-new-action@v1.0.1
       with:
-        script: '../../ressources/install_all_compiler_ci.sh'
+        script: '../../ressources/install_all_compilers_ci.sh'
         is_cached: ${{ steps.cache-id.outputs.cache-hit }}
         cache: ${{ runner.temp }}/cache-directory-example
         snapshot: '/'
