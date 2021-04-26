@@ -17,8 +17,8 @@ M.config_values = {
   repl_disable = {},
 
   interpreter_options = {
-    ["example_original"] = {
-      example_option = 2,
+    example_original = {
+      example_option = "--optimize-with-debug-info",
     }
   },
 
