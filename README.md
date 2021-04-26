@@ -224,7 +224,7 @@ Hopefully, if something does not work, or if the 'memory' is corrupted by bad co
 
 Sniprun is a Lua plugin, but **you don't need** the usual boilerplate: if you don't need any special configuration, you don't need to do anything.
 
-However, if you want to change some options, you can add this snippet (the default config) to your configuration file and modify if at will:
+However, if you want to change some options, you can add this snippet (the default config) to your configuration file and modify if at will (you can remove keys without issue to shorten your config, the default values are overwritten on a key-by-key basis):
 
 ```vim
 lua << EOF
@@ -253,6 +253,7 @@ EOF
 Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of the 'Python3_original' default],
 `lua require'sniprun'.setup({selected_interpreters = {'Python3_jupyter'}})`
 
+**NOTE**: Some interpreters have specific options, such as what version / compiler to use: you cand find more about that with `:SnipInfo <interpreter_name>`
 
 
 
