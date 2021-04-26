@@ -235,7 +235,7 @@ require'sniprun'.setup({
   repl_enable = {},               --" enable REPL-like behavior for the given interpreters
   repl_disable = {},              --" disable REPL-like behavior for the given interpreters
 
-  inline_messages = 0             --" inline_message (0/1) is a one-line way to display messages
+  inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
                                   --" to workaround sniprun not being able to display anything
 
   -- " you can combo different display modes as desired
