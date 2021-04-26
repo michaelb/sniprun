@@ -31,8 +31,18 @@ M.config_values = {
     -- "Terminal"
     },
 
-  inline_messages = 0
+  inline_messages = 0,
+
+  -- default highlight stuff goes here
+  SniprunColors={
+    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000"},
+    SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000"},
+    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000"},
+    SniprunFloatingWinErr  =  {bg="#881515",fg="#000000"},
+  }
+
 }
+
 
 M.config_up=0
 
@@ -42,7 +52,7 @@ function M.load_vimscript_config()
   vimscript_config["repl_disable"] = vim.g.SnipRun_repl_behavior_disable or M.config_values["repl_disable"]
   vimscript_config["selected_interpreters"] = vim.g.SnipRun_select_interpreters or M.config_values["selected_interpreters"]
   vimscript_config["inline_messages"] = vim.g.SnipRun_inline_messages or M.config_values["inline_messages"]
-
+  vimscript_config["SniprunColors"] = vim.g.SnipRunColors or M.config_values["SniprunColors"]
   return vimscript_config
 end
 
@@ -84,11 +94,26 @@ function M.setup(opts)
   M.config_up = 1
 end
 
+
+local highlight = function(group, styles)
+  local gui = styles.gui and 'gui='..styles.gui or 'gui=NONE'
+  local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
+  local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
+  local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
+  -- print('highlighting '..group,gui,sp,fg,bg)
+  vim.api.nvim_command('autocmd ColorScheme * highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg)
+end
+
+
 function M.setup_highlights()
-  vim.cmd("if !hlexists('SniprunVirtualTextOk')  \n hi SniprunVirtualTextOk	ctermbg=Cyan guibg=#66eeff ctermfg=Black guifg=#000000 \nendif")
-  vim.cmd("if !hlexists('SniprunVirtualTextErr') \n hi SniprunVirtualTextErr	ctermbg=DarkRed guibg=#881515 ctermfg=Black guifg=#000000 ")
-  vim.cmd("if !hlexists('SniprunFloatingWinErr') \n hi SniprunFloatingWinErr	guifg=#881515 ctermfg=DarkRed")
-  vim.cmd("if !hlexists('SniprunFloatingWinOk')  \n hi SniprunFloatingWinOk	ctermfg=Cyan guifg=#66eeff")
+  local colors_table = M.load_vimscript_config()["SniprunColors"]
+  vim.cmd('augroup snip_highlights')
+  vim.cmd('autocmd!')
+  for group, styles in pairs(colors_table) do
+    -- print('setting up for '..group,'with style :','bg :',styles.bg,'fg :',styles.fg)
+    highlight(group, styles)
+  end
+  vim.cmd('augroup END')
 end
 
 function M.setup_autocommands()
@@ -279,3 +304,4 @@ end
 
 
 return M
+
