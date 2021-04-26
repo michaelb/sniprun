@@ -69,6 +69,24 @@ impl Python3_jupyter {
         }
         return false;
     }
+    // /// In theory, is a good idea, but somehow doesn't work
+    // fn wait_on_kernel(&self) -> Result<(), SniprunError> {
+    //     let step = std::time::Duration::from_millis(100);
+    //     let mut timeout = std::time::Duration::from_millis(15000);
+    //     loop {
+    //         if let Ok(content) = std::fs::read_to_string(&self.kernel_file) {
+    //             if !content.is_empty() {
+    //                 return Ok(());
+    //             }
+    //         }
+    //         std::thread::sleep(step);
+    //         if let Some(remaining) = timeout.checked_sub(step) {
+    //             timeout = remaining;
+    //         } else {
+    //             return Err(SniprunError::CustomError(String::from("Timeout on jupyter kernel start expired")));
+    //         }
+    //     }
+    // }
 }
 
 impl Interpreter for Python3_jupyter {
@@ -291,6 +309,12 @@ impl ReplLikeInterpreter for Python3_jupyter {
     }
 
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        info!(
+            "json kernel file exists yet? {}",
+            std::path::Path::new(&self.kernel_file).exists()
+        );
+        // self.wait_on_kernel()?;
+
         let output = Command::new("sh")
             .arg(&self.launcher_path)
             .output()
@@ -334,8 +358,8 @@ mod test_python3_jupyter {
     #[test]
     fn run_all() {
         simple_print();
+        get_import();
     }
-
 
     fn simple_print() {
         let mut data = DataHolder::new();
@@ -346,6 +370,25 @@ mod test_python3_jupyter {
         // should panic if not an Ok()
         let string_result = res.unwrap();
         assert!(string_result.contains(&"a 1"));
+    }
+
+    fn get_import() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(float(cos(0)))");
+
+        data.filepath = String::from("ressources/import.py");
+        let dfpc = data.filepath.clone();
+        let mut file = File::create(&data.filepath).unwrap();
+        file.write_all(b"from math import cos").unwrap();
+
+        let mut interpreter = Python3_jupyter::new(data);
+        let res = interpreter.run_at_level(SupportLevel::Import);
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert!(string_result.contains("1.0"));
+
+        std::fs::remove_file(dfpc).unwrap();
     }
 
     #[test]
@@ -368,16 +411,13 @@ mod test_python3_jupyter {
         let mut interpreter = Python3_jupyter::new(data2);
         let _res = interpreter.run_at_level_repl(SupportLevel::Import).unwrap();
 
-
         data.current_bloc = String::from("print(a)");
         let mut interpreter = Python3_jupyter::new(data);
         let _res = interpreter.run_at_level_repl(SupportLevel::Import);
 
         // should panic if not an Ok()
-        // but for some reason does not work in test mode 
+        // but for some reason does not work in test mode
         // let string_result = res.unwrap();
         // assert_eq!(string_result, "1\n");
     }
-
-
 }

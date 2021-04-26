@@ -1,9 +1,9 @@
 use crate::*;
 use error::SniprunError;
 use interpreter::{Interpreter, SupportLevel};
+use std::io::prelude::*;
 use std::process::Command;
 use std::{fs::File, io::Read};
-use std::io::prelude::*;
 
 pub struct Launcher {
     pub data: DataHolder,
@@ -72,27 +72,40 @@ impl Launcher {
     pub fn info(&self) -> std::io::Result<String> {
         let mut v: Vec<String> = vec![];
         let filename = self.data.sniprun_root_dir.clone() + "/ressources/asciiart.txt";
-        let mut file = File::open(filename)?;
-        let mut content = String::new();
-        file.read_to_string(&mut content)?;
-        info!("[INFO] Retrieved asciiart");
-        v.push(content);
-        v.push("\n".to_owned());
+
+        if let Ok(mut file) = File::open(filename) {
+            let mut content = String::new();
+            file.read_to_string(&mut content)?;
+            info!("[INFO] Retrieved asciiart");
+            v.push(content);
+            v.push("\n".to_owned());
+        } else {
+            v.push(String::from("SNIPRUN\n"));
+        }
 
         let gitscript = self.data.sniprun_root_dir.clone() + "/ressources/gitscript.sh";
         let mut get_version = Command::new(gitscript);
         get_version.current_dir(self.data.sniprun_root_dir.clone());
-        let res = get_version.output().expect("process failed to execute");
-        if res.status.success() {
-            let online_version = String::from_utf8(res.stdout).unwrap();
-            info!("online version available: {}", &online_version);
-            v.push(online_version);
+        if let Ok(res) = get_version.output(){
+            info!("gitscript result: {:?}", res);
+            if res.status.success() {
+                let online_version = String::from_utf8(res.stdout).unwrap();
+                info!("online version available: {}", &online_version);
+                v.push(online_version);
+            } else {
+                v.push(String::from("Could not determine up-to-date status\n"));
+            }
+        } else {
+            v.push(String::from("Could not determine up-to-date status\n"));
         }
 
         if let Some((name, level)) = self.select() {
-            v.push(format!("\nCurrently selected interpreter: {}, at support level: {}\n", name, level));
+            v.push(format!(
+                "\nCurrently selected interpreter: {}, at support level: {}\n",
+                name, level
+            ));
         } else {
-            v.push("No interpreter selected".to_string());
+            v.push("No interpreter selected\n".to_string());
         }
 
         let separator = "|--------------------------|--------------|---------------|-------------|------------|--------------|------------|".to_string();
@@ -100,7 +113,7 @@ impl Launcher {
         v.push("| Interpreter              | Language     | Support Level | Default for |    REPL    | REPL enabled | Treesitter |".to_string());
         v.push("|                          |              |               |  filetype   | capability |  by default  | capability |".to_string());
 
-        let mut temp_vec=vec![];
+        let mut temp_vec = vec![];
         iter_types! {
             let line = format!("| {:<25}| {:<13}| {:<14}|{:^13}|{:^12}|{:^14}|{:^12}|",
                     Current::get_name(),
@@ -116,13 +129,12 @@ impl Launcher {
 
         temp_vec.sort();
 
-        for (i,line) in temp_vec.iter().enumerate() {
-            if i%3==0 {
+        for (i, line) in temp_vec.iter().enumerate() {
+            if i % 3 == 0 {
                 v.push(separator.clone());
             }
             v.push(line.to_string());
         }
-
 
         v.push(separator.clone());
 
@@ -137,15 +149,14 @@ impl Launcher {
             file.write_all(v.join("\n").as_bytes()).unwrap();
             return Ok("".to_owned());
         }
-
     }
 }
-
 
 #[cfg(test)]
 mod test_launcher {
 
     use super::*;
+    use std::env;
 
     #[test]
     fn run() {
@@ -153,8 +164,8 @@ mod test_launcher {
         data.filetype = String::from("pyt");
         data.current_line = String::from("println!(\"Hello\");");
         data.current_bloc = String::from("println!(\"Hello\");");
-        data.range = [1,1];
-        
+        data.range = [1, 1];
+
         let launcher = Launcher::new(data);
         let _res = launcher.select();
     }
@@ -162,15 +173,15 @@ mod test_launcher {
     #[test]
     fn info() {
         let mut data = DataHolder::new();
+        let path = env::current_dir().unwrap();
+        data.sniprun_root_dir = path.display().to_string();
+
         data.filetype = String::from("rust");
         data.current_line = String::from("println!(\"Hello\");");
         data.current_bloc = String::from("println!(\"Hello\");");
-        data.range = [1,1];
-        
+        data.range = [1, 1];
+
         let launcher = Launcher::new(data);
-        let _res = launcher.info();
+        let _res = launcher.info().unwrap();
     }
-
-
 }
-

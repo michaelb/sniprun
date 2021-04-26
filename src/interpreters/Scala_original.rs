@@ -1,34 +1,39 @@
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct Go_original {
+pub struct Scala_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
 
-    ///specific to go
-    go_work_dir: String,
+    ///specific to compiled languages, can be modified of course
+    language_work_dir: String,
     bin_path: String,
     main_file_path: String,
+    // you can and should add fields as needed
 }
-impl ReplLikeInterpreter for Go_original {}
-impl Interpreter for Go_original {
-    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Go_original> {
+
+//necessary boilerplate, you don't need to implement that if you want a Bloc support level
+//interpreter (the easiest && most common)
+impl ReplLikeInterpreter for Scala_original {}
+
+impl Interpreter for Scala_original {
+    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Scala_original> {
         //create a subfolder in the cache folder
-        let gwd = data.work_dir.clone() + "/go_original";
+        let lwd = data.work_dir.clone() + "/scala_original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
-            .create(&gwd)
-            .expect("Could not create directory for go-original");
+            .create(&lwd)
+            .expect("Could not create directory for example");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = gwd.clone() + "/main.go";
-        let bp = String::from(&mfp[..mfp.len() - 3]); // remove extension so binary is named 'main'
-        Box::new(Go_original {
+        let mfp = lwd.clone() + "/Main.scala";
+        let bp = lwd.clone() + "/Main"; // remove extension so binary is named 'main'
+        Box::new(Scala_original {
             data,
             support_level,
-            code: String::from(""),
-            go_work_dir: gwd,
+            code: String::new(),
+            language_work_dir: lwd,
             bin_path: bp,
             main_file_path: mfp,
         })
@@ -36,14 +41,13 @@ impl Interpreter for Go_original {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
-            String::from("Go"),
-            String::from("go"),
-            String::from("golang"),
+            String::from("Scala"), // in 1st position of vector, used for info only
+            String::from("scala"),
         ]
     }
 
     fn get_name() -> String {
-        String::from("Go_original")
+        String::from("Scala_original")
     }
 
     fn default_for_filetype() -> bool {
@@ -66,7 +70,6 @@ impl Interpreter for Go_original {
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
-        //add code from data to self.code
         if !self
             .data
             .current_bloc
@@ -74,53 +77,70 @@ impl Interpreter for Go_original {
             .is_empty()
             && self.support_level >= SupportLevel::Bloc
         {
+            // if bloc is not pseudo empty and has Bloc current support level,
+            // add fetched code to self
             self.code = self.data.current_bloc.clone();
+
+        // if there is only data on current line / or Line is the max support level
         } else if !self.data.current_line.replace(" ", "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
         } else {
+            // no code was retrieved
             self.code = String::from("");
         }
+        info!("scala interpreter fetched code");
         Ok(())
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("package main \nimport \"fmt\"\nfunc main() {") + &self.code + "}";
+        // an example following Rust's syntax
+        self.code =
+            String::from("object Main {\ndef main(arg: Array[String]) = {") + &self.code + "}\n}";
         Ok(())
     }
 
     fn build(&mut self) -> Result<(), SniprunError> {
-        //write code to file
         let mut _file =
-            File::create(&self.main_file_path).expect("Failed to create file for go-original");
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for go-original");
+            File::create(&self.main_file_path).expect("Failed to create file for language_subname");
+        // IO errors can be ignored, or handled into a proper SniprunError
+        // If you panic, it should not be too dangerous for anyone
+        write(&self.main_file_path, &self.code)
+            .expect("Unable to write to file for language_subname");
 
         //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new("go")
-            .arg("build")
-            .arg("-o")
-            .arg(&self.go_work_dir)
+        let output = Command::new("scalac")
+            .arg("-d")
+            .arg(&self.language_work_dir)
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
 
-        //TODO if relevant, return the error number (parse it from stderr)
+        // if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            return Err(SniprunError::CompilationError("".to_string()));
+            return Err(SniprunError::CompilationError(
+                String::from_utf8(output.stderr).unwrap(),
+            ));
         } else {
+            info!("scala compiled successfully");
             return Ok(());
         }
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let output = Command::new(&self.bin_path)
+        let output = Command::new("scala")
+            .arg("Main")
+            .current_dir(&self.language_work_dir)
             .output()
             .expect("Unable to start process");
+
         if output.status.success() {
+            //return stdout
             return Ok(String::from_utf8(output.stdout).unwrap());
         } else {
+            // return stderr
             return Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
             ));
@@ -129,18 +149,23 @@ impl Interpreter for Go_original {
 }
 
 #[cfg(test)]
-mod test_go_original {
+mod test_scala_original {
     use super::*;
-
     #[test]
+    fn run_all() {
+        simple_print();
+    }
     fn simple_print() {
         let mut data = DataHolder::new();
-        data.current_bloc = String::from("fmt.Println(\"Hello\")");
-        let mut interpreter = Go_original::new(data);
+
+        //inspired from Rust syntax
+        data.current_bloc = String::from("println(\"Hi\")");
+        let mut interpreter = Scala_original::new(data);
         let res = interpreter.run();
 
-        // should panic if not an Ok()
         let string_result = res.unwrap();
-        assert_eq!(string_result, "Hello\n");
+
+        // -> compare result with predicted
+        assert_eq!(string_result, "Hi\n");
     }
 }

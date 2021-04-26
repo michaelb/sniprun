@@ -152,8 +152,8 @@ mod test_r_original {
     use super::*;
 
     #[test]
-    fn run_all() { 
-        //nececssary to run sequentially 
+    fn run_all() {
+        //nececssary to run sequentially
         //because of file access & shared things
         simple_print();
         //should test memory as well
@@ -168,5 +168,4 @@ mod test_r_original {
         let string_result = res.unwrap();
         assert!(string_result.contains("Hi"));
     }
-
 }

@@ -1,3 +1,22 @@
+## v0.5.3
+- Display results in "Classic', "VirtualText", "Floating Windows", and "Terminal" mode
+- Checkhealth pings binary to check compatibility
+- Official Mac (incl. M1) support
+- Fix for the AUR packaged version
+
+
+## v0.5.2
+- Ada and Scala interpreters
+- Operator mode, courtesy of @DarwinSenior
+- Julia REPL via jupyter kernel
+- Compatibility fix for nvim 0.4.x (will miss out on features >= sniprun v0.4.9)
+
+
+## v0.5.1 
+- Markdown interpreter
+- Better :SnipInfo
+- SnipInfo \<name> now display the help file in doc/
+
 ## v0.5.0
 - Sniprun becomes a Lua (+Rust) plugin!!
 - Lua backend, config, and checkhealth

@@ -6,7 +6,7 @@ Just in case: to compile `cargo build --release`, to create and show the documen
 
 ### How hard it is?
 
-Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 30min ( 13min my best time, for C_original) to 1h30. You can then submit your proposed changes as a PR to the master branch.
+Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 30min ( 13min is my best time, for C_original to 1h30. You can then submit your proposed changes as a PR to the master branch.
 
 Higher support levels gets exponentially harder (depends on the languages though), so you should start out with Bloc.
 
@@ -22,40 +22,41 @@ Yeah cool but what _code_ goes inside?
 
 -> Inside, you must define a struct that implement the **Interpreter** trait. Have a look at existing implementations to get the idea, though some current interpreters use pretty advanced features of Sniprun that you may not want to deal with. Prefer looking at 'Bloc' level support interpreters for a smooth start. Make sure to respect the [conventions](#conventions). The "example.rs" interpreter is a good starting point, with more comments to help you understand what's happening.
 
-I just compiled, how do I test my code quickly?
+---
+I just finished some changes, how do I test my code quickly?
 
--> compile `cargo build --release` and run `nvim -u plugin/sniprun.vim some_test_file.ext` from the sniprun project root.
+-> compile `cargo build --release` and run `nvim --cmd "set rtp+=. -u NORC <testfile>` from the sniprun project root.
 
 ---
 
 Is _my_ code running?
 
--> Assert that the file type detected by Neovim is contained in your list of supported file types. If there is already a implementation for your filetype/language, set (temporarly) your max support level to "Selected".
+-> Assert that the file type detected by Neovim is contained in your list of supported file types. If there is already a implementation for your filetype/language, set (temporarly) your max support level to "Selected", or run something like `:lua require'sniprun'.setup({selected_interpreters = {'<name>'}})` before `:SnipRun` .
 
 ---
 
 I need to debug, how ?
 
--> Use the `info!("here")` macro instead of `println!("here")`. This writes to the log file you can find in ~/.cache/sniprun/sniprun.log.
+-> Use the `info!("here")` macro instead of `println!("here")`. This writes to the log file you can find in ~/.cache/sniprun/sniprun.log. Beware, if you panic, the logger will stop writing.
 
 ---
 
 Can I panic!() ?
 
 -> Yes but preferably only when you encounter a fatal error (eg: you have to write a file, but there is no space left on the device).
-Failing compilation or incorrect code panicking should be handled via the SniprunError enum
+Failing user code compilation or incorrect user code panicking should be handled via the SniprunError enum.
 
 ---
 
 My interpreter does not produce any output..?!
 
--> It's because your code is panicking. (unwrapping a `None` or these kind of things). Check the logs at ~/.cache/sniprun/sniprun.log
+-> It's because your code is panicking. (unwrapping a `None` or these kind of things). Check the logs at ~/.cache/sniprun/sniprun.log .
 
 ---
 
 I need to import some external dependencies.
 
--> Add what you need to the src/interpreters/import.rs file, and the Cargo.toml if necessary
+-> Add what you need to the src/interpreters/import.rs file, and the Cargo.toml if necessary.
 
 ---
 
@@ -67,13 +68,13 @@ I need more than one file to write complicated code...
 
 Do I need to manage async running and compiling?
 
--> No, Sniprun takes care of that for you. You can implement a single-threaded synchronous code just like the Python3_original interpreter
+-> No, Sniprun takes care of that for you. You can implement a single-threaded synchronous code just like the D_original interpreter.
 
 ---
 
 My interpreter has some quirks that the end user should know
 
--> Document limitations and features in doc/interpreter_name.md
+-> Document limitations and features in doc/interpreter_name.md .
 
 ---
 
@@ -86,12 +87,12 @@ I lack the ReplLikeInterpreter trait implementation and don't want to do REPL-li
 My tests are inconsistent ..?!?
 
 -> Rust tests are run in parallel, and therefore a race condition may occur when writing to files and compiling.
-Run with `cargo test -- --test-threads=1`
+Run with `cargo test -- --test-threads=1` .
 
 ---
 I think I've done a good job, but am I ready to submit a PR?
 
--> You should check beforehand that the output of `cargo test -- --test-threads=1`, `cargo tarpaulin -- --test-threads=1`, and `./ressources/vroomtests.sh` are satisfying. You've added the proper an necessary tests, and have documented any edge case.
+-> You should check beforehand that the output of `cargo test -- --test-threads=1` and your own tests are satisfying. You've added the proper an necessary tests, and have documented any edge case.
 
 ### What's the deal with...
 
@@ -99,7 +100,7 @@ I think I've done a good job, but am I ready to submit a PR?
 
 - Errors? When possible and sensible, functions like fetch(), build() and execute() should return either an Ok(\_) variant or a Err(SniprunError). Choose the error that most closely describe whatever migth cause your function to fail, and populate it with a String message if relevant.
 
-* The imposed names? To simplify contribution (you only have to write a interpreter), the main program fetch new files and run functions of your interpreter. This is only easily possible if you types names match your file name, as I can get those easily but i would have to read them, guess what struct is the correct one should you have many....no, I rather do the `use file_name::file_name;` trick that just works.
+* The imposed names? To simplify contribution (you only have to write a interpreter), the main program fetch new files and run functions of your interpreter. This is only easily possible if you types names match your file name, as I can get those easily but i would have to read them, guess what struct is the correct one should you have many....no, I rather do the `use file_name::file_name;` trick that just works. Also helps future contributors/users.
 
 ### Conventions
 
@@ -126,5 +127,5 @@ To pay attention to, when writing an interpreter or changes:
 - **Minimum code retrieval** : Sniprun should only fetch from the buffer/file the bare minimum necessary to get working.
 - **Allow snips from incomplete files** : if you need to read a bigger part of the file than the data provided by sniprun (in DataHolder), you should NOT fail because the file miss a '}' 35 lines after the code snip.
 - **IO optimization** : it's OK if you write 3 files each time sniprun fires. It's not OK if you re-index a whole project and write a 50Mo file. Overall this is a pretty relaxed rule, as most code sent to sniprun (to then write etc...) is very short, a few lines at most.
-- **Code clarity** : at least comments for non-trivial parts, 'good code' is valued even if I get, and did that myself, than sometimes dirty hacks are necessary.
-- **Documentation** : not extensively required, but limitations and subtilities, if any, of your interpreter should be written a the doc/interpreter_name.md file.
+- **Code clarity** : at least comments for non-trivial parts, 'good code' is given value even if I get, and did that myself, than sometimes dirty hacks are necessary.
+- **Documentation** : not extensively required, but limitations and subtilities, if any, of your interpreter should be written a the doc/interpreter_name.md file: that will be accessible through :SnipInfo [name] this way!

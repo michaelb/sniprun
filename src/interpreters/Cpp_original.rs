@@ -8,10 +8,8 @@ pub struct Cpp_original {
     bin_path: String,
     main_file_path: String,
     compiler: String,
-    imports : Vec<String>, //using, namespaces, and includes
+    imports: Vec<String>, //using, namespaces, and includes
 }
-
-
 
 impl Cpp_original {
     pub fn fetch_imports(&mut self) -> std::io::Result<()> {
@@ -21,17 +19,18 @@ impl Cpp_original {
         let mut file = File::open(&self.data.filepath)?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;
-        
+
         for line in contents.lines() {
-            if line.starts_with("namespace") || line.starts_with("using") || line.starts_with("#include <") {
+            if (line.starts_with("namespace") && line.contains("="))
+                || line.starts_with("using")
+                || line.starts_with("#include <")
+            {
                 self.imports.push(line.to_string());
             }
         }
         Ok(())
     }
 }
-
-
 
 impl ReplLikeInterpreter for Cpp_original {}
 impl Interpreter for Cpp_original {
@@ -52,12 +51,16 @@ impl Interpreter for Cpp_original {
             bin_path: bp,
             main_file_path: mfp,
             compiler: String::from("g++"),
-            imports: vec!(),
+            imports: vec![],
         })
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("C++"),String::from("cpp"), String::from("c++")]
+        vec![
+            String::from("C++"),
+            String::from("cpp"),
+            String::from("c++"),
+        ]
     }
 
     fn get_name() -> String {
@@ -151,6 +154,13 @@ mod test_cpp_original {
     use super::*;
 
     #[test]
+    fn run_all() {
+        simple_print();
+        namespace_definition();
+        using_namespace();
+        namespace_alias();
+    }
+
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("int a = 1;\nstd::cout << a << std::endl;");
@@ -161,5 +171,51 @@ mod test_cpp_original {
         let string_result = res.unwrap();
         assert_eq!(string_result, "1\n");
     }
-}
 
+    fn check_bloc_and_filetext(bloc: String, filetext: String, expected_result: String) {
+        let mut data = DataHolder::new();
+        data.current_bloc = bloc.clone();
+        data.filepath = String::from("ressources/test_cpp.cpp");
+        let dfpc = data.filepath.clone();
+        let mut file = File::create(&data.filepath).unwrap();
+        file.write_all(&filetext.into_bytes()).unwrap();
+
+        let mut interpreter = Cpp_original::new(data);
+        let res = interpreter.run_at_level(SupportLevel::Import);
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, expected_result);
+
+        std::fs::remove_file(dfpc).unwrap();
+    }
+
+    fn namespace_definition() {
+        check_bloc_and_filetext(
+            String::from("int a = 1;\nstd::cout << a << std::endl;"),
+            String::from(concat!(
+                "namespace OuterNS {\n",
+                "namespace InnerNS {\n",
+                "}\n",
+                "}\n",
+            )),
+            String::from("1\n"),
+        );
+    }
+
+    fn using_namespace() {
+        check_bloc_and_filetext(
+            String::from("int a = 1;\ncout << a << endl;"),
+            String::from("using namespace std;\n"),
+            String::from("1\n"),
+        );
+    }
+
+    fn namespace_alias() {
+        check_bloc_and_filetext(
+            String::from("int a = 1;\nxyz::cout << a << xyz::endl;"),
+            String::from("#include <cstdlib>\nnamespace xyz = std;"),
+            String::from("1\n"),
+        );
+    }
+}
