@@ -230,14 +230,13 @@ function M.health()
   local health_warn = vim.fn['health#report_warn']
   health_start('Installation')
   if vim.fn.executable('tree-sitter') == 0 then
-    health_warn('`tree-sitter` executable not found (parser generator, only needed for :TSInstallFromGrammar,'..
-                ' not required for :TSInstall)')
+    health_warn('`tree-sitter` executable not found (): File support and higher may not work properly')
   else
     local handle = io.popen('tree-sitter  -V')
     local result = handle:read("*a")
     handle:close()
     local version = vim.split(result,'\n')[1]:match('[^tree%psitter].*')
-    health_ok('`tree-sitter` found '..version..' (parser generator, only needed for :TSInstallFromGrammar)')
+    health_ok('`tree-sitter` found '..version..' , sniprun will try to make good use of that')
   end
 
 
@@ -249,12 +248,13 @@ function M.health()
 
   terminate_after = M.job_id == nil
   path_log_file = os.getenv('HOME').."/.cache/sniprun/sniprun.log"
+  path_log_file_mac = os.getenv('HOME').."/Library/Caches/sniprun/sniprun.log"
   os.remove(path_log_file)
 
   -- check if the log is recreated
   M.ping()
   os.execute("sleep 0.2")
-  if not M.file_exists(path_log_file)  then health_error("sniprun binary incompatible or crash at start", {"Compile sniprun locally, with a clean reinstall and 'bash ./install.sh 1' as post-install command."})
+  if not M.file_exists(path_log_file) and not M.file_exists(path_log_file_mac)  then health_error("sniprun binary incompatible or crash at start", {"Compile sniprun locally, with a clean reinstall and 'bash ./install.sh 1' as post-install command."})
   else health_ok("sniprun binary runs correctly")
   end
 end

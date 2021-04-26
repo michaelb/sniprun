@@ -37,7 +37,7 @@ Is _my_ code running?
 
 I need to debug, how ?
 
--> Use the `info!("here")` macro instead of `println!("here")`. This writes to the log file you can find in ~/.cache/sniprun/sniprun.log. Beware, if you panic, the logger will stop writing.
+-> Use the `info!("here")` macro instead of `println!("here")`. This writes to the log file you can find in ~/.cache/sniprun/sniprun.log (or ~/Library/Caches/sniprun/sniprun.log on Mac). Beware, if you panic, the logger will stop writing.
 
 ---
 
