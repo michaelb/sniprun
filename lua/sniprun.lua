@@ -37,7 +37,7 @@ M.config_values = {
 M.config_up=0
 
 function M.load_vimscript_config()
-  vimscript_config = {}
+  local vimscript_config = {}
   vimscript_config["repl_enable"] = vim.g.SnipRun_repl_behavior_enable or M.config_values["repl_enable"]
   vimscript_config["repl_disable"] = vim.g.SnipRun_repl_behavior_disable or M.config_values["repl_disable"]
   vimscript_config["selected_interpreters"] = vim.g.SnipRun_select_interpreters or M.config_values["selected_interpreters"]
@@ -143,13 +143,14 @@ function M.notify(method, ...)
 end
 
 function M.run(mode)
-  range_begin, range_end = M.get_range(mode)
+  local range_begin, range_end = M.get_range(mode)
   M.config_values["sniprun_root_dir"] = sniprun_path
   M.notify('run', range_begin, range_end, M.config_values)
 end
 
 
 function M.get_range(mode)
+  local line1, line2
   if not mode then
     line1 = vim.api.nvim_win_get_cursor(0)[1]
     line2 = line1
@@ -192,7 +193,7 @@ end
 -- get all lines from a file, returns an empty
 -- list/table if the file does not exist
 local function lines_from(file)
-  lines = {}
+  local lines = {}
   for line in io.lines(file) do
     lines[#lines + 1] = line
   end
@@ -204,22 +205,16 @@ function M.info(arg)
     M.config_values["sniprun_root_dir"] = sniprun_path
     M.notify("info",1,1,M.config_values)
 
-    local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.."
-
     if M.config_values.inline_messages ~= 0 then
       vim.wait(500) -- let enough time for the sniprun binary to generate the file
       print(" ")
       local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
       -- print all lines content
-      for k,v in pairs(lines) do
-        print(v)
-      end
+      print(table.concat(lines, "\n"))
     end
   else --help about a particular interpreter
       local lines = lines_from(sniprun_path.."/doc/"..string.gsub(arg,"%s+","")..".md")
-    for k,v in pairs(lines) do
-      print(v)
-    end
+      print(table.concat(lines, '\n'))
   end
 end
 
@@ -246,9 +241,9 @@ function M.health()
   if vim.fn.executable(binary_path) == 0 then health_error("sniprun binary not found!")
   else health_ok("sniprun binary found") end
 
-  terminate_after = M.job_id == nil
-  path_log_file = os.getenv('HOME').."/.cache/sniprun/sniprun.log"
-  path_log_file_mac = os.getenv('HOME').."/Library/Caches/sniprun/sniprun.log"
+  local terminate_after = M.job_id == nil
+  local path_log_file = os.getenv('HOME').."/.cache/sniprun/sniprun.log"
+  local path_log_file_mac = os.getenv('HOME').."/Library/Caches/sniprun/sniprun.log"
   os.remove(path_log_file)
 
   -- check if the log is recreated

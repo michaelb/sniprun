@@ -7,29 +7,26 @@ M.term.window_handle = 0
 M.term.current_line = -1
 M.term.chan = -1
 
+local NAMESPACE = 'sniprun'
+
 function M.fw_open(row, column, message, ok, temp)
   M.fw_close()
 
-  hl_ok = "SniprunFloatingWinOk"
-  hl_err = "SniprunFloatingWinErr"
-  if ok then
-    hl = hl_ok
-  else
-    hl = hl_err
-  end
+  local hl_ok = "SniprunFloatingWinOk"
+  local hl_err = "SniprunFloatingWinErr"
+  local hl = ok and hl_ok or hl_err
 
-  namespace_id = vim.api.nvim_create_namespace("")
+  local namespace_id = vim.api.nvim_create_namespace(NAMESPACE)
 
-  buf = 0 -- buffer 
-  w = 0
-  h = -1
-  bp = {row , column}
-  message_map = {}
-  bufnr = vim.api.nvim_create_buf(false, true)
+  local w = 0
+  local h = -1
+  local bp = {row , column}
+  local message_map = {}
+  local bufnr = vim.api.nvim_create_buf(false, true)
   for line in message:gmatch("([^\n]*)\n?") do
     h = h + 1
-    w = math.max(w,string.len(line)) 
-    vim.api.nvim_buf_set_lines(bufnr,h,h+1,false,{line}) 
+    w = math.max(w,string.len(line))
+    vim.api.nvim_buf_set_lines(bufnr,h,h+1,false,{line})
     vim.api.nvim_buf_add_highlight(bufnr, namespace_id, hl, h,0,-1) -- highlight lines in floating window
   end
   M.fw_handle = vim.api.nvim_open_win(bufnr, false, {relative='win', width=w+1, height=h, bufpos=bp, focusable=false, style='minimal',border='single'})
@@ -54,9 +51,9 @@ end
 function M.write_to_term(message, ok)
   M.term_open()
 
-  h = M.term.current_line or -1
+  local h = M.term.current_line or -1
 
-  status = "------"
+  local status = "------"
   if ok then
     status = "--OK--"
   else
@@ -64,16 +61,16 @@ function M.write_to_term(message, ok)
   end
   
   local width = vim.api.nvim_win_get_width(M.term.window_handle)  
-  half_width = (width - 6 - 4) / 2
+  local half_width = (width - 6 - 4) / 2
   message = "  "..string.rep("-",half_width)..status..string.rep("-", half_width).."  ".."\n"..message
 
   for line in message:gmatch("([^\n]*)\n?") do
     h = h +1
-    vim.api.nvim_chan_send(M.term.chan, line)     
+    vim.api.nvim_chan_send(M.term.chan, line)
     vim.api.nvim_chan_send(M.term.chan, "\n\r");
   end
   vim.api.nvim_chan_send(M.term.chan, "\n\r");
-  M.term.current_line = h 
+  M.term.current_line = h
 
 end
 
