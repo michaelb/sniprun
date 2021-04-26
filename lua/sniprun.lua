@@ -34,7 +34,7 @@ M.config_values = {
   inline_messages = 0,
 
   -- default highlight stuff goes here
-  SniprunColors={
+  snipruncolors={
     SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000"},
     SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000"},
     SniprunVirtualTextErr  =  {bg="#881515",fg="#000000"},
@@ -52,7 +52,6 @@ function M.load_vimscript_config()
   vimscript_config["repl_disable"] = vim.g.SnipRun_repl_behavior_disable or M.config_values["repl_disable"]
   vimscript_config["selected_interpreters"] = vim.g.SnipRun_select_interpreters or M.config_values["selected_interpreters"]
   vimscript_config["inline_messages"] = vim.g.SnipRun_inline_messages or M.config_values["inline_messages"]
-  vimscript_config["SniprunColors"] = vim.g.SnipRunColors or M.config_values["SniprunColors"]
   return vimscript_config
 end
 
@@ -106,7 +105,7 @@ end
 
 
 function M.setup_highlights()
-  local colors_table = M.load_vimscript_config()["SniprunColors"]
+  local colors_table = M.config_values["snipruncolors"]
   vim.cmd('augroup snip_highlights')
   vim.cmd('autocmd!')
   for group, styles in pairs(colors_table) do
