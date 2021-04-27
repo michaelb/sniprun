@@ -52,6 +52,7 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
   - [My usage recommandation &amp; tricks](README.md#my-usage-recommandation--tricks)
 - [Supported Languages + levels](README.md#support-levels-and-languages)
 - [Known limitations](README.md#known-limitations)
+- [Troubleshooting](README.md#troubleshooting)
 - [Contribute](README.md#contribute)
 - [Related projects](README.md#related-projects)
 
@@ -358,6 +359,14 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Prints incorrect UTF8 characters, or just too many lines
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache, and relative imports may miss.
 - For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _written_.
+
+## Troubleshooting
+
+begin by running `:checkhealth sniprun`
+
+- **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `bash ./install.sh 1` as post-install to compile locally.
+- Terminal and FloatinWindow display mode do not work: Linked to [this](https://github.com/michaelb/sniprun/issues/70) issue, no fix found yet.
+- Jupyter-based interpreter fails: due to a race condition that may trigger on some computers, but too hard to fix for now.
 
 ## Changelog
 [Changelog](CHANGELOG.md)

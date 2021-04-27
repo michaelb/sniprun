@@ -1,3 +1,9 @@
+## v0.5.4
+- Support configuring compiler, interpreter or venv (python)
+- Fine-tune display modes + highlight
+- Better namespace management for C++ (courtesy of Dan Green)
+- Ping binary to check compatibility
+
 ## v0.5.3
 - Display results in "Classic', "VirtualText", "Floating Windows", and "Terminal" mode
 - Checkhealth pings binary to check compatibility
