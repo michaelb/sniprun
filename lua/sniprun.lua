@@ -35,10 +35,10 @@ M.config_values = {
 
   -- default highlight stuff goes here
   snipruncolors={
-    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000"},
-    SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000"},
-    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000"},
-    SniprunFloatingWinErr  =  {bg="#881515",fg="#000000"},
+    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+    SniprunFloatingWinErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
   }
 
 }
@@ -99,8 +99,13 @@ local highlight = function(group, styles)
   local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
   local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
   local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
-  -- print('highlighting '..group,gui,sp,fg,bg)
-  vim.api.nvim_command('autocmd ColorScheme * highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg)
+  local ctermbg = styles.ctermbg and 'ctermbg='..styles.ctermbg or 'ctermbg=NONE'
+  local ctermfg = styles.ctermfg and 'ctermfg='..styles.ctermfg or 'ctermfg=NONE'
+  -- This somehow works for default highlighting. with or even without cterm colors
+  -- hacky way tho.Still I think better than !hlexists
+  vim.cmd('highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
+  -- For configuration file and
+  vim.api.nvim_command('autocmd ColorScheme * highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
 end
 
 
