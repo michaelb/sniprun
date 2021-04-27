@@ -249,8 +249,7 @@ require'sniprun'.setup({
     },
     
   -- customize highlight groups
-  -- dont forget to set termguicolors.
-  SniprunColors = {
+  snipruncolors = {
     SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000"},
     SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000"},
     SniprunVirtualTextErr  =  {bg="#881515",fg="#000000"},
