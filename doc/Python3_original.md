@@ -17,7 +17,7 @@ With or without REPL, the star imports may also not be automatically fetched, ev
 
 
 
-To use a custom python intepreterv( maybe python2, or a particular version?) you can provide the following interpreter options:, using a venv is also supported (provide one or several local path
+To use a custom python intepreterv( maybe python2, or a particular version?) you can provide the following interpreter options:, using a venv is also supported (provide one or several relative paths "../venv" etc.. may be necessary if you didn't open neovim at the root of the project)
 
 
 ```
