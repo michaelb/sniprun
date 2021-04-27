@@ -5,12 +5,14 @@ pub struct Python3_original {
     data: DataHolder,
     code: String,
     imports: String,
+    interpreter: String,
     main_file_path: String,
     plugin_root: String,
     cache_dir: String,
+    venv: Option<String>,
 }
 impl Python3_original {
-    pub fn fetch_imports(&mut self) -> std::io::Result<()> {
+    fn fetch_imports(&mut self) -> std::io::Result<()> {
         if self.support_level < SupportLevel::Import {
             return Ok(());
         }
@@ -65,6 +67,35 @@ impl Python3_original {
         }
         return false;
     }
+    fn fetch_config(&mut self) {
+        let default_compiler = String::from("python3");
+        if let Some(used_compiler) = self.get_interpreter_option("interpreter") {
+            if let Some(compiler_string) = used_compiler.as_str() {
+                info!("Using custom compiler: {}", compiler_string);
+                self.interpreter = compiler_string.to_string();
+            }
+        }
+        self.interpreter = default_compiler;
+
+        if let Ok(path) = env::current_dir() {
+            if let Some(venv_array_config) = self.get_interpreter_option("venv") {
+                if let Some(actual_vec_of_venv) = venv_array_config.as_array() {
+                    for possible_venv in actual_vec_of_venv.iter() {
+                        if let Some(possible_venv_str) = possible_venv.as_str() {
+                            let venv_abs_path = path.to_str().unwrap().to_owned()
+                                + "/"
+                                + possible_venv_str
+                                + "/bin/activate_this.py";
+                            if std::path::Path::new(&venv_abs_path).exists() {
+                                self.venv = Some(venv_abs_path);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 impl Interpreter for Python3_original {
@@ -89,6 +120,8 @@ impl Interpreter for Python3_original {
             main_file_path: mfp,
             plugin_root: pgr,
             cache_dir: rwd,
+            interpreter: String::new(),
+            venv: None,
         })
     }
 
@@ -132,6 +165,7 @@ impl Interpreter for Python3_original {
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
+        self.fetch_config();
         let _res = self.fetch_imports();
         if !self
             .data
@@ -160,7 +194,17 @@ impl Interpreter for Python3_original {
 
             self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
         }
-        self.code = self.imports.clone() + &unindent(&format!("{}{}", "\n", self.code.as_str()));
+
+        let mut source_venv = String::new();
+        if let Some(venv_path) = &self.venv {
+            info!("loading venv: {}", venv_path);
+            source_venv = source_venv + "\n" + "activate_this_file = \"" + venv_path + "\"";
+            source_venv += "\nexec(compile(open(activate_this_file, \"rb\").read(), activate_this_file, 'exec'), dict(__file__=activate_this_file))\n";
+        }
+
+        self.code = source_venv
+            + &self.imports.clone()
+            + &unindent(&format!("{}{}", "\n", self.code.as_str()));
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {
@@ -170,7 +214,7 @@ impl Interpreter for Python3_original {
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("python3")
+        let output = Command::new(&self.interpreter)
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
@@ -270,7 +314,7 @@ mod test_python3_original {
         assert_eq!(string_result, "->\" 1\n");
     }
 
-    fn get_import(){
+    fn get_import() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(cos(0))");
 
@@ -288,5 +332,4 @@ mod test_python3_original {
 
         std::fs::remove_file(dfpc).unwrap();
     }
-
 }

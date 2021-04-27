@@ -13,6 +13,8 @@ use std::process::Command;
 
 use neovim_lib::NeovimApi;
 
+use std::env;
+
 
 //indentation
 use unindent::unindent;
