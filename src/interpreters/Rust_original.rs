@@ -6,10 +6,25 @@ pub struct Rust_original {
     code: String,
 
     ///specific to rust
+    compiler: String,
     rust_work_dir: String,
     bin_path: String,
     main_file_path: String,
 }
+
+impl Rust_original {
+    fn fetch_config(&mut self) {
+        let default_compiler = String::from("rustc");
+        if let Some(used_compiler) = self.get_interpreter_option("compiler") {
+            if let Some(compiler_string) = used_compiler.as_str() {
+                info!("Using custom compiler: {}", compiler_string);
+                self.compiler = compiler_string.to_string();
+            }
+        }
+        self.compiler = default_compiler;
+    }
+}
+
 impl ReplLikeInterpreter for Rust_original {}
 impl Interpreter for Rust_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Rust_original> {
@@ -27,10 +42,11 @@ impl Interpreter for Rust_original {
         Box::new(Rust_original {
             data,
             support_level,
-            code: String::from(""),
+            code: String::new(),
             rust_work_dir: rwd,
             bin_path: bp,
             main_file_path: mfp,
+            compiler: String::new(),
         })
     }
 
@@ -66,6 +82,7 @@ impl Interpreter for Rust_original {
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
+        self.fetch_config();
         //add code from data to self.code
         if !self
             .data
@@ -97,7 +114,7 @@ impl Interpreter for Rust_original {
         write(&self.main_file_path, &self.code).expect("Unable to write to file for rust-original");
 
         //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new("rustc")
+        let output = Command::new(&self.compiler)
             .arg("-O")
             .arg("--out-dir")
             .arg(&self.rust_work_dir)
