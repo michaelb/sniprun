@@ -26,7 +26,7 @@ download() {
   # curl --fail --location "$1" --output target/release/sniprun
   echo "Downloading" $1
   # curl -s https://api.github.com/repos/michaelb/sniprun/releases/$1 | grep "sniprun" | cut -d ":" -f 2,3 | tr -d \" | wget -qi -
-  wget -q https://github.com/michaelb/sniprun/releases/download/v0.4.9/sniprun
+  wget -q https://github.com/michaelb/sniprun/releases/download/$1/sniprun
   mkdir -p target/release/
   mv -f sniprun target/release/
 }

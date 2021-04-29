@@ -3,6 +3,7 @@
 - Fine-tune display modes + highlight
 - Better namespace management for C++ (courtesy of Dan Green)
 - Ping binary to check compatibility
+- Fix major bug with download system
 
 ## v0.5.3
 - Display results in "Classic', "VirtualText", "Floating Windows", and "Terminal" mode
