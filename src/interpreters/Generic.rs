@@ -107,7 +107,7 @@ impl Interpreter for Generic {
             //unwrap the json output
             let js = String::from_utf8(output.stdout).unwrap();
             info!("json output: {:?}", js);
-            let parsed: Value = serde_json::from_str(&js).unwrap();
+            let parsed: serde_json::Value = serde_json::from_str(&js).unwrap();
             let res_stdout = parsed.get("stdout").unwrap().to_string();
             let res_stderr = parsed.get("stderr").unwrap().to_string();
 

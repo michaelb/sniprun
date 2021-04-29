@@ -104,6 +104,7 @@ impl Launcher {
                 "\nCurrently selected interpreter: {}, at support level: {}\n",
                 name, level
             ));
+            v.push(format!("More information may be available via :SnipInfo {}\n\n", name));
         } else {
             v.push("No interpreter selected\n".to_string());
         }

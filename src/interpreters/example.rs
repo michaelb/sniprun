@@ -124,9 +124,25 @@ impl Interpreter for Language_subname {
         write(&self.main_file_path, &self.code)
             .expect("Unable to write to file for language_subname");
 
+
+        //fetch the option from the configuration
+        //  interpreter_options = {
+        //   example_original = {
+        //     example_option = "--optimize-with-debug-info",
+        //   }
+        // },
+        let mut configurable_option = "--optimize";
+        if let Some(config_value) = self.get_interpreter_option("example_option") {
+            if let Some(config_value_valid_string) = config_value.as_str() {
+                configurable_option = config_value_valid_string;
+            }
+        }
+
+
+
         //compile it (to the bin_path that arleady points to the rigth path)
         let output = Command::new("compiler")
-            .arg("--optimize") // for short snippets, that may contain a long loop
+            .arg(&configurable_option) // for short snippets, that may contain a long loop
             .arg("--out-dir")
             .arg(&self.language_work_dir)
             .arg(&self.main_file_path)

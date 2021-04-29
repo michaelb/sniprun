@@ -6,10 +6,26 @@ pub struct Go_original {
     code: String,
 
     ///specific to go
+    compiler: String,
     go_work_dir: String,
     bin_path: String,
     main_file_path: String,
 }
+
+impl Go_original {
+    fn fetch_config(&mut self) {
+        let default_compiler = String::from("go");
+        if let Some(used_compiler) = self.get_interpreter_option("compiler") {
+            if let Some(compiler_string) = used_compiler.as_str() {
+                info!("Using custom compiler: {}", compiler_string);
+                self.compiler = compiler_string.to_string();
+            }
+        }
+        self.compiler = default_compiler;
+    }
+}
+
+
 impl ReplLikeInterpreter for Go_original {}
 impl Interpreter for Go_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Go_original> {
@@ -31,6 +47,7 @@ impl Interpreter for Go_original {
             go_work_dir: gwd,
             bin_path: bp,
             main_file_path: mfp,
+            compiler: String::new(),
         })
     }
 
@@ -66,6 +83,7 @@ impl Interpreter for Go_original {
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
+        self.fetch_config();
         //add code from data to self.code
         if !self
             .data
@@ -97,7 +115,7 @@ impl Interpreter for Go_original {
         write(&self.main_file_path, &self.code).expect("Unable to write to file for go-original");
 
         //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new("go")
+        let output = Command::new(&self.compiler)
             .arg("build")
             .arg("-o")
             .arg(&self.go_work_dir)

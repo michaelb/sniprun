@@ -53,6 +53,7 @@ pub trait Interpreter: ReplLikeInterpreter {
     ///Return the (unique) name of your interpreter.
     fn get_name() -> String;
 
+
     ///Return whether the interpreter is the default for a given filetype
     fn default_for_filetype() -> bool {
         false
@@ -165,9 +166,10 @@ pub trait InterpreterUtils {
 
     fn set_pid(&self, pid: u32);
     fn get_pid(&self) -> Option<u32>;
+    fn get_interpreter_option(&self, option: &str) -> Option<neovim_lib::Value>;
 }
 
-impl<T: Interpreter> InterpreterUtils for T {
+impl<T: Interpreter> InterpreterUtils for T{
     ///Read a String previous saved to sniprun memory
     fn read_previous_code(&self) -> String {
         let data = self.get_data();
@@ -242,6 +244,41 @@ impl<T: Interpreter> InterpreterUtils for T {
         } else {
             return None;
         }
+    }
+
+
+    /// get an intepreter option
+    fn get_interpreter_option(&self, option:&str) -> Option<neovim_lib::Value> {
+        fn index_from_name(
+            name: &str,
+            config: &Vec<(neovim_lib::Value, neovim_lib::Value)>,
+        ) -> Option<usize> {
+            for (i, kv) in config.iter().enumerate() {
+                if name == kv.0.as_str().unwrap() {
+                    return Some(i);
+                }
+            }
+            info!("key '{}' not found in interpreter option", name);
+            return None;
+        }
+        // this is the ugliness required to fetch something from the interpreter options
+        if let Some(config) = &self.get_data().interpreter_options {
+            if let Some(ar) = config.as_map() {
+                if let Some(i) = index_from_name("interpreter_options", ar) {
+                    if let Some(ar2) = ar[i].1.as_map() {
+                        if let Some(i) = index_from_name(&T::get_name(), ar2) {
+                            if let Some(interpreter_config) = ar2[i].1.as_map() {
+                                if let Some(i) = index_from_name(option, interpreter_config) {
+                                    return Some(interpreter_config[i].1.clone());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        None
     }
 }
 

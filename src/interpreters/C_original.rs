@@ -12,7 +12,7 @@ pub struct C_original {
 }
 
 impl C_original {
-    pub fn fetch_imports(&mut self) -> std::io::Result<()> {
+    fn fetch_imports(&mut self) -> std::io::Result<()> {
         if self.support_level < SupportLevel::Import {
             return Ok(());
         }
@@ -27,6 +27,17 @@ impl C_original {
         }
         info!("fecthed imports : {:?}", self.imports);
         Ok(())
+    }
+
+    fn fetch_config(&mut self) {
+        let default_compiler = String::from("gcc");
+        if let Some(used_compiler) = self.get_interpreter_option("compiler") {
+            if let Some(compiler_string) = used_compiler.as_str() {
+                info!("Using custom compiler: {}", compiler_string);
+                self.compiler = compiler_string.to_string();
+            }
+        }
+        self.compiler = default_compiler;
     }
 }
 
@@ -49,7 +60,7 @@ impl Interpreter for C_original {
             c_work_dir: rwd,
             bin_path: bp,
             main_file_path: mfp,
-            compiler: String::from("gcc"),
+            compiler: String::new(),
             imports: vec![],
         })
     }
@@ -82,6 +93,7 @@ impl Interpreter for C_original {
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
+        self.fetch_config();
         if !self
             .data
             .current_bloc

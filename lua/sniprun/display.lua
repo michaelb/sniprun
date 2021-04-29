@@ -29,7 +29,7 @@ function M.fw_open(row, column, message, ok, temp)
     vim.api.nvim_buf_set_lines(bufnr,h,h+1,false,{line})
     vim.api.nvim_buf_add_highlight(bufnr, namespace_id, hl, h,0,-1) -- highlight lines in floating window
   end
-  M.fw_handle = vim.api.nvim_open_win(bufnr, false, {relative='win', width=w+1, height=h, bufpos=bp, focusable=false, style='minimal', border='single'})
+  M.fw_handle = vim.api.nvim_open_win(bufnr, false, {relative='win', width=w+1, height=h, bufpos=bp, focusable=false, style='minimal',border='single'})
 end
 
 function M.term_open()
@@ -59,10 +59,10 @@ function M.write_to_term(message, ok)
   else
     status = "ERROR-"
   end
-
-  local width = vim.api.nvim_win_get_width(M.term.window_handle)
-  local half_width = (width - 6) / 2
-  message = string.rep("-",half_width)..status..string.rep("-", half_width).."\n"..message
+  
+  local width = vim.api.nvim_win_get_width(M.term.window_handle)  
+  local half_width = (width - 6 - 4) / 2
+  message = "  "..string.rep("-",half_width)..status..string.rep("-", half_width).."  ".."\n"..message
 
   for line in message:gmatch("([^\n]*)\n?") do
     h = h +1

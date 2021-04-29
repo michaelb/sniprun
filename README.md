@@ -54,6 +54,7 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
   - [My usage recommandation &amp; tricks](README.md#my-usage-recommandation--tricks)
 - [Supported Languages + levels](README.md#support-levels-and-languages)
 - [Known limitations](README.md#known-limitations)
+- [Troubleshooting](README.md#troubleshooting)
 - [Contribute](README.md#contribute)
 - [Related projects](README.md#related-projects)
 
@@ -240,7 +241,7 @@ Some languages, see support [table](README.md#support-levels-and-languages), als
 While this is more easy/clean to implement on interpreted languages, **compiled languages can have a REPL-like behavior too!**
 
 Many interpreted languages will have this behavior enabled or disabled by default, you can change this with the
-`repl_enable = { 'Intepreter_name', 'Another_one' }` and `repl_disable = {'Disabled_interpreter'}` keys in the configuration. Relevant info is available in `:SnipInfo` / `:lua require'sniprun'.info()`
+`repl_enable = { 'Intepreter_name', 'Another_one' }` and `repl_disable = {'Disabled_interpreter'}` keys in the configuration. Relevant info is available in `:SnipInfo` / `:SnipInfo <name> `
 
 
 REPL-like behavior is experimental and will work better with interpreted languages and with side-effect-free code (including prints in functions).
@@ -253,7 +254,7 @@ Hopefully, if something does not work, or if the 'memory' is corrupted by bad co
 
 Sniprun is a Lua plugin, but **you don't need** the usual boilerplate: if you don't need any special configuration, you don't need to do anything.
 
-However, if you want to change some options, you can add this snippet (the default config) to your configuration file and modify if at will:
+However, if you want to change some options, you can add this snippet (the default config) to your configuration file and modify if at will (you can remove keys without issue to shorten your config, the default values are overwritten on a key-by-key basis):
 
 ```vim
 lua << EOF
@@ -282,6 +283,7 @@ EOF
 Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of the 'Python3_original' default],
 `lua require'sniprun'.setup({selected_interpreters = {'Python3_jupyter'}})`
 
+**NOTE**: Some interpreters have specific options, such as what version / compiler to use: you cand find more about that with `:SnipInfo <interpreter_name>`
 
 
 ​
@@ -407,6 +409,14 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Prints incorrect UTF8 characters, or just too many lines
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache, and relative imports may miss.
 - For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _written_.
+
+## Troubleshooting
+
+begin by running `:checkhealth sniprun`
+
+- **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `bash ./install.sh 1` as post-install to compile locally.
+- Terminal and FloatinWindow display mode do not work: Linked to [this](https://github.com/michaelb/sniprun/issues/70) issue, no fix found yet.
+- Jupyter-based interpreter fails: due to a race condition that may trigger on some computers, but too hard to fix for now.
 
 ## Changelog
 [Changelog](CHANGELOG.md)

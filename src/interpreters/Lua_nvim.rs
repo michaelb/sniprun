@@ -103,12 +103,12 @@ impl Interpreter for Lua_nvim {
         if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
             info!("yay from lua interpreter - in current nvim instance");
             let command_nvim = String::from("luafile ") + &self.main_file_path;
-            let res = real_nvim_instance.lock().unwrap().command(&command_nvim);
-            if res.is_ok() {
-                return Ok(String::from(""));
-            } else {
-                return Err(SniprunError::RuntimeError(String::from("")));
-            }
+            let res = real_nvim_instance.lock().unwrap().command_output(&command_nvim);
+            info!("res : {:?}", res);
+            return match res {
+                Ok(message) => Ok(message),
+                Err(_) => Err(SniprunError::RuntimeError(String::from(""))),
+            };
         } else {
             //else, executing in another nvim instance
             let output = Command::new("nvim")

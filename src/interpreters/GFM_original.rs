@@ -104,18 +104,7 @@ impl ReplLikeInterpreter for GFM_original {}
 
 impl Interpreter for GFM_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Self> {
-        fn index_from_name(
-            name: &str,
-            config: &Vec<(neovim_lib::Value, neovim_lib::Value)>,
-        ) -> Option<usize> {
-            for (i, kv) in config.iter().enumerate() {
-                if name == kv.0.as_str().unwrap() {
-                    return Some(i);
-                }
-            }
-            info!("key not found in GFM");
-            return None;
-        }
+       
         //create a subfolder in the cache folder
         let lwd = data.work_dir.clone() + "/gfm_original";
         let mut builder = DirBuilder::new();
@@ -126,36 +115,25 @@ impl Interpreter for GFM_original {
         let mut data_clone = data.clone();
         data_clone.work_dir = lwd.clone(); //trick other interpreter at creating their files here
 
-        let mut ddf = String::from("python"); //default default
+        let ddf = String::from("python"); //default default
 
-        // this is the ugliness required to fetch something from the interpreter options, to adapt
-        // ofc to the type you want to convert to
-        if let Some(config) = data.interpreter_options {
-            if let Some(ar) = config.as_map() {
-                if let Some(i) = index_from_name("interpreter_options", ar) {
-                    if let Some(ar2) = ar[i].1.as_map() {
-                        if let Some(i) = index_from_name("GFM_original", ar2) {
-                            if let Some(gfm_config) = ar2[i].1.as_map() {
-                                if let Some(i) = index_from_name("default_filetype", gfm_config) {
-                                    if let Some(other_default) = gfm_config[i].1.as_str() {
-                                        info!("Changed default filetype");
-                                        ddf = other_default.to_string();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        Box::new(GFM_original {
+        let mut gfm_interpreter = Box::new(GFM_original {
             data: data_clone,
             support_level,
             code: String::new(),
             language_work_dir: lwd,
             default_filetype: ddf,
-        })
+        });
+
+
+        if let Some(value) = gfm_interpreter.get_interpreter_option("default_filetype") {
+            if let Some(valid_string) = value.as_str() {
+                gfm_interpreter.default_filetype = valid_string.to_string();
+            }
+        }
+
+        return gfm_interpreter;
+
     }
 
     fn get_supported_languages() -> Vec<String> {
