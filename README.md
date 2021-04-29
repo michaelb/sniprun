@@ -39,6 +39,8 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
 
 
 
+​
+
 - [Demos](README.md#demos)
 - [What does it do ?](README.md#what-does-it-do-)
 - [Installation](README.md#installation)
@@ -102,6 +104,8 @@ Do either of:
 
 and ... that's it!
 
+​
+
 Sniprun will then:
 
 - **Get the code** you selected (selections are rounded line-wise)
@@ -113,6 +117,7 @@ Sniprun will then:
 
 
 ![](ressources/visual_assets/760091.png)
+
 ## Installation
 
 ### Prerequisites && dependencies
@@ -133,15 +138,30 @@ Sniprun will then:
 Use your favorite plugin manager.
 (Run `install.sh` as a post-installation script, it will download or compile the sniprun binary)
 
-For example, with `vim-plug`:
+<details open><summary>vim-plug</summary>
+<p>
 
 ```vim
 Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 " 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary,
 "  but you'll compile sniprun at every update & will need the rust toolchain
 ```
-<!---- a nice spacer ---->
-$~~~~~~~~~~~~$
+
+</details>
+</p>
+
+
+<details><summary>packer</summary>
+<p>
+
+```
+  use { 'michaelb/sniprun', run = 'bash ./install.sh', config= function() require'sniprun'.initial_setup() end}
+```
+</details>
+</p>
+
+
+​
 
 (AUR)
 
@@ -149,19 +169,22 @@ $~~~~~~~~~~~~$
 
 An independently maintained [AUR package](https://aur.archlinux.org/packages/neovim-sniprun/) is available for Arch users. ([legacy](https://aur.archlinux.org/packages/neovim-sniprun-legacy/) package for neovim < 0.5 users)
 
-
-$~~~~~~~~~~~~$
+​
 
 (Manual)
 
 
 I trust you know how to add a plugin to the runtimepath, just don't forget to run `./install.sh`, or alternatively, `cargo build --release` to fetch/build the binary.
+
 ![](ressources/visual_assets/760091.png)
+
 ## Usage
 
 (you can of course see `:help sniprun` once installed for the complete list of commands, and `:SnipInfo` will have a decent share of useful information too)
 
 You can do basically two things: **run** your code selection and **stop** it (in the rare occasions it crashes, it takes too long or sniprun crashes). You'll probably be using only the first one, but the second can come in handy.
+
+​
 
 #### Running
 
@@ -185,6 +208,7 @@ You can do basically two things: **run** your code selection and **stop** it (in
 
 Configure a mapping to `<Plug>SnipRunOperator` and combine it with movements to sniprun 'text objects'. Every text-object will be rounded line-wise.
 
+​
 
 #### Stopping
 
@@ -196,6 +220,7 @@ No worries, the second and last command will kill everything Sniprun ran so far:
 ```
 Alternatively, exit & re-enter Neovim.
 
+​
 
 #### Clearing
 You may want to clear virtual text, close a terminal or a floating window created by Sniprun: for this, one command to rule them all:
@@ -207,6 +232,7 @@ You may want to clear virtual text, close a terminal or a floating window create
 
 
 ![](ressources/visual_assets/760091.png)
+
 ### REPL-like behavior
 
 Some languages, see support [table](README.md#support-levels-and-languages), also have some kind of REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have 'memory' of lines you have previously sent to sniprun.
@@ -222,6 +248,7 @@ REPL-like behavior is experimental and will work better with interpreted languag
 Hopefully, if something does not work, or if the 'memory' is corrupted by bad code you can clear the REPL memory with `:SnipReplMemoryClean` that is a faster and less error-prone alternative to `:SnipReset` for this use case.
 
 ![](ressources/visual_assets/760091.png)
+
 ## Configuration
 
 Sniprun is a Lua plugin, but **you don't need** the usual boilerplate: if you don't need any special configuration, you don't need to do anything.
@@ -257,6 +284,7 @@ Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of 
 
 
 
+​
 
 All of sniprun functionnalities:
 
@@ -282,11 +310,27 @@ You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to 
 
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
 
+<details><summary> recommended mappings in lua</summary>
+<p>
+
+```
+vim.api.nvim_set_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
+vim.api.nvim_set_keymap('n', '<leader>f', '<Plug>SnipRunOperator', {silent = true})
+vim.api.nvim_set_keymap('n', '<leader>ff', '<Plug>SnipRun', {silent = true})
+```
+</details>
+</p>
+
+<details open><summary> recommended mappings in vimscript</summary>
+<p>
+
 ```
 nmap <leader>ff <Plug>SnipRun
 nmap <leader>f <Plug>SnipRunOperator
 vmap f <Plug>SnipRun
 ```
+</details>
+</p>
 
 - For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire file.
 
@@ -295,10 +339,11 @@ While both shorthands and \<Plug> are here to stay, **please use the `<Plug>` st
 
 
 
-SnipRun synergises exceptionnally well with plugins that help you creating print/debug statements, such as [vim-printer](https://github.com/meain/vim-printer).
+Sniprun synergises exceptionnally well with plugins that help you creating print/debug statements, such as [vim-printer](https://github.com/meain/vim-printer).
 
 
 ![](ressources/visual_assets/760091.png)
+
 ## Support levels and languages
 
 As of writing, languages can be supported up to different extents:
@@ -319,6 +364,8 @@ println!("-> {}", alphabet);
 - **File** : Sniprun will recursively find the missing variable and function definitions to run your line of code(you don't have to select a bloc anymore).
 - **Project** : Sniprun will detect the root of your project, and get the necessary code from files in your project.
 - **System** : Sniprun will use local (and system) libraries, such as jar files, to run your what you want.
+
+​
 
 | Language     | Support level |     | Language   | Support level    |
 | ------------ | ------------- | --- | ---------- | ---------------- |
@@ -350,6 +397,7 @@ Want support for your language? Submit a feature request, or even better, [contr
 \*\*\* if underlying language supports it
 
 ![](ressources/visual_assets/760091.png)
+
 ## Known limitations
 
 Due to its nature, Sniprun may have trouble with programs that :
@@ -379,10 +427,12 @@ The [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](
 
 [vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is / will be [conjure](https://github.com/Olical/conjure), but they do things differently enough I made sniprun instead.
 
+And many more projects, somewhat similar, but never quite, that I didn't notice or wanted to include.
 
-**Why should you use sniprun instead of these alternatives?**
 
-- All-language support. Sniprun can work with virtually any language, including compiled ones. If the language is not supported yet, anyone can create a sniprun interpreter for it!
-- Simpler user input & output. Sniprun doesn't use precious screen space (like [codi](https://github.com/metakirby5/codi.vim) or [vim-slime](https://github.com/jpalardy/vim-slime)) by default (but it can).
+####  **Why should you use sniprun instead of these alternatives?**
+
+- **All-language support**. Sniprun can work with virtually any language, including compiled ones. If the language is not supported yet, anyone can create a sniprun interpreter for it!
+- **Better output**. Sniprun doesn't use precious screen space (like [codi](https://github.com/metakirby5/codi.vim) or [vim-slime](https://github.com/jpalardy/vim-slime)) by default (but it can).
 - Promising evolution of the project: treesitter usage is in the goals plan, to make testing/ running even better (with things like auto-fecthing variables & functions definitions). Those will comply at least with the File support level for a truly amazing experience. (I'll need some help with that though).
-- Fast, extendable and maintainable: this is not a 2k-lines vim script, nor an inherently limited one-liner. It's a Rust project designed to be as clear and "contribuable" as possible.
+- **Fast, extendable and maintainable**: this is not a 2k-lines vim script, nor an inherently limited one-liner. It's a Rust project designed to be as clear and "contribuable" as possible.
