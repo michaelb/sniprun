@@ -263,7 +263,7 @@ require'sniprun'.setup({
   repl_enable = {},               --" enable REPL-like behavior for the given interpreters
   repl_disable = {},              --" disable REPL-like behavior for the given interpreters
 
-  inline_messages = 0             --" inline_message (0/1) is a one-line way to display messages
+  inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
                                   --" to workaround sniprun not being able to display anything
 
   -- " you can combo different display modes as desired
@@ -275,6 +275,15 @@ require'sniprun'.setup({
     -- "LongTempFloatingWindow",  -- "same as above, but only long results. To use with VirtualText__
     -- "Terminal"                 -- "display results in a vertical split
     },
+    
+  -- customize highlight groups
+  snipruncolors = {
+    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000"},
+    SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000"},
+    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000"},
+    SniprunFloatingWinErr  =  {bg="#881515",fg="#000000"}
+  }
+
 
 })
 EOF
