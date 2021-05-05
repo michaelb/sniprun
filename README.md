@@ -13,9 +13,6 @@
     <a href="https://github.com/michaelb/sniprun/pulse">
       <img alt="Last commit" src="https://img.shields.io/github/last-commit/michaelb/sniprun"/>
     </a>
-    <a href="https://aur.archlinux.org/packages/neovim-sniprun/">
-      <img alt="AUR last modified" src="https://img.shields.io/aur/last-modified/sniprun?label=AUR%20package%20updated"/>
-    </a>
     <a href="https://app.codecov.io/gh/michaelb/sniprun">
       <img alt="CI build" src="https://codecov.io/gh/michaelb/sniprun/branch/master/graph/badge.svg?token=PQQV79XYVN" />
     </a>
@@ -167,6 +164,9 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 (AUR)
 
 ![](https://img.shields.io/aur/maintainer/sniprun)
+<a href="https://aur.archlinux.org/packages/neovim-sniprun/">
+  <img alt="AUR last modified" src="https://img.shields.io/aur/last-modified/sniprun?label=AUR%20package%20updated"/>
+</a>
 
 An independently maintained [AUR package](https://aur.archlinux.org/packages/neovim-sniprun/) is available for Arch users. ([legacy](https://aur.archlinux.org/packages/neovim-sniprun-legacy/) package for neovim < 0.5 users)
 
