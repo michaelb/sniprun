@@ -1,5 +1,6 @@
 local M = {}
 M.ping_anwsered=0
+M.custom_highlight=false
 
 -- See https://github.com/tjdevries/rofl.nvim/blob/632c10f2ec7c56882a3f7eda8849904bcac6e8af/lua/rofl.lua
 local binary_path = vim.fn.fnamemodify(
@@ -34,7 +35,7 @@ M.config_values = {
   inline_messages = 0,
 
   -- default highlight stuff goes here
-  snipruncolors={
+  snipruncolors = {
     SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
     SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
     SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
@@ -72,7 +73,10 @@ function M.setup(opts)
       error(string.format('[Sniprun] Key %s not exist in config values',key))
       return
     end
-      M.config_values[key] = value
+    if key == 'snipruncolors' then
+      M.custom_highlight = true
+    end
+    M.config_values[key] = value
   end
   M.configure_keymaps()
   M.setup_highlights()
@@ -92,20 +96,32 @@ local highlight = function(group, styles)
   -- This somehow works for default highlighting. with or even without cterm colors
   -- hacky way tho.Still I think better than !hlexists
   vim.cmd('highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
-  -- For configuration file and
   vim.api.nvim_command('autocmd ColorScheme * highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
 end
 
 
 function M.setup_highlights()
   local colors_table = M.config_values["snipruncolors"]
-  vim.cmd('augroup snip_highlights')
-  vim.cmd('autocmd!')
-  for group, styles in pairs(colors_table) do
-    -- print('setting up for '..group,'with style :','bg :',styles.bg,'fg :',styles.fg)
-    highlight(group, styles)
+  if M.custom_highlight then 
+    vim.cmd('augroup snip_highlights')
+    vim.cmd('autocmd!')
+    for group, styles in pairs(colors_table) do
+      -- print('setting up for '..group,'with style :','bg :',styles.bg,'fg :',styles.fg)
+      highlight(group, styles)
+    end
+    vim.cmd('augroup END')
+  else 
+    for group, styles in pairs(colors_table) do
+      local gui = styles.gui and 'gui='..styles.gui or 'gui=NONE'
+      local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
+      local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
+      local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
+      local ctermbg = styles.ctermbg and 'ctermbg='..styles.ctermbg or 'ctermbg=NONE'
+      local ctermfg = styles.ctermfg and 'ctermfg='..styles.ctermfg or 'ctermfg=NONE'
+
+      vim.cmd("if !hlexists('"..group.."') \n hi "..group.." "..gui.." "..sp.." "..fg.." "..bg.." "..ctermbg.." "..ctermfg)
+    end
   end
-  vim.cmd('augroup END')
 end
 
 function M.setup_autocommands()
