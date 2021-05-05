@@ -202,7 +202,6 @@ mod test_c_original {
     #[test]
     fn run_all() {
         simple_print();
-        test_include();
     }
 
     fn simple_print() {
@@ -214,24 +213,5 @@ mod test_c_original {
         // should panic if not an Ok()
         let string_result = res.unwrap();
         assert_eq!(string_result, "1=1\n");
-    }
-
-    fn test_include() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("printf(\"%f\\n\", cos(M_PI));");
-
-        data.filepath = String::from("ressources/cccccc.c");
-        let dfpc = data.filepath.clone();
-        let mut file = File::create(&data.filepath).unwrap();
-        file.write_all(b"#include <math.h>").unwrap();
-
-        let mut interpreter = C_original::new(data);
-        let res = interpreter.run_at_level(SupportLevel::Import);
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert_eq!(string_result, "-1.000000\n");
-
-        std::fs::remove_file(dfpc).unwrap();
     }
 }

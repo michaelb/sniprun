@@ -374,7 +374,6 @@ mod test_python3_jupyter {
     #[test]
     fn run_all() {
         simple_print();
-        get_import();
     }
 
     fn simple_print() {
@@ -386,25 +385,6 @@ mod test_python3_jupyter {
         // should panic if not an Ok()
         let string_result = res.unwrap();
         assert!(string_result.contains(&"a 1"));
-    }
-
-    fn get_import() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("print(float(cos(0)))");
-
-        data.filepath = String::from("ressources/import.py");
-        let dfpc = data.filepath.clone();
-        let mut file = File::create(&data.filepath).unwrap();
-        file.write_all(b"from math import cos").unwrap();
-
-        let mut interpreter = Python3_jupyter::new(data);
-        let res = interpreter.run_at_level(SupportLevel::Import);
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert!(string_result.contains("1.0"));
-
-        std::fs::remove_file(dfpc).unwrap();
     }
 
     #[test]

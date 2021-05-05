@@ -308,13 +308,12 @@ mod test_python3_original {
     fn run_all() {
         simple_print();
         print_quote();
-        get_import();
     }
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"lol\",1);");
         let mut interpreter = Python3_original::new(data);
-        let res = interpreter.run();
+        let res = interpreter.run_at_level(SupportLevel::Bloc);
 
         // should panic if not an Ok()
         let string_result = res.unwrap();
@@ -324,29 +323,10 @@ mod test_python3_original {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"->\\\"\",1);");
         let mut interpreter = Python3_original::new(data);
-        let res = interpreter.run();
+        let res = interpreter.run_at_level(SupportLevel::Bloc);
 
         // should panic if not an Ok()
         let string_result = res.unwrap();
         assert_eq!(string_result, "->\" 1\n");
-    }
-
-    fn get_import() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("print(cos(0))");
-
-        data.filepath = String::from("ressources/import2.py");
-        let dfpc = data.filepath.clone();
-        let mut file = File::create(&data.filepath).unwrap();
-        file.write_all(b"from math import cos").unwrap();
-
-        let mut interpreter = Python3_original::new(data);
-        let res = interpreter.run_at_level(SupportLevel::Import);
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert_eq!(string_result, "1.0\n");
-
-        std::fs::remove_file(dfpc).unwrap();
     }
 }

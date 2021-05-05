@@ -181,9 +181,9 @@ mod test_cpp_original {
     #[test]
     fn run_all() {
         simple_print();
-        namespace_definition();
-        using_namespace();
-        namespace_alias();
+        // namespace_definition();
+        // using_namespace();
+        // namespace_alias();
     }
 
     fn simple_print() {
@@ -197,50 +197,50 @@ mod test_cpp_original {
         assert_eq!(string_result, "1\n");
     }
 
-    fn check_bloc_and_filetext(bloc: String, filetext: String, expected_result: String) {
-        let mut data = DataHolder::new();
-        data.current_bloc = bloc.clone();
-        data.filepath = String::from("ressources/test_cpp.cpp");
-        let dfpc = data.filepath.clone();
-        let mut file = File::create(&data.filepath).unwrap();
-        file.write_all(&filetext.into_bytes()).unwrap();
-
-        let mut interpreter = Cpp_original::new(data);
-        let res = interpreter.run_at_level(SupportLevel::Import);
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert_eq!(string_result, expected_result);
-
-        std::fs::remove_file(dfpc).unwrap();
-    }
-
-    fn namespace_definition() {
-        check_bloc_and_filetext(
-            String::from("int a = 1;\nstd::cout << a << std::endl;"),
-            String::from(concat!(
-                "namespace OuterNS {\n",
-                "namespace InnerNS {\n",
-                "}\n",
-                "}\n",
-            )),
-            String::from("1\n"),
-        );
-    }
-
-    fn using_namespace() {
-        check_bloc_and_filetext(
-            String::from("int a = 1;\ncout << a << endl;"),
-            String::from("using namespace std;\n"),
-            String::from("1\n"),
-        );
-    }
-
-    fn namespace_alias() {
-        check_bloc_and_filetext(
-            String::from("int a = 1;\nxyz::cout << a << xyz::endl;"),
-            String::from("#include <cstdlib>\nnamespace xyz = std;"),
-            String::from("1\n"),
-        );
-    }
+//     fn check_bloc_and_filetext(bloc: String, filetext: String, expected_result: String) {
+//         let mut data = DataHolder::new();
+//         data.current_bloc = bloc.clone();
+//         data.filepath = String::from("ressources/test_cpp.cpp");
+//         let dfpc = data.filepath.clone();
+//         let mut file = File::create(&data.filepath).unwrap();
+//         file.write_all(&filetext.into_bytes()).unwrap();
+// 
+//         let mut interpreter = Cpp_original::new(data);
+//         let res = interpreter.run_at_level(SupportLevel::Import);
+// 
+//         // should panic if not an Ok()
+//         let string_result = res.unwrap();
+//         assert_eq!(string_result, expected_result);
+// 
+//         std::fs::remove_file(dfpc).unwrap();
+//     }
+//
+//     fn namespace_definition() {
+//         check_bloc_and_filetext(
+//             String::from("int a = 1;\nstd::cout << a << std::endl;"),
+//             String::from(concat!(
+//                 "namespace OuterNS {\n",
+//                 "namespace InnerNS {\n",
+//                 "}\n",
+//                 "}\n",
+//             )),
+//             String::from("1\n"),
+//         );
+//     }
+// 
+//     fn using_namespace() {
+//         check_bloc_and_filetext(
+//             String::from("int a = 1;\ncout << a << endl;"),
+//             String::from("using namespace std;\n"),
+//             String::from("1\n"),
+//         );
+//     }
+// 
+//     fn namespace_alias() {
+//         check_bloc_and_filetext(
+//             String::from("int a = 1;\nxyz::cout << a << xyz::endl;"),
+//             String::from("#include <cstdlib>\nnamespace xyz = std;"),
+//             String::from("1\n"),
+//         );
+//     }
 }
