@@ -1,5 +1,6 @@
 ## v0.5.5
 - Configurable colors
+- Use current buffer instead of save files for import level
 
 ## v0.5.4
 - Support configuring compiler, interpreter or venv (python)

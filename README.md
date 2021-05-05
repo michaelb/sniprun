@@ -415,9 +415,8 @@ Due to its nature, Sniprun may have trouble with programs that :
 
 - Meddle with standart output / stderr
 - Need to read from stdin
-- Prints incorrect UTF8 characters, or just too many lines
-- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache, and relative imports may miss.
-- For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _written_.
+- Print incorrect UTF8 characters, or just too many lines
+- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache/sniprun, and relative imports may miss.
 
 ## Troubleshooting
 
@@ -425,7 +424,7 @@ begin by updating the plugin and running `:checkhealth sniprun`
 
 - **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `bash ./install.sh 1` as post-install to compile locally.
 - Terminal and FloatinWindow display mode do not work: Linked to [this](https://github.com/michaelb/sniprun/issues/70) issue, no fix found yet.
-- Jupyter-based interpreter fails: due to a race condition that may trigger on some computers, but too hard to fix for now.
+- Jupyter-based interpreter fails: due to a race condition that may trigger on some computers, see (or open) related issues.
 
 ## Changelog
 [Changelog](CHANGELOG.md)
@@ -435,6 +434,8 @@ begin by updating the plugin and running `:checkhealth sniprun`
 It's super easy: see [contributing](CONTRIBUTING.md).
 I actually thought out the project structure so you only have to worry about one file (yours), when creating an interpreter. All you have to do is copy the example.rs interpreter and modify some parts to suit the language you wish to support.
 
+
+​
 
 ## Related projects
 
@@ -448,6 +449,8 @@ The [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](
 
 And many more projects, somewhat similar, but never quite, that I didn't notice or wanted to include.
 
+
+​
 
 ####  **Why should you use sniprun instead of these alternatives?**
 
