@@ -28,13 +28,7 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - uses: airvzxf/cache-anything-new-action@v1.0.1
-      with:
-        script: '../../ressources/install_all_compilers_ci.sh'
-        is_cached: ${{ steps.cache-id.outputs.cache-hit }}
-        cache: ${{ runner.temp }}/cache-directory-example
-        snapshot: '/'
-        exclude: '/boot /data /dev /mnt /proc /run /sys'
+    - run: './ressources/install_all_compilers_ci.sh'
 
     - uses: dlang-community/setup-dlang@v1
 
@@ -67,13 +61,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - uses: airvzxf/cache-anything-new-action@v1.0.1
-      with:
-        script: '../../ressources/install_all_compilers_ci.sh'
-        is_cached: ${{ steps.cache-id.outputs.cache-hit }}
-        cache: ${{ runner.temp }}/cache-directory-example
-        snapshot: '/'
-        exclude: '/boot /data /dev /mnt /proc /run /sys'
+    - run : './ressources/install_all_compilers_ci.sh'
 
     - uses: dlang-community/setup-dlang@v1
 

@@ -1,5 +1,6 @@
 local M = {}
 M.ping_anwsered=0
+M.custom_highlight=false
 
 -- See https://github.com/tjdevries/rofl.nvim/blob/632c10f2ec7c56882a3f7eda8849904bcac6e8af/lua/rofl.lua
 local binary_path = vim.fn.fnamemodify(
@@ -31,8 +32,18 @@ M.config_values = {
     -- "Terminal"
     },
 
-  inline_messages = 0
+  inline_messages = 0,
+
+  -- default highlight stuff goes here
+  snipruncolors = {
+    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+    SniprunFloatingWinErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+  }
+
 }
+
 
 M.config_up=0
 
@@ -42,7 +53,6 @@ function M.load_vimscript_config()
   vimscript_config["repl_disable"] = vim.g.SnipRun_repl_behavior_disable or M.config_values["repl_disable"]
   vimscript_config["selected_interpreters"] = vim.g.SnipRun_select_interpreters or M.config_values["selected_interpreters"]
   vimscript_config["inline_messages"] = vim.g.SnipRun_inline_messages or M.config_values["inline_messages"]
-
   return vimscript_config
 end
 
@@ -63,7 +73,10 @@ function M.setup(opts)
       error(string.format('[Sniprun] Key %s not exist in config values',key))
       return
     end
-      M.config_values[key] = value
+    if key == 'snipruncolors' then
+      M.custom_highlight = true
+    end
+    M.config_values[key] = value
   end
   M.configure_keymaps()
   M.setup_highlights()
@@ -72,11 +85,43 @@ function M.setup(opts)
   M.config_up = 1
 end
 
+
+local highlight = function(group, styles)
+  local gui = styles.gui and 'gui='..styles.gui or 'gui=NONE'
+  local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
+  local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
+  local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
+  local ctermbg = styles.ctermbg and 'ctermbg='..styles.ctermbg or 'ctermbg=NONE'
+  local ctermfg = styles.ctermfg and 'ctermfg='..styles.ctermfg or 'ctermfg=NONE'
+  -- This somehow works for default highlighting. with or even without cterm colors
+  -- hacky way tho.Still I think better than !hlexists
+  vim.cmd('highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
+  vim.api.nvim_command('autocmd ColorScheme * highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
+end
+
+
 function M.setup_highlights()
-  vim.cmd("if !hlexists('SniprunVirtualTextOk')  \n hi SniprunVirtualTextOk	ctermbg=Cyan guibg=#66eeff ctermfg=Black guifg=#000000 \nendif")
-  vim.cmd("if !hlexists('SniprunVirtualTextErr') \n hi SniprunVirtualTextErr	ctermbg=DarkRed guibg=#881515 ctermfg=Black guifg=#000000 ")
-  vim.cmd("if !hlexists('SniprunFloatingWinErr') \n hi SniprunFloatingWinErr	guifg=#881515 ctermfg=DarkRed")
-  vim.cmd("if !hlexists('SniprunFloatingWinOk')  \n hi SniprunFloatingWinOk	ctermfg=Cyan guifg=#66eeff")
+  local colors_table = M.config_values["snipruncolors"]
+  if M.custom_highlight then 
+    vim.cmd('augroup snip_highlights')
+    vim.cmd('autocmd!')
+    for group, styles in pairs(colors_table) do
+      -- print('setting up for '..group,'with style :','bg :',styles.bg,'fg :',styles.fg)
+      highlight(group, styles)
+    end
+    vim.cmd('augroup END')
+  else 
+    for group, styles in pairs(colors_table) do
+      local gui = styles.gui and 'gui='..styles.gui or 'gui=NONE'
+      local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
+      local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
+      local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
+      local ctermbg = styles.ctermbg and 'ctermbg='..styles.ctermbg or 'ctermbg=NONE'
+      local ctermfg = styles.ctermfg and 'ctermfg='..styles.ctermfg or 'ctermfg=NONE'
+
+      vim.cmd("if !hlexists('"..group.."') \n hi "..group.." "..gui.." "..sp.." "..fg.." "..bg.." "..ctermbg.." "..ctermfg)
+    end
+  end
 end
 
 function M.setup_autocommands()
@@ -262,3 +307,4 @@ end
 
 
 return M
+

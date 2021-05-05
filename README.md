@@ -13,9 +13,6 @@
     <a href="https://github.com/michaelb/sniprun/pulse">
       <img alt="Last commit" src="https://img.shields.io/github/last-commit/michaelb/sniprun"/>
     </a>
-    <a href="https://aur.archlinux.org/packages/neovim-sniprun/">
-      <img alt="AUR last modified" src="https://img.shields.io/aur/last-modified/sniprun?label=AUR%20package%20updated"/>
-    </a>
     <a href="https://app.codecov.io/gh/michaelb/sniprun">
       <img alt="CI build" src="https://codecov.io/gh/michaelb/sniprun/branch/master/graph/badge.svg?token=PQQV79XYVN" />
     </a>
@@ -156,7 +153,7 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 <p>
 
 ```
-  use { 'michaelb/sniprun', run = 'bash ./install.sh', config= function() require'sniprun'.initial_setup() end}
+  use { 'michaelb/sniprun', run = 'bash ./install.sh'}
 ```
 </details>
 </p>
@@ -167,6 +164,9 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 (AUR)
 
 ![](https://img.shields.io/aur/maintainer/sniprun)
+<a href="https://aur.archlinux.org/packages/neovim-sniprun/">
+  <img alt="AUR last modified" src="https://img.shields.io/aur/last-modified/sniprun?label=AUR%20package%20updated"/>
+</a>
 
 An independently maintained [AUR package](https://aur.archlinux.org/packages/neovim-sniprun/) is available for Arch users. ([legacy](https://aur.archlinux.org/packages/neovim-sniprun-legacy/) package for neovim < 0.5 users)
 
@@ -263,7 +263,7 @@ require'sniprun'.setup({
   repl_enable = {},               --" enable REPL-like behavior for the given interpreters
   repl_disable = {},              --" disable REPL-like behavior for the given interpreters
 
-  inline_messages = 0             --" inline_message (0/1) is a one-line way to display messages
+  inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
                                   --" to workaround sniprun not being able to display anything
 
   -- " you can combo different display modes as desired
@@ -275,6 +275,15 @@ require'sniprun'.setup({
     -- "LongTempFloatingWindow",  -- "same as above, but only long results. To use with VirtualText__
     -- "Terminal"                 -- "display results in a vertical split
     },
+    
+  -- customize highlight groups (setting this overrides colorscheme)
+  snipruncolors = {
+    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+    SniprunFloatingWinErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+  }
+
 
 })
 EOF
@@ -406,17 +415,16 @@ Due to its nature, Sniprun may have trouble with programs that :
 
 - Meddle with standart output / stderr
 - Need to read from stdin
-- Prints incorrect UTF8 characters, or just too many lines
-- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache, and relative imports may miss.
-- For import support level and higher, Sniprun fetch code from the saved file (and not the neovim buffer). Be sure that the functions / imports your code need have been _written_.
+- Print incorrect UTF8 characters, or just too many lines
+- Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache/sniprun, and relative imports may miss.
 
 ## Troubleshooting
 
-begin by running `:checkhealth sniprun`
+begin by updating the plugin and running `:checkhealth sniprun`
 
 - **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `bash ./install.sh 1` as post-install to compile locally.
 - Terminal and FloatinWindow display mode do not work: Linked to [this](https://github.com/michaelb/sniprun/issues/70) issue, no fix found yet.
-- Jupyter-based interpreter fails: due to a race condition that may trigger on some computers, but too hard to fix for now.
+- Jupyter-based interpreter fails: due to a race condition that may trigger on some computers, see (or open) related issues.
 
 ## Changelog
 [Changelog](CHANGELOG.md)
@@ -426,6 +434,8 @@ begin by running `:checkhealth sniprun`
 It's super easy: see [contributing](CONTRIBUTING.md).
 I actually thought out the project structure so you only have to worry about one file (yours), when creating an interpreter. All you have to do is copy the example.rs interpreter and modify some parts to suit the language you wish to support.
 
+
+​
 
 ## Related projects
 
@@ -439,6 +449,8 @@ The [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](
 
 And many more projects, somewhat similar, but never quite, that I didn't notice or wanted to include.
 
+
+​
 
 ####  **Why should you use sniprun instead of these alternatives?**
 

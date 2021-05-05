@@ -225,10 +225,11 @@ impl Interpreter for GFM_original {
 
 
 #[cfg(test)]
-mod test_GFM_original {
+mod test_gfm_original {
     use super::*;
 
     #[test]
+    #[cfg_attr(feature = "ignore_in_ci", ignore)]
     //actually safe to run in parrallel because GFM modify sniprun root and thus 
     //where the underlying interpreter puts its files
     fn simple_bloc(){

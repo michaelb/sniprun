@@ -12,14 +12,30 @@ pub struct Python3_original {
     venv: Option<String>,
 }
 impl Python3_original {
-    fn fetch_imports(&mut self) -> std::io::Result<()> {
+    fn fetch_imports(&mut self) -> Result<(), SniprunError> {
         if self.support_level < SupportLevel::Import {
             return Ok(());
         }
-        //no matter if it fails, we should try to run the rest
-        let mut file = File::open(&self.data.filepath)?;
-        let mut contents = String::new();
-        file.read_to_string(&mut contents)?;
+
+        let mut v = vec![];
+        let mut errored = true;
+        if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
+            info!("got real nvim isntance");
+            let mut rvi = real_nvim_instance.lock().unwrap();
+            if let Ok(buffer) = rvi.get_current_buf() {
+                info!("got buffer");
+                if let Ok(buf_lines) = buffer.get_lines(&mut rvi, 0, -1, false) {
+                    info!("got lines in buffer");
+                    v = buf_lines;
+                    errored = false;
+                }
+            }
+        }
+        if errored {
+            return Err(SniprunError::FetchCodeError);
+        }
+
+        info!("lines are : {:?}", v);
 
         if !self
             .data
@@ -29,19 +45,20 @@ impl Python3_original {
         {
             self.code = self.data.current_bloc.clone();
         }
-        for line in contents.lines() {
+        for line in v.iter() {
             // info!("lines are : {}", line);
             if line.contains("import ") //basic selection
                 && line.trim().chars().next() != Some('#')
-            && Python3_original::module_used(line, &self.code)
+            && self.module_used(line, &self.code)
             {
                 // embed in try catch blocs in case uneeded module is unavailable
                 self.imports = self.imports.clone() + "\n" + line;
             }
         }
+        info!("import founds : {:?}", self.imports);
         Ok(())
     }
-    fn module_used(line: &str, code: &str) -> bool {
+    fn module_used(&self, line: &str, code: &str) -> bool {
         info!(
             "checking for python module usage: line {} in code {}",
             line, code
@@ -166,7 +183,7 @@ impl Interpreter for Python3_original {
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
         self.fetch_config();
-        let _res = self.fetch_imports();
+        self.fetch_imports()?;
         if !self
             .data
             .current_bloc
@@ -291,13 +308,12 @@ mod test_python3_original {
     fn run_all() {
         simple_print();
         print_quote();
-        get_import();
     }
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"lol\",1);");
         let mut interpreter = Python3_original::new(data);
-        let res = interpreter.run();
+        let res = interpreter.run_at_level(SupportLevel::Bloc);
 
         // should panic if not an Ok()
         let string_result = res.unwrap();
@@ -307,29 +323,10 @@ mod test_python3_original {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"->\\\"\",1);");
         let mut interpreter = Python3_original::new(data);
-        let res = interpreter.run();
+        let res = interpreter.run_at_level(SupportLevel::Bloc);
 
         // should panic if not an Ok()
         let string_result = res.unwrap();
         assert_eq!(string_result, "->\" 1\n");
-    }
-
-    fn get_import() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("print(cos(0))");
-
-        data.filepath = String::from("ressources/import2.py");
-        let dfpc = data.filepath.clone();
-        let mut file = File::create(&data.filepath).unwrap();
-        file.write_all(b"from math import cos").unwrap();
-
-        let mut interpreter = Python3_original::new(data);
-        let res = interpreter.run_at_level(SupportLevel::Import);
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert_eq!(string_result, "1.0\n");
-
-        std::fs::remove_file(dfpc).unwrap();
     }
 }

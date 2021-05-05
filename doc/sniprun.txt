@@ -80,4 +80,4 @@ EOF
 TROUBLESHOOTING                                  *sniprun-troubleshooting*
 
 If anything is not working; you should consult the README at github.com/michaelb/sniprun, as well as the
-documentation for every interpreter through :SnipInfo <name>
+documentation for every interpreter through :SnipInfo <name>, as well as the :checkhealth sniprun

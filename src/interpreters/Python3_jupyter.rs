@@ -13,14 +13,30 @@ pub struct Python3_jupyter {
 }
 
 impl Python3_jupyter {
-    pub fn fetch_imports(&mut self) -> std::io::Result<()> {
+    fn fetch_imports(&mut self) -> Result<(), SniprunError> {
         if self.support_level < SupportLevel::Import {
             return Ok(());
         }
-        //no matter if it fails, we should try to run the rest
-        let mut file = File::open(&self.data.filepath)?;
-        let mut contents = String::new();
-        file.read_to_string(&mut contents)?;
+
+        let mut v = vec![];
+        let mut errored = true;
+        if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
+            info!("got real nvim isntance");
+            let mut rvi = real_nvim_instance.lock().unwrap();
+            if let Ok(buffer) = rvi.get_current_buf() {
+                info!("got buffer");
+                if let Ok(buf_lines) = buffer.get_lines(&mut rvi, 0, -1, false) {
+                    info!("got lines in buffer");
+                    v = buf_lines;
+                    errored = false;
+                }
+            }
+        }
+        if errored {
+            return Err(SniprunError::FetchCodeError);
+        }
+
+        info!("lines are : {:?}", v);
 
         if !self
             .data
@@ -30,20 +46,20 @@ impl Python3_jupyter {
         {
             self.code = self.data.current_bloc.clone();
         }
-        for line in contents.lines() {
+        for line in v.iter() {
             // info!("lines are : {}", line);
             if line.contains("import ") //basic selection
                 && line.trim().chars().next() != Some('#')
-            && Python3_jupyter::module_used(line, &self.code)
+            && self.module_used(line, &self.code)
             {
                 // embed in try catch blocs in case uneeded module is unavailable
                 self.imports = self.imports.clone() + "\n" + line;
             }
         }
+        info!("import founds : {:?}", self.imports);
         Ok(())
     }
-
-    fn module_used(line: &str, code: &str) -> bool {
+    fn module_used(&self, line: &str, code: &str) -> bool {
         info!(
             "checking for python module usage: line {} in code {}",
             line, code
@@ -156,7 +172,7 @@ impl Interpreter for Python3_jupyter {
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
-        let _res = self.fetch_imports();
+        self.fetch_imports()?;
         if !self
             .data
             .current_bloc
@@ -358,7 +374,6 @@ mod test_python3_jupyter {
     #[test]
     fn run_all() {
         simple_print();
-        get_import();
     }
 
     fn simple_print() {
@@ -370,25 +385,6 @@ mod test_python3_jupyter {
         // should panic if not an Ok()
         let string_result = res.unwrap();
         assert!(string_result.contains(&"a 1"));
-    }
-
-    fn get_import() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("print(float(cos(0)))");
-
-        data.filepath = String::from("ressources/import.py");
-        let dfpc = data.filepath.clone();
-        let mut file = File::create(&data.filepath).unwrap();
-        file.write_all(b"from math import cos").unwrap();
-
-        let mut interpreter = Python3_jupyter::new(data);
-        let res = interpreter.run_at_level(SupportLevel::Import);
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert!(string_result.contains("1.0"));
-
-        std::fs::remove_file(dfpc).unwrap();
     }
 
     #[test]
