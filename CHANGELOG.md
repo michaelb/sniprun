@@ -1,3 +1,6 @@
+## v0.5.5
+- Configurable colors
+
 ## v0.5.4
 - Support configuring compiler, interpreter or venv (python)
 - Fine-tune display modes + highlight

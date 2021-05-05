@@ -276,12 +276,12 @@ require'sniprun'.setup({
     -- "Terminal"                 -- "display results in a vertical split
     },
     
-  -- customize highlight groups
+  -- customize highlight groups (setting this overrides colorscheme)
   snipruncolors = {
-    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000"},
-    SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000"},
-    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000"},
-    SniprunFloatingWinErr  =  {bg="#881515",fg="#000000"}
+    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+    SniprunFloatingWinErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
   }
 
 
