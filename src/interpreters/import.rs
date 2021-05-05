@@ -8,7 +8,6 @@ use crate::interpreters;
 use crate::iter_types;
 
 use std::fs::{write, DirBuilder, File};
-use std::io::prelude::*;
 use std::process::Command;
 
 use neovim_lib::NeovimApi;

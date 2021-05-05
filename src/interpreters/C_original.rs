@@ -12,15 +12,31 @@ pub struct C_original {
 }
 
 impl C_original {
-    fn fetch_imports(&mut self) -> std::io::Result<()> {
+    fn fetch_imports(&mut self)-> Result<(), SniprunError> {
         if self.support_level < SupportLevel::Import {
             return Ok(());
         }
-        let mut file = File::open(&self.data.filepath)?;
-        let mut contents = String::new();
-        file.read_to_string(&mut contents)?;
 
-        for line in contents.lines() {
+        let mut v = vec![];
+        let mut errored = true;
+        if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
+            info!("got real nvim isntance");
+            let mut rvi = real_nvim_instance.lock().unwrap();
+            if let Ok(buffer) = rvi.get_current_buf() {
+                info!("got buffer");
+                if let Ok(buf_lines) = buffer.get_lines(&mut rvi, 0, -1, false) {
+                    info!("got lines in buffer");
+                    v = buf_lines;
+                    errored = false;
+                }
+            }
+        }
+
+        if errored {
+            return Err(SniprunError::FetchCodeError);
+        }
+
+        for line in v.iter() {
             if line.starts_with("#include <") {
                 self.imports.push(line.to_string());
             }
@@ -110,10 +126,8 @@ impl Interpreter for C_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        let res = self.fetch_imports();
-        if res.is_err() {
-            return Err(SniprunError::FetchCodeError);
-        }
+        self.fetch_imports()?;
+    
         self.code = String::from("int main() {\n") + &self.code + &"\nreturn 0;}";
         if !self.imports.iter().any(|s| s.contains("<stdio.h>")) {
             self.code = String::from("#include <stdio.h>\n") + &self.code;
