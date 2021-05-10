@@ -1,3 +1,8 @@
+## v0.5.6
+- Automated publish system by github actions
+- Binary now compatible with pre-GLIBC 2.33 systems
+
+
 ## v0.5.5
 - Configurable colors
 - Use current buffer instead of save files for import level

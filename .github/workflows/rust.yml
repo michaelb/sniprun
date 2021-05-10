@@ -35,7 +35,10 @@ jobs:
 
 
     - name: Unit tests
-      run: cargo test --features ignore_in_ci
+      run: cargo test --features ignore_in_ci -- --test-threads=1
+
+    - name: Integration tests
+      run: cargo test --features ignore_in_ci --test integration -- --test-threads=1
 
 
 
