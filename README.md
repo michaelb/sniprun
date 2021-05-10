@@ -126,7 +126,10 @@ Sniprun will then:
 
 - [optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
 
+- [optionnal] recent GLIBC (at least 2.33) if you want to use the precompiled binary, otherwise you'll have to compile sniprun yourself.
+
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
+
 
 
 ### Install Sniprun
@@ -423,7 +426,7 @@ Due to its nature, Sniprun may have trouble with programs that :
 begin by updating the plugin and running `:checkhealth sniprun`
 
 - **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `bash ./install.sh 1` as post-install to compile locally.
-- Terminal and FloatinWindow display mode do not work: Linked to [this](https://github.com/michaelb/sniprun/issues/70) issue, no fix found yet.
+- Terminal and Floating Window display mode do not work: Linked to [this](https://github.com/michaelb/sniprun/issues/70) issue, no fix found yet.
 - Jupyter-based interpreter fails: due to a race condition that may trigger on some computers, see (or open) related issues.
 
 ## Changelog
