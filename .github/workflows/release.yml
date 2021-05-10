@@ -15,13 +15,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: build
-      run: cargo build --release --verbose
-    - run: mv ./target/release/sniprun .
+      run: cargo build --release --verbose && mv ./target/release/sniprun .
 
     - name: upload to releases
-      uses: johnwbyrd/update-release@v1
+      uses: svenstaro/upload-release-action@v2 
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        asset: ./sniprun
-        message: "Binary automatically published by github actions"
-        draft: true
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: sniprun
+        tag: ${{github.ref}}
+        overwrite: false
+        body: "Automated publish by Github Action"
