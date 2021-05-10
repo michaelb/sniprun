@@ -369,13 +369,13 @@ impl ReplLikeInterpreter for Python3_jupyter {
 #[cfg(test)]
 mod test_python3_jupyter {
     use super::*;
-    use crate::*;
     use crate::test_main::*;
+    use crate::*;
 
     #[test]
     fn run_all() {
         simple_print();
-        test_repl();
+        // test_repl();
     }
 
     fn simple_print() {
@@ -404,35 +404,5 @@ mod test_python3_jupyter {
         let launcher = launcher::Launcher::new(event_handler.data.clone());
         let result = launcher.select_and_run();
         assert!(result.is_ok());
-    }
-
-    #[test]
-    #[cfg_attr(feature = "ignore_in_ci", ignore)]
-    #[ignore] // because we don't want to run this in // with simple_print
-    fn simple_print_repl() {
-        let id = Some(Arc::new(Mutex::new(InterpreterData {
-            owner: String::from(""),
-            content: String::from(""),
-            pid: None,
-        })));
-
-        let mut data = DataHolder::new();
-        data.repl_enabled = vec![String::from("Python3_jupyter")];
-        let mut data2 = DataHolder::new();
-        data.interpreter_data = id.clone();
-        data2.interpreter_data = id;
-
-        data.current_bloc = String::from("a=1");
-        let mut interpreter = Python3_jupyter::new(data2);
-        let _res = interpreter.run_at_level_repl(SupportLevel::Import).unwrap();
-
-        data.current_bloc = String::from("print(a)");
-        let mut interpreter = Python3_jupyter::new(data);
-        let _res = interpreter.run_at_level_repl(SupportLevel::Import);
-
-        // should panic if not an Ok()
-        // but for some reason does not work in test mode
-        // let string_result = res.unwrap();
-        // assert_eq!(string_result, "1\n");
     }
 }

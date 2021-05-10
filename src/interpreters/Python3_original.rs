@@ -306,11 +306,11 @@ mod test_python3_original {
     use crate::*;
     use crate::test_main::*;
 
-    // #[test]
+    #[test]
     fn run_all() {
         simple_print();
         print_quote();
-        test_repl();
+        // test_repl();
     }
     fn simple_print() {
         let mut data = DataHolder::new();
@@ -333,7 +333,6 @@ mod test_python3_original {
         assert_eq!(string_result, "->\" 1\n");
     }
 
-    #[test]
     fn test_repl() {
         let mut event_handler = fake_event();
         event_handler.fill_data(fake_msgpack());
