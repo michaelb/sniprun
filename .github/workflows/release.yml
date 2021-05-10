@@ -18,9 +18,10 @@ jobs:
       run: cargo build --release --verbose
     - run: mv ./target/release/sniprun .
 
-    - uses: johnwbyrd/update-release@v1
-    with:
-      token: ${{ secrets.GITHUB_TOKEN }}
-      asset: ./sniprun
-      message: "Binary automatically published by github actions"
-      draft: true
+    - name: upload to releases
+      uses: johnwbyrd/update-release@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        asset: ./sniprun
+        message: "Binary automatically published by github actions"
+        draft: true
