@@ -124,7 +124,7 @@ impl DataHolder {
 }
 
 #[derive(Clone)]
-struct EventHandler {
+pub struct EventHandler {
     nvim: Arc<Mutex<Neovim>>,
     data: DataHolder,
     interpreter_data: Arc<Mutex<InterpreterData>>,
@@ -442,7 +442,7 @@ mod test_main {
         display(result, event_handler.nvim, &event_handler.data);
     }
 
-    fn fake_event() -> EventHandler {
+    pub fn fake_event() -> EventHandler {
         let session = Session::new_child().unwrap();
         let mut nvim = Neovim::new(session);
         let mut data = DataHolder::new();
@@ -462,7 +462,7 @@ mod test_main {
         }
     }
 
-    fn fake_msgpack() -> Vec<Value> {
+    pub fn fake_msgpack() -> Vec<Value> {
         let mut data: Vec<Value> = Vec::new();
 
         let line_start = Value::from(1);
