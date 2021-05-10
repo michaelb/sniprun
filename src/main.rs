@@ -3,19 +3,19 @@
 //! Sniprun is a neovim plugin that run parts of code.
 
 use dirs::cache_dir;
+use display::{display, return_message_classic, DisplayType};
 use log::{info, LevelFilter};
 use neovim_lib::{Neovim, NeovimApi, Session, Value};
 use simple_logging::log_to_file;
+use std::str::FromStr;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
-use display::{DisplayType,display, return_message_classic};
-use std::str::FromStr;
 
+mod display;
 mod error;
 mod interpreter;
 mod interpreters;
 mod launcher;
-mod display;
 
 ///This struct holds (with ownership) the data Sniprun and neovim
 ///give to the interpreter.
@@ -373,7 +373,7 @@ fn main() {
                     info!("[RUN] Interpreter return a result");
 
                     display(result, event_handler2.nvim, &event_handler2.data);
-                    
+
                     //clean data
                     event_handler2.data = DataHolder::new();
                 })));
@@ -418,3 +418,89 @@ fn main() {
     }
 }
 
+#[cfg(test)]
+mod test_main {
+    use super::*;
+
+    #[test]
+    fn test_main() {
+        let mut event_handler = fake_event();
+        let _ = log_to_file(
+        &format!("test_sniprun.log"),
+        LevelFilter::Info,
+    );
+
+        event_handler.fill_data(fake_msgpack());
+        event_handler.data.filetype = String::from("javascript");
+        event_handler.data.current_bloc = String::from("console.log(\"yo!\")");
+        //run the launcher (that selects, init and run an interpreter)
+        let launcher = launcher::Launcher::new(event_handler.data.clone());
+        info!("[RUN] created launcher");
+        let result = launcher.select_and_run();
+        info!("[RUN] Interpreter return a result");
+
+        display(result, event_handler.nvim, &event_handler.data);
+    }
+
+    fn fake_event() -> EventHandler {
+        let session = Session::new_child().unwrap();
+        let mut nvim = Neovim::new(session);
+        let mut data = DataHolder::new();
+        let interpreter_data = Arc::new(Mutex::new(InterpreterData {
+            owner: String::new(),
+            content: String::new(),
+            pid: None,
+        }));
+        let _receiver =nvim
+            .session
+            .start_event_loop_channel();
+        data.interpreter_data = Some(interpreter_data.clone());
+        EventHandler {
+            nvim: Arc::new(Mutex::new(nvim)),
+            data,
+            interpreter_data,
+        }
+    }
+
+    fn fake_msgpack() -> Vec<Value> {
+        let mut data: Vec<Value> = Vec::new();
+
+        let line_start = Value::from(1);
+        let line_end = Value::from(2);
+        data.push(line_start);
+        data.push(line_end);
+
+        let mut config_as_vec: Vec<(Value, Value)> = Vec::new();
+        config_as_vec.push((
+            Value::from("selected_interpreters"),
+            Value::from(Vec::<Value>::new()),
+        ));
+        config_as_vec.push((Value::from("repl_enable"), Value::from(Vec::<Value>::new())));
+        config_as_vec.push((
+            Value::from("repl_disable"),
+            Value::from(Vec::<Value>::new()),
+        ));
+
+        let mut display_types: Vec<Value> = Vec::new();
+        display_types.push(Value::from("Classic"));
+        display_types.push(Value::from("Terminal"));
+        display_types.push(Value::from("VirtualTextOk"));
+        display_types.push(Value::from("VirtualTextErr"));
+        display_types.push(Value::from("TempFloatingWindow"));
+
+
+        config_as_vec.push((Value::from("display"), Value::from(display_types)));
+        config_as_vec.push((
+            Value::from("sniprun_root_dir"),
+            Value::from("/tmp/notimportant"),
+        ));  config_as_vec.push((
+            Value::from("inline_messages"),
+            Value::from(0),
+        ));
+
+
+        data.push(Value::from(config_as_vec));
+
+        return data;
+    }
+}
