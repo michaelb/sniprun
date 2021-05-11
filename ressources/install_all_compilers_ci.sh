@@ -1,3 +1,7 @@
+sudo add-apt-repository ppa:neovim-ppa/stable
+sudo apt-get update
+sudo apt-get install neovim # install neovim 0.5+
+
 sudo apt install haskell-platform -y
 sudo apt install -y nodejs npm 
 sudo npm install -g coffee-script 

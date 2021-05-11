@@ -1,0 +1,27 @@
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  CARGO_TERM_COLOR: always
+
+
+jobs:
+  release:
+    name: Publish release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: build
+      run: cargo build --release --verbose && mv ./target/release/sniprun .
+
+    - name: upload to releases
+      uses: svenstaro/upload-release-action@v2 
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: sniprun
+        tag: ${{github.ref}}
+        overwrite: false
+        body: "Automated publish by Github Action"

@@ -1,6 +1,7 @@
-use super::*;
-use interpreter::{Interpreter, InterpreterUtils, SupportLevel};
-use interpreters::JS_original;
+use sniprun::*;
+use sniprun::interpreter::{Interpreter, InterpreterUtils, SupportLevel};
+use sniprun::interpreters::JS_original;
+use std::sync::{Arc,Mutex};
 
 #[test]
 fn test_implements() {
@@ -49,3 +50,4 @@ fn test_interpreter_utils() {
     let string_result = res.unwrap();
     assert_eq!(string_result, "Hello, World!\n");
 }
+

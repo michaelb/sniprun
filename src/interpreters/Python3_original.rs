@@ -303,11 +303,14 @@ impl ReplLikeInterpreter for Python3_original {
 #[cfg(test)]
 mod test_python3_original {
     use super::*;
+    use crate::*;
+    use crate::test_main::*;
 
     #[test]
     fn run_all() {
         simple_print();
         print_quote();
+        // test_repl();
     }
     fn simple_print() {
         let mut data = DataHolder::new();
@@ -329,4 +332,24 @@ mod test_python3_original {
         let string_result = res.unwrap();
         assert_eq!(string_result, "->\" 1\n");
     }
+
+    fn test_repl() {
+        let mut event_handler = fake_event();
+        event_handler.fill_data(fake_msgpack());
+        event_handler.data.filetype = String::from("python");
+        event_handler.data.current_bloc = String::from("a=1");
+        event_handler.data.repl_enabled = vec![String::from("Python3_original")];
+        event_handler.data.sniprun_root_dir = String::from(".");
+        //run the launcher (that selects, init and run an interpreter)
+        let launcher = launcher::Launcher::new(event_handler.data.clone());
+        let _result = launcher.select_and_run();
+
+        event_handler.data.current_bloc = String::from("print(a)");
+        let launcher = launcher::Launcher::new(event_handler.data.clone());
+        let result = launcher.select_and_run();
+        assert!(result.is_ok());
+    }
+
+
+
 }

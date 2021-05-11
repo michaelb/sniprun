@@ -369,11 +369,13 @@ impl ReplLikeInterpreter for Python3_jupyter {
 #[cfg(test)]
 mod test_python3_jupyter {
     use super::*;
+    use crate::test_main::*;
     use crate::*;
 
     #[test]
     fn run_all() {
         simple_print();
+        // test_repl();
     }
 
     fn simple_print() {
@@ -387,33 +389,20 @@ mod test_python3_jupyter {
         assert!(string_result.contains(&"a 1"));
     }
 
-    #[test]
-    #[cfg_attr(feature = "ignore_in_ci", ignore)]
-    #[ignore] // because we don't want to run this in // with simple_print
-    fn simple_print_repl() {
-        let id = Some(Arc::new(Mutex::new(InterpreterData {
-            owner: String::from(""),
-            content: String::from(""),
-            pid: None,
-        })));
+    fn test_repl() {
+        let mut event_handler = fake_event();
+        event_handler.fill_data(fake_msgpack());
+        event_handler.data.filetype = String::from("python");
+        event_handler.data.current_bloc = String::from("a=1");
+        event_handler.data.selected_interpreters = vec![String::from("Python3_jupyter")];
+        event_handler.data.sniprun_root_dir = String::from(".");
+        //run the launcher (that selects, init and run an interpreter)
+        let launcher = launcher::Launcher::new(event_handler.data.clone());
+        let _result = launcher.select_and_run();
 
-        let mut data = DataHolder::new();
-        data.repl_enabled = vec![String::from("Python3_jupyter")];
-        let mut data2 = DataHolder::new();
-        data.interpreter_data = id.clone();
-        data2.interpreter_data = id;
-
-        data.current_bloc = String::from("a=1");
-        let mut interpreter = Python3_jupyter::new(data2);
-        let _res = interpreter.run_at_level_repl(SupportLevel::Import).unwrap();
-
-        data.current_bloc = String::from("print(a)");
-        let mut interpreter = Python3_jupyter::new(data);
-        let _res = interpreter.run_at_level_repl(SupportLevel::Import);
-
-        // should panic if not an Ok()
-        // but for some reason does not work in test mode
-        // let string_result = res.unwrap();
-        // assert_eq!(string_result, "1\n");
+        event_handler.data.current_bloc = String::from("print(a)");
+        let launcher = launcher::Launcher::new(event_handler.data.clone());
+        let result = launcher.select_and_run();
+        assert!(result.is_ok());
     }
 }
