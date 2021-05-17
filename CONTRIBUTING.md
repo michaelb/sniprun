@@ -25,7 +25,7 @@ Yeah cool but what _code_ goes inside?
 ---
 I just finished some changes, how do I test my code quickly?
 
--> compile `cargo build --release` and run `nvim --cmd "set rtp+=. -u NORC <testfile>` from the sniprun project root.
+-> compile `cargo build --release` and run `nvim --cmd "set rtp+=. -u NONE <testfile>` from the sniprun project root.
 
 ---
 

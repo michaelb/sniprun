@@ -126,8 +126,6 @@ Sniprun will then:
 
 - [optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
 
-- [optionnal] recent GLIBC (at least 2.33) if you want to use the precompiled binary, otherwise you'll have to compile sniprun yourself.
-
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
 
@@ -266,8 +264,7 @@ require'sniprun'.setup({
   repl_enable = {},               --" enable REPL-like behavior for the given interpreters
   repl_disable = {},              --" disable REPL-like behavior for the given interpreters
 
-  inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
-                                  --" to workaround sniprun not being able to display anything
+  interpreter_options = {},       --" intepreter-specific options, consult docs / :SnipInfo <name>
 
   -- " you can combo different display modes as desired
   display = {
@@ -285,8 +282,14 @@ require'sniprun'.setup({
     SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
     SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
     SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
-  }
+  },
 
+  -- miscellaneous compatibility/adjustement settings
+  inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
+				   --" to workaround sniprun not being able to display anything
+
+  borders = 'single'               --" display borders around floating windows
+                                   --" possible values are 'none', 'single', 'double', or 'shadow'
 })
 EOF
 ```
