@@ -17,11 +17,7 @@ M.config_values = {
   repl_enable = {},
   repl_disable = {},
 
-  interpreter_options = {
-    example_original = {
-      example_option = "--optimize-with-debug-info",
-    }
-  },
+  interpreter_options = {},
 
   display = {
     "Classic",
@@ -33,13 +29,14 @@ M.config_values = {
     },
 
   inline_messages = 0,
+  borders = 'single',
 
   -- default highlight stuff goes here
   snipruncolors = {
     SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
-    SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
     SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
-    SniprunFloatingWinErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+    SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
   }
 
 }
@@ -70,7 +67,7 @@ function M.setup(opts)
   if next(opts) == nil then return end
   for key,value in pairs(opts) do
     if M.config_values[key] == nil then
-      error(string.format('[Sniprun] Key %s not exist in config values',key))
+      error(string.format('[Sniprun] Key %s does not exist in config values',key))
       return
     end
     if key == 'snipruncolors' then
@@ -81,6 +78,7 @@ function M.setup(opts)
   M.configure_keymaps()
   M.setup_highlights()
   M.setup_autocommands()
+  M.setup_display()
 
   M.config_up = 1
 end
@@ -97,6 +95,12 @@ local highlight = function(group, styles)
   -- hacky way tho.Still I think better than !hlexists
   vim.cmd('highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
   vim.api.nvim_command('autocmd ColorScheme * highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
+end
+
+
+function M.setup_display()
+    local D = require'sniprun.display'
+    D.borders = M.config_values.borders
 end
 
 

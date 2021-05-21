@@ -6,6 +6,7 @@ M.term.buffer = -1
 M.term.window_handle = 0
 M.term.current_line = -1
 M.term.chan = -1
+M.borders = 'single'
 
 local NAMESPACE = 'sniprun'
 
@@ -29,7 +30,7 @@ function M.fw_open(row, column, message, ok, temp)
     vim.api.nvim_buf_set_lines(bufnr,h,h+1,false,{line})
     vim.api.nvim_buf_add_highlight(bufnr, namespace_id, hl, h,0,-1) -- highlight lines in floating window
   end
-  M.fw_handle = vim.api.nvim_open_win(bufnr, false, {relative='win', width=w+1, height=h, bufpos=bp, focusable=false, style='minimal',border='single'})
+  M.fw_handle = vim.api.nvim_open_win(bufnr, false, {relative='win', width=w+1, height=h, bufpos=bp, focusable=false, style='minimal',border=M.borders})
 end
 
 function M.term_open()

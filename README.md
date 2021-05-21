@@ -64,7 +64,7 @@ An example in C, look in the command area:
 
 ![](ressources/visual_assets/demo_c.gif)
 
-##### The result can be displayed in multiple (even at the same time) ways: 
+##### The result can be displayed in multiple (even at the same time) ways:
 
 [Classic](ressources/display_classic.md)|  [Virtual Text](ressources/display_virtualtext.md)
 :------------------------------------------:|:------------------:
@@ -95,7 +95,7 @@ Basically, it allows you to run a part of your code.
 Do either of:
 
 - Position the cursor on a line `:SnipRun`
-- Select some visual range, `:'<,'>SnipRun` 
+- Select some visual range, `:'<,'>SnipRun`
 - Combine a motion with the operator
 
   (preferably through a shortcut!)
@@ -111,7 +111,7 @@ Sniprun will then:
 - **Add boilerplate** when it exists. In C, it surrounds your snip with "int main() {", "}". (disclaimer: oversimplifed)
 - **Build** (write to a script file, or compile) the code
 - **Execute** the code
-- Return stdout, or stderr using the 
+- Return stdout, or stderr using the
 
 
 ![](ressources/visual_assets/760091.png)
@@ -125,8 +125,6 @@ Sniprun will then:
 - **Neovim** version (>= 0.5 for the latest goodies), but 0.4.x is supported up to sniprun v0.4.9 and the installer will take care of installing the latest version 'that works', though you may miss on new features, and you will need to use the [old vimscript way to configure](ressources/old_configuration.md).
 
 - [optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
-
-- [optionnal] recent GLIBC (at least 2.33) if you want to use the precompiled binary, otherwise you'll have to compile sniprun yourself.
 
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
@@ -266,8 +264,7 @@ require'sniprun'.setup({
   repl_enable = {},               --" enable REPL-like behavior for the given interpreters
   repl_disable = {},              --" disable REPL-like behavior for the given interpreters
 
-  inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
-                                  --" to workaround sniprun not being able to display anything
+  interpreter_options = {},       --" intepreter-specific options, consult docs / :SnipInfo <name>
 
   -- " you can combo different display modes as desired
   display = {
@@ -278,16 +275,21 @@ require'sniprun'.setup({
     -- "LongTempFloatingWindow",  -- "same as above, but only long results. To use with VirtualText__
     -- "Terminal"                 -- "display results in a vertical split
     },
-    
+
   -- customize highlight groups (setting this overrides colorscheme)
-  snipruncolors = {
+ snipruncolors = {
     SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
-    SniprunFloatingWinOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
     SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
-    SniprunFloatingWinErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
-  }
+    SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
+  },
 
+  -- miscellaneous compatibility/adjustement settings
+  inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
+				   --" to workaround sniprun not being able to display anything
 
+  borders = 'single'               --" display borders around floating windows
+                                   --" possible values are 'none', 'single', 'double', or 'shadow'
 })
 EOF
 ```
@@ -385,15 +387,15 @@ println!("-> {}", alphabet);
 | ------------ | ------------- | --- | ---------- | ---------------- |
 | Ada          | Line          |     | Java       | Bloc             |
 | Bash/Shell   | Bloc + REPL\* |     | JavaScript | Bloc             |
-| C            | Import        |     | Julia      | Bloc             |
+| C            | Import        |     | Julia      | Bloc + REPL\*\*  |
 | C++          | Import        |     | Lisp       | Untested         |
 | Clojure      | Untested      |     | Lua        | Bloc             |
 | COBOL        | Untested      |     | Lua-nvim   | Bloc             |
-| Coffeescript | Bloc          |     | Markdown (GFM)   | Bloc + REPL \***         |
+| Coffeescript | Bloc          |     | Markdown (GFM)   | Bloc + REPL \*\*\*   |
 | C#           | Untested      |     | Perl6      | Line             |
 | D            | Bloc          |     | Perl       | Line             |
 | Elixir       | Untested      |     | PHP        | Untested         |
-| Elm          | Untested      |     | Python3    | Import +REPL\*\* |
+| Elm          | Untested      |     | Python3    | Import +REPL*\*   |
 | Erlang       | Untested      |     | R          | Bloc + REPL \*\* |
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
@@ -423,7 +425,7 @@ Due to its nature, Sniprun may have trouble with programs that :
 
 ## Troubleshooting
 
-begin by updating the plugin and running `:checkhealth sniprun`
+begin by updating the plugin and running `:SnipReset` and then `:checkhealth sniprun`
 
 - **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `bash ./install.sh 1` as post-install to compile locally.
 - Terminal and Floating Window display mode do not work: Linked to [this](https://github.com/michaelb/sniprun/issues/70) issue, no fix found yet.
