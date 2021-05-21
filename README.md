@@ -425,7 +425,7 @@ Due to its nature, Sniprun may have trouble with programs that :
 
 ## Troubleshooting
 
-begin by updating the plugin and running `:checkhealth sniprun`
+begin by updating the plugin and running `:SnipReset` and then `:checkhealth sniprun` 
 
 - **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `bash ./install.sh 1` as post-install to compile locally.
 - Terminal and Floating Window display mode do not work: Linked to [this](https://github.com/michaelb/sniprun/issues/70) issue, no fix found yet.
