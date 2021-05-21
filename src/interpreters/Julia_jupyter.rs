@@ -123,28 +123,10 @@ impl Interpreter for Julia_jupyter {
 impl ReplLikeInterpreter for Julia_jupyter {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
         self.fetch_code()?;
-        let saved_code = self.read_previous_code();
-        if saved_code.is_empty() {
-            //initialize kernel. Relying on self.read_previous_code to
-            //know when to start a new kernel is important as
-            //this will be cleared by the SnipReplMemoryClean command
-            let _res = std::fs::remove_file(&self.kernel_file);
-            let _res = Command::new("jupyter-kernel")
-                .arg("--kernel=julia-1.5")
-                .arg(String::from("--KernelManager.connection_file=") + &self.kernel_file)
-                .spawn();
-            info!("Initialized kernel at {}", self.kernel_file);
-        } else {
-            // kernel already running
-            info!(
-                "Using already loaded jupyter kernel at {}",
-                self.kernel_file
-            );
+        if !std::path::Path::new(&self.kernel_file).exists() {
+            info!("no kernel file found");
+            return Err(SniprunError::RuntimeError("No running kernel found".to_string()));
         }
-
-        // save kernel
-        self.save_code(saved_code);
-
         Ok(())
     }
     fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
@@ -186,15 +168,6 @@ impl ReplLikeInterpreter for Julia_jupyter {
     }
 
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
-        if !std::path::Path::new(&self.kernel_file).exists() {
-            info!("no kernel file found");
-            return Err(SniprunError::RuntimeError("No kernel found or provided".to_string()));
-        }
-        info!(
-            "json kernel file exists yet? {}",
-            std::path::Path::new(&self.kernel_file).exists()
-        );
-
         info!("starting executing repl: bash {}",&self.launcher_path);
         let output = Command::new("bash")
             .arg(&self.launcher_path)
@@ -232,27 +205,5 @@ impl ReplLikeInterpreter for Julia_jupyter {
                     .to_owned(),
             ));
         }
-    }
-}
-
-#[cfg(test)]
-mod test_julia_jupyter {
-    use super::*;
-    use crate::*;
-
-    #[test]
-    fn run_all() {
-        simple_print();
-    }
-
-    fn simple_print() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("println(\"a\")");
-        let mut interpreter = Julia_jupyter::new(data);
-        let res = interpreter.run_at_level(SupportLevel::Bloc);
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert!(string_result.contains(&"a"));
     }
 }

@@ -64,7 +64,7 @@ An example in C, look in the command area:
 
 ![](ressources/visual_assets/demo_c.gif)
 
-##### The result can be displayed in multiple (even at the same time) ways: 
+##### The result can be displayed in multiple (even at the same time) ways:
 
 [Classic](ressources/display_classic.md)|  [Virtual Text](ressources/display_virtualtext.md)
 :------------------------------------------:|:------------------:
@@ -95,7 +95,7 @@ Basically, it allows you to run a part of your code.
 Do either of:
 
 - Position the cursor on a line `:SnipRun`
-- Select some visual range, `:'<,'>SnipRun` 
+- Select some visual range, `:'<,'>SnipRun`
 - Combine a motion with the operator
 
   (preferably through a shortcut!)
@@ -111,7 +111,7 @@ Sniprun will then:
 - **Add boilerplate** when it exists. In C, it surrounds your snip with "int main() {", "}". (disclaimer: oversimplifed)
 - **Build** (write to a script file, or compile) the code
 - **Execute** the code
-- Return stdout, or stderr using the 
+- Return stdout, or stderr using the
 
 
 ![](ressources/visual_assets/760091.png)
@@ -275,7 +275,7 @@ require'sniprun'.setup({
     -- "LongTempFloatingWindow",  -- "same as above, but only long results. To use with VirtualText__
     -- "Terminal"                 -- "display results in a vertical split
     },
-    
+
   -- customize highlight groups (setting this overrides colorscheme)
  snipruncolors = {
     SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
@@ -387,15 +387,15 @@ println!("-> {}", alphabet);
 | ------------ | ------------- | --- | ---------- | ---------------- |
 | Ada          | Line          |     | Java       | Bloc             |
 | Bash/Shell   | Bloc + REPL\* |     | JavaScript | Bloc             |
-| C            | Import        |     | Julia      | Bloc             |
+| C            | Import        |     | Julia      | Bloc + REPL\*\*  |
 | C++          | Import        |     | Lisp       | Untested         |
 | Clojure      | Untested      |     | Lua        | Bloc             |
 | COBOL        | Untested      |     | Lua-nvim   | Bloc             |
-| Coffeescript | Bloc          |     | Markdown (GFM)   | Bloc + REPL \***         |
+| Coffeescript | Bloc          |     | Markdown (GFM)   | Bloc + REPL \*\*\*   |
 | C#           | Untested      |     | Perl6      | Line             |
 | D            | Bloc          |     | Perl       | Line             |
 | Elixir       | Untested      |     | PHP        | Untested         |
-| Elm          | Untested      |     | Python3    | Import +REPL\*\* |
+| Elm          | Untested      |     | Python3    | Import +REPL*\*   |
 | Erlang       | Untested      |     | R          | Bloc + REPL \*\* |
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
@@ -425,7 +425,7 @@ Due to its nature, Sniprun may have trouble with programs that :
 
 ## Troubleshooting
 
-begin by updating the plugin and running `:SnipReset` and then `:checkhealth sniprun` 
+begin by updating the plugin and running `:SnipReset` and then `:checkhealth sniprun`
 
 - **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `bash ./install.sh 1` as post-install to compile locally.
 - Terminal and Floating Window display mode do not work: Linked to [this](https://github.com/michaelb/sniprun/issues/70) issue, no fix found yet.
