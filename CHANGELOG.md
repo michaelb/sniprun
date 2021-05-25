@@ -1,3 +1,7 @@
+## v0.5.7
+- Julia jupyter interpreter is up (though a bit complicated to setup)
+- Configurable windows borders
+
 ## v0.5.6
 - Automated publish system by github actions
 - Binary now compatible with pre-GLIBC 2.33 systems

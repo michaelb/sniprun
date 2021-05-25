@@ -98,7 +98,7 @@ pub trait Interpreter: ReplLikeInterpreter {
     }
 
     ///If the interpreter has treesitter capabilities
-    fn has_treesitter_capability() -> bool {
+    fn has_lsp_capability() -> bool {
         false
     }
     ///

@@ -266,7 +266,7 @@ require'sniprun'.setup({
 
   interpreter_options = {},       --" intepreter-specific options, consult docs / :SnipInfo <name>
 
-  -- " you can combo different display modes as desired
+  --" you can combo different display modes as desired
   display = {
     "Classic",                    -- "display results in the command-line  area
     "VirtualTextOk",              -- "display ok results as virtual text (multiline is shortened)
@@ -276,7 +276,7 @@ require'sniprun'.setup({
     -- "Terminal"                 -- "display results in a vertical split
     },
 
-  -- customize highlight groups (setting this overrides colorscheme)
+  --" customize highlight groups (setting this overrides colorscheme)
  snipruncolors = {
     SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
     SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
@@ -284,7 +284,7 @@ require'sniprun'.setup({
     SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
   },
 
-  -- miscellaneous compatibility/adjustement settings
+  --" miscellaneous compatibility/adjustement settings
   inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
 				   --" to workaround sniprun not being able to display anything
 
@@ -390,13 +390,13 @@ println!("-> {}", alphabet);
 | C            | Import        |     | Julia      | Bloc + REPL\*\*  |
 | C++          | Import        |     | Lisp       | Untested         |
 | Clojure      | Untested      |     | Lua        | Bloc             |
-| COBOL        | Untested      |     | Lua-nvim   | Bloc             |
-| Coffeescript | Bloc          |     | Markdown (GFM)   | Bloc + REPL \*\*\*   |
+| COBOL        | Untested      |     | Lua-nvim   | Bloc + REPL      |
+| Coffeescript | Bloc          |     | Markdown   | Bloc + REPL\*\*\*|
 | C#           | Untested      |     | Perl6      | Line             |
 | D            | Bloc          |     | Perl       | Line             |
 | Elixir       | Untested      |     | PHP        | Untested         |
 | Elm          | Untested      |     | Python3    | Import +REPL*\*   |
-| Erlang       | Untested      |     | R          | Bloc + REPL \*\* |
+| Erlang       | Untested      |     | R          | Bloc + REPL\*\*  |
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
 | Groovy       | Untested      |     | Scala      | Bloc             |

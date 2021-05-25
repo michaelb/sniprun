@@ -111,7 +111,7 @@ impl Launcher {
 
         let separator = "|--------------------------|--------------|---------------|-------------|------------|--------------|------------|".to_string();
         v.push(separator.clone());
-        v.push("| Interpreter              | Language     | Support Level | Default for |    REPL    | REPL enabled | Treesitter |".to_string());
+        v.push("| Interpreter              | Language     | Support Level | Default for |    REPL    | REPL enabled |    LSP     |".to_string());
         v.push("|                          |              |               |  filetype   | capability |  by default  | capability |".to_string());
 
         let mut temp_vec = vec![];
@@ -123,7 +123,7 @@ impl Launcher {
                     match Current::default_for_filetype() {true => "yes" ,false => "no"},
                     match Current::has_repl_capability() { true => "yes" ,false => "no"},
                     match Current::behave_repl_like_default() { true => "yes" ,false => "no"},
-                    match Current::has_treesitter_capability() { true => "yes" ,false => "no"}
+                    match Current::has_lsp_capability() { true => "yes" ,false => "no"}
                     ).to_string();
             temp_vec.push(line);
         }
