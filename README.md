@@ -392,10 +392,10 @@ println!("-> {}", alphabet);
 | Clojure      | Untested      |     | Lua        | Bloc             |
 | COBOL        | Untested      |     | Lua-nvim   | Bloc + REPL      |
 | Coffeescript | Bloc          |     | Markdown   | Bloc + REPL\*\*\*|
-| C#           | Untested      |     | Perl6      | Line             |
-| D            | Bloc          |     | Perl       | Line             |
+| C#           | Untested      |     | Mathematica| Bloc             |
+| D            | Bloc          |     | Perl/Perl6 | Line             |
 | Elixir       | Untested      |     | PHP        | Untested         |
-| Elm          | Untested      |     | Python3    | Import +REPL*\*   |
+| Elm          | Untested      |     | Python3    | Import +REPL*\*  |
 | Erlang       | Untested      |     | R          | Bloc + REPL\*\*  |
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
