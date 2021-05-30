@@ -84,7 +84,37 @@ impl Interpreter for Mathematica_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("") + &self.code + "Exit[]";
+        let mut preload_graphics = String::from("");
+        let mut wait_for_graphics = String::from("");
+        if let Some(use_javagraphics_msgpack) =
+            self.get_interpreter_option("use_javagraphics_if_contains")
+        {
+            if let Some(use_javagraphics) = use_javagraphics_msgpack.as_array() {
+                for test_contains_msgpack in use_javagraphics.iter() {
+                    if let Some(test_contains) = test_contains_msgpack.as_str() {
+                        if self.code.contains(test_contains) {
+                            info!("Preloaded JavaGraphics");
+                            preload_graphics = String::from("<<JavaGraphics`\n");
+                            wait_for_graphics = String::from("Pause[3600];\n");
+
+                            if let Some(time_mgspack) =
+                                self.get_interpreter_option("keep_plot_open_for")
+                            {
+                                if let Some(time) = time_mgspack.as_i64() {
+                                    if time >= 0 {
+                                        wait_for_graphics =
+                                            String::from("Pause[".to_owned() + &time.to_string() + "];");
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        self.code = preload_graphics + &self.code + &wait_for_graphics;
         Ok(())
     }
 
