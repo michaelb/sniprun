@@ -173,9 +173,11 @@ impl<T: Interpreter> InterpreterUtils for T{
     ///Read a String previous saved to sniprun memory
     fn read_previous_code(&self) -> String {
         let data = self.get_data();
+        info!("reading previous code");
         if data.interpreter_data.is_none() {
             return String::new();
         } else {
+            info!("found interpreter_data");
             let interpreter_data = data.interpreter_data.unwrap().lock().unwrap().clone();
             let content_owner = T::get_name();
             if interpreter_data.owner == content_owner {
@@ -199,7 +201,10 @@ impl<T: Interpreter> InterpreterUtils for T{
             {
                 data.interpreter_data.clone().unwrap().lock().unwrap().owner = T::get_name();
             }
-            data.interpreter_data.unwrap().lock().unwrap().content = previous_code + "\n" + &code;
+            {
+                data.interpreter_data.unwrap().lock().unwrap().content = previous_code + "\n" + &code;
+            }
+            info!("code saved: {}", self.read_previous_code());
         }
     }
 
@@ -223,7 +228,7 @@ impl<T: Interpreter> InterpreterUtils for T{
         }
     }
 
-    /// save a pid (of an external processus)
+    /// save a unsigned int (typically: a pid (of an external processus))
     /// to sniprun memory
     /// This will be emptied at neovim startup,
     /// when sniprun is reset or memoryclean'd
@@ -233,7 +238,7 @@ impl<T: Interpreter> InterpreterUtils for T{
         }
     }
 
-    /// get a pid previously saved in sniprun memory
+    /// get a unsigned integer previously saved in sniprun memory
     fn get_pid(&self) -> Option<u32> {
         if let Some(di) = self.get_data().interpreter_data {
             if let Some(real_pid) = di.lock().unwrap().pid {

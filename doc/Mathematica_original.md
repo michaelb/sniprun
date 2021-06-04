@@ -1,4 +1,4 @@
-To use the mathematica_original interpreter, you need to have `wolfram` (a shortcut to WolframKernel) installed and on your PATH.
+To use the mathematica_original interpreter, you need to have WolframKernel installed and on your PATH.
 
 # Enabling graphics
 
@@ -24,3 +24,27 @@ This can be useful if you didn't already use the construct:
 If your selection contains a Plot (or matching pattern), in non-REPL mode Mathematica_original will never return (in order to keep the graph window open), this means other statements will not return output.
 
 As a general rule of thumb, either sniprun a Plot _or_ normal statements
+
+
+
+
+## Print on each sniprun
+
+To make make the experience more notebook/REPL -like, those options (incompatible with the true REPL mode) can be configured.
+
+They will wrap any/the last line, if they dont contain alread a Print, Plot or end with ";" or and open bracket
+
+!! WARNING !! This can lead to dangerous side-effects, mathematica contains very little documentation about this.
+To feel safe, you wouldn't use these unless you only execute code line-by-line. It may or may not work with blocs.
+
+```
+lua require'sniprun'.setup({
+    interpreter_options = {
+	Mathematica_original = {
+	    wrap_all_lines_with_print = false,       -- wrap all lines making sense to print with Print[.];
+	    wrap_last_line_with_print = false,       -- wrap last line with Print[.]
+	},
+    },
+})
+```
+

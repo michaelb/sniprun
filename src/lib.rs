@@ -16,6 +16,7 @@ pub mod error;
 pub mod interpreter;
 pub mod interpreters;
 pub mod launcher;
+pub mod daemonizer;
 
 ///This struct holds (with ownership) the data Sniprun and neovim
 ///give to the interpreter.

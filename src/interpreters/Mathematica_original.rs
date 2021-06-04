@@ -10,11 +10,39 @@ pub struct Mathematica_original {
 
     language_work_dir: String,
     main_file_path: String,
+
+    fifo_in: Option<String>,
+    file_out: Option<String>,
+
+    current_output_id: u32,
 }
 
-//necessary boilerplate, you don't need to implement that if you want a Bloc support level
-//interpreter (the easiest && most common)
-impl ReplLikeInterpreter for Mathematica_original {}
+impl Mathematica_original {
+    fn remove_comment(&self, line: &str) -> String {
+        let mut owned_line = line.to_owned();
+        if let Some(index) = line.find("//") {
+            owned_line.drain(index..);
+        }
+        return owned_line;
+    }
+
+    fn wrap_line_print_if_necessary<'a>(&self, line: &'a str) -> String {
+        let line = self.remove_comment(line);
+        if !line.contains("Print")
+            && !line.contains("Plot")
+            && !line.is_empty()
+            && ![";", "[", "(", "{", "`"]
+                .iter()
+                .any(|&suffix| line.trim().ends_with(suffix))
+            && !["\"", "}", "{", "[", "]", "(", ")"]
+                .iter()
+                .any(|&s| line.trim() == s)
+        {
+            return String::from("Print[") + &line + "];";
+        }
+        return line;
+    }
+}
 
 impl Interpreter for Mathematica_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Mathematica_original> {
@@ -34,6 +62,9 @@ impl Interpreter for Mathematica_original {
             code: String::new(),
             language_work_dir: lwd,
             main_file_path: mfp,
+            fifo_in: None,
+            file_out: None,
+            current_output_id: 0,
         })
     }
 
@@ -102,8 +133,9 @@ impl Interpreter for Mathematica_original {
                             {
                                 if let Some(time) = time_mgspack.as_i64() {
                                     if time >= 0 {
-                                        wait_for_graphics =
-                                            String::from("Pause[".to_owned() + &time.to_string() + "];");
+                                        wait_for_graphics = String::from(
+                                            "Pause[".to_owned() + &time.to_string() + "];",
+                                        );
                                     }
                                 }
                             }
@@ -114,6 +146,34 @@ impl Interpreter for Mathematica_original {
             }
         }
 
+        if let Some(wrap_all_lines_with_print_msgpack) =
+            self.get_interpreter_option("wrap_all_lines_with_print")
+        {
+            if let Some(wrap_all_lines_with_print) = wrap_all_lines_with_print_msgpack.as_bool() {
+                if wrap_all_lines_with_print {
+                    let mut new_code = String::new();
+                    for line in self.code.lines() {
+                        new_code.push_str(&(self.wrap_line_print_if_necessary(line) + "\n"));
+                    }
+                    self.code = new_code;
+                }
+            }
+        }
+        if let Some(wrap_last_line_with_print_msgpack) =
+            self.get_interpreter_option("wrap_last_line_with_print")
+        {
+            if let Some(wrap_last_line_with_print) = wrap_last_line_with_print_msgpack.as_bool() {
+                if wrap_last_line_with_print {
+                    let mut new_code = self.code.lines().collect::<Vec<_>>();
+                    let last_line = new_code.pop().unwrap_or("");
+                    let last_line_modified = self.wrap_line_print_if_necessary(last_line) + "\n";
+                    new_code.push(&last_line_modified);
+                    self.code = new_code.join("\n");
+                }
+            }
+        }
+
+        info!("code: {}", self.code);
         self.code = preload_graphics + &self.code + &wait_for_graphics;
         Ok(())
     }
@@ -132,7 +192,7 @@ impl Interpreter for Mathematica_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let output = Command::new("wolfram")
+        let output = Command::new("WolframKernel")
             .arg("-noprompt")
             .arg("-script")
             .arg(&self.main_file_path)
@@ -149,4 +209,153 @@ impl Interpreter for Mathematica_original {
             ));
         }
     }
+}
+
+impl ReplLikeInterpreter for Mathematica_original {
+    fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
+        self.fetch_code()?;
+
+        if !self.read_previous_code().is_empty() {
+            // nothing to do, kernel already running
+            info!("Mathematica kernel already running");
+
+            if let Some(id) = self.get_pid() {
+                // there is a race condition here but honestly you'd have to
+                // trigger it on purpose
+                self.current_output_id = id + 1;
+                self.set_pid(self.current_output_id);
+            } else {
+                info!("Could not retrieve a previous id even if the kernel is running");
+            }
+
+            Ok(())
+        } else {
+            // launch everything
+            self.set_pid(0);
+
+            let init_repl_cmd = self.data.sniprun_root_dir.clone()
+                + "/src/interpreters/Mathematica_original/init_repl.sh";
+            info!(
+                "launching kernel : {:?} on {:?}",
+                init_repl_cmd, &self.language_work_dir
+            );
+
+            match daemon() {
+                Ok(Fork::Child) => {
+                    let _res = Command::new("bash")
+                        .args(&[init_repl_cmd, self.language_work_dir.clone()])
+                        .output()
+                        .unwrap();
+                    return Err(SniprunError::CustomError(
+                        "Timeout expired for mathematica REPL".to_owned(),
+                    ));
+                }
+                Ok(Fork::Parent(_)) => {}
+                Err(_) => info!("that an error"),
+            };
+
+            let pause = std::time::Duration::from_millis(100);
+            std::thread::sleep(pause);
+            self.save_code("kernel_launched".to_owned());
+
+            
+            Ok(())
+            // Err(SniprunError::CustomError(
+            //     "Mathematica kernel launched, re-run your snippet".to_owned(),
+            // ))
+        }
+    }
+    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
+        info!("adding boilerplate");
+        let mut preload_graphics = "";
+        if let Some(use_javagraphics_msgpack) =
+            self.get_interpreter_option("use_javagraphics_if_contains")
+        {
+            if !self.read_previous_code().contains("JavaGraphics loaded") {
+                if let Some(use_javagraphics) = use_javagraphics_msgpack.as_array() {
+                    for test_contains_msgpack in use_javagraphics.iter() {
+                        if let Some(test_contains) = test_contains_msgpack.as_str() {
+                            if self.code.contains(test_contains) {
+                                info!("Preloaded JavaGraphics");
+                                self.save_code("JavaGraphics loaded".to_owned());
+                                preload_graphics = "<<JavaGraphics`\n";
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else {
+                info!("not reloading JavaGraphics");
+            }
+        }
+
+        let end_mark = String::from("\nPrint[\"sniprun_finished_id=")
+            + &self.current_output_id.to_string()
+            + "\"];\n";
+        let start_mark = String::from("\nPrint[\"sniprun_started_id=")
+            + &self.current_output_id.to_string()
+            + "\"];\n";
+
+        self.code = start_mark + preload_graphics + &self.code + &end_mark;
+
+        info!("added boilerplate");
+        Ok(())
+    }
+    fn build_repl(&mut self) -> Result<(), SniprunError> {
+        self.build()?;
+        Ok(())
+    }
+    fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        //run th binary and get the std output (or stderr)
+
+        info!("running launcher");
+        let send_repl_cmd = self.data.sniprun_root_dir.clone()
+            + "/src/interpreters/Mathematica_original/launcher.sh";
+        let res = Command::new(send_repl_cmd)
+            .arg(self.language_work_dir.clone() + "/main.mma")
+            .arg(self.language_work_dir.clone() + "/pipe_in")
+            .spawn()
+            .expect("could not run launcher");
+        info!("launcher launched : {:?}", res);
+
+        let outfile = self.language_work_dir.clone() + "/out_file";
+        info!("outfile : {:?}", outfile);
+        return Ok(wait_out_file(outfile, self.current_output_id));
+    }
+}
+
+fn wait_out_file(path: String, id: u32) -> String {
+    let end_mark = String::from("\"sniprun_finished_id=") + &id.to_string() + "\"";
+    let start_mark = String::from("\"sniprun_started_id=") + &id.to_string() + "\"";
+
+    info!(
+        "searching for things between {:?} and {:?}",
+        start_mark, end_mark
+    );
+
+    let mut contents = String::new();
+
+    loop {
+        if let Ok(mut file) = std::fs::File::open(&path) {
+            info!("file exists");
+            let res = file.read_to_string(&mut contents);
+            if res.is_ok() {
+                res.unwrap();
+                info!("file could be read : {:?}", contents);
+                // info!("file : {:?}", contents);
+                if contents.contains(&end_mark) {
+                    info!("found");
+                    break;
+                }
+                contents.clear();
+            }
+        }
+        info!("not found yet");
+
+        let pause = std::time::Duration::from_millis(50);
+        std::thread::sleep(pause);
+    }
+
+    let index = contents.find(&start_mark).unwrap();
+    return contents[index + &start_mark.len()..&contents.len() - &end_mark.len() - 1].to_owned();
 }

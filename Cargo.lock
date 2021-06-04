@@ -251,9 +251,10 @@ dependencies = [
 
 [[package]]
 name = "sniprun"
-version = "0.5.6"
+version = "0.5.7"
 dependencies = [
  "dirs",
+ "libc",
  "log",
  "neovim-lib",
  "regex",
