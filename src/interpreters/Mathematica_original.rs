@@ -71,8 +71,8 @@ impl Interpreter for Mathematica_original {
     fn get_supported_languages() -> Vec<String> {
         vec![
             String::from("Mathematica"),
-            String::from("mathematica"),
             String::from("mma"),
+            String::from("mathematica"),
         ]
     }
 
@@ -243,26 +243,30 @@ impl ReplLikeInterpreter for Mathematica_original {
             match daemon() {
                 Ok(Fork::Child) => {
                     let _res = Command::new("bash")
-                        .args(&[init_repl_cmd, self.language_work_dir.clone()])
+                        .args(&[
+                            init_repl_cmd,
+                            self.language_work_dir.clone(),
+                        ])
                         .output()
                         .unwrap();
+                    let pause = std::time::Duration::from_millis(36_000_000);
+                    std::thread::sleep(pause);
+
                     return Err(SniprunError::CustomError(
                         "Timeout expired for mathematica REPL".to_owned(),
                     ));
                 }
                 Ok(Fork::Parent(_)) => {}
-                Err(_) => info!("that an error"),
+                Err(_) => info!("Mathematica_original could not fork itself to the background"),
             };
 
             let pause = std::time::Duration::from_millis(100);
             std::thread::sleep(pause);
             self.save_code("kernel_launched".to_owned());
 
-            
-            Ok(())
-            // Err(SniprunError::CustomError(
-            //     "Mathematica kernel launched, re-run your snippet".to_owned(),
-            // ))
+            Err(SniprunError::CustomError(
+                "Mathematica kernel launched, re-run your snippet".to_owned(),
+            ))
         }
     }
     fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
@@ -320,13 +324,18 @@ impl ReplLikeInterpreter for Mathematica_original {
 
         let outfile = self.language_work_dir.clone() + "/out_file";
         info!("outfile : {:?}", outfile);
-        return Ok(wait_out_file(outfile, self.current_output_id));
+        match wait_out_file(outfile, self.current_output_id) {
+            Ok(s) => Ok(s),
+            Err(s) => Err(SniprunError::CustomError(s)),
+        }
     }
 }
 
-fn wait_out_file(path: String, id: u32) -> String {
+fn wait_out_file(path: String, id: u32) -> Result<String,String> {
     let end_mark = String::from("\"sniprun_finished_id=") + &id.to_string() + "\"";
     let start_mark = String::from("\"sniprun_started_id=") + &id.to_string() + "\"";
+
+    let error = "No valid password found";
 
     info!(
         "searching for things between {:?} and {:?}",
@@ -347,6 +356,9 @@ fn wait_out_file(path: String, id: u32) -> String {
                     info!("found");
                     break;
                 }
+                if contents.contains(&error) {
+                    return Err("No valid password found. Check :SnipInfo Mathematica_original".to_owned());
+                }
                 contents.clear();
             }
         }
@@ -356,6 +368,6 @@ fn wait_out_file(path: String, id: u32) -> String {
         std::thread::sleep(pause);
     }
 
-    let index = contents.find(&start_mark).unwrap();
-    return contents[index + &start_mark.len()..&contents.len() - &end_mark.len() - 1].to_owned();
+    let index = contents.rfind(&start_mark).unwrap();
+    return Ok(contents[index + &start_mark.len()..&contents.len() - &end_mark.len() - 1].to_owned());
 }
