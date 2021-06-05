@@ -322,6 +322,7 @@ You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to 
 ### Usage recommandation & tricks
 
 - Map the run command to a simple command such as `<leader>ff` (or just `f` in visual mode)
+- Check `SnipInfo` & `:SnipInfo <interpreter_name>` to learn any quirk or tips about the language you're interested in
 - The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "\<leader>f + j" will run sniprun on the current line + the line below.
 
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
@@ -392,7 +393,7 @@ println!("-> {}", alphabet);
 | Clojure      | Untested      |     | Lua        | Bloc             |
 | COBOL        | Untested      |     | Lua-nvim   | Bloc + REPL      |
 | Coffeescript | Bloc          |     | Markdown   | Bloc + REPL\*\*\*|
-| C#           | Untested      |     | Mathematica| Bloc             |
+| C#           | Untested      |     | Mathematica| Bloc + REPL\*\*  |
 | D            | Bloc          |     | Perl/Perl6 | Line             |
 | Elixir       | Untested      |     | PHP        | Untested         |
 | Elm          | Untested      |     | Python3    | Import +REPL*\*  |
