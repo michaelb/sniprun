@@ -1,4 +1,3 @@
-
 # QuickStart
 
 Check that `WolframKernel` and `pkill` are installed and on your path.
@@ -15,6 +14,9 @@ lua require'sniprun'.setup({
     },
 })
 ```
+
+
+
 
 
 # Enabling graphics
@@ -66,13 +68,18 @@ lua require'sniprun'.setup({
 ```
 
 
+
+
 ## Quirks of REPL-mode
+
+
 Enabling REPL for mathematica will launch a WolframKernel instance in the background. This session will close when the last neovim instance quits, but is only usable by one neovim instance.
 I hope you only need to sniprun mathematica snippets in one neovim instance, because anything else will probably crash.
 
 In REPL-mode, your first SnipRun command of the neovim instance is used to start the REPL kernel, and the selection is discarded. You'll have to re-run it, sorry, but that's the only way for now.
 
 In REPL-mode, just like in the normal interpreter, suffix your expressions with ';' if you don't want them to output something. I strongly recommend to suffix Plots with ';'
+
 
 
 ## Troubleshooting

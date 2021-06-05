@@ -91,6 +91,16 @@ impl Interpreter for Mathematica_original {
         self.data.clone()
     }
 
+    fn has_repl_capability() -> bool {
+        true
+    }
+
+    fn default_for_filetype() -> bool {
+        true
+    }
+
+
+
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Bloc
     }
