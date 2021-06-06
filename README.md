@@ -78,7 +78,7 @@ Python, R (both real REPLs) and Bash (simulated), coming soon for many other int
 
 ![](ressources/visual_assets/demo_repl.gif)
 
-##### Does it deals with errors ?
+##### Does it deal with errors ?
 Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely. Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
 
 ![](ressources/visual_assets/rust_error.png)

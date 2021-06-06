@@ -46,8 +46,8 @@ impl Launcher {
         //select the best interpreter for the language
         let mut skip_all = false;
         iter_types! {
-            if !skip_all && Current::get_supported_languages().contains(&self.data.filetype){
-                if Current::get_max_support_level() > max_level_support {
+            if Current::get_supported_languages().contains(&self.data.filetype){
+                if !skip_all && Current::get_max_support_level() > max_level_support {
                     max_level_support = Current::get_max_support_level();
                     name_best_interpreter = Current::get_name();
                 }
@@ -58,13 +58,14 @@ impl Launcher {
                     skip_all = true;
                 }
 
-                if Current::default_for_filetype() {
+                if !skip_all && Current::default_for_filetype() {
                     max_level_support = Current::get_max_support_level();
                     name_best_interpreter = Current::get_name();
                     skip_all = true;
                 }
             }
         }
+        info!("selected {}", name_best_interpreter);
         let _ = skip_all; //silence false unused variable warning
         return Some((name_best_interpreter, max_level_support));
     }
