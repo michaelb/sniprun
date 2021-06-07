@@ -1,5 +1,7 @@
 ## v0.5.8
 - Mathematica support
+- FIFO - based REPL works ok (Mathematica, Python)!
+- Better help/snipinfo formatting
 
 ## v0.5.7
 - Julia jupyter interpreter is up (though a bit complicated to setup)

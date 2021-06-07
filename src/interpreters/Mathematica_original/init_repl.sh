@@ -17,7 +17,7 @@ echo "WolframKernel process started at $(date +"%F %T")." >> $working_dir/log
 mkfifo $working_dir/$pipe
 touch $working_dir/$out
 sleep 36000 > $working_dir/$pipe &
-WolframKernel -noprompt < $working_dir/$pipe > $working_dir/$out &
+WolframKernel -noprompt < $working_dir/$pipe &> $working_dir/$out &
 
 echo "done_logged" >> $working_dir/log
 

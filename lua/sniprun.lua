@@ -242,9 +242,9 @@ end
 -- get all lines from a file, returns an empty
 -- list/table if the file does not exist
 local function lines_from(file)
-  local lines = {}
+  local lines = {""}
   for line in io.lines(file) do
-    lines[#lines + 1] = line
+    lines[#lines + 1] = line or " "
   end
   return lines
 end
@@ -263,7 +263,7 @@ function M.info(arg)
     end
   else --help about a particular interpreter
       local lines = lines_from(sniprun_path.."/doc/"..string.gsub(arg,"%s+","")..".md")
-      print(table.concat(lines, '\n'))
+      print(table.concat(lines, '\n|'))
   end
 end
 

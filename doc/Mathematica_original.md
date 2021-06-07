@@ -8,9 +8,9 @@ Then, the setup 99% of people want:
 lua require'sniprun'.setup({
     repl_enable = {'Mathematica_original'},
     interpreter_options = {
-	Mathematica_original = {
-	    use_javagraphics_if_contains = {'Plot'}, -- a pattern that need <<JavaGraphics
-	},
+         Mathematica_original = {
+            use_javagraphics_if_contains = {'Plot'}, -- a pattern that need <<JavaGraphics
+        },
     },
 })
 ```
@@ -27,10 +27,10 @@ You can specify whether the "<<JavaGraphics` command ought to be issued before r
 ```
 lua require'sniprun'.setup({
     interpreter_options = {
-	Mathematica_original = {
-	    use_javagraphics_if_contains = {'Plot', 'SomeCustomPlt'}, -- a pattern that need <<JavaGraphics
-	    keep_plot_open_for = 3600,    -- a positive integer -> how many seconds to keep the plot window open
-	},
+        Mathematica_original = {
+            use_javagraphics_if_contains = {'Plot', 'SomeCustomPlt'}, -- a pattern that need <<JavaGraphics
+            keep_plot_open_for = 3600,    -- a positive integer -> how many seconds to keep the plot window open
+        },
     },
 })
 ```
@@ -59,10 +59,10 @@ To feel safe, you wouldn't use these unless you only execute code line-by-line. 
 ```
 lua require'sniprun'.setup({
     interpreter_options = {
-	Mathematica_original = {
-	    wrap_all_lines_with_print = false,       -- wrap all lines making sense to print with Print[.];
-	    wrap_last_line_with_print = false,       -- wrap last line with Print[.]
-	},
+        Mathematica_original = {
+            wrap_all_lines_with_print = false,       -- wrap all lines making sense to print with Print[.];
+            wrap_last_line_with_print = false,       -- wrap last line with Print[.]
+        },
     },
 })
 ```

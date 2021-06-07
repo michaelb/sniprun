@@ -42,6 +42,52 @@ impl Mathematica_original {
         }
         return line;
     }
+
+    fn wait_out_file(&self, path: String, id: u32) -> Result<String, String> {
+        let end_mark = String::from("\"sniprun_finished_id=") + &id.to_string() + "\"";
+        let start_mark = String::from("\"sniprun_started_id=") + &id.to_string() + "\"";
+
+        let error = "No valid password found";
+
+        info!(
+            "searching for things between {:?} and {:?}",
+            start_mark, end_mark
+        );
+
+        let mut contents = String::new();
+
+        loop {
+            if let Ok(mut file) = std::fs::File::open(&path) {
+                info!("file exists");
+                let res = file.read_to_string(&mut contents);
+                if res.is_ok() {
+                    res.unwrap();
+                    info!("file could be read : {:?}", contents);
+                    // info!("file : {:?}", contents);
+                    if contents.contains(&end_mark) {
+                        info!("found");
+                        break;
+                    }
+                    if contents.contains(&error) {
+                        return Err(
+                            "No valid password found. Check :SnipInfo Mathematica_original"
+                                .to_owned(),
+                        );
+                    }
+                    contents.clear();
+                }
+            }
+            info!("not found yet");
+
+            let pause = std::time::Duration::from_millis(50);
+            std::thread::sleep(pause);
+        }
+
+        let index = contents.rfind(&start_mark).unwrap();
+        return Ok(
+            contents[index + &start_mark.len()..&contents.len() - &end_mark.len() - 1].to_owned(),
+        );
+    }
 }
 
 impl Interpreter for Mathematica_original {
@@ -98,8 +144,6 @@ impl Interpreter for Mathematica_original {
     fn default_for_filetype() -> bool {
         true
     }
-
-
 
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Bloc
@@ -253,10 +297,7 @@ impl ReplLikeInterpreter for Mathematica_original {
             match daemon() {
                 Ok(Fork::Child) => {
                     let _res = Command::new("bash")
-                        .args(&[
-                            init_repl_cmd,
-                            self.language_work_dir.clone(),
-                        ])
+                        .args(&[init_repl_cmd, self.language_work_dir.clone()])
                         .output()
                         .unwrap();
                     let pause = std::time::Duration::from_millis(36_000_000);
@@ -334,50 +375,9 @@ impl ReplLikeInterpreter for Mathematica_original {
 
         let outfile = self.language_work_dir.clone() + "/out_file";
         info!("outfile : {:?}", outfile);
-        match wait_out_file(outfile, self.current_output_id) {
+        match self.wait_out_file(outfile, self.current_output_id) {
             Ok(s) => Ok(s),
             Err(s) => Err(SniprunError::CustomError(s)),
         }
     }
-}
-
-fn wait_out_file(path: String, id: u32) -> Result<String,String> {
-    let end_mark = String::from("\"sniprun_finished_id=") + &id.to_string() + "\"";
-    let start_mark = String::from("\"sniprun_started_id=") + &id.to_string() + "\"";
-
-    let error = "No valid password found";
-
-    info!(
-        "searching for things between {:?} and {:?}",
-        start_mark, end_mark
-    );
-
-    let mut contents = String::new();
-
-    loop {
-        if let Ok(mut file) = std::fs::File::open(&path) {
-            info!("file exists");
-            let res = file.read_to_string(&mut contents);
-            if res.is_ok() {
-                res.unwrap();
-                info!("file could be read : {:?}", contents);
-                // info!("file : {:?}", contents);
-                if contents.contains(&end_mark) {
-                    info!("found");
-                    break;
-                }
-                if contents.contains(&error) {
-                    return Err("No valid password found. Check :SnipInfo Mathematica_original".to_owned());
-                }
-                contents.clear();
-            }
-        }
-        info!("not found yet");
-
-        let pause = std::time::Duration::from_millis(50);
-        std::thread::sleep(pause);
-    }
-
-    let index = contents.rfind(&start_mark).unwrap();
-    return Ok(contents[index + &start_mark.len()..&contents.len() - &end_mark.len() - 1].to_owned());
 }

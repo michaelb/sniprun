@@ -107,8 +107,10 @@ impl Launcher {
             ));
             v.push(format!("More information may be available via :SnipInfo {}\n\n", name));
         } else {
-            v.push("No interpreter selected\n".to_string());
+            v.push("No interpreter selected\n\nYou can always get more info about one particular interpreter via:\n:SnipInfo <name>".to_string());
         }
+
+        v.push("\nAvailable interpreters and languages".to_owned());
 
         let separator = "|--------------------------|--------------|---------------|-------------|------------|--------------|------------|".to_string();
         v.push(separator.clone());
@@ -139,6 +141,7 @@ impl Launcher {
         }
 
         v.push(separator.clone());
+        v.push("More help, quickstart and config options refresher can be found from:\n:help sniprun\n".to_owned());
 
         if self.data.return_message_type == ReturnMessageType::Multiline {
             info!("[INFO] Returning info directly");

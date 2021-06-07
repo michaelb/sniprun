@@ -396,7 +396,7 @@ println!("-> {}", alphabet);
 | C#           | Untested      |     | Mathematica| Bloc + REPL\*\*  |
 | D            | Bloc          |     | Perl/Perl6 | Line             |
 | Elixir       | Untested      |     | PHP        | Untested         |
-| Elm          | Untested      |     | Python3    | Import +REPL*\*  |
+| Elm          | Untested      |     | Python3    | Import +REPL*\*   |
 | Erlang       | Untested      |     | R          | Bloc + REPL\*\*  |
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
