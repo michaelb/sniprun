@@ -3,9 +3,11 @@
 - FIFO - based REPL works ok (Mathematica, Python)!
 - Better help/snipinfo formatting
 
+
 ## v0.5.7
 - Julia jupyter interpreter is up (though a bit complicated to setup)
 - Configurable windows borders
+
 
 ## v0.5.6
 - Automated publish system by github actions
@@ -16,12 +18,14 @@
 - Configurable colors
 - Use current buffer instead of save files for import level
 
+
 ## v0.5.4
 - Support configuring compiler, interpreter or venv (python)
 - Fine-tune display modes + highlight
 - Better namespace management for C++ (courtesy of Dan Green)
 - Ping binary to check compatibility
 - Fix major bug with download system
+
 
 ## v0.5.3
 - Display results in "Classic', "VirtualText", "Floating Windows", and "Terminal" mode
@@ -46,13 +50,18 @@
 - Sniprun becomes a Lua (+Rust) plugin!!
 - Lua backend, config, and checkhealth
 - Fully backward compatible with old configs
+- Old 'vroom' framework deprecated
+
 
 ## v0.4.9
 - inline_message functionnality
 
+
 ## v0.4.8
 - More complete test pipeline
 - C++ & C upgrade to support level Import
+- Social preview and various assets
+- checkhealth
 
 
 ## v0.4.7
@@ -60,23 +69,57 @@
 - Fix the bug where the channel would broke and the terminate function had a typo
 - Compilation error messages (nicely truncated) for C and Rust
 
+
 ## v0.4.6
-- Remove 'cc' dependency which caused issues with precompiled GLIBC i think
-- a lot of unit tests
+- Remove 'cc' dependency which caused issues with precompiled GLIBC
+- a lot of unit tests, and complete CI pipeline
+- vroom framework for integration test ?
 
 
 ## v0.4.5
 - Plug mappings + vim-repeat support
 - Trailing characters fix
+- SnipInfo centralize all the information, better help
 
 
 ## v0.4.4
 - Jupyter kernel available in Python3_jupyter !
 - fixes a bug in Python3_original that imported too much modules
 - improved README
+- first tests in CI pipeline
+
 
 ## v0.4.3
 - Rust interpreter and example now have tests
+- Julia intepreter
+- example.rs interpreter
 
 
-Sniprun development started on 17 Aug 2020
+## v0.4.1
+- VimL config options
+- REPL for R and Bash
+
+
+## v0.4.2
+- Better release download system
+- More complete CONTRIBUTING.md & revamped README
+- Github Action & build passing badge
+
+
+## v0.4.0
+- Go, C++, Ruby, Haskell interpreter
+- REPL-like behavior for the first time (Python)
+
+
+## v0.3.1
+- First tag release / MVP
+- Lua, C, Python, Rust, Bash, Java, Javascript and many more languages are supported
+- Lua_nvim interpreter, courtesy of @vigoux, the first external contributor
+- Comprehensive doc and readme
+- First interpreter (Python) gets Import support level
+- Generic interpreter
+
+
+
+## Initial commit
+- Sniprun development started on 17 Aug 2020
