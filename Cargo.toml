@@ -1,6 +1,6 @@
 [package]
 name = "sniprun"
-version = "0.5.7"
+version = "0.5.8"
 authors = ["michaelb <michael.bleuez2@gmail.com>"]
 edition = "2018"
 
@@ -19,6 +19,7 @@ dirs="*"
 regex="*"
 serde_json="*"
 strip-ansi-escapes="*"
+libc="0.2.79"
 
 # jupyter-client = { git = "https://gitlab.com/srwalker101/rust-jupyter-client.git", branch = "dev" }
 

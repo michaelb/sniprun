@@ -52,16 +52,46 @@ CONFIGURATION                                       *sniprun-configuration*
 
 Add the setup() call somewhere in your config files and modify the fields as needed, relevant info can be found with :SnipInfo
 
+Note: the 'lua << EOF .... EOF' part is only needed if you configure sniprun in a vimscript (.vim) file. If you configure sniprun in a lua file (.lua), directly 'require' sniprun.
+
+You can omit configuration fields to let them follow the defaults; so the most basic sniprun config is just:
+
+lua  <<EOF
+require'sniprun'.setup()
+EOF
+
+
+This is an example of all the available fields:
+
 lua << EOF
 require'sniprun'.setup({
-  selected_interpreters = {},     --" use those instead of the default for the current filetype
-  repl_enable = {},               --" enable REPL-like behavior for the given interpreters
-  repl_disable = {},              --" disable REPL-like behavior for the given interpreters
+  selected_interpreters = {'Python3_fifo'},        --" use those instead of the default for the current filetype
+  repl_enable = {'Python3_fifo', 'R_original'},    --" enable REPL-like behavior for the given interpreters
+  repl_disable = {},                               --" disable REPL-like behavior for the given interpreters
 
-  inline_messages = 0             --" inline_message (0/1) is a one-line way to display messages
-                                  --" to workaround sniprun not being able to display anything
+  interpreter_options = {
+      C_original = { compiler = "clang" },
+      GFM_original = {
+         default_filetype = 'bash'
+      }
+   },
 
-  -- " you can combo different display modes as desired
+
+  inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
+                                   --" to workaround sniprun not being able to display anything
+
+  borders = 'single',              --" type display borders around floating windows, if used
+                                   --" possible values are 'none', 'single', 'double', or 'shadow'
+
+  -- customize highlight groups (setting this field in configuration overrides colorscheme)
+ snipruncolors = {
+    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
+    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+    SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
+  },
+
+  --" you can combo different display modes as desired
   display = {
     "Classic",                    -- "display results in the command-line  area
     "VirtualTextOk",              -- "display ok results as virtual text (multiline is shortened)

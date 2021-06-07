@@ -6,7 +6,7 @@ Just in case: to compile `cargo build --release`, to create and show the documen
 
 ### How hard it is?
 
-Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 30min ( 13min is my best time, for C_original to 1h30. You can then submit your proposed changes as a PR to the master branch.
+Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 30min ( 13min is my best time, for C\_original to 1h30. You can then submit your proposed changes as a PR to the master branch.
 
 Higher support levels gets exponentially harder (depends on the languages though), so you should start out with Bloc.
 
@@ -14,7 +14,7 @@ Higher support levels gets exponentially harder (depends on the languages though
 
 What do I write, and where?
 
--> You only have to write a file in src/interpreters/ that has the name of the interpreter, by convention; \<language_name\>\_\<differentiator\>.rs
+-> You only have to write a file in src/interpreters/ that has the name of the interpreter, by convention; \<language\_name\>\_\<differentiator\>.rs
 
 ---
 
@@ -68,13 +68,13 @@ I need more than one file to write complicated code...
 
 Do I need to manage async running and compiling?
 
--> No, Sniprun takes care of that for you. You can implement a single-threaded synchronous code just like the D_original interpreter.
+-> No, Sniprun takes care of that for you. You can implement a single-threaded synchronous code just like the D\_original interpreter.
 
 ---
 
 My interpreter has some quirks that the end user should know
 
--> Document limitations and features in doc/interpreter_name.md .
+-> Document limitations and features in doc/interpreter\_name.md .
 
 ---
 
@@ -92,7 +92,11 @@ Run with `cargo test -- --test-threads=1` .
 ---
 I think I've done a good job, but am I ready to submit a PR?
 
--> You should check beforehand that the output of `cargo test -- --test-threads=1` and your own tests are satisfying. You've added the proper an necessary tests, and have documented any edge case.
+-> You should check beforehand that the output of `cargo test -- --test-threads=1` and your own tests are satisfying. You've added the proper and necessary tests, and have documented any edge case in doc/.
+
+--- 
+REPL - based ?
+Mathematica\_original has a pipe (UNIX fifo) - based ReplLikeInterpreter implementation, that may be useful if your language has an interpreter with proper stdio support. Building everything from Rust doesn't quite work yet, so there is a bash script in src/interpreters/Mathematica\_original/init\_repl.sh
 
 ### What's the deal with...
 

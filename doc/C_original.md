@@ -6,7 +6,7 @@ require'sniprun'.setup({
     interpreter_options = {
         C_original = {
              compiler = "clang"
-             }
+            }
         }
     }
 })

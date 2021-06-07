@@ -5,8 +5,8 @@ the executable (go , llgo or whatever) executable used to _build_ the snippet ca
 require'sniprun'.setup({
     interpreter_options = {
         Go_original = {
-             compiler = "gccgo"
-             }
+            compiler = "gccgo"
+            }
         }
     }
 })

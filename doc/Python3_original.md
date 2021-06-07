@@ -2,12 +2,14 @@ To get the REPL behaviour (inactive by default) working, you need to isntall the
 
 Then, to enable the REPL behavior for python in your config file
 
-`
-lua << EOF
+```
 require'sniprun'.setup({
-  repl_enable = {'Python3_original'}
+    repl_enable = {'Python3_original'}
 })
-EOF`
+```
+
+HOWEVER, if you're interested in a very stable and solid REPL python interpreter, to process bigger amount of data or import some exotic modules (not supported by klepto), get a look at the Python3_fifo interpreter.
+
 
 With the REPL enabled, sniprunning a \* (star) import `from module import *` may not work, indeed the imports needs to be correctly saved/loaded by klepto. klepto manages variables, functions and modules but very special things may fail.
 
@@ -24,9 +26,9 @@ To use a custom python intepreterv( maybe python2, or a particular version?) you
 require'sniprun'.setup({
     interpreter_options = {
         Python3_original = {
-             intepreter = "python3.9",
-             venv = {"venv_project1", "venv_project2", "../venv_project2"}
-             }
+            intepreter = "python3.9",
+            venv = {"venv_project1", "venv_project2", "../venv_project2"},
+            }
         }
     }
 })

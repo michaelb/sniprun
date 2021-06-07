@@ -37,16 +37,15 @@ println!("test");
 
 \* python, but you can ofc configure that: 
 
-```lua
-lua << EOF
+```
 require'sniprun'.setup({
-  interpreter_options = {
-    GFM_original = { 
-      default_filetype = 'bash' -- default filetype (not github flavored markdown name)
-      }
+    interpreter_options = {
+        GFM_original = { 
+            default_filetype = 'bash' -- default filetype (not github flavored markdown name)
+        }
     }
-  })
-EOF
+})
+```
 
 
 if GFM doesn't include a flavor that matches the language you want, well it's not really GFM anymore but you can but the filetype of the language you want, such as julia or lua

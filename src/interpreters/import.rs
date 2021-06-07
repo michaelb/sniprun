@@ -10,13 +10,17 @@ use crate::iter_types;
 use std::fs::{write, DirBuilder, File};
 use std::process::Command;
 
+
 use neovim_lib::NeovimApi;
 
 use std::env;
 
+use crate::daemonizer::{daemon,Fork};
 
 //indentation
 use unindent::unindent;
+
+use std::io::prelude::*;
 
 // use jupyter_client::Client;
 // use std::collections::HashMap;

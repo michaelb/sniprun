@@ -78,7 +78,7 @@ Python, R (both real REPLs) and Bash (simulated), coming soon for many other int
 
 ![](ressources/visual_assets/demo_repl.gif)
 
-##### Does it deals with errors ?
+##### Does it deal with errors ?
 Yes,...somehow. In practice, very well; but consistency among all languages and usages is not garanteed, each interpreter can and will display those more or less nicely. Though, Sniprun will often provide information such as where the error occurred (compilation, runtime...).
 
 ![](ressources/visual_assets/rust_error.png)
@@ -266,7 +266,7 @@ require'sniprun'.setup({
 
   interpreter_options = {},       --" intepreter-specific options, consult docs / :SnipInfo <name>
 
-  -- " you can combo different display modes as desired
+  --" you can combo different display modes as desired
   display = {
     "Classic",                    -- "display results in the command-line  area
     "VirtualTextOk",              -- "display ok results as virtual text (multiline is shortened)
@@ -276,7 +276,7 @@ require'sniprun'.setup({
     -- "Terminal"                 -- "display results in a vertical split
     },
 
-  -- customize highlight groups (setting this overrides colorscheme)
+  --" customize highlight groups (setting this overrides colorscheme)
  snipruncolors = {
     SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
     SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
@@ -284,7 +284,7 @@ require'sniprun'.setup({
     SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
   },
 
-  -- miscellaneous compatibility/adjustement settings
+  --" miscellaneous compatibility/adjustement settings
   inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
 				   --" to workaround sniprun not being able to display anything
 
@@ -322,6 +322,7 @@ You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to 
 ### Usage recommandation & tricks
 
 - Map the run command to a simple command such as `<leader>ff` (or just `f` in visual mode)
+- Check `SnipInfo` & `:SnipInfo <interpreter_name>` to learn any quirk or tips about the language you're interested in
 - The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "\<leader>f + j" will run sniprun on the current line + the line below.
 
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
@@ -390,13 +391,13 @@ println!("-> {}", alphabet);
 | C            | Import        |     | Julia      | Bloc + REPL\*\*  |
 | C++          | Import        |     | Lisp       | Untested         |
 | Clojure      | Untested      |     | Lua        | Bloc             |
-| COBOL        | Untested      |     | Lua-nvim   | Bloc             |
-| Coffeescript | Bloc          |     | Markdown (GFM)   | Bloc + REPL \*\*\*   |
-| C#           | Untested      |     | Perl6      | Line             |
-| D            | Bloc          |     | Perl       | Line             |
+| COBOL        | Untested      |     | Lua-nvim   | Bloc + REPL      |
+| Coffeescript | Bloc          |     | Markdown   | Bloc + REPL\*\*\*|
+| C#           | Untested      |     | Mathematica| Bloc + REPL\*\*  |
+| D            | Bloc          |     | Perl/Perl6 | Line             |
 | Elixir       | Untested      |     | PHP        | Untested         |
 | Elm          | Untested      |     | Python3    | Import +REPL*\*   |
-| Erlang       | Untested      |     | R          | Bloc + REPL \*\* |
+| Erlang       | Untested      |     | R          | Bloc + REPL\*\*  |
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
 | Groovy       | Untested      |     | Scala      | Bloc             |
@@ -461,5 +462,5 @@ And many more projects, somewhat similar, but never quite, that I didn't notice 
 
 - **All-language support**. Sniprun can work with virtually any language, including compiled ones. If the language is not supported yet, anyone can create a sniprun interpreter for it!
 - **Better output**. Sniprun doesn't use precious screen space (like [codi](https://github.com/metakirby5/codi.vim) or [vim-slime](https://github.com/jpalardy/vim-slime)) by default (but it can).
-- Promising evolution of the project: treesitter usage is in the goals plan, to make testing/ running even better (with things like auto-fecthing variables & functions definitions). Those will comply at least with the File support level for a truly amazing experience. (I'll need some help with that though).
+- Promising evolution of the project: LSP usage is in the goals plan, to make testing/ running even better (with things like auto-fecthing variables & functions definitions). Those will comply at least with the File support level for a truly amazing experience. (I'll need some help with that though).
 - **Fast, extendable and maintainable**: this is not a 2k-lines vim script, nor an inherently limited one-liner. It's a Rust project designed to be as clear and "contribuable" as possible.

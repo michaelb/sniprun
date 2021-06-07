@@ -7,8 +7,8 @@
 require'sniprun'.setup({
     interpreter_options = {
         Cpp_original = {
-             compiler = "clang --debug"
-             }
+            compiler = "clang --debug"
+            }
         }
     }
 })

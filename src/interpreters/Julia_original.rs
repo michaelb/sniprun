@@ -8,9 +8,49 @@ pub struct Julia_original {
     main_file_path: String,
     plugin_root: String,
     cache_dir: String,
+
+    current_output_id: u32,
 }
 
-impl ReplLikeInterpreter for Julia_original {}
+impl Julia_original {
+    fn wait_out_file(&self, path: String, id: u32) -> Result<String, String> {
+        let end_mark = String::from("sniprun_finished_id=") + &id.to_string();
+        let start_mark = String::from("sniprun_started_id=") + &id.to_string();
+
+        info!(
+            "searching for things between {:?} and {:?}",
+            start_mark, end_mark
+        );
+
+        let mut contents = String::new();
+
+        loop {
+            if let Ok(mut file) = std::fs::File::open(&path) {
+                info!("file exists");
+                let res = file.read_to_string(&mut contents);
+                if res.is_ok() {
+                    res.unwrap();
+                    info!("file could be read : {:?}", contents);
+                    // info!("file : {:?}", contents);
+                    if contents.contains(&end_mark) {
+                        info!("found");
+                        break;
+                    }
+                    contents.clear();
+                }
+            }
+            info!("not found yet");
+
+            let pause = std::time::Duration::from_millis(50);
+            std::thread::sleep(pause);
+        }
+
+        let index = contents.rfind(&start_mark).unwrap();
+        return Ok(
+            contents[index + &start_mark.len()..&contents.len() - &end_mark.len() - 1].to_owned(),
+        );
+    }
+}
 
 impl Interpreter for Julia_original {
     fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Julia_original> {
@@ -34,6 +74,7 @@ impl Interpreter for Julia_original {
             main_file_path: mfp,
             plugin_root: pgr,
             cache_dir: rwd,
+            current_output_id: 0,
         })
     }
 
@@ -46,6 +87,10 @@ impl Interpreter for Julia_original {
     }
 
     fn behave_repl_like_default() -> bool {
+        false
+    }
+
+    fn has_repl_capability() -> bool {
         false
     }
 
@@ -119,6 +164,100 @@ impl Interpreter for Julia_original {
         }
     }
 }
+
+impl ReplLikeInterpreter for Julia_original {
+    fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
+        self.fetch_code()?;
+
+        if !self.read_previous_code().is_empty() {
+            // nothing to do, kernel already running
+            info!("Julia kernel already running");
+
+            if let Some(id) = self.get_pid() {
+                // there is a race condition here but honestly you'd have to
+                // trigger it on purpose
+                self.current_output_id = id + 1;
+                self.set_pid(self.current_output_id);
+            } else {
+                info!("Could not retrieve a previous id even if the kernel is running");
+            }
+
+            Ok(())
+        } else {
+            // launch everything
+            self.set_pid(0);
+
+            let init_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/init_repl.sh";
+            info!(
+                "launching kernel : {:?} on {:?}",
+                init_repl_cmd, &self.cache_dir
+            );
+
+            match daemon() {
+                Ok(Fork::Child) => {
+                    let _res = Command::new("bash")
+                        .args(&[init_repl_cmd, self.cache_dir.clone(), "julia --banner=no --color=no".to_owned()])
+                        .output()
+                        .unwrap();
+                    let pause = std::time::Duration::from_millis(36_000_000);
+                    std::thread::sleep(pause);
+
+                    return Err(SniprunError::CustomError(
+                        "Timeout expired for julia REPL".to_owned(),
+                    ));
+                }
+                Ok(Fork::Parent(_)) => {}
+                Err(_) => info!(
+                    "Julia_original could not fork itself to the background to launch the kernel"
+                ),
+            };
+
+            let pause = std::time::Duration::from_millis(100);
+            std::thread::sleep(pause);
+            self.save_code("kernel_launched".to_owned());
+
+            Err(SniprunError::CustomError(
+                "Julia kernel launched, re-run your snippet".to_owned(),
+            ))
+        }
+    }
+
+    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
+        self.add_boilerplate()?;
+        let start_mark = String::from("println(\"sniprun_started_id=")
+            + &self.current_output_id.to_string()
+            + "\")\n";
+        let end_mark = String::from("println(\"sniprun_finished_id=")
+            + &self.current_output_id.to_string()
+            + "\")\n";
+
+        self.code = start_mark + &self.code + &end_mark;
+        Ok(())
+    }
+
+    fn build_repl(&mut self) -> Result<(), SniprunError> {
+        self.build()
+    }
+
+    fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        info!("running launcher");
+        let send_repl_cmd = self.data.sniprun_root_dir.clone() + "ressources/launcher.sh";
+        let res = Command::new(send_repl_cmd)
+            .arg(self.cache_dir.clone() + "/main.mma")
+            .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
+            .spawn()
+            .expect("could not run launcher");
+        info!("launcher launched : {:?}", res);
+
+        let outfile = self.cache_dir.clone() + "/fifo_repl/out_file";
+        info!("outfile : {:?}", outfile);
+        match self.wait_out_file(outfile, self.current_output_id) {
+            Ok(s) => Ok(s),
+            Err(s) => Err(SniprunError::CustomError(s)),
+        }
+    }
+}
+
 #[cfg(test)]
 mod test_julia_original {
     use super::*;

@@ -46,8 +46,8 @@ impl Launcher {
         //select the best interpreter for the language
         let mut skip_all = false;
         iter_types! {
-            if !skip_all && Current::get_supported_languages().contains(&self.data.filetype){
-                if Current::get_max_support_level() > max_level_support {
+            if Current::get_supported_languages().contains(&self.data.filetype){
+                if !skip_all && Current::get_max_support_level() > max_level_support {
                     max_level_support = Current::get_max_support_level();
                     name_best_interpreter = Current::get_name();
                 }
@@ -58,13 +58,14 @@ impl Launcher {
                     skip_all = true;
                 }
 
-                if Current::default_for_filetype() {
+                if !skip_all && Current::default_for_filetype() {
                     max_level_support = Current::get_max_support_level();
                     name_best_interpreter = Current::get_name();
                     skip_all = true;
                 }
             }
         }
+        info!("selected {}", name_best_interpreter);
         let _ = skip_all; //silence false unused variable warning
         return Some((name_best_interpreter, max_level_support));
     }
@@ -106,12 +107,14 @@ impl Launcher {
             ));
             v.push(format!("More information may be available via :SnipInfo {}\n\n", name));
         } else {
-            v.push("No interpreter selected\n".to_string());
+            v.push("No interpreter selected\n\nYou can always get more info about one particular interpreter via:\n:SnipInfo <name>".to_string());
         }
+
+        v.push("\nAvailable interpreters and languages".to_owned());
 
         let separator = "|--------------------------|--------------|---------------|-------------|------------|--------------|------------|".to_string();
         v.push(separator.clone());
-        v.push("| Interpreter              | Language     | Support Level | Default for |    REPL    | REPL enabled | Treesitter |".to_string());
+        v.push("| Interpreter              | Language     | Support Level | Default for |    REPL    | REPL enabled |    LSP     |".to_string());
         v.push("|                          |              |               |  filetype   | capability |  by default  | capability |".to_string());
 
         let mut temp_vec = vec![];
@@ -123,7 +126,7 @@ impl Launcher {
                     match Current::default_for_filetype() {true => "yes" ,false => "no"},
                     match Current::has_repl_capability() { true => "yes" ,false => "no"},
                     match Current::behave_repl_like_default() { true => "yes" ,false => "no"},
-                    match Current::has_treesitter_capability() { true => "yes" ,false => "no"}
+                    match Current::has_lsp_capability() { true => "yes" ,false => "no"}
                     ).to_string();
             temp_vec.push(line);
         }
@@ -138,6 +141,7 @@ impl Launcher {
         }
 
         v.push(separator.clone());
+        v.push("More help, quickstart and config options refresher can be found from:\n:help sniprun\n".to_owned());
 
         if self.data.return_message_type == ReturnMessageType::Multiline {
             info!("[INFO] Returning info directly");

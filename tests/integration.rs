@@ -20,7 +20,7 @@ fn test_implements() {
         // let _ = interpreter.fallback(); // don't test, this is a 'run' hidden
         let _ = Current::behave_repl_like_default();
         let _ = Current::has_repl_capability();
-        let _ = Current::has_treesitter_capability();
+        let _ = Current::has_lsp_capability();
     }
 }
 
