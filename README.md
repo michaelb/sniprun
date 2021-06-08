@@ -253,9 +253,9 @@ Hopefully, if something does not work, or if the 'memory' is corrupted by bad co
 
 ## Configuration
 
-Sniprun is a Lua plugin, but **you don't need** the usual boilerplate: if you don't need any special configuration, you don't need to do anything.
+Sniprun is a Lua plugin, but **you don't need** the usual boilerplate: if you don't need any special configuration, you don't need to do anything *at all*.
 
-However, if you want to change some options, you can add this snippet (the default config) to your configuration file and modify if at will (you can remove keys without issue to shorten your config, the default values are overwritten on a key-by-key basis):
+However, if you want to change some options, you can add this snippet (the default config) to your configuration file and modify if at will (you can remove keys without issue to shorten your config, and the default values are overwritten on a key-by-key basis):
 
 ```vim
 lua << EOF
@@ -396,7 +396,7 @@ println!("-> {}", alphabet);
 | C#           | Untested      |     | Mathematica| Bloc + REPL\*\*  |
 | D            | Bloc          |     | Perl/Perl6 | Line             |
 | Elixir       | Untested      |     | PHP        | Untested         |
-| Elm          | Untested      |     | Python3    | Import +REPL*\*   |
+| Elm          | Untested      |     | Python3    | Import +REPL\*\* |
 | Erlang       | Untested      |     | R          | Bloc + REPL\*\*  |
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
