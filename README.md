@@ -401,7 +401,7 @@ println!("-> {}", alphabet);
 | Idris        | Untested      |     | Swift      | Untested         |
 
 
-Want support for your language? Submit a feature request, or even better, [contribute](CONTRIBUTING.md), it's easy!
+Want support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=), or even better, [contribute](CONTRIBUTING.md), it's easy!
 
 \* (fake) REPL-like functionnality, with potential unwanted side-effects
 
