@@ -67,32 +67,17 @@ impl GFM_original {
     pub fn filetype_from_str(&self, s: &str) -> String {
         let cleaned_str = s.replace(&['{', '}', '.'][..], "");
         match cleaned_str.as_str() {
-            "c" => "c",
-            "python" => "python",
             "bash" => "sh",
-            "sh" => "sh",
             "zsh" => "sh",
             "shell" => "sh",
-            "clojure" => "clojure",
-            "cpp" => "cpp",
             "C++" => "cpp",
-            "cs" => "cs",
-            "elixir" => "elixir",
-            "go" => "go",
-            "java" => "java",
-            "javascript" => "javascript",
+            "c++" => "cpp",
             "Perl" => "perl",
-            "perl" => "perl",
             "python3" => "python",
-            "rust" => "rust",
             "rb" => "ruby",
             "jruby" => "ruby",
-            "ruby" => "ruby",
-            "csharp" => "csharp",
-            "haskell" => "haskell",
-            "matlab" => "matlab",
             "objectivec" => "objcpp",
-            "swift" => "swift",
+            "ts" => "typescript",
             "" => &self.default_filetype,
             a => a,
         }
@@ -156,7 +141,7 @@ impl Interpreter for GFM_original {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::Bloc
+        SupportLevel::Import
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -212,7 +197,7 @@ impl Interpreter for GFM_original {
             //launch the right interpreter !
             iter_types! {
                 if Current::get_name() == name {
-                    let mut inter = Current::new_with_level(self.data.clone(), level); //level limited to Bloc
+                    let mut inter = Current::new_with_level(self.data.clone(), level);
                     return inter.run();
                 }
             }
@@ -234,9 +219,9 @@ mod test_gfm_original {
     //where the underlying interpreter puts its files
     fn simple_bloc(){
         let mut data = DataHolder::new();
-        data.current_bloc = String::from("print(3)");
-        data.filepath = String::from("ressources/markdown.md");
-        data.filetype = String::from("python");
+        data.current_bloc = String::from("\necho 3");
+
+        data.filetype = String::from("bash");
         data.range = [1,3];
         
         let mut interpreter = GFM_original::new(data);

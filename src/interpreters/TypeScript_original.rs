@@ -78,11 +78,7 @@ impl Interpreter for TypeScript_original {
             .is_empty()
             && self.support_level >= SupportLevel::Bloc
         {
-            // if bloc is not pseudo empty and has Bloc current support level,
-            // add fetched code to self
             self.code = self.data.current_bloc.clone();
-
-        // if there is only data on current line / or Line is the max support level
         } else if !self.data.current_line.replace(" ", "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
@@ -93,6 +89,7 @@ impl Interpreter for TypeScript_original {
         }
 
         // now self.code contains the line or bloc of code wanted :-)
+        info!("Typescript self.code) = {}", self.code);
         Ok(())
     }
 
@@ -102,12 +99,11 @@ impl Interpreter for TypeScript_original {
 
     fn build(&mut self) -> Result<(), SniprunError> {
         //write code to file
-        let mut _file =
-            File::create(&self.main_file_path).expect("Failed to create file for typescript_original");
-        // IO errors can be ignored, or handled into a proper SniprunError
-        // If you panic, it should not be too dangerous for anyone
+        let mut _file = File::create(&self.main_file_path).expect("failed to create file for typescript_original");
+        // io errors can be ignored, or handled into a proper sniprunerror
+        // if you panic, it should not be too dangerous for anyone
         write(&self.main_file_path, &self.code)
-            .expect("Unable to write to file for typescript_original");
+            .expect("unable to write to file for typescript_original");
 
         Ok(())
     }
