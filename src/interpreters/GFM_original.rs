@@ -214,9 +214,6 @@ mod test_gfm_original {
     use super::*;
 
     #[test]
-    #[cfg_attr(feature = "ignore_in_ci", ignore)]
-    //actually safe to run in parrallel because GFM modify sniprun root and thus 
-    //where the underlying interpreter puts its files
     fn simple_bloc(){
         let mut data = DataHolder::new();
         data.current_bloc = String::from("\necho 3");
