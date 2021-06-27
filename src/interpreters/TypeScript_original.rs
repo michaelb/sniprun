@@ -1,28 +1,20 @@
-// Be sure to read the CONTRIBUTING.md file :-)
-
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-// For example, Rust_original is a good name for the first rust interpreter
-pub struct Language_subname {
+pub struct TypeScript_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
 
-    ///specific to compiled languages, can be modified of course
     language_work_dir: String,
-    bin_path: String,
     main_file_path: String,
-    // you can and should add fields as needed
 }
 
-//necessary boilerplate, you don't need to implement that if you want a Bloc support level
-//interpreter (the easiest && most common)
-impl ReplLikeInterpreter for Language_subname {}
+impl ReplLikeInterpreter for TypeScript_original {}
 
-impl Interpreter for Language_subname {
-    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Language_subname> {
+impl Interpreter for TypeScript_original {
+    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<TypeScript_original> {
         //create a subfolder in the cache folder
-        let lwd = data.work_dir.clone() + "/language_subname";
+        let lwd = data.work_dir.clone() + "/typescript_original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
@@ -30,34 +22,29 @@ impl Interpreter for Language_subname {
             .expect("Could not create directory for example");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = lwd.clone() + "/main.extension";
-        let bp = lwd.clone() + "/main"; // remove extension so binary is named 'main'
-        Box::new(Language_subname {
+        let mfp = lwd.clone() + "/main.ts";
+        Box::new(TypeScript_original {
             data,
             support_level,
             code: String::new(),
             language_work_dir: lwd,
-            bin_path: bp,
             main_file_path: mfp,
         })
     }
 
     fn get_supported_languages() -> Vec<String> {
         vec![
-            String::from("Official language name"), // in 1st position of vector, used for info only
+            String::from("TypeScript"), // in 1st position of vector, used for info only
             //':set ft?' in nvim to get the filetype of opened file
-            String::from("language_filetype"),
-            String::from("extension"), //should not be necessary, but just in case
+            String::from("typescript"),
+            String::from("ts"), //should not be necessary, but just in case
                                        // another similar name (like python and python3)?
         ]
-
-        // little explanation: only the filetype is necessary, but the 1st element of the Vec is
-        // displayed with SnipInfo, so put "JavaScript" instead of "js" for clarity's sake
     }
 
     fn get_name() -> String {
         // get your interpreter name
-        String::from("Language_subname")
+        String::from("TypeScript_original")
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -110,58 +97,25 @@ impl Interpreter for Language_subname {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        // an example following Rust's syntax
-        self.code = String::from("fn main() {") + &self.code + "}";
         Ok(())
     }
 
     fn build(&mut self) -> Result<(), SniprunError> {
         //write code to file
         let mut _file =
-            File::create(&self.main_file_path).expect("Failed to create file for language_subname");
+            File::create(&self.main_file_path).expect("Failed to create file for typescript_original");
         // IO errors can be ignored, or handled into a proper SniprunError
         // If you panic, it should not be too dangerous for anyone
         write(&self.main_file_path, &self.code)
-            .expect("Unable to write to file for language_subname");
+            .expect("Unable to write to file for typescript_original");
 
-
-        //fetch the option from the configuration
-        //  interpreter_options = {
-        //   example_original = {
-        //     example_option = "--optimize-with-debug-info",
-        //   }
-        // },
-        let mut configurable_option = String::from("--optimize");
-        if let Some(config_value) = self.get_interpreter_option("example_option") {
-            if let Some(config_value_valid_string) = config_value.as_str() {
-                configurable_option = config_value_valid_string.to_string();
-            }
-        }
-
-
-
-        //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new("compiler")
-            .arg(&configurable_option) // for short snippets, that may contain a long loop
-            .arg("--out-dir")
-            .arg(&self.language_work_dir)
-            .arg(&self.main_file_path)
-            .output()
-            .expect("Unable to start process");
-
-        // if relevant, return the error number (parse it from stderr)
-        if !output.status.success() {
-            return Err(SniprunError::CompilationError(
-                "some relevant feedback".to_string(), //such as output.stderr :-)
-            ));
-        } else {
-            return Ok(());
-        }
+        Ok(())
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let output = Command::new(&self.bin_path)
+        let output = Command::new("ts-node")
+            .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
 
@@ -179,30 +133,21 @@ impl Interpreter for Language_subname {
 
 // You can add tests if you want to
 #[cfg(test)]
-mod test_language_subname {
+mod test_typescript_original {
     use super::*;
     #[test]
-    fn run_all() {
-        // test of the same interpreter MUST be run sequentially usually, since they use a file
-        // that can't be written  to concurrently
-        simple_print();
-        another_test();
-    }
-    fn simple_print() {
+     fn simple_print() {
         let mut data = DataHolder::new();
 
         //inspired from Rust syntax
-        data.current_bloc = String::from("println!(\"HW, 1+1 = {}\", 1+1)");
-        let mut interpreter = Language_subname::new(data);
+        data.current_bloc = String::from("let message: string = 'Hi';\nconsole.log(message);");
+        let mut interpreter = TypeScript_original::new(data);
         let res = interpreter.run();
 
         // -> should panic if not an Ok()
-        // let string_result = res.unwrap();
+        let string_result = res.unwrap();
 
         // -> compare result with predicted
-        // assert_eq!(string_result, "HW, 1+1 = 2\n");
-    }
-    fn another_test() {
-        //another test
+        assert_eq!(string_result, "Hi\n");
     }
 }
