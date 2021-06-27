@@ -398,7 +398,7 @@ println!("-> {}", alphabet);
 | Go           | Bloc          |     | Rust       | Bloc             |
 | Groovy       | Untested      |     | Scala      | Bloc             |
 | Haskell      | Line          |     | Scilab     | Untested         |
-| Idris        | Untested      |     | Swift      | Untested         |
+| Idris        | Untested      |     | TypeScript | Bloc             |
 
 
 Want support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=), or even better, [contribute](CONTRIBUTING.md), it's easy!
