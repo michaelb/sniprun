@@ -90,6 +90,11 @@ My tests are inconsistent ..?!?
 Run with `cargo test -- --test-threads=1` .
 
 ---
+My tests fail in the CI pipeline
+
+-> The CI has limited capabilities, especially about the REPL functionnality. Tag your non-working-in-CI tests with '#[cfg_attr(feature = "ignore_in_ci", ignore)]'
+
+---
 I think I've done a good job, but am I ready to submit a PR?
 
 -> You should check beforehand that the output of `cargo test -- --test-threads=1` and your own tests are satisfying. You've added the proper and necessary tests, and have documented any edge case in doc/.
