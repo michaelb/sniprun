@@ -16,4 +16,4 @@ sudo apt install lua5.3
 export PATH=$PATH:$HOME/golang/go/bin/
 
 sudo apt install npm nodejs
-sudo npm install -g ts-node typescript
+sudo npm install -g ts-node
