@@ -1,3 +1,9 @@
+## v0.5.9
+- TypeScript support
+- Better README & example.rs
+- Import level for Python3\_fifo
+
+
 ## v0.5.8
 - Mathematica support
 - FIFO - based REPL works ok (Mathematica, Python)!
