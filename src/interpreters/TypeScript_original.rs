@@ -37,6 +37,7 @@ impl Interpreter for TypeScript_original {
             String::from("TypeScript"), // in 1st position of vector, used for info only
             //':set ft?' in nvim to get the filetype of opened file
             String::from("typescript"),
+            String::from("typescriptreact"),
             String::from("ts"), //should not be necessary, but just in case
                                        // another similar name (like python and python3)?
         ]
