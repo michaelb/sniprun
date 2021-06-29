@@ -131,10 +131,10 @@ impl Interpreter for Language_subname {
         //     example_option = "--optimize-with-debug-info",
         //   }
         // },
-        let mut configurable_option = "--optimize";
+        let mut configurable_option = String::from("--optimize");
         if let Some(config_value) = self.get_interpreter_option("example_option") {
             if let Some(config_value_valid_string) = config_value.as_str() {
-                configurable_option = config_value_valid_string;
+                configurable_option = config_value_valid_string.to_string();
             }
         }
 

@@ -14,4 +14,3 @@ pip3 install jupyter
 sudo apt install lua5.3 
 ./ressources/go_install.sh 
 export PATH=$PATH:$HOME/golang/go/bin/
-

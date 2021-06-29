@@ -18,8 +18,6 @@ pub enum SupportLevel {
     File = 10,
     ///run a line/bloc of code, but include (only needed) variable/functions found in the project
     Project = 20,
-    ///Run a line/bloc of code, but include variable/function from the project and project or system-wide dependencies
-    System = 30,
     ///selected: don't use this support level, it is meant to communicate user's config choices
     Selected = 255,
 }
@@ -33,7 +31,6 @@ impl Display for SupportLevel {
             SupportLevel::Import => f.write_str("Import"),
             SupportLevel::File => f.write_str("File"),
             SupportLevel::Project => f.write_str("Project"),
-            SupportLevel::System => f.write_str("System"),
             SupportLevel::Selected => f.write_str("Selected"),
         }
     }

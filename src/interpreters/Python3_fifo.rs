@@ -257,7 +257,7 @@ impl Interpreter for Python3_fifo {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::Bloc
+        SupportLevel::Import
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
