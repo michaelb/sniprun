@@ -11,12 +11,12 @@ use std::str::FromStr;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 
+pub mod daemonizer;
 pub mod display;
 pub mod error;
 pub mod interpreter;
 pub mod interpreters;
 pub mod launcher;
-pub mod daemonizer;
 
 ///This struct holds (with ownership) the data Sniprun and neovim
 ///give to the interpreter.
@@ -66,6 +66,7 @@ pub struct DataHolder {
 
     /// different way of displaying results
     pub display_type: Vec<DisplayType>,
+    pub display_no_output: Vec<DisplayType>,
 }
 
 #[derive(Clone, Default, Debug)]
@@ -114,6 +115,7 @@ impl DataHolder {
             interpreter_data: None,
             return_message_type: ReturnMessageType::Multiline,
             display_type: vec![DisplayType::Classic],
+            display_no_output: vec![DisplayType::Classic],
         }
     }
     ///remove and recreate the cache directory (is invoked by `:SnipReset`)
@@ -298,7 +300,21 @@ impl EventHandler {
                 .collect();
             info!("[FILLDATA] got display types");
         }
-
+        {
+            let i = self.index_from_name("show_no_output", config);
+            self.data.display_no_output = config[i]
+                .1
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|v| v.as_str().unwrap())
+                .map(|v| DisplayType::from_str(v))
+                .inspect(|x| info!("[FILLDATA] display type with 'no output'on found : {:?}", x))
+                .filter(|x| x.is_ok())
+                .map(|x| x.unwrap())
+                .collect();
+            info!("[FILLDATA] got show_no_output");
+        }
         {
             let i = self.index_from_name("inline_messages", config);
             if config[i].1.as_i64().unwrap_or(0) == 1 {
@@ -408,6 +424,7 @@ pub fn start() {
                         &Ok(infomsg),
                         &event_handler2.nvim,
                         &ReturnMessageType::Multiline,
+                        &event_handler2.data.clone(),
                     );
                 }
             }
@@ -426,10 +443,7 @@ mod test_main {
     #[test]
     fn test_main() {
         let mut event_handler = fake_event();
-        let _ = log_to_file(
-        &format!("test_sniprun.log"),
-        LevelFilter::Info,
-    );
+        let _ = log_to_file(&format!("test_sniprun.log"), LevelFilter::Info);
 
         event_handler.fill_data(fake_msgpack());
         event_handler.data.filetype = String::from("javascript");
@@ -452,9 +466,7 @@ mod test_main {
             content: String::new(),
             pid: None,
         }));
-        let _receiver =nvim
-            .session
-            .start_event_loop_channel();
+        let _receiver = nvim.session.start_event_loop_channel();
         data.interpreter_data = Some(interpreter_data.clone());
         EventHandler {
             nvim: Arc::new(Mutex::new(nvim)),
@@ -489,16 +501,12 @@ mod test_main {
         display_types.push(Value::from("VirtualTextErr"));
         display_types.push(Value::from("TempFloatingWindow"));
 
-
         config_as_vec.push((Value::from("display"), Value::from(display_types)));
         config_as_vec.push((
             Value::from("sniprun_root_dir"),
             Value::from("/tmp/notimportant"),
-        ));  config_as_vec.push((
-            Value::from("inline_messages"),
-            Value::from(0),
         ));
-
+        config_as_vec.push((Value::from("inline_messages"), Value::from(0)));
 
         data.push(Value::from(config_as_vec));
 

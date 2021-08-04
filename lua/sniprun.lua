@@ -26,7 +26,12 @@ M.config_values = {
     -- "LongTempFloatingWindow",
     -- "TempFloatingWindow",
     -- "Terminal"
-    },
+  },
+
+  show_no_output = {
+    "Classic",
+    "TempFloatingWindow", -- implies LongTempFloatingWindow, which is not a correct key here 
+  },
 
   inline_messages = 0,
   borders = 'single',

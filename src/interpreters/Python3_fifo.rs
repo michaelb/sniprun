@@ -162,14 +162,14 @@ impl Python3_fifo {
     }
 
     fn fetch_config(&mut self) {
-        let default_compiler = String::from("python3");
-        if let Some(used_compiler) = self.get_interpreter_option("interpreter") {
-            if let Some(compiler_string) = used_compiler.as_str() {
-                info!("Using custom compiler: {}", compiler_string);
-                self.interpreter = compiler_string.to_string();
+        let default_interpreter = String::from("python3");
+        if let Some(used_interpreter) = self.get_interpreter_option("interpreter") {
+            if let Some(interpreter_string) = used_interpreter.as_str() {
+                info!("Using custom interpreter: {}", interpreter_string);
+                self.interpreter = interpreter_string.to_string();
             }
         }
-        self.interpreter = default_compiler;
+        self.interpreter = default_interpreter;
 
         if let Ok(path) = env::current_dir() {
             if let Some(venv_array_config) = self.get_interpreter_option("venv") {
@@ -285,8 +285,8 @@ impl Interpreter for Python3_fifo {
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {
-        // info!("python code:\n {}", self.code);
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for python3_fifo");
+        let all_code = self.imports.clone() + "\n" + &self.code;
+        write(&self.main_file_path, all_code).expect("Unable to write to file for python3_fifo");
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
@@ -298,7 +298,6 @@ impl Interpreter for Python3_fifo {
 
 impl ReplLikeInterpreter for Python3_fifo {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
-        self.fetch_code()?;
 
         if !self.read_previous_code().is_empty() {
             // nothing to do, kernel already running
@@ -311,10 +310,14 @@ impl ReplLikeInterpreter for Python3_fifo {
                 self.set_pid(self.current_output_id);
             } else {
                 info!("Could not retrieve a previous id even if the kernel is running");
+                info!("This was in saved code: {}", self.read_previous_code());
             }
 
+            self.fetch_code()?;
             Ok(())
+
         } else {
+            self.fetch_config();
             // launch everything
             self.set_pid(0);
 
@@ -356,6 +359,7 @@ impl ReplLikeInterpreter for Python3_fifo {
                 "Python3 kernel launched, re-run your snippet".to_owned(),
             ))
         }
+
     }
 
     fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {

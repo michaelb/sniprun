@@ -272,7 +272,14 @@ require'sniprun'.setup({
     -- "TempFloatingWindow",      -- "display results in a floating window
     -- "LongTempFloatingWindow",  -- "same as above, but only long results. To use with VirtualText__
     -- "Terminal"                 -- "display results in a vertical split
-    },
+  },
+
+  --" You can use the same keys to customize whether a sniprun producing
+  --" no output should display nothing or '(no output)'
+  display_no_output = {
+    "Classic",
+    "TempFloatingWindow",      -- "implies LongTempFloatingWindow, which has no effect on its own
+  },
 
   --" customize highlight groups (setting this overrides colorscheme)
   snipruncolors = {
