@@ -27,7 +27,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Environment:**
- - Neovim version [e.g. v0.43]
+ - Neovim version [e.g. v0.4.3]
+- OS/distribution
+- if possible, GLIBC version (output of `ldd --version`)
 
 
 **Additional context**
