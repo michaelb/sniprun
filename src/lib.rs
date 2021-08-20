@@ -177,16 +177,17 @@ impl EventHandler {
     fn index_from_name(&mut self, name: &str, config: &Vec<(Value, Value)>) -> usize {
         for (i, kv) in config.iter().enumerate() {
             if name == kv.0.as_str().unwrap() {
+                info!("looped on key {}", kv.0.as_str().unwrap());
                 return i;
             }
         }
-        info!("key not found");
+        info!("key {} not found", name);
         return 0;
     }
 
     /// fill the DataHolder with data from sniprun and Neovim
-    pub fn fill_data(&mut self, values: Vec<Value>) {
-        // info!("[FILLDATA] received data from RPC: {:?}", values);
+    pub fn fill_data(&mut self, values: &Vec<Value>) {
+        // info!("[FILLDATA_ENTRY] received data from RPC: {:?}", values);
         let config = values[2].as_map().unwrap();
         {
             self.data.interpreter_data = Some(self.interpreter_data.clone());
@@ -331,6 +332,27 @@ impl EventHandler {
 
         info!("[FILLDATA] Done!");
     }
+
+    pub fn override_data(&mut self, values: Vec<Value>){
+        if let Some(override_map) = values[3].as_map(){
+            {
+                let i = self.index_from_name("filetype", override_map);
+                if let Some(filetype_str) = override_map[i].1.as_str() {
+                    if !filetype_str.is_empty(){
+                        self.data.filetype = filetype_str.to_string();
+                        info!("[OVERRIDE] filetype with: {}", filetype_str);
+                    }
+                }
+            }
+            {
+                let i = self.index_from_name("codestring", override_map);
+                if let Some(codestring_str) = override_map[i].1.as_str(){
+                    self.data.current_bloc = codestring_str.to_string();
+                    self.data.current_line = codestring_str.to_string();
+                }
+            }
+        }
+    }
 }
 enum HandleAction {
     New(thread::JoinHandle<()>),
@@ -380,7 +402,8 @@ pub fn start() {
                     // get up-to-date data
                     //
                     info!("[RUN] spawned thread");
-                    event_handler2.fill_data(values);
+                    event_handler2.fill_data(&values);
+                    event_handler2.override_data(values);
                     info!("[RUN] filled dataholder");
 
                     //run the launcher (that selects, init and run an interpreter)
@@ -416,7 +439,8 @@ pub fn start() {
             Messages::Info => {
                 info!("[MAINLOOP] Info command received");
                 let mut event_handler2 = event_handler.clone();
-                event_handler2.fill_data(values);
+                event_handler2.fill_data(&values);
+                event_handler2.override_data(values);
                 let launcher = launcher::Launcher::new(event_handler2.data.clone());
                 let result = launcher.info();
                 if let Ok(infomsg) = result {
