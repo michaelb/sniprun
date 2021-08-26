@@ -334,6 +334,10 @@ impl EventHandler {
     }
 
     pub fn override_data(&mut self, values: Vec<Value>){
+        if values.len() < 4 {
+            info!("[OVERRIDE] No data to override");
+            return;
+        }
         if let Some(override_map) = values[3].as_map(){
             {
                 let i = self.index_from_name("filetype", override_map);
