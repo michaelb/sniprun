@@ -66,13 +66,15 @@ An example in C, look in the command area:
 
 ![](ressources/visual_assets/demo_c.gif)
 
-##### The result can be displayed in multiple (even at the same time) ways:
+##### The result can be returned in multiple (even at the same time) ways:
 
 [Classic](ressources/display_classic.md)|  [Virtual Text](ressources/display_virtualtext.md)
 :------------------------------------------:|:------------------:
 ![](ressources/visual_assets/classic.png)   | ![](ressources/visual_assets/virtual_text.png)
 [**Temporary Floating Window**](ressources/display_floating_window.md)  |  [**Terminal**](ressources/display_terminal.md)
 ![](ressources/visual_assets/floating_window.png) | ![](ressources/visual_assets/terminal.png)
+[**Notification**](ressources/visual_assets/nvimnotify.png) | [**API**](API.md)
+![](ressources/visual_assets/nvimnotify.png) | ![](ressources/visual_assets/api.png)
 
 
 ##### send-to-REPL-like behavior is available for some languages
