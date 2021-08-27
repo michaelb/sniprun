@@ -1,6 +1,7 @@
 local M = {}
 M.ping_anwsered=0
 M.custom_highlight=false
+M.info_floatwin = {}
 
 -- See https://github.com/tjdevries/rofl.nvim/blob/632c10f2ec7c56882a3f7eda8849904bcac6e8af/lua/rofl.lua
 local binary_path = vim.fn.fnamemodify(
@@ -246,6 +247,7 @@ function M.terminate()
   M.job_id = nil
 end
 
+
 -- get all lines from a file, returns an empty
 -- list/table if the file does not exist
 local function lines_from(file)
@@ -256,21 +258,51 @@ local function lines_from(file)
   return lines
 end
 
+function M.display_lines_in_floating_win(lines)
+    -- Create window.
+    local width = math.ceil(vim.o.columns * 0.8)
+    local height = math.ceil(vim.o.lines * 0.9)
+    M.info_floatwin.buf = vim.api.nvim_create_buf(false, true)
+
+
+    M.info_floatwin.win = vim.api.nvim_open_win(M.info_floatwin.buf, true, {
+	relative = 'editor',
+	style = 'minimal',
+	width = width,
+	height = height,
+	col = math.ceil((vim.o.columns - width) / 2),
+	row = math.ceil((vim.o.lines - height) / 2 - 1),
+	border = 'single'
+    })
+    -- vim.api.nvim_win_set_option(M.info_floatwin.win, 'winhighlight', 'Normal:CursorLine')
+
+    local namespace_id = vim.api.nvim_create_namespace("sniprun_info")
+    local h = -1
+    local hl=""
+    for line in lines:gmatch("([^\n]*)\n?") do
+	h = h+1
+	vim.api.nvim_buf_set_lines(M.info_floatwin.buf,h, h+1,false, {line})
+	-- vim.api.nvim_buf_add_highlight(M.info_floatwin.buf, namespace_id, hl, h,0,-1) -- highlight lines in floating window
+	vim.cmd('set ft=markdown')
+    end
+end
+
+
 function M.info(arg)
   if arg == nil or arg == "" then
     M.config_values["sniprun_root_dir"] = sniprun_path
     M.notify("info",1,1,M.config_values)
 
     if M.config_values.inline_messages ~= 0 then
-      vim.wait(500) -- let enough time for the sniprun binary to generate the file
+      vim.wait(300) -- let enough time for the sniprun binary to generate the file
       print(" ")
       local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
       -- print all lines content
-      print(table.concat(lines, "\n"))
+      M.display_lines_in_floating_win(table.concat(lines,"\n"))
     end
   else --help about a particular interpreter
       local lines = lines_from(sniprun_path.."/doc/"..string.gsub(arg,"%s+","")..".md")
-      print(table.concat(lines, '\n|'))
+      M.display_lines_in_floating_win(table.concat(lines,"\n"))
   end
 end
 
