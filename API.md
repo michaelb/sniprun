@@ -16,7 +16,13 @@ sa.run_string(codestring, <filetype>, <config>)
 
 ```
 
-(ranges are integers matching the (inclusive) line numbers, codestring a string, filetype (optionnal) must be a string such as 'python', config allows to override the default/user config)
+ranges are integers matching the (inclusive) line numbers
+
+codestring must be a string
+
+filetype (optionnal) must be a string such as 'python'
+
+config (optionnal) allows to override the default/user config. It's particularly interesting to provide the display type 'Api' in this field if you wish to retrieve sniprun's output without interference on the user UI.
 
 
 You can register listeners that will be called upon (async) sniprun output:
