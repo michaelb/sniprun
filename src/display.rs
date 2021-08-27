@@ -14,6 +14,8 @@ pub enum DisplayType {
     Terminal,
     LongTempFloatingWindow,
     TempFloatingWindow,
+    Api,
+    NvimNotify,
 }
 use DisplayType::*;
 
@@ -27,6 +29,8 @@ impl FromStr for DisplayType {
             "Terminal" => Ok(Terminal),
             "LongTempFloatingWindow" => Ok(LongTempFloatingWindow),
             "TempFloatingWindow" => Ok(TempFloatingWindow),
+            "Api" => Ok(Api),
+            "NvimNotify" => Ok(NvimNotify),
             _ => Err(SniprunError::InternalError(
                 "Invalid display type: ".to_string() + &s,
             )),
@@ -43,6 +47,8 @@ impl fmt::Display for DisplayType {
             DisplayType::Terminal => "Terminal",
             DisplayType::LongTempFloatingWindow => "LongTempFloatingWindow",
             DisplayType::TempFloatingWindow => "TempFloatingWindow",
+            DisplayType::Api => "Api",
+            DisplayType::NvimNotify => "NvimNotify",
         };
         write!(f, "{}", name)
     }
@@ -62,9 +68,31 @@ pub fn display(result: Result<String, SniprunError>, nvim: Arc<Mutex<Neovim>>, d
             Terminal => display_terminal(&result, &nvim, data),
             LongTempFloatingWindow => display_floating_window(&result, &nvim, data, true),
             TempFloatingWindow => display_floating_window(&result, &nvim, data, false),
+            Api => send_api(&result, &nvim, data),
+            NvimNotify => display_nvim_notify(),
         }
     }
 }
+
+pub fn send_api(
+    message: &Result<String, SniprunError>,
+    nvim: &Arc<Mutex<Neovim>>,
+    data: &DataHolder,
+) {
+    let res = match message {
+        Ok(result) => nvim.lock().unwrap().command(&format!(
+            "lua require\"sniprun.display\".display_nvim_notify(\"{}\", true)",
+            no_output_wrap(&result, data, &DisplayType::Terminal),
+        )),
+        Err(result) => nvim.lock().unwrap().command(&format!(
+            "lua require\"sniprun.display\".display_nvim_notify(\"{}\", false)",
+            no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
+        )),
+    };
+    info!("res = {:?}", res);
+}
+
+pub fn display_nvim_notify() {}
 
 pub fn display_virtual_text(
     result: &Result<String, SniprunError>,
@@ -94,41 +122,47 @@ pub fn display_virtual_text(
             if shorten_ok(&no_output_wrap(
                 message_ok,
                 data,
-                &DisplayType::VirtualTextOk
-            )).is_empty() {
+                &DisplayType::VirtualTextOk,
+            ))
+            .is_empty()
+            {
                 return;
             }
 
             nvim.lock().unwrap().command(&format!(
-            "call nvim_buf_set_virtual_text(0,{},{},[[\"{}\",\"{}\"]], [])",
-            namespace_id,
-            last_line,
-            shorten_ok(&no_output_wrap(
-                message_ok,
-                data,
-                &DisplayType::VirtualTextOk
-            )),
-            hl_ok
-        ))},
+                "call nvim_buf_set_virtual_text(0,{},{},[[\"{}\",\"{}\"]], [])",
+                namespace_id,
+                last_line,
+                shorten_ok(&no_output_wrap(
+                    message_ok,
+                    data,
+                    &DisplayType::VirtualTextOk
+                )),
+                hl_ok
+            ))
+        }
         Err(message_err) => {
             if shorten_err(&no_output_wrap(
                 &message_err.to_string(),
                 data,
-                &DisplayType::VirtualTextErr
-            )).is_empty() {
+                &DisplayType::VirtualTextErr,
+            ))
+            .is_empty()
+            {
                 return;
             }
             nvim.lock().unwrap().command(&format!(
-            "call nvim_buf_set_virtual_text(0,{},{},[[\"{}\",\"{}\"]], [])",
-            namespace_id,
-            last_line,
-            shorten_err(&no_output_wrap(
-                &message_err.to_string(),
-                data,
-                &DisplayType::VirtualTextErr
-            )),
-            hl_err
-        ))},
+                "call nvim_buf_set_virtual_text(0,{},{},[[\"{}\",\"{}\"]], [])",
+                namespace_id,
+                last_line,
+                shorten_err(&no_output_wrap(
+                    &message_err.to_string(),
+                    data,
+                    &DisplayType::VirtualTextErr
+                )),
+                hl_err
+            ))
+        }
     };
     info!("done displaying virtual text, {:?}", res);
 }
@@ -239,7 +273,7 @@ pub fn return_message_classic(
 }
 
 fn shorten_ok(message: &str) -> String {
-    if message.is_empty(){
+    if message.is_empty() {
         return String::new();
     }
 
@@ -257,7 +291,7 @@ fn shorten_ok(message: &str) -> String {
 }
 
 fn shorten_err(message: &str) -> String {
-    if message.is_empty(){
+    if message.is_empty() {
         return String::new();
     }
     let mut marker = String::from("<- ") + message.lines().next().unwrap_or("");

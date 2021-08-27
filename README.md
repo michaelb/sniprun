@@ -403,8 +403,8 @@ println!("-> {}", alphabet);
 | Erlang       | Untested      |     | R          | Bloc + REPL\*\*  |
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
-| Groovy       | Untested      |     | Scala      | Bloc             |
-| Haskell      | Line          |     | Scilab     | Untested         |
+| Groovy       | Untested      |     | SageMath   | Import + REPL\*\*|
+| Haskell      | Line          |     | Scala      | Bloc             |
 | Idris        | Untested      |     | TypeScript | Bloc             |
 
 

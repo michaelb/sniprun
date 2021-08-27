@@ -105,6 +105,24 @@ function M.term_close()
 end
 
 
+function M.display_nvim_notify(message, ok)
+    -- ok is a boolean variable for the status (true= ok, false= error)
+    --
+    -- test if nvim_notify is availablea
+    if pcall(function() require('notify') end) then
+	--ok
+    else
+	print("Sniprun: nvim_notify is not installed")
+	return
+    end
+
+
+    local title = ok and "Sniprun: Ok" or "Sniprun: Error"
+    local notif_style = ok and "info" or "error"
+    require("notify")(message, notif_style, {title=title})
+
+end
+
 
 
 return M
