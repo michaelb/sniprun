@@ -69,12 +69,12 @@ pub fn display(result: Result<String, SniprunError>, nvim: Arc<Mutex<Neovim>>, d
             LongTempFloatingWindow => display_floating_window(&result, &nvim, data, true),
             TempFloatingWindow => display_floating_window(&result, &nvim, data, false),
             Api => send_api(&result, &nvim, data),
-            NvimNotify => display_nvim_notify(),
+            NvimNotify => display_nvim_notify(&result, &nvim, data),
         }
     }
 }
 
-pub fn send_api(
+pub fn display_nvim_notify(
     message: &Result<String, SniprunError>,
     nvim: &Arc<Mutex<Neovim>>,
     data: &DataHolder,
@@ -92,7 +92,23 @@ pub fn send_api(
     info!("res = {:?}", res);
 }
 
-pub fn display_nvim_notify() {}
+pub fn send_api(
+    message: &Result<String, SniprunError>,
+    nvim: &Arc<Mutex<Neovim>>,
+    data: &DataHolder,
+) {
+    let res = match message {
+        Ok(result) => nvim.lock().unwrap().command(&format!(
+            "lua require\"sniprun.display\".send_api(\"{}\", true)",
+            no_output_wrap(&result, data, &DisplayType::Terminal),
+        )),
+        Err(result) => nvim.lock().unwrap().command(&format!(
+            "lua require\"sniprun.display\".send_api(\"{}\", false)",
+            no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
+        )),
+    };
+    info!("res = {:?}", res);
+}
 
 pub fn display_virtual_text(
     result: &Result<String, SniprunError>,

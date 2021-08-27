@@ -3,3 +3,4 @@ test/
 download_dir/
 target/
 ressources/infofile.txt
+Cargo.lock

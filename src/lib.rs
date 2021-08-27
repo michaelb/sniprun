@@ -174,15 +174,15 @@ impl EventHandler {
         }
     }
 
-    fn index_from_name(&mut self, name: &str, config: &Vec<(Value, Value)>) -> usize {
+    fn index_from_name(&mut self, name: &str, config: &Vec<(Value, Value)>) -> Option<usize> {
         for (i, kv) in config.iter().enumerate() {
             if name == kv.0.as_str().unwrap() {
                 info!("looped on key {}", kv.0.as_str().unwrap());
-                return i;
+                return Some(i);
             }
         }
         info!("key {} not found", name);
-        return 0;
+        return None;
     }
 
     /// fill the DataHolder with data from sniprun and Neovim
@@ -198,9 +198,10 @@ impl EventHandler {
             self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
         }
         {
-            let i = self.index_from_name("sniprun_root_dir", config);
-            self.data.sniprun_root_dir = String::from(config[i].1.as_str().unwrap());
-            info!("[FILLDATA] got sniprun root");
+            if let Some(i) = self.index_from_name("sniprun_root_dir", config) {
+                self.data.sniprun_root_dir = String::from(config[i].1.as_str().unwrap());
+                info!("[FILLDATA] got sniprun root");
+            }
         }
 
         {
@@ -254,76 +255,84 @@ impl EventHandler {
             info!("[FILLDATA] got nvim_instance");
         }
         {
-            let i = self.index_from_name("selected_interpreters", config);
-            self.data.selected_interpreters = config[i]
-                .1
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|v| v.as_str().unwrap().to_owned())
-                .collect();
-            info!("[FILLDATA] got selected interpreters");
-        }
-        {
-            let i = self.index_from_name("repl_enable", config);
-            self.data.repl_enabled = config[i]
-                .1
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|v| v.as_str().unwrap().to_owned())
-                .collect();
-            info!("[FILLDATA] got repl enabled interpreters");
-        }
-        {
-            let i = self.index_from_name("repl_disable", config);
-            self.data.repl_disabled = config[i]
-                .1
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|v| v.as_str().unwrap().to_owned())
-                .collect();
-            info!("[FILLDATA] got repl disabled interpreters");
-        }
-        {
-            let i = self.index_from_name("display", config);
-            self.data.display_type = config[i]
-                .1
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|v| v.as_str().unwrap())
-                .map(|v| DisplayType::from_str(v))
-                .inspect(|x| info!("[FILLDATA] display type found : {:?}", x))
-                .filter(|x| x.is_ok())
-                .map(|x| x.unwrap())
-                .collect();
-            info!("[FILLDATA] got display types");
-        }
-        {
-            let i = self.index_from_name("show_no_output", config);
-            self.data.display_no_output = config[i]
-                .1
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|v| v.as_str().unwrap())
-                .map(|v| DisplayType::from_str(v))
-                .inspect(|x| info!("[FILLDATA] display type with 'no output'on found : {:?}", x))
-                .filter(|x| x.is_ok())
-                .map(|x| x.unwrap())
-                .collect();
-            info!("[FILLDATA] got show_no_output");
-        }
-        {
-            let i = self.index_from_name("inline_messages", config);
-            if config[i].1.as_i64().unwrap_or(0) == 1 {
-                self.data.return_message_type = ReturnMessageType::EchoMsg;
-            } else {
-                self.data.return_message_type = ReturnMessageType::Multiline;
+            if let Some(i) = self.index_from_name("selected_interpreters", config) {
+                self.data.selected_interpreters = config[i]
+                    .1
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_owned())
+                    .collect();
+                info!("[FILLDATA] got selected interpreters");
             }
-            info!("[FILLDATA] got inline_messages setting");
+        }
+        {
+            if let Some(i) = self.index_from_name("repl_enable", config) {
+                self.data.repl_enabled = config[i]
+                    .1
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_owned())
+                    .collect();
+                info!("[FILLDATA] got repl enabled interpreters");
+            }
+        }
+        {
+            if let Some(i) = self.index_from_name("repl_disable", config) {
+                self.data.repl_disabled = config[i]
+                    .1
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_owned())
+                    .collect();
+                info!("[FILLDATA] got repl disabled interpreters");
+            }
+        }
+        {
+            if let Some(i) = self.index_from_name("display", config) {
+                self.data.display_type = config[i]
+                    .1
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|v| v.as_str().unwrap())
+                    .map(|v| DisplayType::from_str(v))
+                    .inspect(|x| info!("[FILLDATA] display type found : {:?}", x))
+                    .filter(|x| x.is_ok())
+                    .map(|x| x.unwrap())
+                    .collect();
+                info!("[FILLDATA] got display types");
+            }
+        }
+        {
+            if let Some(i) = self.index_from_name("show_no_output", config) {
+                self.data.display_no_output = config[i]
+                    .1
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|v| v.as_str().unwrap())
+                    .map(|v| DisplayType::from_str(v))
+                    .inspect(|x| {
+                        info!("[FILLDATA] display type with 'no output'on found : {:?}", x)
+                    })
+                    .filter(|x| x.is_ok())
+                    .map(|x| x.unwrap())
+                    .collect();
+                info!("[FILLDATA] got show_no_output");
+            }
+        }
+        {
+            if let Some(i) = self.index_from_name("inline_messages", config) {
+                if config[i].1.as_i64().unwrap_or(0) == 1 {
+                    self.data.return_message_type = ReturnMessageType::EchoMsg;
+                } else {
+                    self.data.return_message_type = ReturnMessageType::Multiline;
+                }
+                info!("[FILLDATA] got inline_messages setting");
+            }
         }
 
         {
@@ -333,26 +342,29 @@ impl EventHandler {
         info!("[FILLDATA] Done!");
     }
 
-    pub fn override_data(&mut self, values: Vec<Value>){
+    pub fn override_data(&mut self, values: Vec<Value>) {
         if values.len() < 4 {
             info!("[OVERRIDE] No data to override");
             return;
         }
-        if let Some(override_map) = values[3].as_map(){
+        if let Some(override_map) = values[3].as_map() {
             {
-                let i = self.index_from_name("filetype", override_map);
-                if let Some(filetype_str) = override_map[i].1.as_str() {
-                    if !filetype_str.is_empty(){
-                        self.data.filetype = filetype_str.to_string();
-                        info!("[OVERRIDE] filetype with: {}", filetype_str);
+                if let Some(i) = self.index_from_name("filetype", override_map) {
+                    if let Some(filetype_str) = override_map[i].1.as_str() {
+                        if !filetype_str.is_empty() {
+                            self.data.filetype = filetype_str.to_string();
+                            info!("[OVERRIDE] filetype with: {}", filetype_str);
+                        }
                     }
                 }
             }
             {
-                let i = self.index_from_name("codestring", override_map);
-                if let Some(codestring_str) = override_map[i].1.as_str(){
-                    self.data.current_bloc = codestring_str.to_string();
-                    self.data.current_line = codestring_str.to_string();
+                if let Some(i) = self.index_from_name("codestring", override_map) {
+                    if let Some(codestring_str) = override_map[i].1.as_str() {
+                        self.data.current_bloc = codestring_str.to_string();
+                        self.data.current_line = codestring_str.to_string();
+                        info!("[OVERRIDE] codestring with: {}", codestring_str);
+                    }
                 }
             }
         }

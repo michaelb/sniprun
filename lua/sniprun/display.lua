@@ -124,5 +124,24 @@ function M.display_nvim_notify(message, ok)
 end
 
 
+function M.send_api(message, ok)
+    local d = {}
+    d.message = message
+    if ok then
+	d.status = "ok"
+    else
+	d.status = "error"
+    end
+
+    local listeners = require('sniprun.api').listeners
+    
+    if type(next(listeners)) == "nil" then
+	print("Sniprun: No listener registered")
+    end
+
+    for i,f in ipairs(listeners) do
+	f(d)
+    end
+end
 
 return M

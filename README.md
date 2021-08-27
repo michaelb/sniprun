@@ -33,7 +33,7 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
 
 </br>
 
-###### TLDR: ```Plug 'michaelb/sniprun', {'do': 'bash install.sh'} ```, ```:SnipRun```, ```:'<,'>SnipRun```,```:SnipInfo```
+###### TLDR: ```Plug 'michaelb/sniprun', {'do': 'bash install.sh'}``` </br> ​ ​ ​   ​  ​  ​  ​  ​  ​  ​ ​ ```:SnipRun```, ```:'<,'>SnipRun```,```:SnipInfo```
 ###### (but please configure the \<Plug> mappings)
 
 
@@ -125,6 +125,8 @@ Sniprun will then:
 - **Neovim** (version >= 0.5 for the latest goodies), but 0.4.x is supported up to sniprun v0.4.9 and the installer will take care of installing the latest version 'that works', though you may miss on new features, and you will need to use the [old vimscript way to configure](ressources/old_configuration.md).
 
 - [optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
+
+- [optionnal] the plugin [nvim-notify](github.com/rcarriga/nvim-notify) for the notification display style
 
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
@@ -254,34 +256,36 @@ Sniprun is a Lua plugin, but **you don't need** the usual boilerplate: if you do
 
 However, if you want to change some options, you can add this snippet (the default config) to your configuration file and modify if at will (you can remove keys without issue to shorten your config, as the default values are overwritten on a key-by-key basis):
 
-```vim
+```bash
 lua << EOF
 require'sniprun'.setup({
-  selected_interpreters = {},     --" use those instead of the default for the current filetype
-  repl_enable = {},               --" enable REPL-like behavior for the given interpreters
-  repl_disable = {},              --" disable REPL-like behavior for the given interpreters
+  selected_interpreters = {},     --# use those instead of the default for the current filetype
+  repl_enable = {},               --# enable REPL-like behavior for the given interpreters
+  repl_disable = {},              --# disable REPL-like behavior for the given interpreters
 
-  interpreter_options = {},       --" intepreter-specific options, consult docs / :SnipInfo <name>
+  interpreter_options = {},       --# intepreter-specific options, consult docs / :SnipInfo <name>
 
-  --" you can combo different display modes as desired
+  --# you can combo different display modes as desired
   display = {
-    "Classic",                    -- "display results in the command-line  area
-    "VirtualTextOk",              -- "display ok results as virtual text (multiline is shortened)
+    "Classic",                    --# display results in the command-line  area
+    "VirtualTextOk",              --# display ok results as virtual text (multiline is shortened)
 
-    -- "VirtualTextErr",          -- "display error results as virtual text
-    -- "TempFloatingWindow",      -- "display results in a floating window
-    -- "LongTempFloatingWindow",  -- "same as above, but only long results. To use with VirtualText__
-    -- "Terminal"                 -- "display results in a vertical split
+    -- "VirtualTextErr",          --# display error results as virtual text
+    -- "TempFloatingWindow",      --# display results in a floating window
+    -- "LongTempFloatingWindow",  --# same as above, but only long results. To use with VirtualText__
+    -- "Terminal",                --# display results in a vertical split
+    -- "NvimNotify",              --# display with the nvim-notify plugin
+    -- "Api"                      --# return output to a programming interface
   },
 
-  --" You can use the same keys to customize whether a sniprun producing
-  --" no output should display nothing or '(no output)'
+  --# You can use the same keys to customize whether a sniprun producing
+  --# no output should display nothing or '(no output)'
   display_no_output = {
     "Classic",
-    "TempFloatingWindow",      -- "implies LongTempFloatingWindow, which has no effect on its own
+    "TempFloatingWindow",      --# implies LongTempFloatingWindow, which has no effect on its own
   },
 
-  --" customize highlight groups (setting this overrides colorscheme)
+  --# customize highlight groups (setting this overrides colorscheme)
   snipruncolors = {
     SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
     SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
@@ -289,12 +293,12 @@ require'sniprun'.setup({
     SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
   },
 
-  --" miscellaneous compatibility/adjustement settings
-  inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
-				   --" to workaround sniprun not being able to display anything
+  --# miscellaneous compatibility/adjustement settings
+  inline_messages = 0,             --# inline_message (0/1) is a one-line way to display messages
+				   --# to workaround sniprun not being able to display anything
 
-  borders = 'single'               --" display borders around floating windows
-                                   --" possible values are 'none', 'single', 'double', or 'shadow'
+  borders = 'single'               --# display borders around floating windows
+                                   --# possible values are 'none', 'single', 'double', or 'shadow'
 })
 EOF
 ```

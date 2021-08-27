@@ -25,7 +25,9 @@ M.config_values = {
     -- "VirtualTextErr",
     -- "LongTempFloatingWindow",
     -- "TempFloatingWindow",
-    -- "Terminal"
+    -- "Terminal",
+    -- "Api,
+    -- "NvimNotify"
   },
 
   show_no_output = {
