@@ -335,7 +335,7 @@ mod test_python3_original {
 
     fn test_repl() {
         let mut event_handler = fake_event();
-        event_handler.fill_data(fake_msgpack());
+        event_handler.fill_data(&fake_msgpack());
         event_handler.data.filetype = String::from("python");
         event_handler.data.current_bloc = String::from("a=1");
         event_handler.data.repl_enabled = vec![String::from("Python3_original")];

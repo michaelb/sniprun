@@ -485,7 +485,7 @@ mod test_main {
         let mut event_handler = fake_event();
         let _ = log_to_file(&format!("test_sniprun.log"), LevelFilter::Info);
 
-        event_handler.fill_data(fake_msgpack());
+        event_handler.fill_data(&fake_msgpack());
         event_handler.data.filetype = String::from("javascript");
         event_handler.data.current_bloc = String::from("console.log(\"yo!\")");
         //run the launcher (that selects, init and run an interpreter)
