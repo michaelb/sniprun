@@ -73,7 +73,7 @@ An example in C, look in the command area:
 ![](ressources/visual_assets/classic.png)   | ![](ressources/visual_assets/virtual_text.png)
 [**Temporary Floating Window**](ressources/display_floating_window.md)  |  [**Terminal**](ressources/display_terminal.md)
 ![](ressources/visual_assets/floating_window.png) | ![](ressources/visual_assets/terminal.png)
-[**Notification**](ressources/visual_assets/nvimnotify.png) | [**API**](API.md)
+[**Notification**](ressources/display_api.md) | [**API**](API.md)
 ![](ressources/visual_assets/nvimnotify.png) | ![](ressources/visual_assets/api.png)
 
 
