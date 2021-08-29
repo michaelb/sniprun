@@ -50,7 +50,7 @@ println!("test2");
 require'sniprun'.setup({
     interpreter_options = {
         OrgMode_original = { 
-            default_filetype = 'bash' -- default filetype (not github flavored markdown name)
+            default_filetype = 'bash' -- default filetype/language name
         }
     }
 })

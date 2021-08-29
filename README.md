@@ -78,7 +78,8 @@ An example in C, look in the command area:
 
 
 ##### send-to-REPL-like behavior is available for some languages
-Python, R, Mathematica, Julia (all real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
+
+Python, R, Mathematica, Sage, Julia (all real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
 
 ![](ressources/visual_assets/demo_repl.gif)
 
@@ -305,7 +306,7 @@ require'sniprun'.setup({
 EOF
 ```
 
-Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of the 'Python3_original' default],
+Example, to use the interpreter 'Python3\_jupyter' whenever possible [instead of the 'Python3\_original' default],
 `lua require'sniprun'.setup({selected_interpreters = {'Python3_jupyter'}})`
 
 **NOTE**: Some interpreters have specific options and dependencies, such as what version / compiler to use: you cand find more about that with `:SnipInfo <interpreter_name>`
@@ -315,15 +316,15 @@ Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of 
 
 All of sniprun functionnalities:
 
-| Shorthand                   | Lua backend                          | \<Plug> mapping            |
-|-----------------------------|--------------------------------------|----------------------------|
-| :SnipRun                    | lua require'sniprun'.run()           | \<Plug>SnipRun             |
-| (normal node)               | lua require'sniprun'.run('n')        | \<Plug>SnipRunOperator     |
-| :'<,'>SnipRun (visual mode) | lua require'sniprun'.run('v')        | \<Plug>SnipRun             |
-| :SnipInfo                   | lua require'sniprun'.info()          | \<Plug>SnipInfo            |
-| :SnipReset                  | lua require'sniprun'.reset()         | \<Plug>SnipReset           |
-| :SnipReplMemoryClean        | lua require'sniprun'.clear_repl()    | \<Plug>SnipReplMemoryClean |
-| :SnipClose                  | lua require'sniprun.display'.close() | \<Plug>SnipClose           |
+| Shorthand                    | Lua backend                          | \<Plug> mapping            |
+|------------------------------|--------------------------------------|----------------------------|
+| :SnipRun                     | lua require'sniprun'.run()           | \<Plug\>SnipRun             |
+| (normal node)                | lua require'sniprun'.run('n')        | \<Plug\>SnipRunOperator     |
+| :'\<,'\>SnipRun (visual mode)| lua require'sniprun'.run('v')        | \<Plug\>SnipRun             |
+| :SnipInfo                    | lua require'sniprun'.info()          | \<Plug\>SnipInfo            |
+| :SnipReset                   | lua require'sniprun'.reset()         | \<Plug\>SnipReset           |
+| :SnipReplMemoryClean         | lua require'sniprun'.clear\_repl()   | \<Plug\>SnipReplMemoryClean |
+| :SnipClose                   | lua require'sniprun.display'.close() | \<Plug\>SnipClose           |
 
 
 You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to configure sniprun, still compatible but may be deprecated at some point.
@@ -334,7 +335,7 @@ You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to 
 
 - Map the run command to a simple command such as `<leader>ff` (or just `f` in visual mode)
 - Check `SnipInfo` & `:SnipInfo <interpreter_name>` to learn any quirk or tips about the language you're interested in
-- The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "\<leader>f + j" will run sniprun on the current line + the line below.
+- The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "\<leader\>f + j" will run sniprun on the current line + the line below.
 
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
 
@@ -403,8 +404,8 @@ println!("-> {}", alphabet);
 | COBOL        | Untested      |     | Lua-nvim   | Bloc + REPL      |
 | Coffeescript | Bloc          |     | Markdown   | Bloc + REPL\*\*\*|
 | C#           | Untested      |     | Mathematica| Bloc + REPL\*\*  |
-| D            | Bloc          |     | Perl/Perl6 | Line             |
-| Elixir       | Untested      |     | PHP        | Untested         |
+| D            | Bloc          |     | OrgMode    | Bloc + REPL\*\*\*|
+| Elixir       | Untested      |     | Perl/Perl6 | Line             |
 | Elm          | Untested      |     | Python3    | Import +REPL\*\* |
 | Erlang       | Untested      |     | R          | Bloc + REPL\*\*  |
 | F#           | Untested      |     | Ruby       | Bloc             |

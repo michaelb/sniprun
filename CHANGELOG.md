@@ -1,5 +1,5 @@
 ## v0.5.10
-- SageMath support
+- SageMath & orgmode support
 - API
 - nvim-notify display method
 
