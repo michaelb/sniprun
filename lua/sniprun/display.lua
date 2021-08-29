@@ -116,6 +116,7 @@ function M.display_nvim_notify(message, ok)
 	return
     end
 
+    if message == "" then return end
 
     local title = ok and "Sniprun: Ok" or "Sniprun: Error"
     local notif_style = ok and "info" or "error"
