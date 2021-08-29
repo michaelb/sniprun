@@ -89,7 +89,7 @@ pub fn display_nvim_notify(
             no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
         )),
     };
-    info!("res = {:?}", res);
+    info!("display notify res = {:?}", res);
 }
 
 pub fn send_api(
@@ -107,7 +107,7 @@ pub fn send_api(
             no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
         )),
     };
-    info!("res = {:?}", res);
+    info!("return to api res = {:?}", res);
 }
 
 pub fn display_virtual_text(
@@ -198,7 +198,7 @@ pub fn display_terminal(
             no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
         )),
     };
-    info!("res = {:?}", res);
+    info!("display terminal res = {:?}", res);
 }
 
 pub fn display_floating_window(
@@ -244,7 +244,7 @@ pub fn display_floating_window(
             no_output_wrap(&result.to_string(), data, &DisplayType::TempFloatingWindow),
         )),
     };
-    info!("res = {:?}", res);
+    info!("disaply floating window res = {:?}", res);
 }
 
 pub fn return_message_classic(
