@@ -283,7 +283,7 @@ require'sniprun'.setup({
 
   --# You can use the same keys to customize whether a sniprun producing
   --# no output should display nothing or '(no output)'
-  display_no_output = {
+  show_no_output = {
     "Classic",
     "TempFloatingWindow",      --# implies LongTempFloatingWindow, which has no effect on its own
   },
