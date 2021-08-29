@@ -47,7 +47,7 @@ impl Python3_original {
         }
         for line in v.iter() {
             // info!("lines are : {}", line);
-            if line.contains("import ") //basic selection
+            if (line.trim().starts_with("import ") || line.trim().starts_with("from "))  //basic selection
                 && line.trim().chars().next() != Some('#')
             && self.module_used(line, &self.code)
             {

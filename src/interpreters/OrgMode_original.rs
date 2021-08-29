@@ -1,6 +1,6 @@
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct GFM_original {
+pub struct OrgMode_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
@@ -9,15 +9,27 @@ pub struct GFM_original {
     default_filetype: String,
 }
 
-impl GFM_original {
+impl OrgMode_original {
     pub fn get_filetype_of_embbeded_code(&mut self) -> String {
         let nvim_instance = self.data.nvim_instance.clone().unwrap();
         let mut real_nvim_instance = nvim_instance.lock().unwrap();
-        let line_n = self.data.range[0]; // no matter which one
+        let mut line_n = self.data.range[0]; // no matter which one
+
 
         //first check if we not on boundary of block
-        if self.data.current_line.starts_with("```") {
-            let flavor = self.data.current_line[3..].to_owned();
+        if self.data.current_line.starts_with("#+NAME") {
+            let next_line = real_nvim_instance
+                .get_current_buf()
+                .unwrap()
+                .get_lines(&mut real_nvim_instance, line_n, line_n+1, false)
+                .unwrap();
+            self.data.current_line = next_line.join("");
+            line_n = line_n +1;
+        }
+
+
+        if self.data.current_line.starts_with("#+BEGIN_SRC") {
+            let flavor = self.data.current_line.split_whitespace().nth(1).unwrap_or("").to_owned();
             let end_line = real_nvim_instance
                 .get_current_buf()
                 .unwrap()
@@ -34,10 +46,11 @@ impl GFM_original {
                     .get_lines(&mut real_nvim_instance, i - 1, i, false)
                     .unwrap()
                     .join("");
-                if line_i.starts_with("```") {
+                if line_i.starts_with("#+END_SRC") {
                     //found end of bloc
                     self.data.current_bloc = code_bloc.join("\n");
-                    return self.filetype_from_str(flavor.trim());
+                    info!("line to extract filetype from: {:?}", line_i.split_whitespace().collect::<Vec<_>>());
+                    return self.filetype_from_str(&flavor);
                 } else {
                     info!("adding line {} to current bloc", i);
                     code_bloc.push(line_i.to_string());
@@ -54,16 +67,17 @@ impl GFM_original {
                     .get_lines(&mut real_nvim_instance, i - 1, i, false)
                     .unwrap()
                     .join("");
-                if line_i.starts_with("```") {
-                    let ft = line_i[3..].trim().to_owned();
-                    return self.filetype_from_str(&ft);
+                if line_i.starts_with("#+BEGIN_SRC") {
+                    info!("line to extract filetype from: {:?}", line_i.split_whitespace().collect::<Vec<_>>());
+                    let flavor = line_i.split_whitespace().nth(1).unwrap_or("").to_owned();
+                    return self.filetype_from_str(&flavor);
                 }
             }
         }
         String::new()
     }
 
-    /// Convert markdowncode block flavor (Github Flavored Markdown) to filetype
+    /// Convert markdowncode block flavor to filetype
     pub fn filetype_from_str(&self, s: &str) -> String {
         let cleaned_str = s.replace(&['{', '}', '.'][..], "");
         match cleaned_str.as_str() {
@@ -75,6 +89,7 @@ impl GFM_original {
             "Perl" => "perl",
             "python3" => "python",
             "rb" => "ruby",
+            "R" => "r",
             "jruby" => "ruby",
             "objectivec" => "objcpp",
             "ts" => "typescript",
@@ -85,13 +100,13 @@ impl GFM_original {
     }
 }
 
-impl ReplLikeInterpreter for GFM_original {}
+impl ReplLikeInterpreter for OrgMode_original {}
 
-impl Interpreter for GFM_original {
+impl Interpreter for OrgMode_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Self> {
        
         //create a subfolder in the cache folder
-        let lwd = data.work_dir.clone() + "/gfm_original";
+        let lwd = data.work_dir.clone() + "/orgmode_original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
@@ -102,7 +117,7 @@ impl Interpreter for GFM_original {
 
         let ddf = String::from("python"); //default default
 
-        let mut gfm_interpreter = Box::new(GFM_original {
+        let mut orgmode_interpreter = Box::new(OrgMode_original {
             data: data_clone,
             support_level,
             code: String::new(),
@@ -111,22 +126,22 @@ impl Interpreter for GFM_original {
         });
 
 
-        if let Some(value) = gfm_interpreter.get_interpreter_option("default_filetype") {
+        if let Some(value) = orgmode_interpreter.get_interpreter_option("default_filetype") {
             if let Some(valid_string) = value.as_str() {
-                gfm_interpreter.default_filetype = valid_string.to_string();
+                orgmode_interpreter.default_filetype = valid_string.to_string();
             }
         }
 
-        return gfm_interpreter;
+        return orgmode_interpreter;
 
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("Markdown"), String::from("markdown")]
+        vec![String::from("OrgMode"), String::from("org"), String::from("orgmode")]
     }
 
     fn get_name() -> String {
-        String::from("GFM_original")
+        String::from("OrgMode_original")
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -160,7 +175,7 @@ impl Interpreter for GFM_original {
             .is_empty()
             && self.support_level >= SupportLevel::Line
         {
-            //special for markdown in case we try to run a bloc of markodwn that only has one line,
+            //special for orgmode in case we try to run a bloc of markodwn that only has one line,
             //an only Line level support
             self.code = self
                 .data
@@ -189,7 +204,7 @@ impl Interpreter for GFM_original {
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        info!("executing markdown interpreter");
+        info!("executing orgmode interpreter");
         let launcher = crate::launcher::Launcher::new(self.data.clone());
 
         if let Some((name, level)) = launcher.select() {
@@ -210,7 +225,7 @@ impl Interpreter for GFM_original {
 
 
 #[cfg(test)]
-mod test_gfm_original {
+mod test_orgmode_original {
     use super::*;
 
     #[test]
@@ -221,10 +236,9 @@ mod test_gfm_original {
         data.filetype = String::from("bash");
         data.range = [1,3];
         
-        let mut interpreter = GFM_original::new(data);
+        let mut interpreter = OrgMode_original::new(data);
         let res = interpreter.execute();
         let string_result = res.unwrap();
         assert_eq!(string_result, "3\n");
     }
 }
-        
