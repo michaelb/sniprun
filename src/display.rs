@@ -147,6 +147,11 @@ pub fn display_virtual_text(
             {
                 return;
             }
+ nvim.lock().unwrap().command(&format!("lua require\"sniprun.display\".display_virtual_text({},{},{},{})",
+    namespace_id,
+    last_line+1,
+    message_ok,
+    hl_ok));
 
             nvim.lock().unwrap().command(&format!(
                 "call nvim_buf_set_virtual_text(0,{},{},[[\"{}\",\"{}\"]], [])",
@@ -159,7 +164,8 @@ pub fn display_virtual_text(
                 )),
                 hl_ok
             ))
-        }
+
+           }
         Err(message_err) => {
             if shorten_err(&no_output_wrap(
                 &message_err.to_string(),
