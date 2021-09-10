@@ -1,4 +1,4 @@
-# Lua API to sniprun [WIP]
+# Lua API to sniprun
 
 You can use sniprun API from:
 
