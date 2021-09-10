@@ -110,7 +110,6 @@ pub fn send_api(
             no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
         ))},
     };
-    // info!("return to api res = {:?}", res);
     info!("!done displyaing notify");
 }
 
