@@ -156,19 +156,19 @@ pub fn display_virtual_text(
                     &DisplayType::VirtualTextOk
                 )),
 
-    hl_ok));
+    hl_ok))
 
-            nvim.lock().unwrap().command(&format!(
-                "call nvim_buf_set_virtual_text(0,{},{},[[\"{}\",\"{}\"]], [])",
-                namespace_id,
-                last_line,
-                shorten_ok(&no_output_wrap(
-                    message_ok,
-                    data,
-                    &DisplayType::VirtualTextOk
-                )),
-                hl_ok
-            ))
+            // nvim.lock().unwrap().command(&format!(
+            //     "call nvim_buf_set_virtual_text(0,{},{},[[\"{}\",\"{}\"]], [])",
+            //     namespace_id,
+            //     last_line,
+            //     shorten_ok(&no_output_wrap(
+            //         message_ok,
+            //         data,
+            //         &DisplayType::VirtualTextOk
+            //     )),
+            //     hl_ok
+            // ))
 
            }
         Err(message_err) => {
