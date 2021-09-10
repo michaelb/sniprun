@@ -125,7 +125,7 @@ function M.display_nvim_notify(message, ok)
 end
 
 function M.display_virtual_text(namespace,message,line,hl)
-    vim.cmd( "call nvim_buf_set_virtual_text(0,"..namespace..","..line..",[[\""..message.."\",\""..hl.."\"]], [])",
+    vim.cmd( "call nvim_buf_set_virtual_text(0,"..namespace..","..line..",[[\""..message.."\",\""..hl.."\"]], [])")
 end
 
 
