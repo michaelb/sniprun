@@ -149,7 +149,7 @@ pub fn display_virtual_text(
                 return;
             } 
             nvim.lock().unwrap().command(&format!(
-                "call nvim_buf_set_extmark(0,{},{},-1,{{\"virt_text\":[[\"{}\",\"{}\"]]}})",
+                "lua vim.api.nvim_buf_set_extmark(0,{},{},-1,{{virt_text={{{{\"{}\",\"{}\"}}}}}})",
                 namespace_id,
                 last_line,
                 shorten_ok(&no_output_wrap(
@@ -172,7 +172,7 @@ pub fn display_virtual_text(
                 return;
             }
             nvim.lock().unwrap().command(&format!(
-                "call nvim_buf_set_extmark(0,{},{},-1,{{\"virt_text\":[[\"{}\",\"{}\"]]}})",
+                "lua vim.api.nvim_buf_set_extmark(0,{},{},-1,{{virt_text={{{{\"{}\",\"{}\"}}}}}})",
                 namespace_id,
                 last_line,
                 shorten_err(&no_output_wrap(
