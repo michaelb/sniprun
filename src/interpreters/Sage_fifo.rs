@@ -423,3 +423,31 @@ impl ReplLikeInterpreter for Sage_fifo {
         self.wait_out_file(outfile, errfile, self.current_output_id)
     }
 }
+
+#[cfg(test)]
+mod test_sage_fifo {
+    use super::*;
+
+    #[test]
+    fn run_all() {
+        // For now, all these should return Err(Custom(Kernel launched, please re-run))
+        simple_print();
+        print_quote();
+    }
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(\"lol\",1);");
+        let mut interpreter = Sage_fifo::new(data);
+        let _ = interpreter.run_at_level_repl(SupportLevel::Bloc);
+        let res = interpreter.run_at_level_repl(SupportLevel::Bloc);
+        assert!(res.is_err());
+    }
+    fn print_quote() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(\"->\\\"\",1);");
+        let mut interpreter = Sage_fifo::new(data);
+        let _ = interpreter.run_at_level_repl(SupportLevel::Bloc);
+        let res = interpreter.run_at_level_repl(SupportLevel::Bloc);
+        assert!(res.is_err());
+    }
+}
