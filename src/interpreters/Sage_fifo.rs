@@ -1,6 +1,6 @@
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct Python3_fifo {
+pub struct Sage_fifo {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
@@ -10,24 +10,24 @@ pub struct Python3_fifo {
     cache_dir: String,
 
     interpreter: String,
-    venv: Option<String>,
     current_output_id: u32,
+    user_sage_config: bool,
 }
 
-impl Python3_fifo {
+impl Sage_fifo {
     fn wait_out_file(
         &self,
         out_path: String,
         err_path: String,
         id: u32,
-        ) -> Result<String, SniprunError> {
+    ) -> Result<String, SniprunError> {
         let end_mark = String::from("sniprun_finished_id=") + &id.to_string()+"\n";
         let start_mark = String::from("sniprun_started_id=") + &id.to_string();
 
         info!(
             "searching for things between {:?} and {:?}",
             start_mark, end_mark
-            );
+        );
 
         let mut out_contents = String::new();
         let mut err_contents = String::new();
@@ -69,12 +69,40 @@ impl Python3_fifo {
                     res.unwrap();
                     info!("file could be read : {:?}", out_contents);
                     // info!("file : {:?}", contents);
+                    out_contents = out_contents.replace("sage: ", "");
                     if out_contents.contains(&end_mark) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark).unwrap();
+                        let out_contents_current = out_contents[index + &start_mark.len()
+                            ..&out_contents.len() - &end_mark.len() - 1].to_string();
+
+                        //check it's not actually an error
+                        let error_indicators = ["AssertionError","AttributeError","EOFError","FloatingPointError","GeneratorExit","ImportError","IndexError","KeyError","KeyboardInterrupt","MemoryError","NameError","NotImplementedError","OSError","OverflowError","ReferenceError","RuntimeError","StopIteration","SyntaxError","IndentationError","TabError","SystemError", "ModuleNotFoundError"];
+                        for try_error_indicator in error_indicators.iter() {
+                            if out_contents_current.contains(try_error_indicator){
+                                info!("stdout contains error indicator");
+                                err_contents = out_contents.clone();
+                                // info!("file : {:?}", contents);
+                                err_contents = err_contents.replace("sage: ", "");
+                                err_contents = err_contents.replace("---------------------------------------------------------------------------\n","");
+                                if err_contents.contains(&end_mark) {
+                                    if let Some(index) = err_contents.rfind(&start_mark) {
+                                        let err_to_display = err_contents[index + &start_mark.len()
+                                            ..&err_contents.len() - &end_mark.len() - 1]
+                                            .to_owned();
+                                        info!("err to display : {:?}", err_to_display);
+                                        if !err_to_display.trim().is_empty() {
+                                            info!("err found");
+                                            return Err(SniprunError::RuntimeError(err_to_display));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         return Ok(out_contents[index + &start_mark.len()
-                                  ..&out_contents.len() - &end_mark.len() - 1]
-                                  .to_owned());
+                            ..&out_contents.len() - &end_mark.len() - 1]
+                            .to_owned());
                     }
                 }
             }
@@ -83,7 +111,7 @@ impl Python3_fifo {
         }
     }
 
-    fn fetch_imports(&mut self) -> Result<(), SniprunError> {
+    fn fetch_python_imports(&mut self) -> Result<(), SniprunError> {
         if self.support_level < SupportLevel::Import {
             return Ok(());
         }
@@ -110,26 +138,26 @@ impl Python3_fifo {
 
         if !self
             .data
-                .current_bloc
-                .replace(&[' ', '\t', '\n', '\r'][..], "")
-                .is_empty()
-                {
-                    self.code = self.data.current_bloc.clone();
-                }
+            .current_bloc
+            .replace(&[' ', '\t', '\n', '\r'][..], "")
+            .is_empty()
+        {
+            self.code = self.data.current_bloc.clone();
+        }
         for line in v.iter() {
             // info!("lines are : {}", line);
-            if (line.trim().starts_with("import ") || line.trim().starts_with("from"))  //basic selection
+            if line.contains("import ") //basic selection
                 && line.trim().chars().next() != Some('#')
-                    && self.module_used(line, &self.code)
-                    {
-                        // embed in try catch blocs in case uneeded module is unavailable
+            && self.module_used(line, &self.code)
+            {
+                // embed in try catch blocs in case uneeded module is unavailable
 
-                        let already_imported: String = self.read_previous_code();
-                        if !already_imported.contains(line) {
-                            self.imports = self.imports.clone() + "\n" + line;
-                            self.save_code(already_imported + "\n" + line);
-                        }
-                    }
+                let already_imported: String = self.read_previous_code();
+                if !already_imported.contains(line) {
+                    self.imports = self.imports.clone() + "\n" + line;
+                    self.save_code(already_imported + "\n" + line);
+                }
+            }
         }
         info!("import founds : {:?}", self.imports);
         Ok(())
@@ -138,7 +166,7 @@ impl Python3_fifo {
         info!(
             "checking for python module usage: line {} in code {}",
             line, code
-            );
+        );
         if line.contains("*") {
             return true;
         }
@@ -149,20 +177,20 @@ impl Python3_fifo {
         }
         for name in line
             .replace(",", " ")
-                .replace("from", " ")
-                .replace("import ", " ")
-                .split(" ")
-                .filter(|&x| !x.is_empty())
-                {
-                    if code.contains(name.trim()) {
-                        return true;
-                    }
-                }
+            .replace("from", " ")
+            .replace("import ", " ")
+            .split(" ")
+            .filter(|&x| !x.is_empty())
+        {
+            if code.contains(name.trim()) {
+                return true;
+            }
+        }
         return false;
     }
 
     fn fetch_config(&mut self) {
-        let default_interpreter = String::from("python3");
+        let default_interpreter = String::from("sage");
         if let Some(used_interpreter) = self.get_interpreter_option("interpreter") {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -170,43 +198,30 @@ impl Python3_fifo {
             }
         }
         self.interpreter = default_interpreter;
-
-        if let Ok(path) = env::current_dir() {
-            if let Some(venv_array_config) = self.get_interpreter_option("venv") {
-                if let Some(actual_vec_of_venv) = venv_array_config.as_array() {
-                    for possible_venv in actual_vec_of_venv.iter() {
-                        if let Some(possible_venv_str) = possible_venv.as_str() {
-                            let venv_abs_path = path.to_str().unwrap().to_owned()
-                                + "/"
-                                + possible_venv_str
-                                + "/bin/activate_this.py";
-                            if std::path::Path::new(&venv_abs_path).exists() {
-                                self.venv = Some(venv_abs_path);
-                                break;
-                            }
-                        }
-                    }
-                }
+        if let Some(user_sage_config) = self.get_interpreter_option("sage_user_config") {
+            if let Some(_user_sage_config_str) = user_sage_config.as_str() {
+                info!("Using user sage config");
+                self.user_sage_config = true;
             }
         }
     }
 }
 
-impl Interpreter for Python3_fifo {
-    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Python3_fifo> {
+impl Interpreter for Sage_fifo {
+    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Sage_fifo> {
         //create a subfolder in the cache folder
-        let rwd = data.work_dir.clone() + "/python3_fifo";
+        let rwd = data.work_dir.clone() + "/sage_fifo";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
             .create(&rwd)
-            .expect("Could not create directory for python3-fifo");
+            .expect("Could not create directory for sage-fifo");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = rwd.clone() + "/main.py";
+        let mfp = rwd.clone() + "/main.sage";
 
         let pgr = data.sniprun_root_dir.clone();
-        Box::new(Python3_fifo {
+        Box::new(Sage_fifo {
             data,
             support_level: level,
             code: String::from(""),
@@ -216,12 +231,12 @@ impl Interpreter for Python3_fifo {
             cache_dir: rwd,
             current_output_id: 0,
             interpreter: String::new(),
-            venv: None,
+            user_sage_config: false,
         })
     }
 
     fn get_name() -> String {
-        String::from("Python3_fifo")
+        String::from("Sage_fifo")
     }
 
     fn default_for_filetype() -> bool {
@@ -238,10 +253,9 @@ impl Interpreter for Python3_fifo {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
-            String::from("Python 3"),
-            String::from("python3"),
-            String::from("python"),
-            String::from("py"),
+            String::from("SageMath"),
+            String::from("sage"),
+            String::from("sage.python"),
         ]
     }
 
@@ -262,45 +276,45 @@ impl Interpreter for Python3_fifo {
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
         self.fetch_config();
-        self.fetch_imports()?;
+        self.fetch_python_imports()?;
         if !self
             .data
-                .current_bloc
-                .replace(&[' ', '\t', '\n', '\r'][..], "")
-                .is_empty()
-                && self.get_current_level() >= SupportLevel::Bloc
-                {
-                    self.code = self.data.current_bloc.clone();
-                } else if !self.data.current_line.replace(" ", "").is_empty()
-                    && self.get_current_level() >= SupportLevel::Line
-                    {
-                        self.code = self.data.current_line.clone();
-                    } else {
-                        self.code = String::from("");
-                    }
+            .current_bloc
+            .replace(&[' ', '\t', '\n', '\r'][..], "")
+            .is_empty()
+            && self.get_current_level() >= SupportLevel::Bloc
+        {
+            self.code = self.data.current_bloc.clone();
+        } else if !self.data.current_line.replace(" ", "").is_empty()
+            && self.get_current_level() >= SupportLevel::Line
+        {
+            self.code = self.data.current_line.clone();
+        } else {
+            self.code = String::from("");
+        }
 
-                Ok(())
+        Ok(())
     }
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for python3_fifo");
+        write(&self.main_file_path, &self.code).expect("Unable to write to file for sage_fifo");
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
         Err(SniprunError::InterpreterLimitationError(
-                "Python3_fifo only works in REPL mode, please enable it".to_owned(),
-                ))
+            "Sage_fifo only works in REPL mode, please enable it".to_owned(),
+        ))
     }
 }
 
-impl ReplLikeInterpreter for Python3_fifo {
+impl ReplLikeInterpreter for Sage_fifo {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
 
         if !self.read_previous_code().is_empty() {
             // nothing to do, kernel already running
-            info!("Python3 kernel already running");
+            info!("Sage kernel already running");
 
             if let Some(id) = self.get_pid() {
                 // there is a race condition here but honestly you'd have to
@@ -325,16 +339,22 @@ impl ReplLikeInterpreter for Python3_fifo {
             info!(
                 "launching kernel : {:?} on {:?}",
                 init_repl_cmd, &self.cache_dir
-                );
-
+            );
             match daemon() {
+
                 Ok(Fork::Child) => {
+                    let nodotstage_arg = if self.user_sage_config {
+                            ""
+                        } else {
+                            "--nodotsage"
+                        };
+
                     let _res = Command::new("bash")
                         .args(&[
-                              init_repl_cmd,
-                              self.cache_dir.clone(),
-                              self.interpreter.clone()
-                              + " -ic 'import sys; sys.ps1=\"\";sys.ps2=\"\"'",
+                            init_repl_cmd,
+                            self.cache_dir.clone(),
+                            self.interpreter.clone(),
+                            nodotstage_arg.to_string(),
                         ])
                         .output()
                         .unwrap();
@@ -342,22 +362,22 @@ impl ReplLikeInterpreter for Python3_fifo {
                     std::thread::sleep(pause);
 
                     return Err(SniprunError::CustomError(
-                            "Timeout expired for python3 REPL".to_owned(),
-                            ));
+                        "Timeout expired for sage REPL".to_owned(),
+                    ));
                 }
                 Ok(Fork::Parent(_)) => {}
                 Err(_) => info!(
-                    "Python3_fifo could not fork itself to the background to launch the kernel"
-                    ),
+                    "Sage_fifo could not fork itself to the background to launch the kernel"
+                ),
             };
 
             let pause = std::time::Duration::from_millis(100);
             std::thread::sleep(pause);
-            self.save_code("kernel_launched\nimport sys".to_owned());
+            self.save_code("kernel_launched\n".to_string());
 
             Err(SniprunError::CustomError(
-                    "Python3 kernel launched, re-run your snippet".to_owned(),
-                    ))
+                "Sage kernel launched, re-run your snippet".to_owned(),
+            ))
         }
 
     }
@@ -390,7 +410,7 @@ impl ReplLikeInterpreter for Python3_fifo {
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         info!("running launcher {}", send_repl_cmd);
         let res = Command::new(send_repl_cmd)
-            .arg(self.cache_dir.clone() + "/main.py")
+            .arg(self.cache_dir.clone() + "/main.sage")
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn();
         info!("cmd status: {:?}", res);
@@ -405,7 +425,7 @@ impl ReplLikeInterpreter for Python3_fifo {
 }
 
 #[cfg(test)]
-mod test_python3_fifo {
+mod test_sage_fifo {
     use super::*;
 
     #[test]
@@ -417,14 +437,16 @@ mod test_python3_fifo {
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"lol\",1);");
-        let mut interpreter = Python3_fifo::new(data);
+        let mut interpreter = Sage_fifo::new(data);
+        let _ = interpreter.run_at_level_repl(SupportLevel::Bloc);
         let res = interpreter.run_at_level_repl(SupportLevel::Bloc);
         assert!(res.is_err());
     }
     fn print_quote() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"->\\\"\",1);");
-        let mut interpreter = Python3_fifo::new(data);
+        let mut interpreter = Sage_fifo::new(data);
+        let _ = interpreter.run_at_level_repl(SupportLevel::Bloc);
         let res = interpreter.run_at_level_repl(SupportLevel::Bloc);
         assert!(res.is_err());
     }

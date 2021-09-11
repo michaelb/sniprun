@@ -48,7 +48,7 @@ impl Python3_jupyter {
         }
         for line in v.iter() {
             // info!("lines are : {}", line);
-            if line.contains("import ") //basic selection
+            if (line.trim().starts_with("import ") || line.trim().starts_with("from "))  //basic selection
                 && line.trim().chars().next() != Some('#')
             && self.module_used(line, &self.code)
             {
@@ -391,7 +391,7 @@ mod test_python3_jupyter {
 
     fn test_repl() {
         let mut event_handler = fake_event();
-        event_handler.fill_data(fake_msgpack());
+        event_handler.fill_data(&fake_msgpack());
         event_handler.data.filetype = String::from("python");
         event_handler.data.current_bloc = String::from("a=1");
         event_handler.data.selected_interpreters = vec![String::from("Python3_jupyter")];

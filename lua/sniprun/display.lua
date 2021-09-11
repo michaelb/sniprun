@@ -105,6 +105,47 @@ function M.term_close()
 end
 
 
+function M.display_nvim_notify(message, ok)
+    -- ok is a boolean variable for the status (true= ok, false= error)
+    --
+    -- test if nvim_notify is availablea
+    if pcall(function() require('notify') end) then
+	--ok
+    else
+	print("Sniprun: nvim_notify is not installed")
+	return
+    end
 
+    if message == "" then return end
+
+    local title = ok and "Sniprun: Ok" or "Sniprun: Error"
+    local notif_style = ok and "info" or "error"
+    require("notify")(message, notif_style, {title=title})
+end
+
+function M.display_extmark(ns,line, message, highlight)
+    vim.api.nvim_buf_set_extmark(0,ns,line,-1,{virt_text={{message,highlight}}})
+end
+
+
+function M.send_api(message, ok)
+    local d = {}
+    d.message = message
+    if ok then
+	d.status = "ok"
+    else
+	d.status = "error"
+    end
+
+    local listeners = require('sniprun.api').listeners
+    
+    if type(next(listeners)) == "nil" then
+	print("Sniprun: No listener registered")
+    end
+
+    for i,f in ipairs(listeners) do
+	f(d)
+    end
+end
 
 return M

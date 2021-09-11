@@ -1,3 +1,8 @@
+## v0.5.10
+- SageMath & orgmode support
+- API
+- nvim-notify display method
+
 ## v0.5.9
 - TypeScript support
 - Better README & example.rs

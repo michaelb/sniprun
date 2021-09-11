@@ -33,7 +33,7 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
 
 </br>
 
-###### TLDR: ```Plug 'michaelb/sniprun', {'do': 'bash install.sh'} ```, ```:SnipRun```, ```:'<,'>SnipRun```,```:SnipInfo```
+###### TLDR: ```Plug 'michaelb/sniprun', {'do': 'bash install.sh'}``` </br> ​ ​ ​   ​  ​  ​  ​  ​  ​  ​ ​ ```:SnipRun```, ```:'<,'>SnipRun```,```:SnipInfo```
 ###### (but please configure the \<Plug> mappings)
 
 
@@ -66,17 +66,20 @@ An example in C, look in the command area:
 
 ![](ressources/visual_assets/demo_c.gif)
 
-##### The result can be displayed in multiple (even at the same time) ways:
+##### The result can be returned in multiple (even at the same time) ways:
 
 [Classic](ressources/display_classic.md)|  [Virtual Text](ressources/display_virtualtext.md)
 :------------------------------------------:|:------------------:
 ![](ressources/visual_assets/classic.png)   | ![](ressources/visual_assets/virtual_text.png)
 [**Temporary Floating Window**](ressources/display_floating_window.md)  |  [**Terminal**](ressources/display_terminal.md)
 ![](ressources/visual_assets/floating_window.png) | ![](ressources/visual_assets/terminal.png)
+[**Notification**](ressources/display_notify.md) | [**API**](API.md)
+![](ressources/visual_assets/nvimnotify.png) | ![](ressources/visual_assets/api.png)
 
 
 ##### send-to-REPL-like behavior is available for some languages
-Python, R, Mathematica, Julia (all real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
+
+Python, R, Mathematica, Sage, Julia (all real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
 
 ![](ressources/visual_assets/demo_repl.gif)
 
@@ -125,6 +128,8 @@ Sniprun will then:
 - **Neovim** (version >= 0.5 for the latest goodies), but 0.4.x is supported up to sniprun v0.4.9 and the installer will take care of installing the latest version 'that works', though you may miss on new features, and you will need to use the [old vimscript way to configure](ressources/old_configuration.md).
 
 - [optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
+
+- [optionnal] the plugin [nvim-notify](github.com/rcarriga/nvim-notify) for the notification display style
 
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
@@ -254,27 +259,36 @@ Sniprun is a Lua plugin, but **you don't need** the usual boilerplate: if you do
 
 However, if you want to change some options, you can add this snippet (the default config) to your configuration file and modify if at will (you can remove keys without issue to shorten your config, as the default values are overwritten on a key-by-key basis):
 
-```vim
+```bash
 lua << EOF
 require'sniprun'.setup({
-  selected_interpreters = {},     --" use those instead of the default for the current filetype
-  repl_enable = {},               --" enable REPL-like behavior for the given interpreters
-  repl_disable = {},              --" disable REPL-like behavior for the given interpreters
+  selected_interpreters = {},     --# use those instead of the default for the current filetype
+  repl_enable = {},               --# enable REPL-like behavior for the given interpreters
+  repl_disable = {},              --# disable REPL-like behavior for the given interpreters
 
-  interpreter_options = {},       --" intepreter-specific options, consult docs / :SnipInfo <name>
+  interpreter_options = {},       --# intepreter-specific options, consult docs / :SnipInfo <name>
 
-  --" you can combo different display modes as desired
+  --# you can combo different display modes as desired
   display = {
-    "Classic",                    -- "display results in the command-line  area
-    "VirtualTextOk",              -- "display ok results as virtual text (multiline is shortened)
+    "Classic",                    --# display results in the command-line  area
+    "VirtualTextOk",              --# display ok results as virtual text (multiline is shortened)
 
-    -- "VirtualTextErr",          -- "display error results as virtual text
-    -- "TempFloatingWindow",      -- "display results in a floating window
-    -- "LongTempFloatingWindow",  -- "same as above, but only long results. To use with VirtualText__
-    -- "Terminal"                 -- "display results in a vertical split
-    },
+    -- "VirtualTextErr",          --# display error results as virtual text
+    -- "TempFloatingWindow",      --# display results in a floating window
+    -- "LongTempFloatingWindow",  --# same as above, but only long results. To use with VirtualText__
+    -- "Terminal",                --# display results in a vertical split
+    -- "NvimNotify",              --# display with the nvim-notify plugin
+    -- "Api"                      --# return output to a programming interface
+  },
 
-  --" customize highlight groups (setting this overrides colorscheme)
+  --# You can use the same keys to customize whether a sniprun producing
+  --# no output should display nothing or '(no output)'
+  show_no_output = {
+    "Classic",
+    "TempFloatingWindow",      --# implies LongTempFloatingWindow, which has no effect on its own
+  },
+
+  --# customize highlight groups (setting this overrides colorscheme)
   snipruncolors = {
     SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
     SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
@@ -282,17 +296,17 @@ require'sniprun'.setup({
     SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
   },
 
-  --" miscellaneous compatibility/adjustement settings
-  inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
-				   --" to workaround sniprun not being able to display anything
+  --# miscellaneous compatibility/adjustement settings
+  inline_messages = 0,             --# inline_message (0/1) is a one-line way to display messages
+				   --# to workaround sniprun not being able to display anything
 
-  borders = 'single'               --" display borders around floating windows
-                                   --" possible values are 'none', 'single', 'double', or 'shadow'
+  borders = 'single'               --# display borders around floating windows
+                                   --# possible values are 'none', 'single', 'double', or 'shadow'
 })
 EOF
 ```
 
-Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of the 'Python3_original' default],
+Example, to use the interpreter 'Python3\_jupyter' whenever possible [instead of the 'Python3\_original' default],
 `lua require'sniprun'.setup({selected_interpreters = {'Python3_jupyter'}})`
 
 **NOTE**: Some interpreters have specific options and dependencies, such as what version / compiler to use: you cand find more about that with `:SnipInfo <interpreter_name>`
@@ -302,15 +316,15 @@ Example, to use the interpreter 'Python3_jupyter' whenever possible [instead of 
 
 All of sniprun functionnalities:
 
-| Shorthand                   | Lua backend                          | \<Plug> mapping            |
-|-----------------------------|--------------------------------------|----------------------------|
-| :SnipRun                    | lua require'sniprun'.run()           | \<Plug>SnipRun             |
-| (normal node)               | lua require'sniprun'.run('n')        | \<Plug>SnipRunOperator     |
-| :'<,'>SnipRun (visual mode) | lua require'sniprun'.run('v')        | \<Plug>SnipRun             |
-| :SnipInfo                   | lua require'sniprun'.info()          | \<Plug>SnipInfo            |
-| :SnipReset                  | lua require'sniprun'.reset()         | \<Plug>SnipReset           |
-| :SnipReplMemoryClean        | lua require'sniprun'.clear_repl()    | \<Plug>SnipReplMemoryClean |
-| :SnipClose                  | lua require'sniprun.display'.close() | \<Plug>SnipClose           |
+| Shorthand                    | Lua backend                          | \<Plug> mapping            |
+|------------------------------|--------------------------------------|----------------------------|
+| :SnipRun                     | lua require'sniprun'.run()           | \<Plug\>SnipRun             |
+| (normal node)                | lua require'sniprun'.run('n')        | \<Plug\>SnipRunOperator     |
+| :'\<,'\>SnipRun (visual mode)| lua require'sniprun'.run('v')        | \<Plug\>SnipRun             |
+| :SnipInfo                    | lua require'sniprun'.info()          | \<Plug\>SnipInfo            |
+| :SnipReset                   | lua require'sniprun'.reset()         | \<Plug\>SnipReset           |
+| :SnipReplMemoryClean         | lua require'sniprun'.clear\_repl()   | \<Plug\>SnipReplMemoryClean |
+| :SnipClose                   | lua require'sniprun.display'.close() | \<Plug\>SnipClose           |
 
 
 You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to configure sniprun, still compatible but may be deprecated at some point.
@@ -321,7 +335,7 @@ You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to 
 
 - Map the run command to a simple command such as `<leader>ff` (or just `f` in visual mode)
 - Check `SnipInfo` & `:SnipInfo <interpreter_name>` to learn any quirk or tips about the language you're interested in
-- The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "\<leader>f + j" will run sniprun on the current line + the line below.
+- The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "\<leader\>f + j" will run sniprun on the current line + the line below.
 
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
 
@@ -390,14 +404,14 @@ println!("-> {}", alphabet);
 | COBOL        | Untested      |     | Lua-nvim   | Bloc + REPL      |
 | Coffeescript | Bloc          |     | Markdown   | Bloc + REPL\*\*\*|
 | C#           | Untested      |     | Mathematica| Bloc + REPL\*\*  |
-| D            | Bloc          |     | Perl/Perl6 | Line             |
-| Elixir       | Untested      |     | PHP        | Untested         |
+| D            | Bloc          |     | OrgMode    | Bloc + REPL\*\*\*|
+| Elixir       | Untested      |     | Perl/Perl6 | Line             |
 | Elm          | Untested      |     | Python3    | Import +REPL\*\* |
 | Erlang       | Untested      |     | R          | Bloc + REPL\*\*  |
 | F#           | Untested      |     | Ruby       | Bloc             |
 | Go           | Bloc          |     | Rust       | Bloc             |
-| Groovy       | Untested      |     | Scala      | Bloc             |
-| Haskell      | Line          |     | Scilab     | Untested         |
+| Groovy       | Untested      |     | SageMath   | Import + REPL\*\*|
+| Haskell      | Line          |     | Scala      | Bloc             |
 | Idris        | Untested      |     | TypeScript | Bloc             |
 
 

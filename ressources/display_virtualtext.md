@@ -12,13 +12,19 @@ One can choose to display only the 'ok' results or 'error' results or both in th
 To switch on/off (VirtualTextOk is activated by default), you add/remove these value to the display key in sniprun configuration:
 
 ```
+lua <<EOF
 require'sniprun'.setup({
   display = {
     "VirtualTextOk",
     "VirtualTextErr"
   },
 })
+EOF
 ```
 Multiline output is shortened (...\<last line of output> for ok, \<first line of output>... for errors)
 
 ![](visual_assets/virtual_text.png)
+
+
+As of writing, virtual text gets deleted when a notification from nvim-notify expires for an unknown reason.
+

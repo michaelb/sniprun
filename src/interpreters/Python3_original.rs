@@ -47,7 +47,7 @@ impl Python3_original {
         }
         for line in v.iter() {
             // info!("lines are : {}", line);
-            if line.contains("import ") //basic selection
+            if (line.trim().starts_with("import ") || line.trim().starts_with("from "))  //basic selection
                 && line.trim().chars().next() != Some('#')
             && self.module_used(line, &self.code)
             {
@@ -309,7 +309,6 @@ mod test_python3_original {
     #[test]
     fn run_all() {
         simple_print();
-        print_quote();
         // test_repl();
     }
     fn simple_print() {
@@ -322,20 +321,10 @@ mod test_python3_original {
         let string_result = res.unwrap();
         assert_eq!(string_result, "lol 1\n");
     }
-    fn print_quote() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("print(\"->\\\"\",1);");
-        let mut interpreter = Python3_original::new(data);
-        let res = interpreter.run_at_level(SupportLevel::Bloc);
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert_eq!(string_result, "->\" 1\n");
-    }
-
+  
     fn test_repl() {
         let mut event_handler = fake_event();
-        event_handler.fill_data(fake_msgpack());
+        event_handler.fill_data(&fake_msgpack());
         event_handler.data.filetype = String::from("python");
         event_handler.data.current_bloc = String::from("a=1");
         event_handler.data.repl_enabled = vec![String::from("Python3_original")];

@@ -11,12 +11,12 @@ use std::str::FromStr;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 
+pub mod daemonizer;
 pub mod display;
 pub mod error;
 pub mod interpreter;
 pub mod interpreters;
 pub mod launcher;
-pub mod daemonizer;
 
 ///This struct holds (with ownership) the data Sniprun and neovim
 ///give to the interpreter.
@@ -66,6 +66,7 @@ pub struct DataHolder {
 
     /// different way of displaying results
     pub display_type: Vec<DisplayType>,
+    pub display_no_output: Vec<DisplayType>,
 }
 
 #[derive(Clone, Default, Debug)]
@@ -114,6 +115,7 @@ impl DataHolder {
             interpreter_data: None,
             return_message_type: ReturnMessageType::Multiline,
             display_type: vec![DisplayType::Classic],
+            display_no_output: vec![DisplayType::Classic],
         }
     }
     ///remove and recreate the cache directory (is invoked by `:SnipReset`)
@@ -172,19 +174,20 @@ impl EventHandler {
         }
     }
 
-    fn index_from_name(&mut self, name: &str, config: &Vec<(Value, Value)>) -> usize {
+    fn index_from_name(&mut self, name: &str, config: &Vec<(Value, Value)>) -> Option<usize> {
         for (i, kv) in config.iter().enumerate() {
             if name == kv.0.as_str().unwrap() {
-                return i;
+                info!("looped on key {}", kv.0.as_str().unwrap());
+                return Some(i);
             }
         }
-        info!("key not found");
-        return 0;
+        info!("key {} not found", name);
+        return None;
     }
 
     /// fill the DataHolder with data from sniprun and Neovim
-    pub fn fill_data(&mut self, values: Vec<Value>) {
-        // info!("[FILLDATA] received data from RPC: {:?}", values);
+    pub fn fill_data(&mut self, values: &Vec<Value>) {
+        // info!("[FILLDATA_ENTRY] received data from RPC: {:?}", values);
         let config = values[2].as_map().unwrap();
         {
             self.data.interpreter_data = Some(self.interpreter_data.clone());
@@ -195,9 +198,10 @@ impl EventHandler {
             self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
         }
         {
-            let i = self.index_from_name("sniprun_root_dir", config);
-            self.data.sniprun_root_dir = String::from(config[i].1.as_str().unwrap());
-            info!("[FILLDATA] got sniprun root");
+            if let Some(i) = self.index_from_name("sniprun_root_dir", config) {
+                self.data.sniprun_root_dir = String::from(config[i].1.as_str().unwrap());
+                info!("[FILLDATA] got sniprun root");
+            }
         }
 
         {
@@ -251,62 +255,84 @@ impl EventHandler {
             info!("[FILLDATA] got nvim_instance");
         }
         {
-            let i = self.index_from_name("selected_interpreters", config);
-            self.data.selected_interpreters = config[i]
-                .1
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|v| v.as_str().unwrap().to_owned())
-                .collect();
-            info!("[FILLDATA] got selected interpreters");
-        }
-        {
-            let i = self.index_from_name("repl_enable", config);
-            self.data.repl_enabled = config[i]
-                .1
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|v| v.as_str().unwrap().to_owned())
-                .collect();
-            info!("[FILLDATA] got repl enabled interpreters");
-        }
-        {
-            let i = self.index_from_name("repl_disable", config);
-            self.data.repl_disabled = config[i]
-                .1
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|v| v.as_str().unwrap().to_owned())
-                .collect();
-            info!("[FILLDATA] got repl disabled interpreters");
-        }
-        {
-            let i = self.index_from_name("display", config);
-            self.data.display_type = config[i]
-                .1
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|v| v.as_str().unwrap())
-                .map(|v| DisplayType::from_str(v))
-                .inspect(|x| info!("[FILLDATA] display type found : {:?}", x))
-                .filter(|x| x.is_ok())
-                .map(|x| x.unwrap())
-                .collect();
-            info!("[FILLDATA] got display types");
-        }
-
-        {
-            let i = self.index_from_name("inline_messages", config);
-            if config[i].1.as_i64().unwrap_or(0) == 1 {
-                self.data.return_message_type = ReturnMessageType::EchoMsg;
-            } else {
-                self.data.return_message_type = ReturnMessageType::Multiline;
+            if let Some(i) = self.index_from_name("selected_interpreters", config) {
+                self.data.selected_interpreters = config[i]
+                    .1
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_owned())
+                    .collect();
+                info!("[FILLDATA] got selected interpreters");
             }
-            info!("[FILLDATA] got inline_messages setting");
+        }
+        {
+            if let Some(i) = self.index_from_name("repl_enable", config) {
+                self.data.repl_enabled = config[i]
+                    .1
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_owned())
+                    .collect();
+                info!("[FILLDATA] got repl enabled interpreters");
+            }
+        }
+        {
+            if let Some(i) = self.index_from_name("repl_disable", config) {
+                self.data.repl_disabled = config[i]
+                    .1
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|v| v.as_str().unwrap().to_owned())
+                    .collect();
+                info!("[FILLDATA] got repl disabled interpreters");
+            }
+        }
+        {
+            if let Some(i) = self.index_from_name("display", config) {
+                self.data.display_type = config[i]
+                    .1
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|v| v.as_str().unwrap())
+                    .map(|v| DisplayType::from_str(v))
+                    .inspect(|x| info!("[FILLDATA] display type found : {:?}", x))
+                    .filter(|x| x.is_ok())
+                    .map(|x| x.unwrap())
+                    .collect();
+                info!("[FILLDATA] got display types");
+            }
+        }
+        {
+            if let Some(i) = self.index_from_name("show_no_output", config) {
+                self.data.display_no_output = config[i]
+                    .1
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|v| v.as_str().unwrap())
+                    .map(|v| DisplayType::from_str(v))
+                    .inspect(|x| {
+                        info!("[FILLDATA] display type with 'no output'on found : {:?}", x)
+                    })
+                    .filter(|x| x.is_ok())
+                    .map(|x| x.unwrap())
+                    .collect();
+                info!("[FILLDATA] got show_no_output");
+            }
+        }
+        {
+            if let Some(i) = self.index_from_name("inline_messages", config) {
+                if config[i].1.as_i64().unwrap_or(0) == 1 {
+                    self.data.return_message_type = ReturnMessageType::EchoMsg;
+                } else {
+                    self.data.return_message_type = ReturnMessageType::Multiline;
+                }
+                info!("[FILLDATA] got inline_messages setting");
+            }
         }
 
         {
@@ -314,6 +340,34 @@ impl EventHandler {
         }
 
         info!("[FILLDATA] Done!");
+    }
+
+    pub fn override_data(&mut self, values: Vec<Value>) {
+        if values.len() < 4 {
+            info!("[OVERRIDE] No data to override");
+            return;
+        }
+        if let Some(override_map) = values[3].as_map() {
+            {
+                if let Some(i) = self.index_from_name("filetype", override_map) {
+                    if let Some(filetype_str) = override_map[i].1.as_str() {
+                        if !filetype_str.is_empty() {
+                            self.data.filetype = filetype_str.to_string();
+                            info!("[OVERRIDE] filetype with: {}", filetype_str);
+                        }
+                    }
+                }
+            }
+            {
+                if let Some(i) = self.index_from_name("codestring", override_map) {
+                    if let Some(codestring_str) = override_map[i].1.as_str() {
+                        self.data.current_bloc = codestring_str.to_string();
+                        self.data.current_line = codestring_str.to_string();
+                        info!("[OVERRIDE] codestring with: {}", codestring_str);
+                    }
+                }
+            }
+        }
     }
 }
 enum HandleAction {
@@ -364,7 +418,8 @@ pub fn start() {
                     // get up-to-date data
                     //
                     info!("[RUN] spawned thread");
-                    event_handler2.fill_data(values);
+                    event_handler2.fill_data(&values);
+                    event_handler2.override_data(values);
                     info!("[RUN] filled dataholder");
 
                     //run the launcher (that selects, init and run an interpreter)
@@ -400,7 +455,8 @@ pub fn start() {
             Messages::Info => {
                 info!("[MAINLOOP] Info command received");
                 let mut event_handler2 = event_handler.clone();
-                event_handler2.fill_data(values);
+                event_handler2.fill_data(&values);
+                event_handler2.override_data(values);
                 let launcher = launcher::Launcher::new(event_handler2.data.clone());
                 let result = launcher.info();
                 if let Ok(infomsg) = result {
@@ -408,6 +464,7 @@ pub fn start() {
                         &Ok(infomsg),
                         &event_handler2.nvim,
                         &ReturnMessageType::Multiline,
+                        &event_handler2.data.clone(),
                     );
                 }
             }
@@ -426,12 +483,9 @@ mod test_main {
     #[test]
     fn test_main() {
         let mut event_handler = fake_event();
-        let _ = log_to_file(
-        &format!("test_sniprun.log"),
-        LevelFilter::Info,
-    );
+        let _ = log_to_file(&format!("test_sniprun.log"), LevelFilter::Info);
 
-        event_handler.fill_data(fake_msgpack());
+        event_handler.fill_data(&fake_msgpack());
         event_handler.data.filetype = String::from("javascript");
         event_handler.data.current_bloc = String::from("console.log(\"yo!\")");
         //run the launcher (that selects, init and run an interpreter)
@@ -452,9 +506,7 @@ mod test_main {
             content: String::new(),
             pid: None,
         }));
-        let _receiver =nvim
-            .session
-            .start_event_loop_channel();
+        let _receiver = nvim.session.start_event_loop_channel();
         data.interpreter_data = Some(interpreter_data.clone());
         EventHandler {
             nvim: Arc::new(Mutex::new(nvim)),
@@ -489,16 +541,12 @@ mod test_main {
         display_types.push(Value::from("VirtualTextErr"));
         display_types.push(Value::from("TempFloatingWindow"));
 
-
         config_as_vec.push((Value::from("display"), Value::from(display_types)));
         config_as_vec.push((
             Value::from("sniprun_root_dir"),
             Value::from("/tmp/notimportant"),
-        ));  config_as_vec.push((
-            Value::from("inline_messages"),
-            Value::from(0),
         ));
-
+        config_as_vec.push((Value::from("inline_messages"), Value::from(0)));
 
         data.push(Value::from(config_as_vec));
 
