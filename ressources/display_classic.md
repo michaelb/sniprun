@@ -11,6 +11,7 @@ lua << EOF
 require'sniprun'.setup({
   display = { "Classic" },
 })
+EOF
 ```
 
 
