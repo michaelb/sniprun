@@ -121,7 +121,10 @@ function M.display_nvim_notify(message, ok)
     local title = ok and "Sniprun: Ok" or "Sniprun: Error"
     local notif_style = ok and "info" or "error"
     require("notify")(message, notif_style, {title=title})
+end
 
+function M.display_extmark(ns,line, message, highlight)
+    vim.api.nvim_buf_set_extmark(0,ns,line,-1,{virt_text={{message,highlight}}})
 end
 
 
