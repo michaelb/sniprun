@@ -4,4 +4,3 @@ download_dir/
 target/
 ressources/infofile.txt
 Cargo.lock
-test_sniprun.log

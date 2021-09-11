@@ -5,51 +5,47 @@ M.info_floatwin = {}
 
 -- See https://github.com/tjdevries/rofl.nvim/blob/632c10f2ec7c56882a3f7eda8849904bcac6e8af/lua/rofl.lua
 local binary_path = vim.fn.fnamemodify(
-vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":h:h")
-.. "/target/release/sniprun"
-
+  vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":h:h")
+  .. "/target/release/sniprun"
 
 local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.."
-
-local ignore_indicator_path = sniprun_path.."/ignore_indicator"
-print(ignore_indicator_path)
 
 
 
 -- default config
 M.config_values = {
-    selected_interpreters = {},
-    repl_enable = {},
-    repl_disable = {},
+  selected_interpreters = {},
+  repl_enable = {},
+  repl_disable = {},
 
-    interpreter_options = {},
+  interpreter_options = {},
 
-    display = {
-	"Classic",
-	"VirtualTextOk",
-	-- "VirtualTextErr",
-	-- "LongTempFloatingWindow",
-	-- "TempFloatingWindow",
-	-- "Terminal",
-	-- "Api,
-	-- "NvimNotify"
-    },
+  display = {
+    "Classic",
+    "VirtualTextOk",
+    -- "VirtualTextErr",
+    -- "LongTempFloatingWindow",
+    -- "TempFloatingWindow",
+    -- "Terminal",
+    -- "Api,
+    -- "NvimNotify"
+  },
 
-    show_no_output = {
-	"Classic",
-	"TempFloatingWindow", -- implies LongTempFloatingWindow, which is not a correct key here 
-    },
+  show_no_output = {
+    "Classic",
+    "TempFloatingWindow", -- implies LongTempFloatingWindow, which is not a correct key here 
+  },
 
-    inline_messages = 0,
-    borders = 'single',
+  inline_messages = 0,
+  borders = 'single',
 
-    -- default highlight stuff goes here
-    snipruncolors = {
-	SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
-	SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
-	SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
-	SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
-    }
+  -- default highlight stuff goes here
+  snipruncolors = {
+    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
+    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+    SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
+  }
 
 }
 
@@ -57,56 +53,56 @@ M.config_values = {
 M.config_up=0
 
 function M.load_vimscript_config()
-    local vimscript_config = {}
-    vimscript_config["repl_enable"] = vim.g.SnipRun_repl_behavior_enable or M.config_values["repl_enable"]
-    vimscript_config["repl_disable"] = vim.g.SnipRun_repl_behavior_disable or M.config_values["repl_disable"]
-    vimscript_config["selected_interpreters"] = vim.g.SnipRun_select_interpreters or M.config_values["selected_interpreters"]
-    vimscript_config["inline_messages"] = vim.g.SnipRun_inline_messages or M.config_values["inline_messages"]
-    return vimscript_config
+  local vimscript_config = {}
+  vimscript_config["repl_enable"] = vim.g.SnipRun_repl_behavior_enable or M.config_values["repl_enable"]
+  vimscript_config["repl_disable"] = vim.g.SnipRun_repl_behavior_disable or M.config_values["repl_disable"]
+  vimscript_config["selected_interpreters"] = vim.g.SnipRun_select_interpreters or M.config_values["selected_interpreters"]
+  vimscript_config["inline_messages"] = vim.g.SnipRun_inline_messages or M.config_values["inline_messages"]
+  return vimscript_config
 end
 
 
 function M.initial_setup()
-    if M.config_up == 1 then return end
-    M.setup()
-    M.config_up = 0
+  if M.config_up == 1 then return end
+  M.setup()
+  M.config_up = 0
 end
 
 
 
 function M.setup(opts)
-    opts = opts or M.load_vimscript_config()
-    if next(opts) == nil then return end
-    for key,value in pairs(opts) do
-	if M.config_values[key] == nil then
-	    error(string.format('[Sniprun] Key %s does not exist in config values',key))
-	    return
-	end
-	if key == 'snipruncolors' then
-	    M.custom_highlight = true
-	end
-	M.config_values[key] = value
+  opts = opts or M.load_vimscript_config()
+  if next(opts) == nil then return end
+  for key,value in pairs(opts) do
+    if M.config_values[key] == nil then
+      error(string.format('[Sniprun] Key %s does not exist in config values',key))
+      return
     end
-    M.configure_keymaps()
-    M.setup_highlights()
-    M.setup_autocommands()
-    M.setup_display()
+    if key == 'snipruncolors' then
+      M.custom_highlight = true
+    end
+    M.config_values[key] = value
+  end
+  M.configure_keymaps()
+  M.setup_highlights()
+  M.setup_autocommands()
+  M.setup_display()
 
-    M.config_up = 1
+  M.config_up = 1
 end
 
 
 local highlight = function(group, styles)
-    local gui = styles.gui and 'gui='..styles.gui or 'gui=NONE'
-    local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
-    local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
-    local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
-    local ctermbg = styles.ctermbg and 'ctermbg='..styles.ctermbg or 'ctermbg=NONE'
-    local ctermfg = styles.ctermfg and 'ctermfg='..styles.ctermfg or 'ctermfg=NONE'
-    -- This somehow works for default highlighting. with or even without cterm colors
-    -- hacky way tho.Still I think better than !hlexists
-    vim.cmd('highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
-    vim.api.nvim_command('autocmd ColorScheme * highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
+  local gui = styles.gui and 'gui='..styles.gui or 'gui=NONE'
+  local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
+  local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
+  local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
+  local ctermbg = styles.ctermbg and 'ctermbg='..styles.ctermbg or 'ctermbg=NONE'
+  local ctermfg = styles.ctermfg and 'ctermfg='..styles.ctermfg or 'ctermfg=NONE'
+  -- This somehow works for default highlighting. with or even without cterm colors
+  -- hacky way tho.Still I think better than !hlexists
+  vim.cmd('highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
+  vim.api.nvim_command('autocmd ColorScheme * highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
 end
 
 
@@ -117,179 +113,149 @@ end
 
 
 function M.setup_highlights()
-    local colors_table = M.config_values["snipruncolors"]
-    if M.custom_highlight then 
-	vim.cmd('augroup snip_highlights')
-	vim.cmd('autocmd!')
-	for group, styles in pairs(colors_table) do
-	    -- print('setting up for '..group,'with style :','bg :',styles.bg,'fg :',styles.fg)
-	    highlight(group, styles)
-	end
-	vim.cmd('augroup END')
-    else 
-	for group, styles in pairs(colors_table) do
-	    local gui = styles.gui and 'gui='..styles.gui or 'gui=NONE'
-	    local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
-	    local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
-	    local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
-	    local ctermbg = styles.ctermbg and 'ctermbg='..styles.ctermbg or 'ctermbg=NONE'
-	    local ctermfg = styles.ctermfg and 'ctermfg='..styles.ctermfg or 'ctermfg=NONE'
-
-	    vim.cmd("if !hlexists('"..group.."') \n hi "..group.." "..gui.." "..sp.." "..fg.." "..bg.." "..ctermbg.." "..ctermfg)
-	end
+  local colors_table = M.config_values["snipruncolors"]
+  if M.custom_highlight then 
+    vim.cmd('augroup snip_highlights')
+    vim.cmd('autocmd!')
+    for group, styles in pairs(colors_table) do
+      -- print('setting up for '..group,'with style :','bg :',styles.bg,'fg :',styles.fg)
+      highlight(group, styles)
     end
+    vim.cmd('augroup END')
+  else 
+    for group, styles in pairs(colors_table) do
+      local gui = styles.gui and 'gui='..styles.gui or 'gui=NONE'
+      local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
+      local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
+      local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
+      local ctermbg = styles.ctermbg and 'ctermbg='..styles.ctermbg or 'ctermbg=NONE'
+      local ctermfg = styles.ctermfg and 'ctermfg='..styles.ctermfg or 'ctermfg=NONE'
+
+      vim.cmd("if !hlexists('"..group.."') \n hi "..group.." "..gui.." "..sp.." "..fg.." "..bg.." "..ctermbg.." "..ctermfg)
+    end
+  end
 end
 
 function M.setup_autocommands()
-    vim.cmd("function! Sniprun_fw_close_wrapper()\n lua require'sniprun.display'.fw_close()\n endfunction")
+  vim.cmd("function! Sniprun_fw_close_wrapper()\n lua require'sniprun.display'.fw_close()\n endfunction")
 
-    vim.cmd("augroup sniprun_fw_close")
-    vim.cmd("autocmd!")
-    vim.cmd("autocmd CursorMoved,BufWinLeave * call Sniprun_fw_close_wrapper()")
-    vim.cmd("augroup END")
+  vim.cmd("augroup sniprun_fw_close")
+  vim.cmd("autocmd!")
+  vim.cmd("autocmd CursorMoved,BufWinLeave * call Sniprun_fw_close_wrapper()")
+  vim.cmd("augroup END")
 
-    vim.cmd("function! Sniprun_clear_vt_on_leave()\n lua require'sniprun.display'.clear_virtual_text()\n endfunction")
-    vim.cmd("augroup sniprun_clear_vt")
-    vim.cmd("autocmd!")
-    vim.cmd("autocmd BufWinLeave * call Sniprun_clear_vt_on_leave()")
-    vim.cmd("augroup END")
+  vim.cmd("function! Sniprun_clear_vt_on_leave()\n lua require'sniprun.display'.clear_virtual_text()\n endfunction")
+  vim.cmd("augroup sniprun_clear_vt")
+  vim.cmd("autocmd!")
+  vim.cmd("autocmd BufWinLeave * call Sniprun_clear_vt_on_leave()")
+  vim.cmd("augroup END")
 
-    vim.cmd("function! Sniprun_close_term_on_leave()\n lua require'sniprun.display'.term_close()\n endfunction")
-    vim.cmd("augroup sniprun_close_term")
-    vim.cmd("autocmd!")
-    vim.cmd("autocmd VimLeave,QuitPre,BufWinLeave * call Sniprun_close_term_on_leave()")
-    vim.cmd("augroup END")
+  vim.cmd("function! Sniprun_close_term_on_leave()\n lua require'sniprun.display'.term_close()\n endfunction")
+  vim.cmd("augroup sniprun_close_term")
+  vim.cmd("autocmd!")
+  vim.cmd("autocmd VimLeave,QuitPre,BufWinLeave * call Sniprun_close_term_on_leave()")
+  vim.cmd("augroup END")
 end
 
 
 function M.configure_keymaps()
 
-    vim.api.nvim_set_keymap("v", "<Plug>SnipRun", ":lua require'sniprun'.run('v')<CR>", {silent=true})
-    vim.api.nvim_set_keymap("n", "<Plug>SnipRun", ":lua require'sniprun'.run()<CR>",{silent=true})
-    vim.api.nvim_set_keymap("n", "<Plug>SnipRunOperator", ":set opfunc=SnipRunOperator<CR>g@",{silent=true})
-    vim.api.nvim_set_keymap("n", "<Plug>SnipRTerminate", ":lua require'sniprun'.terminate()<CR>",{silent=true})
-    vim.api.nvim_set_keymap("n", "<Plug>SnipReset", ":lua require'sniprun'.reset()<CR>",{silent=true})
-    vim.api.nvim_set_keymap("n", "<Plug>SnipInfo", ":lua require'sniprun'.info()<CR>",{})
-    vim.api.nvim_set_keymap("n", "<Plug>SnipReplMemoryClean", ":lua require'sniprun'.clear_repl()<CR>",{silent=true})
-    vim.api.nvim_set_keymap("n", "<Plug>SnipClose", ":lua require'sniprun.display'.close_all()<CR>",{silent=true})
+  vim.api.nvim_set_keymap("v", "<Plug>SnipRun", ":lua require'sniprun'.run('v')<CR>", {silent=true})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipRun", ":lua require'sniprun'.run()<CR>",{silent=true})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipRunOperator", ":set opfunc=SnipRunOperator<CR>g@",{silent=true})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipRTerminate", ":lua require'sniprun'.terminate()<CR>",{silent=true})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipReset", ":lua require'sniprun'.reset()<CR>",{silent=true})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipInfo", ":lua require'sniprun'.info()<CR>",{})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipReplMemoryClean", ":lua require'sniprun'.clear_repl()<CR>",{silent=true})
+  vim.api.nvim_set_keymap("n", "<Plug>SnipClose", ":lua require'sniprun.display'.close_all()<CR>",{silent=true})
 
-    vim.cmd("command! SnipTerminate :lua require'sniprun'.terminate()")
-    vim.cmd("command! SnipReset :lua require'sniprun'.reset()")
-    vim.cmd("command! SnipReplMemoryClean :lua require'sniprun'.clear_repl()")
-    vim.cmd("function! SnipRunOperator(...) \n lua require'sniprun'.run('n') \n endfunction")
-    vim.cmd("command! SnipClose :lua require'sniprun.display'.close_all()")
+  vim.cmd("command! SnipTerminate :lua require'sniprun'.terminate()")
+  vim.cmd("command! SnipReset :lua require'sniprun'.reset()")
+  vim.cmd("command! SnipReplMemoryClean :lua require'sniprun'.clear_repl()")
+  vim.cmd("function! SnipRunOperator(...) \n lua require'sniprun'.run('n') \n endfunction")
+  vim.cmd("command! SnipClose :lua require'sniprun.display'.close_all()")
 
-    vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('"..sniprun_path.."/doc/', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
-    vim.cmd("command! -nargs=* -complete=customlist,ListInterpreters SnipInfo :lua require'sniprun'.info(<q-args>)")
+  vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('"..sniprun_path.."/doc/', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
+  vim.cmd("command! -nargs=* -complete=customlist,ListInterpreters SnipInfo :lua require'sniprun'.info(<q-args>)")
 
-    vim.cmd("function! SnipRunLauncher() range \nif a:firstline == a:lastline \n lua require'sniprun'.run() \n elseif a:firstline == 1 && a:lastline == line(\"$\")\n lua require'sniprun'.run('w') \n else \n lua require'sniprun'.run('v') \n endif \n endfunction")
-    vim.cmd("command! -range SnipRun <line1>,<line2>call SnipRunLauncher()")
+  vim.cmd("function! SnipRunLauncher() range \nif a:firstline == a:lastline \n lua require'sniprun'.run() \n elseif a:firstline == 1 && a:lastline == line(\"$\")\n lua require'sniprun'.run('w') \n else \n lua require'sniprun'.run('v') \n endif \n endfunction")
+  vim.cmd("command! -range SnipRun <line1>,<line2>call SnipRunLauncher()")
 
 
 end
-
-
-function M.check_install()
-    local todo = vim.fn.input("Sniprun needs a compiled Rust binary to run.\nPlease follow the install instructions or ignore this warning (i)?:")
-    if todo == "i" or todo == "I" then
-	local file = io.open(ignore_indicator_path,'w')
-	file:write("ignored")
-	file:close()
-
-    end
-end
-
-
 
 function M.start()
-    -- check if binary exists or ask for install options
-    local f = io.open(binary_path)
-    local ignorefile = io.open(ignore_indicator_path)
-    if f~=nil or ignorefile~=nil then
-	if f~=nil then
-	    io.close(f)
-	end
-	if ignorefile ~=nil then
-	    io.close(ignorefile)
-	end
-	if M.job_id ~= nil then return end
-	M.job_id = vim.fn.jobstart({ binary_path }, { rpc = true })
-	return true
-    else
-	M.check_install()
-	return false
-    end
+  if M.job_id ~= nil then return end
+  M.job_id = vim.fn.jobstart({ binary_path }, { rpc = true })
 end
 
 function M.notify(method, ...)
-    local started = M.start()
-    if started then
-	local status, err = pcall(vim.rpcnotify, M.job_id, method, ...)
-	if not status then
-	    M.terminate()
-	    M.start()
-	    vim.rpcnotify(M.job_id, method, ...)
-	end
-    end
+  M.start()
+  local status, err = pcall(vim.rpcnotify, M.job_id, method, ...)
+  if not status then
+    M.terminate()
+    M.start()
+    vim.rpcnotify(M.job_id, method, ...)
+  end
 end
 
 function M.run(mode)
-    local range_begin, range_end = M.get_range(mode)
-    M.config_values["sniprun_root_dir"] = sniprun_path
-    M.notify('run', range_begin, range_end, M.config_values)
+  local range_begin, range_end = M.get_range(mode)
+  M.config_values["sniprun_root_dir"] = sniprun_path
+  M.notify('run', range_begin, range_end, M.config_values)
 end
 
 
 function M.get_range(mode)
-    local line1, line2
-    if not mode then
-	line1 = vim.api.nvim_win_get_cursor(0)[1]
-	line2 = line1
-    elseif mode:match("[w]") then
-	line1 = 1
-	line2 = vim.fn.eval("line('$')")
-    elseif mode:match("[n]") then
-	line1 = vim.api.nvim_buf_get_mark(0, '[')[1]
-	line2 = vim.api.nvim_buf_get_mark(0, ']')[1]
-    elseif mode:match("[vV]") then
-	line1 = vim.api.nvim_buf_get_mark(0, "<")[1]
-	line2 = vim.api.nvim_buf_get_mark(0, ">")[1]
-    end
-    if line1 > line2 then
-	line1, line2 = line2, line1
-    end
-    return line1, line2
+  local line1, line2
+  if not mode then
+    line1 = vim.api.nvim_win_get_cursor(0)[1]
+    line2 = line1
+  elseif mode:match("[w]") then
+    line1 = 1
+    line2 = vim.fn.eval("line('$')")
+  elseif mode:match("[n]") then
+    line1 = vim.api.nvim_buf_get_mark(0, '[')[1]
+    line2 = vim.api.nvim_buf_get_mark(0, ']')[1]
+  elseif mode:match("[vV]") then
+    line1 = vim.api.nvim_buf_get_mark(0, "<")[1]
+    line2 = vim.api.nvim_buf_get_mark(0, ">")[1]
+  end
+  if line1 > line2 then
+    line1, line2 = line2, line1
+  end
+  return line1, line2
 end
 
 
 function M.reset()
-    M.notify("clean")
-    vim.wait(200) -- let enough time for the rust binary to delete the cache before killing its process
-    M.terminate()
+  M.notify("clean")
+  vim.wait(200) -- let enough time for the rust binary to delete the cache before killing its process
+  M.terminate()
 end
 
 function M.clear_repl()
-    M.notify("clearrepl")
+  M.notify("clearrepl")
 end
 
 function M.ping()
-    M.notify("ping")
+  M.notify("ping")
 end
 
 function M.terminate()
-    vim.fn.jobstop(M.job_id)
-    M.job_id = nil
+  vim.fn.jobstop(M.job_id)
+  M.job_id = nil
 end
 
 
 -- get all lines from a file, returns an empty
 -- list/table if the file does not exist
 local function lines_from(file)
-    local lines = {""}
-    for line in io.lines(file) do
-	lines[#lines + 1] = line or " "
-    end
-    return lines
+  local lines = {""}
+  for line in io.lines(file) do
+    lines[#lines + 1] = line or " "
+  end
+  return lines
 end
 
 function M.display_lines_in_floating_win(lines)
@@ -323,62 +289,62 @@ end
 
 
 function M.info(arg)
-    if arg == nil or arg == "" then
-	M.config_values["sniprun_root_dir"] = sniprun_path
-	M.notify("info",1,1,M.config_values)
+  if arg == nil or arg == "" then
+    M.config_values["sniprun_root_dir"] = sniprun_path
+    M.notify("info",1,1,M.config_values)
 
-	if M.config_values.inline_messages ~= 0 then
-	    vim.wait(300) -- let enough time for the sniprun binary to generate the file
-	    print(" ")
-	    local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
-	    -- print all lines content
-	    M.display_lines_in_floating_win(table.concat(lines,"\n"))
-	end
-    else --help about a particular interpreter
-	local lines = lines_from(sniprun_path.."/doc/"..string.gsub(arg,"%s+","")..".md")
-	M.display_lines_in_floating_win(table.concat(lines,"\n"))
+    if M.config_values.inline_messages ~= 0 then
+      vim.wait(300) -- let enough time for the sniprun binary to generate the file
+      print(" ")
+      local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
+      -- print all lines content
+      M.display_lines_in_floating_win(table.concat(lines,"\n"))
     end
+  else --help about a particular interpreter
+      local lines = lines_from(sniprun_path.."/doc/"..string.gsub(arg,"%s+","")..".md")
+      M.display_lines_in_floating_win(table.concat(lines,"\n"))
+  end
 end
 
 function M.health()
-    local health_start = vim.fn["health#report_start"]
-    local health_ok = vim.fn['health#report_ok']
-    local health_error = vim.fn['health#report_error']
-    local health_warn = vim.fn['health#report_warn']
-    health_start('Installation')
-    if vim.fn.executable('tree-sitter') == 0 then
-	health_warn('`tree-sitter` executable not found (): File support and higher may not work properly')
-    else
-	local handle = io.popen('tree-sitter  -V')
-	local result = handle:read("*a")
-	handle:close()
-	local version = vim.split(result,'\n')[1]:match('[^tree%psitter].*')
-	health_ok('`tree-sitter` found '..version..' , sniprun will try to make good use of that')
-    end
+  local health_start = vim.fn["health#report_start"]
+  local health_ok = vim.fn['health#report_ok']
+  local health_error = vim.fn['health#report_error']
+  local health_warn = vim.fn['health#report_warn']
+  health_start('Installation')
+  if vim.fn.executable('tree-sitter') == 0 then
+    health_warn('`tree-sitter` executable not found (): File support and higher may not work properly')
+  else
+    local handle = io.popen('tree-sitter  -V')
+    local result = handle:read("*a")
+    handle:close()
+    local version = vim.split(result,'\n')[1]:match('[^tree%psitter].*')
+    health_ok('`tree-sitter` found '..version..' , sniprun will try to make good use of that')
+  end
 
 
-    if vim.fn.executable('cargo') == 0 then health_warn("Rust toolchain not available", {"[optionnal] Install the rust toolchain https://www.rust-lang.org/tools/install"})
-    else health_ok("Rust toolchain found") end
+  if vim.fn.executable('cargo') == 0 then health_warn("Rust toolchain not available", {"[optionnal] Install the rust toolchain https://www.rust-lang.org/tools/install"})
+  else health_ok("Rust toolchain found") end
 
-    if vim.fn.executable(binary_path) == 0 then health_error("sniprun binary not found!")
-    else health_ok("sniprun binary found") end
+  if vim.fn.executable(binary_path) == 0 then health_error("sniprun binary not found!")
+  else health_ok("sniprun binary found") end
 
-    local terminate_after = M.job_id == nil
-    local path_log_file = os.getenv('HOME').."/.cache/sniprun/sniprun.log"
-    local path_log_file_mac = os.getenv('HOME').."/Library/Caches/sniprun/sniprun.log"
-    os.remove(path_log_file)
+  local terminate_after = M.job_id == nil
+  local path_log_file = os.getenv('HOME').."/.cache/sniprun/sniprun.log"
+  local path_log_file_mac = os.getenv('HOME').."/Library/Caches/sniprun/sniprun.log"
+  os.remove(path_log_file)
 
-    -- check if the log is recreated
-    M.ping()
-    os.execute("sleep 0.2")
-    if not M.file_exists(path_log_file) and not M.file_exists(path_log_file_mac)  then health_error("sniprun binary incompatible or crash at start", {"Compile sniprun locally, with a clean reinstall and 'bash ./install.sh 1' as post-install command."})
-    else health_ok("sniprun binary runs correctly")
-    end
+  -- check if the log is recreated
+  M.ping()
+  os.execute("sleep 0.2")
+  if not M.file_exists(path_log_file) and not M.file_exists(path_log_file_mac)  then health_error("sniprun binary incompatible or crash at start", {"Compile sniprun locally, with a clean reinstall and 'bash ./install.sh 1' as post-install command."})
+  else health_ok("sniprun binary runs correctly")
+  end
 end
 
 function M.file_exists(name)
-    local f=io.open(name,"r")
-    if f~=nil then io.close(f) return true else return false end
+   local f=io.open(name,"r")
+   if f~=nil then io.close(f) return true else return false end
 end
 
 
