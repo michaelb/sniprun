@@ -147,29 +147,29 @@ pub fn display_virtual_text(
             {
                 return;
             } 
-            let cmd = &format!("lua require\"sniprun.display\".display_virtual_text({},{},{},{})",
-    namespace_id,
-    last_line,
- shorten_ok(&no_output_wrap(
+//             let cmd = &format!("lua require\"sniprun.display\".display_virtual_text({},{},{},{})",
+//     namespace_id,
+//     last_line,
+//  shorten_ok(&no_output_wrap(
+//                     message_ok,
+//                     data,
+//                     &DisplayType::VirtualTextOk
+//                 )),
+// 
+//     hl_ok);
+//  nvim.lock().unwrap().command(&cmd)
+
+            nvim.lock().unwrap().command(&format!(
+                "call nvim_buf_set_virtual_text(0,{},{},[[\"{}\",\"{}\"]], [])",
+                namespace_id,
+                last_line,
+                shorten_ok(&no_output_wrap(
                     message_ok,
                     data,
                     &DisplayType::VirtualTextOk
                 )),
-
-    hl_ok);
- nvim.lock().unwrap().command(&cmd)
-
-            // nvim.lock().unwrap().command(&format!(
-            //     "call nvim_buf_set_virtual_text(0,{},{},[[\"{}\",\"{}\"]], [])",
-            //     namespace_id,
-            //     last_line,
-            //     shorten_ok(&no_output_wrap(
-            //         message_ok,
-            //         data,
-            //         &DisplayType::VirtualTextOk
-            //     )),
-            //     hl_ok
-            // ))
+                hl_ok
+            ))
 
            }
         Err(message_err) => {
