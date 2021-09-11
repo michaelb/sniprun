@@ -309,7 +309,6 @@ mod test_python3_original {
     #[test]
     fn run_all() {
         simple_print();
-        print_quote();
         // test_repl();
     }
     fn simple_print() {
@@ -322,17 +321,7 @@ mod test_python3_original {
         let string_result = res.unwrap();
         assert_eq!(string_result, "lol 1\n");
     }
-    fn print_quote() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("print(\"->\\\"\",1);");
-        let mut interpreter = Python3_original::new(data);
-        let res = interpreter.run_at_level(SupportLevel::Bloc);
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert_eq!(string_result, "->\" 1\n");
-    }
-
+  
     fn test_repl() {
         let mut event_handler = fake_event();
         event_handler.fill_data(&fake_msgpack());
