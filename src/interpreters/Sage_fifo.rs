@@ -21,7 +21,7 @@ impl Sage_fifo {
         err_path: String,
         id: u32,
     ) -> Result<String, SniprunError> {
-        let end_mark = String::from("sniprun_finished_id=") + &id.to_string();
+        let end_mark = String::from("sniprun_finished_id=") + &id.to_string()+"\n";
         let start_mark = String::from("sniprun_started_id=") + &id.to_string();
 
         info!(

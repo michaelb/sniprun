@@ -21,7 +21,7 @@ impl Python3_fifo {
         err_path: String,
         id: u32,
     ) -> Result<String, SniprunError> {
-        let end_mark = String::from("sniprun_finished_id=") + &id.to_string();
+        let end_mark = String::from("sniprun_finished_id=") + &id.to_string()+"\n";
         let start_mark = String::from("sniprun_started_id=") + &id.to_string();
 
         info!(
@@ -238,7 +238,7 @@ impl Interpreter for Python3_fifo {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
-            String::from("Python3"),
+            String::from("Python 3"),
             String::from("python3"),
             String::from("python"),
             String::from("py"),

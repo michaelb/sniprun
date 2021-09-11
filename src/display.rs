@@ -124,6 +124,7 @@ pub fn display_virtual_text(
     }
 
     let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
+    info!("namespace_id = {:?}", namespace_id);
 
     let last_line = data.range[1] - 1;
     let res = nvim.lock().unwrap().command(&format!(
@@ -147,20 +148,8 @@ pub fn display_virtual_text(
             {
                 return;
             } 
-//             let cmd = &format!("lua require\"sniprun.display\".display_virtual_text({},{},{},{})",
-//     namespace_id,
-//     last_line,
-//  shorten_ok(&no_output_wrap(
-//                     message_ok,
-//                     data,
-//                     &DisplayType::VirtualTextOk
-//                 )),
-// 
-//     hl_ok);
-//  nvim.lock().unwrap().command(&cmd)
-
             nvim.lock().unwrap().command(&format!(
-                "call nvim_buf_set_virtual_text(0,{},{},[[\"{}\",\"{}\"]], [])",
+                "call nvim_buf_set_extmark(0,{},{},-1,{{\"virt_text\":[[\"{}\",\"{}\"]]}})",
                 namespace_id,
                 last_line,
                 shorten_ok(&no_output_wrap(
@@ -183,7 +172,7 @@ pub fn display_virtual_text(
                 return;
             }
             nvim.lock().unwrap().command(&format!(
-                "call nvim_buf_set_virtual_text(0,{},{},[[\"{}\",\"{}\"]], [])",
+                "call nvim_buf_set_extmark(0,{},{},-1,{{\"virt_text\":[[\"{}\",\"{}\"]]}})",
                 namespace_id,
                 last_line,
                 shorten_err(&no_output_wrap(
