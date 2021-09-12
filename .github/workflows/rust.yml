@@ -14,7 +14,7 @@ jobs:
   build:
     name : build
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
@@ -23,7 +23,7 @@ jobs:
 
   unittest:
     name: unit tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
 
     - uses: actions/checkout@v2
@@ -45,7 +45,7 @@ jobs:
 
   install:
     name: install (download)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: Installation tests
@@ -56,7 +56,7 @@ jobs:
 
   codecov:
     name : codecov
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - name : allow add cargo to path
       run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
