@@ -81,10 +81,9 @@ jobs:
 
     - uses: dlang-community/setup-dlang@v1
 
-    - name: Prepare environment
-      run: rm -rf ./target *.prof*
-      run: export RUSTFLAGS="-Zinstrument-coverage" 
-      run: export LLVM_PROFILE_FILE="sniprunlcov-%p-%m.profraw" 
+    - run: rm -rf ./target *.prof*
+    - run: export RUSTFLAGS="-Zinstrument-coverage" 
+    - run: export LLVM_PROFILE_FILE="sniprunlcov-%p-%m.profraw" 
 
 
    
