@@ -200,6 +200,21 @@ impl Interpreter for OrgMode_original {
     }
 
     fn build(&mut self) -> Result<(), SniprunError> {
+        let last_line = self.code.lines().last().unwrap_or("");
+
+        // for some languages, handle an eventual final 'return' as a print
+        if last_line.starts_with("return") {
+            let printing_last_line = match self.data.filetype.as_str() { // after 'fetch, contains the embbeded language filetype
+                "python" | "python3" | "py" | "sage.python" => String::from("print(") + &last_line[6..] + ")",
+                "rust" =>  String::from("println!(\"{}\",") + &last_line[6..] + ")",
+                "bash" => String::from("echo ") + &last_line[6..],
+                _ => last_line.to_string()
+            };
+            let mut code_in_lines: Vec<&str> = self.code.lines().collect();
+            code_in_lines.pop();
+            code_in_lines.push(&printing_last_line);
+            self.code = code_in_lines.join("\n");
+        }
         Ok(())
     }
 
