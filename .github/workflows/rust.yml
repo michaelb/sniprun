@@ -35,7 +35,7 @@ jobs:
         run: cargo build --release
 
   unittest:
-    name: unit tests
+    name: Unit & integration tests
     runs-on: ubuntu-20.04
     steps:
 
@@ -80,11 +80,11 @@ jobs:
       - name: clean
         run: cargo llvm-cov clean --workspace
       - name: Generate code coverage for unit test
-        run: cargo llvm-cov --features ignore_in_ci --workspace --lcov --output-path lcov.info --no-report
+        run: cargo llvm-cov --features ignore_in_ci --workspace --no-report
       - name: Generate code coverage for integration tests
         run: cargo llvm-cov --lcov --no-report --test integration
       - name: Aggregate reports
-        run: cargo llvm-cov --no-run --lcov
+        run: cargo llvm-cov --no-run --lcov --output-path lcov.info
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
