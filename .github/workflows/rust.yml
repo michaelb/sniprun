@@ -81,13 +81,22 @@ jobs:
 
     - uses: dlang-community/setup-dlang@v1
 
+    - name: Prepare environment
+      run: rm -rf ./target *.prof*
+      run: export RUSTFLAGS="-Zinstrument-coverage" 
+      run: export LLVM_PROFILE_FILE="sniprunlcov-%p-%m.profraw" 
+
 
    
 
-    - name: Code coverage
-      uses: actions-rs/tarpaulin@v0.1.0
-      with:
-        args: --features ignore_in_ci --exclude-files src/interpreters/example.rs
+    - name: Build
+      run: cargo build
+
+    - name: Test
+      run: cargo --features ignore_in_ci --exclude-files src/interpreters/example.rs && cargo test --test integration
+
+    - name: Generate report
+      run: grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing -o ./lcov.info 
 
     - name: Upload to codecov.io
       uses: codecov/codecov-action@v1.0.2
