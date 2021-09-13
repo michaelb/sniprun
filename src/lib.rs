@@ -482,12 +482,15 @@ mod test_main {
 
     #[test]
     fn test_main() {
+        // !!!! This test may be run at the same time as the integration tests, hence
+        // the same message 'Hello, World!' needs to be printed
+        // This is a little bit ugly, but still fulfill its purpose as a test
         let mut event_handler = fake_event();
         let _ = log_to_file(&format!("test_sniprun.log"), LevelFilter::Info);
 
         event_handler.fill_data(&fake_msgpack());
         event_handler.data.filetype = String::from("javascript");
-        event_handler.data.current_bloc = String::from("console.log(\"yo!\")");
+        event_handler.data.current_bloc = String::from("console.log(\"Hello, World!\")");
         //run the launcher (that selects, init and run an interpreter)
         let launcher = launcher::Launcher::new(event_handler.data.clone());
         info!("[RUN] created launcher");
