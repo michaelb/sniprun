@@ -164,7 +164,6 @@ mod test_launcher {
     use std::env;
 
     #[test]
-    #[cfg_attr(feature = "ignore_in_ci", ignore)]
     fn run() {
         let mut data = DataHolder::new();
         data.filetype = String::from("pyt");
@@ -177,7 +176,6 @@ mod test_launcher {
     }
 
     #[test]
-    #[cfg_attr(feature = "ignore_in_ci", ignore)]
     fn info() {
         let mut data = DataHolder::new();
         let path = env::current_dir().unwrap();

@@ -1,5 +1,5 @@
 use sniprun::*;
-use sniprun::interpreter::{Interpreter, InterpreterUtils, SupportLevel};
+use sniprun::interpreter::{Interpreter, InterpreterUtils, ReplLikeInterpreter, SupportLevel};
 use sniprun::interpreters::JS_original;
 use std::sync::{Arc,Mutex};
 
@@ -24,6 +24,29 @@ fn test_implements() {
         let _ = Current::has_lsp_capability();
     }
 }
+
+#[test]
+fn test_miscellaneous() {
+    for level in [SupportLevel::Unsupported,
+                  SupportLevel::Line,
+                  SupportLevel::Bloc,
+                  SupportLevel::Import,
+                  SupportLevel::File,
+                  SupportLevel::Project,
+                  SupportLevel::Selected] {
+        println!("{}", level);
+    }
+
+    let _ = JS_original::get_max_support_level();
+
+    let data = DataHolder::new();
+    let mut i = JS_original::new(data);
+    assert!(i.fetch_code_repl().is_ok());
+    assert!(i.add_boilerplate_repl().is_ok());
+    assert!(i.build_repl().is_ok());
+    assert!(i.execute_repl().is_err());
+}
+
 
 #[test]
 fn test_interpreter_utils() {
