@@ -28,7 +28,7 @@ impl OrgMode_original {
         }
 
 
-        if self.data.current_line.starts_with("#+BEGIN_SRC") {
+        if self.data.current_line.starts_with("#+BEGIN_SRC") || self.data.current_line.starts_with("#+begin_src") {
             let flavor = self.data.current_line.split_whitespace().nth(1).unwrap_or("").to_owned();
             let end_line = real_nvim_instance
                 .get_current_buf()
@@ -46,7 +46,7 @@ impl OrgMode_original {
                     .get_lines(&mut real_nvim_instance, i - 1, i, false)
                     .unwrap()
                     .join("");
-                if line_i.starts_with("#+END_SRC") {
+                if line_i.starts_with("#+END_SRC") || line_i.starts_with("#+end_src") {
                     //found end of bloc
                     self.data.current_bloc = code_bloc.join("\n");
                     info!("line to extract filetype from: {:?}", line_i.split_whitespace().collect::<Vec<_>>());
