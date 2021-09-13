@@ -21,7 +21,7 @@ jobs:
     - name: Build
       run: cargo build --verbose --release
 
-  build nightly:
+  buildnightly:
     name: build-nightly
     runs-on: ubuntu-20.04
     steps:
