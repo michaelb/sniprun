@@ -21,6 +21,19 @@ jobs:
     - name: Build
       run: cargo build --verbose --release
 
+  build nightly:
+    name: build-nightly
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install nightly toolchain
+        uses:
+          with:
+            toolchain: nightly
+            override: true
+      - name: build
+        run: cargo build --release
+
   unittest:
     name: unit tests
     runs-on: ubuntu-20.04
