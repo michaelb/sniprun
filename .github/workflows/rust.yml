@@ -100,7 +100,7 @@ jobs:
       run: cargo build
 
     - name: Test
-      run: cargo test --features ignore_in_ci --exclude-files src/interpreters/example.rs && cargo test --test integration
+      run: cargo test --features ignore_in_ci && cargo test --test integration
 
     - name: Generate report
       run: grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing -o ./lcov.info 
