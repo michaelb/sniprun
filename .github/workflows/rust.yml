@@ -35,10 +35,10 @@ jobs:
 
 
     - name: Unit tests
-      run: cargo test --features ignore_in_ci -- --test-threads=1
+      run: cargo test --features ignore_in_ci
 
     - name: Integration tests
-      run: cargo test --features ignore_in_ci --test integration -- --test-threads=1
+      run: cargo test --features ignore_in_ci --test integration
 
 
 
@@ -74,7 +74,7 @@ jobs:
     - name: Code coverage
       uses: actions-rs/tarpaulin@v0.1.0
       with:
-        args: --features ignore_in_ci --exclude-files src/interpreters/example.rs -- --test-threads=1
+        args: --features ignore_in_ci --exclude-files src/interpreters/example.rs
 
     - name: Upload to codecov.io
       uses: codecov/codecov-action@v1.0.2

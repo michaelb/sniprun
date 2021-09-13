@@ -1,8 +1,5 @@
-// Be sure to read the CONTRIBUTING.md file :-)
-
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-// For example, Rust_original is a good name for the first rust interpreter
 pub struct Mathematica_original {
     support_level: SupportLevel,
     data: DataHolder,

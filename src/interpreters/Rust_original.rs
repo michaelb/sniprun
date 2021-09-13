@@ -196,7 +196,7 @@ mod test_rust_original {
                 SniprunError::RuntimeError(full_message) => {
                     assert!(full_message.contains(&expected))
                 }
-                _ => panic!("Not the right error message"),
+                _ => panic!("Not the right error message, wanted {:?} and got {:?} instead", expected, e),
             }
         }
     }

@@ -481,10 +481,8 @@ mod test_main {
     use super::*;
 
     #[test]
+    #[cfg_attr(feature = "ignore_in_ci", ignore)]
     fn test_main() {
-        // !!!! This test may be run at the same time as the integration tests, hence
-        // the same message 'Hello, World!' needs to be printed
-        // This is a little bit ugly, but still fulfill its purpose as a test
         let mut event_handler = fake_event();
         let _ = log_to_file(&format!("test_sniprun.log"), LevelFilter::Info);
 
