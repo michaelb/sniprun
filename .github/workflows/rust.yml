@@ -69,10 +69,10 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: './ressources/install_all_compilers_ci.sh'
       - uses: dlang-community/setup-dlang@v1
 
-      - uses: actions/checkout@v2
       - name: Install Rust
         run: rustup toolchain install nightly --component llvm-tools-preview
       - name: Install cargo-llvm-cov
