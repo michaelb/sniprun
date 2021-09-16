@@ -1,3 +1,6 @@
+## v0.5.11
+- LCOV coverage
+
 ## v0.5.10
 - SageMath & orgmode support
 - API

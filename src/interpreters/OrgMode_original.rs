@@ -17,7 +17,7 @@ impl OrgMode_original {
 
 
         //first check if we not on boundary of block
-        if self.data.current_line.starts_with("#+NAME") {
+        if self.data.current_line.trim_start().starts_with("#+NAME") || self.data.current_line.trim_start().starts_with("+name"){
             let next_line = real_nvim_instance
                 .get_current_buf()
                 .unwrap()
@@ -28,8 +28,8 @@ impl OrgMode_original {
         }
 
 
-        if self.data.current_line.starts_with("#+BEGIN_SRC") {
-            let flavor = self.data.current_line.split_whitespace().nth(1).unwrap_or("").to_owned();
+        if self.data.current_line.trim_start().starts_with("#+BEGIN_SRC") || self.data.current_line.trim_start().starts_with("#+begin_src") {
+            let flavor = self.data.current_line.trim_start().split_whitespace().nth(1).unwrap_or("").to_owned();
             let end_line = real_nvim_instance
                 .get_current_buf()
                 .unwrap()
@@ -46,7 +46,7 @@ impl OrgMode_original {
                     .get_lines(&mut real_nvim_instance, i - 1, i, false)
                     .unwrap()
                     .join("");
-                if line_i.starts_with("#+END_SRC") {
+                if line_i.trim_start().starts_with("#+END_SRC") || line_i.trim_start().starts_with("#+end_src") {
                     //found end of bloc
                     self.data.current_bloc = code_bloc.join("\n");
                     info!("line to extract filetype from: {:?}", line_i.split_whitespace().collect::<Vec<_>>());
@@ -67,9 +67,8 @@ impl OrgMode_original {
                     .get_lines(&mut real_nvim_instance, i - 1, i, false)
                     .unwrap()
                     .join("");
-                if line_i.starts_with("#+BEGIN_SRC") {
-                    info!("line to extract filetype from: {:?}", line_i.split_whitespace().collect::<Vec<_>>());
-                    let flavor = line_i.split_whitespace().nth(1).unwrap_or("").to_owned();
+                if line_i.trim_start().starts_with("#+BEGIN_SRC") {
+                    let flavor = line_i.trim_start().split_whitespace().nth(1).unwrap_or("").to_owned();
                     return self.filetype_from_str(&flavor);
                 }
             }
@@ -77,7 +76,7 @@ impl OrgMode_original {
         String::new()
     }
 
-    /// Convert markdowncode block flavor to filetype
+    /// Convert orgmode code block flavor to filetype
     pub fn filetype_from_str(&self, s: &str) -> String {
         let cleaned_str = s.replace(&['{', '}', '.'][..], "");
         match cleaned_str.as_str() {
@@ -200,6 +199,21 @@ impl Interpreter for OrgMode_original {
     }
 
     fn build(&mut self) -> Result<(), SniprunError> {
+        let last_line = self.code.lines().last().unwrap_or("");
+
+        // for some languages, handle an eventual final 'return' as a print
+        if last_line.starts_with("return") {
+            let printing_last_line = match self.data.filetype.as_str() { // after 'fetch, contains the embbeded language filetype
+                "python" | "python3" | "py" | "sage.python" => String::from("print(") + &last_line[6..] + ")",
+                "rust" =>  String::from("println!(\"{}\",") + &last_line[6..] + ")",
+                "bash" => String::from("echo ") + &last_line[6..],
+                _ => last_line.to_string()
+            };
+            let mut code_in_lines: Vec<&str> = self.code.lines().collect();
+            code_in_lines.pop();
+            code_in_lines.push(&printing_last_line);
+            self.code = code_in_lines.join("\n");
+        }
         Ok(())
     }
 

@@ -202,6 +202,7 @@ mod test_c_original {
     #[test]
     fn run_all() {
         simple_print();
+        compilerror();
     }
 
     fn simple_print() {
@@ -213,5 +214,17 @@ mod test_c_original {
         // should panic if not an Ok()
         let string_result = res.unwrap();
         assert_eq!(string_result, "1=1\n");
+    } 
+    fn compilerror() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("int a = 1"); // missing ";"
+        let mut interpreter = C_original::new(data);
+        let res = interpreter.run_at_level(SupportLevel::Bloc);
+
+        match res {
+            Err(SniprunError::CompilationError(_)) => (),
+            _ => panic!("Compilation should have failed")
+        };
     }
+
 }

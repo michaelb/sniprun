@@ -127,20 +127,20 @@ impl ReplLikeInterpreter for R_original {
         } else {
             // not first run, tell R to load old variables
             {
-                &final_code.push_str("load('");
-                &final_code.push_str(&rdata_path);
-                &final_code.push_str("')");
+                final_code.push_str("load('");
+                final_code.push_str(&rdata_path);
+                final_code.push_str("')");
             }
         }
-        &final_code.push_str("\n");
-        &final_code.push_str(&self.code);
-        &final_code.push_str("\n");
+        final_code.push_str("\n");
+        final_code.push_str(&self.code);
+        final_code.push_str("\n");
 
         {
             //save state
-            &final_code.push_str("save.image('");
-            &final_code.push_str(&rdata_path);
-            &final_code.push_str("')");
+            final_code.push_str("save.image('");
+            final_code.push_str(&rdata_path);
+            final_code.push_str("')");
         }
         self.code = final_code;
         Ok(())
