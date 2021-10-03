@@ -67,6 +67,8 @@ pub struct DataHolder {
     /// different way of displaying results
     pub display_type: Vec<DisplayType>,
     pub display_no_output: Vec<DisplayType>,
+
+    pub cli_args: Vec<String>,
 }
 
 #[derive(Clone, Default, Debug)]
@@ -116,6 +118,7 @@ impl DataHolder {
             return_message_type: ReturnMessageType::Multiline,
             display_type: vec![DisplayType::Classic],
             display_no_output: vec![DisplayType::Classic],
+            cli_args: vec![],
         }
     }
     ///remove and recreate the cache directory (is invoked by `:SnipReset`)
@@ -192,6 +195,14 @@ impl EventHandler {
         {
             self.data.interpreter_data = Some(self.interpreter_data.clone());
             info!("[FILLDATA] got back eventual interpreter data");
+        }
+
+        info!("values length: {}", values.len());
+        let cli_args = values[3].as_str().unwrap();
+        {
+            if !cli_args.is_empty() {
+                self.data.cli_args = cli_args.split(' ').map(|s| s.to_string()).collect();
+            }
         }
 
         {

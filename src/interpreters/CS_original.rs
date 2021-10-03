@@ -57,6 +57,12 @@ impl Interpreter for CS_original {
         SupportLevel::Bloc
     }
 
+    fn check_cli_args(&self) -> Result<(), SniprunError> {
+        // All cli arguments are sendable to python
+        // Though they will be ignored in REPL mode
+        Ok(())
+    }
+
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
         if !self
             .data
@@ -91,6 +97,7 @@ impl Interpreter for CS_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new("coffee")
             .arg(&self.main_file_path)
+            .args(&self.get_data().cli_args)
             .output()
             .expect("Unable to start process");
         info!("yay from cs interpreter");

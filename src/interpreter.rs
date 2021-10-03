@@ -50,7 +50,6 @@ pub trait Interpreter: ReplLikeInterpreter {
     ///Return the (unique) name of your interpreter.
     fn get_name() -> String;
 
-
     ///Return whether the interpreter is the default for a given filetype
     fn default_for_filetype() -> bool {
         false
@@ -82,6 +81,19 @@ pub trait Interpreter: ReplLikeInterpreter {
         //      return Some(good_interpreter.run());
         //      }
         None
+    }
+
+    /// Checks if the interpreter has cli-args support
+    /// Can also be used to check the validity of provided args
+    fn check_cli_args(&self) -> Result<(), SniprunError> {
+        info!("Checking cli-args: {:?}", self.get_data().cli_args);
+        if self.get_data().cli_args.is_empty() {
+            Ok(())
+        } else {
+            Err(SniprunError::InterpreterLimitationError(
+                "This interpreter does not support command line arguments".to_string(),
+            ))
+        }
     }
 
     ///Disable REPL-like behavior by default
@@ -144,6 +156,8 @@ pub trait Interpreter: ReplLikeInterpreter {
         let name = Self::get_name();
         let data = self.get_data();
         // choose whether to use repl-like or normal
+        self.check_cli_args()?;
+
         let decision = (Self::behave_repl_like_default() || data.repl_enabled.contains(&name))
             && !data.repl_disabled.contains(&name);
         if decision {
@@ -166,7 +180,7 @@ pub trait InterpreterUtils {
     fn get_interpreter_option(&self, option: &str) -> Option<neovim_lib::Value>;
 }
 
-impl<T: Interpreter> InterpreterUtils for T{
+impl<T: Interpreter> InterpreterUtils for T {
     ///Read a String previous saved to sniprun memory
     fn read_previous_code(&self) -> String {
         let data = self.get_data();
@@ -199,7 +213,8 @@ impl<T: Interpreter> InterpreterUtils for T{
                 data.interpreter_data.clone().unwrap().lock().unwrap().owner = T::get_name();
             }
             {
-                data.interpreter_data.unwrap().lock().unwrap().content = previous_code + "\n" + &code;
+                data.interpreter_data.unwrap().lock().unwrap().content =
+                    previous_code + "\n" + &code;
             }
             info!("code saved: {}", self.read_previous_code());
         }
@@ -248,9 +263,8 @@ impl<T: Interpreter> InterpreterUtils for T{
         }
     }
 
-
     /// get an intepreter option
-    fn get_interpreter_option(&self, option:&str) -> Option<neovim_lib::Value> {
+    fn get_interpreter_option(&self, option: &str) -> Option<neovim_lib::Value> {
         fn index_from_name(
             name: &str,
             config: &Vec<(neovim_lib::Value, neovim_lib::Value)>,
