@@ -178,8 +178,8 @@ function M.configure_keymaps()
   vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('"..sniprun_path.."/doc/', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
   vim.cmd("command! -nargs=* -complete=customlist,ListInterpreters SnipInfo :lua require'sniprun'.info(<q-args>)")
 
-  vim.cmd("function! SnipRunLauncher() range \nif a:firstline == a:lastline \n lua require'sniprun'.run() \n elseif a:firstline == 1 && a:lastline == line(\"$\")\n lua require'sniprun'.run('w') \n else \n lua require'sniprun'.run('v') \n endif \n endfunction")
-  vim.cmd("command! -range SnipRun <line1>,<line2>call SnipRunLauncher()")
+  vim.cmd("function! SnipRunLauncher(...) range \nif a:firstline == a:lastline \n lua require'sniprun'.run() \n elseif a:firstline == 1 && a:lastline == line(\"$\")\nlet g:sniprun_cli_args_list = a:000\n let g:sniprun_cli_args = join(g:sniprun_cli_args_list,\" \") \n lua require'sniprun'.run('w') \n else \n lua require'sniprun'.run('v') \n endif \n endfunction")
+  vim.cmd("command! -range -nargs=? SnipRun <line1>,<line2>call SnipRunLauncher(<q-args>)")
 
 
 end
@@ -202,7 +202,7 @@ end
 function M.run(mode)
   local range_begin, range_end = M.get_range(mode)
   M.config_values["sniprun_root_dir"] = sniprun_path
-  M.notify('run', range_begin, range_end, M.config_values)
+  M.notify('run', range_begin, range_end, M.config_values, vim.g.sniprun_cli_args or "" )
 end
 
 

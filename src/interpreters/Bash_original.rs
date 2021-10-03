@@ -41,6 +41,12 @@ impl Interpreter for Bash_original {
         true
     }
 
+    fn check_cli_args(&self) -> Result<(), SniprunError> {
+        // All cli arguments are sendable to python
+        // Though they will be ignored in REPL mode
+        Ok(())
+    }
+
     fn get_supported_languages() -> Vec<String> {
         vec![
             String::from("Bash / Shell"),
@@ -101,9 +107,9 @@ impl Interpreter for Bash_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new("bash")
             .arg(&self.main_file_path)
+            .args(&self.get_data().cli_args)
             .output()
             .expect("Unable to start process");
-        info!("yay from bash interpreter");
         if output.status.success() {
             return Ok(String::from_utf8(output.stdout).unwrap());
         } else {

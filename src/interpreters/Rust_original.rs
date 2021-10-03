@@ -81,6 +81,12 @@ impl Interpreter for Rust_original {
         SupportLevel::Bloc
     }
 
+    fn check_cli_args(&self) -> Result<(), SniprunError> {
+        // All cli arguments are sendable to python
+        // Though they will be ignored in REPL mode
+        Ok(())
+    }
+
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
         self.fetch_config();
         //add code from data to self.code
@@ -142,6 +148,7 @@ impl Interpreter for Rust_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
         let output = Command::new(&self.bin_path)
+            .args(&self.get_data().cli_args)
             .output()
             .expect("Unable to start process");
         if output.status.success() {

@@ -37,13 +37,21 @@ impl Interpreter for Lua_original {
     fn get_current_level(&self) -> SupportLevel {
         self.support_level
     }
+
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
+    }
+
+    fn check_cli_args(&self) -> Result<(), SniprunError> {
+        // All cli arguments are sendable to python
+        // Though they will be ignored in REPL mode
+        Ok(())
     }
 
     fn default_for_filetype() -> bool {
         true
     }
+
     fn get_data(&self) -> DataHolder {
         self.data.clone()
     }
@@ -103,6 +111,7 @@ impl Interpreter for Lua_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new("lua")
             .arg(&self.main_file_path)
+            .args(&self.get_data().cli_args)
             .output()
             .expect("Unable to start process");
         info!("yay from lua interpreter");

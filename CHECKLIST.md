@@ -11,3 +11,4 @@
 
  - Check CI status
  - Check Releases status
+ - Bump Cargo.toml to next version

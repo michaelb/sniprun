@@ -108,6 +108,12 @@ impl Interpreter for C_original {
         SupportLevel::Import
     }
 
+    fn check_cli_args(&self) -> Result<(), SniprunError> {
+        // All cli arguments are sendable to python
+        // Though they will be ignored in REPL mode
+        Ok(())
+    }
+
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
         self.fetch_config();
         if !self
@@ -183,6 +189,7 @@ impl Interpreter for C_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new(&self.bin_path)
+            .args(&self.get_data().cli_args)
             .output()
             .expect("Unable to start process");
         if output.status.success() {

@@ -64,6 +64,7 @@ impl Interpreter for TypeScript_original {
         SupportLevel::Bloc
     }
 
+
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
         //note: you probably don't have to modify, or even understand this function
 

@@ -53,6 +53,12 @@ impl Interpreter for JS_original {
         self.data.clone()
     }
 
+    fn check_cli_args(&self) -> Result<(), SniprunError> {
+        // All cli arguments are sendable to python
+        // Though they will be ignored in REPL mode
+        Ok(())
+    }
+
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Bloc
     }
@@ -91,6 +97,7 @@ impl Interpreter for JS_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new("node")
             .arg(&self.main_file_path)
+            .args(&self.get_data().cli_args)
             .output()
             .expect("Unable to start process");
         info!("yay from js interpreter");

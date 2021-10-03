@@ -142,6 +142,12 @@ impl Interpreter for Python3_original {
         })
     }
 
+    fn check_cli_args(&self) -> Result<(), SniprunError> {
+        // All cli arguments are sendable to python
+        // Though they will be ignored in REPL mode
+        Ok(())
+    }
+
     fn get_name() -> String {
         String::from("Python3_original")
     }
@@ -233,6 +239,7 @@ impl Interpreter for Python3_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new(&self.interpreter)
             .arg(&self.main_file_path)
+            .args(&self.get_data().cli_args)
             .output()
             .expect("Unable to start process");
         if output.status.success() {
