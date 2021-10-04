@@ -135,7 +135,6 @@ mod test_typescript_original {
     use super::*;
     #[test]
     #[cfg_attr(feature = "ignore_in_ci", ignore)]
-          
      fn simple_print() {
         let mut data = DataHolder::new();
 

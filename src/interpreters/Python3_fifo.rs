@@ -408,12 +408,10 @@ impl ReplLikeInterpreter for Python3_fifo {
 mod test_python3_fifo {
     use super::*;
 
+    use serial_test::serial;
+
     #[test]
-    fn run_all() {
-        // For now, all these should return Err(Custom(Kernel launched, please re-run))
-        simple_print();
-        print_quote();
-    }
+    #[serial(pythonfifo)]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"lol\",1);");
@@ -421,6 +419,9 @@ mod test_python3_fifo {
         let res = interpreter.run_at_level_repl(SupportLevel::Bloc);
         assert!(res.is_err());
     }
+
+    #[test]
+    #[serial(pythonfifo)]
     fn print_quote() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"->\\\"\",1);");

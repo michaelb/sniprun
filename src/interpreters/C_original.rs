@@ -205,13 +205,10 @@ impl Interpreter for C_original {
 #[cfg(test)]
 mod test_c_original {
     use super::*;
+    use serial_test::serial;
 
     #[test]
-    fn run_all() {
-        simple_print();
-        compilerror();
-    }
-
+    #[serial(c_original)]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("printf(\"1=1\\n\");");
@@ -222,6 +219,9 @@ mod test_c_original {
         let string_result = res.unwrap();
         assert_eq!(string_result, "1=1\n");
     } 
+
+    #[test]
+    #[serial(c_original)]
     fn compilerror() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("int a = 1"); // missing ";"

@@ -157,14 +157,10 @@ impl ReplLikeInterpreter for R_original {
 #[cfg(test)]
 mod test_r_original {
     use super::*;
+    use serial_test::serial;
 
     #[test]
-    fn run_all() {
-        //nececssary to run sequentially
-        //because of file access & shared things
-        simple_print();
-        //should test memory as well
-    }
+    #[serial(r_original)]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"Hi\");");

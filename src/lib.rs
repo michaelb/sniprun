@@ -492,7 +492,6 @@ mod test_main {
     use super::*;
 
     #[test]
-    #[cfg_attr(feature = "ignore_in_ci", ignore)]
     fn test_main() {
         let mut event_handler = fake_event();
         let _ = log_to_file(&format!("test_sniprun.log"), LevelFilter::Info);
@@ -561,6 +560,7 @@ mod test_main {
         config_as_vec.push((Value::from("inline_messages"), Value::from(0)));
 
         data.push(Value::from(config_as_vec));
+        data.push(Value::from(""));
 
         return data;
     }

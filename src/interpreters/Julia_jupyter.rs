@@ -207,3 +207,21 @@ impl ReplLikeInterpreter for Julia_jupyter {
         }
     }
 }
+
+#[cfg(test)]
+mod test_julia {
+    use super::*;
+
+    #[test] 
+    fn simple_print() {
+        let mut data = DataHolder::new();
+        data.current_bloc = String::from("print(\"lol\");");
+        let mut interpreter = Julia_jupyter::new(data);
+        let res = interpreter.run_at_level(SupportLevel::Bloc);
+
+        // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result.trim(), "lol");
+    }
+}
+

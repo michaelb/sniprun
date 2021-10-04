@@ -136,13 +136,10 @@ impl Interpreter for Generic {
 #[cfg(test)]
 mod test_generic {
     use super::*;
+    use serial_test::serial;
 
     #[test]
-    fn run_all() {
-        //nececssary to run sequentially
-        //because of file access & shared things
-        simple_print_python();
-    }
+    #[serial(generic)]
     fn simple_print_python() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(3)");

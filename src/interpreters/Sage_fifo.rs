@@ -428,12 +428,10 @@ impl ReplLikeInterpreter for Sage_fifo {
 mod test_sage_fifo {
     use super::*;
 
+    use serial_test::serial;
+
     #[test]
-    fn run_all() {
-        // For now, all these should return Err(Custom(Kernel launched, please re-run))
-        simple_print();
-        print_quote();
-    }
+    #[serial(sage_fifo)]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"lol\",1);");
@@ -442,6 +440,9 @@ mod test_sage_fifo {
         let res = interpreter.run_at_level_repl(SupportLevel::Bloc);
         assert!(res.is_err());
     }
+
+    #[test]
+    #[serial(sage_fifo)]
     fn print_quote() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"->\\\"\",1);");
