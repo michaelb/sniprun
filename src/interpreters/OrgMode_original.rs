@@ -242,7 +242,10 @@ impl Interpreter for OrgMode_original {
 mod test_orgmode_original {
     use super::*;
 
+    use serial_test::serial;
+
     #[test]
+    #[serial(bash)]
     fn simple_bloc(){
         let mut data = DataHolder::new();
         data.current_bloc = String::from("\necho 3");

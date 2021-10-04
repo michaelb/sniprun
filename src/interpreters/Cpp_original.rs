@@ -184,13 +184,10 @@ impl Interpreter for Cpp_original {
 #[cfg(test)]
 mod test_cpp_original {
     use super::*;
+    use serial_test::serial;
 
     #[test]
-    fn run_all() {
-        simple_print();
-        compilerror();
-    }
-
+    #[serial(cpp)]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("int a = 1;\nstd::cout << a << std::endl;");
@@ -202,6 +199,8 @@ mod test_cpp_original {
         assert_eq!(string_result, "1\n");
     }
 
+    #[test]
+    #[serial(cpp)]
     fn compilerror() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("int a = 1;\nstd::cout << a << std::endl"); // missing ";"

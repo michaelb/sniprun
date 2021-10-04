@@ -20,6 +20,7 @@ regex="*"
 serde_json="*"
 strip-ansi-escapes="*"
 libc="0.2.79"
+serial_test = "*"
 
 # jupyter-client = { git = "https://gitlab.com/srwalker101/rust-jupyter-client.git", branch = "dev" }
 

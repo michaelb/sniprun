@@ -140,7 +140,10 @@ impl Interpreter for Ada_original {
 #[cfg(test)]
 mod test_ada_original {
     use super::*;
+    use serial_test::serial;
+
     #[test]
+    #[serial(ada)]
     fn simple_print() {
         let mut data = DataHolder::new();
 

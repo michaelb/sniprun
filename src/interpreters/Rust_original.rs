@@ -166,7 +166,10 @@ mod test_rust_original {
     use super::*;
     use crate::error::SniprunError;
 
+    use serial_test::serial;
+
     #[test]
+    #[serial(rust)]
     fn run_all() {
         //nececssary to run sequentially
         //because of file access & shared things
@@ -184,6 +187,8 @@ mod test_rust_original {
         assert_eq!(string_result, "HW, 1+1 = 2\n");
     }
 
+    #[test]
+    #[serial(rust)]
     fn runtime_error() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from(

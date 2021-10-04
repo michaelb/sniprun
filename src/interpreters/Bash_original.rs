@@ -174,12 +174,10 @@ impl ReplLikeInterpreter for Bash_original {
 #[cfg(test)]
 mod test_bash_original {
     use super::*;
+    use serial_test::serial;
 
     #[test]
-    fn run_all() {
-        simple_print();
-        block_things();
-    }
+    #[serial(bash)]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("A=2 && echo $A");
@@ -191,6 +189,8 @@ mod test_bash_original {
         assert_eq!(string_result, "2\n");
     }
 
+    #[test]
+    #[serial(bash)]
     fn block_things() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("A=2\nsleep $A\necho $A");

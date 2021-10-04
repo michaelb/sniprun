@@ -114,8 +114,10 @@ impl Interpreter for CS_original {
 #[cfg(test)]
 mod test_cs_original {
     use super::*;
+    use serial_test::serial;
 
     #[test]
+    #[serial(cs_original)]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("console.log(\"helo\")");

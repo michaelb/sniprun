@@ -1,5 +1,6 @@
 ## v0.5.11
 - LCOV coverage
+- Many (non-REPL) interpreter accept cli arguments when invoked from `:%SnipRun <args>`
 
 ## v0.5.10
 - SageMath & orgmode support

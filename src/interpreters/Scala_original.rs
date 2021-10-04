@@ -152,9 +152,6 @@ impl Interpreter for Scala_original {
 mod test_scala_original {
     use super::*;
     #[test]
-    fn run_all() {
-        simple_print();
-    }
     fn simple_print() {
         let mut data = DataHolder::new();
 

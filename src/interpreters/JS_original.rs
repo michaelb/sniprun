@@ -115,7 +115,10 @@ impl Interpreter for JS_original {
 mod test_js_original {
     use super::*;
 
+    use serial_test::serial;
+
     #[test]
+    #[serial(js)]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("console.log(\"Hello, World!\");");

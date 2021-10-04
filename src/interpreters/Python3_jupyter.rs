@@ -373,11 +373,6 @@ mod test_python3_jupyter {
     use crate::*;
 
     #[test]
-    fn run_all() {
-        simple_print();
-        // test_repl();
-    }
-
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"a\",1)");
