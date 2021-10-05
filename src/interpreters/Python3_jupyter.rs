@@ -49,7 +49,7 @@ impl Python3_jupyter {
         for line in v.iter() {
             // info!("lines are : {}", line);
             if (line.trim().starts_with("import ") || line.trim().starts_with("from "))  //basic selection
-                && line.trim().chars().next() != Some('#')
+                && !line.trim().starts_with('#')
             && self.module_used(line, &self.code)
             {
                 // embed in try catch blocs in case uneeded module is unavailable
@@ -64,11 +64,11 @@ impl Python3_jupyter {
             "checking for python module usage: line {} in code {}",
             line, code
         );
-        if line.contains("*") {
+        if line.contains('*') {
             return true;
         }
         if line.contains(" as ") {
-            if let Some(name) = line.split(" ").last() {
+            if let Some(name) = line.split(' ').last() {
                 return code.contains(name);
             }
         }
@@ -76,14 +76,14 @@ impl Python3_jupyter {
             .replace(",", " ")
             .replace("from", " ")
             .replace("import ", " ")
-            .split(" ")
+            .split(' ')
             .filter(|&x| !x.is_empty())
         {
             if code.contains(name.trim()) {
                 return true;
             }
         }
-        return false;
+        false
     }
     // /// In theory, is a good idea, but somehow doesn't work
     // fn wait_on_kernel(&self) -> Result<(), SniprunError> {
@@ -218,7 +218,7 @@ impl Interpreter for Python3_jupyter {
             .output()
             .expect("Unable to start process");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
             return Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
@@ -347,7 +347,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
 
         info!("cleaned result: {:?}", cleaned_result);
         if String::from_utf8(output.stderr.clone()).unwrap().is_empty() {
-            return Ok(cleaned_result.join("\n") + "\n");
+            Ok(cleaned_result.join("\n") + "\n")
         } else {
             return Err(SniprunError::RuntimeError(
                 String::from_utf8(strip_ansi_escapes::strip(output.stderr.clone()).unwrap())
@@ -356,7 +356,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
                     .last()
                     .unwrap_or(
                         &String::from_utf8(
-                            strip_ansi_escapes::strip(output.stderr.clone()).unwrap(),
+                            strip_ansi_escapes::strip(output.stderr).unwrap(),
                         )
                         .unwrap(),
                     )

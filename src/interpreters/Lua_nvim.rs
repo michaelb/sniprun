@@ -64,7 +64,7 @@ impl Interpreter for Lua_nvim {
             );
             return Some(good_interpreter.run());
         }
-        return None;
+        None
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -105,10 +105,10 @@ impl Interpreter for Lua_nvim {
             let command_nvim = String::from("luafile ") + &self.main_file_path;
             let res = real_nvim_instance.lock().unwrap().command_output(&command_nvim);
             info!("res : {:?}", res);
-            return match res {
+            match res {
                 Ok(message) => Ok(message),
                 Err(_) => Err(SniprunError::RuntimeError(String::from(""))),
-            };
+            }
         } else {
             //else, executing in another nvim instance
             let output = Command::new("nvim")
@@ -121,11 +121,11 @@ impl Interpreter for Lua_nvim {
                 .expect("Unable to start process");
             info!("yay from lua interpreter - in another nvim instance");
             if output.status.success() {
-                return Ok(String::from_utf8(output.stdout).unwrap());
+                Ok(String::from_utf8(output.stdout).unwrap())
             } else {
-                return Err(SniprunError::RuntimeError(
+                Err(SniprunError::RuntimeError(
                     String::from_utf8(output.stderr).unwrap(),
-                ));
+                ))
             }
         }
     }

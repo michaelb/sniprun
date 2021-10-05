@@ -108,9 +108,9 @@ impl Interpreter for Java_original {
 
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            return Err(SniprunError::CompilationError("".to_string()));
+            Err(SniprunError::CompilationError("".to_string()))
         } else {
-            return Ok(());
+            Ok(())
         }
     }
 
@@ -123,11 +123,11 @@ impl Interpreter for Java_original {
             .output()
             .expect("Unable to start process");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }

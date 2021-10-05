@@ -14,7 +14,7 @@ impl Launcher {
         Launcher { data }
     }
 
-    pub fn select_and_run<'a>(&self) -> Result<String, SniprunError> {
+    pub fn select_and_run(&self) -> Result<String, SniprunError> {
         let selection = self.select();
         if let Some((name, level)) = selection {
             //launch !
@@ -26,13 +26,13 @@ impl Launcher {
                 }
             }
             info!("[LAUNCHER] Could not find a suitable interpreter");
-            return Err(SniprunError::CustomError(
+            Err(SniprunError::CustomError(
                 "could not find/run the selected interpreter".to_owned(),
-            ));
+            ))
         } else {
-            return Err(SniprunError::CustomError(String::from(
+            Err(SniprunError::CustomError(String::from(
                 "No filetype set for current file",
-            )));
+            )))
         }
     }
 
@@ -67,7 +67,7 @@ impl Launcher {
         }
         info!("selected {}", name_best_interpreter);
         let _ = skip_all; //silence false unused variable warning
-        return Some((name_best_interpreter, max_level_support));
+        Some((name_best_interpreter, max_level_support))
     }
 
     pub fn info(&self) -> std::io::Result<String> {
@@ -121,13 +121,13 @@ impl Launcher {
         iter_types! {
             let line = format!("| {:<25}| {:<13}| {:<14}|{:^13}|{:^12}|{:^14}|{:^12}|",
                     Current::get_name(),
-                    Current::get_supported_languages().iter().next().unwrap_or(&"".to_string()),
+                    Current::get_supported_languages().get(0).unwrap_or(&"".to_string()),
                     Current::get_max_support_level().to_string(),
                     match Current::default_for_filetype() {true => "yes" ,false => "no"},
                     match Current::has_repl_capability() { true => "yes" ,false => "no"},
                     match Current::behave_repl_like_default() { true => "yes" ,false => "no"},
                     match Current::has_lsp_capability() { true => "yes" ,false => "no"}
-                    ).to_string();
+                    );
             temp_vec.push(line);
         }
 
@@ -140,19 +140,19 @@ impl Launcher {
             v.push(line.to_string());
         }
 
-        v.push(separator.clone());
+        v.push(separator);
         v.push("More help, quickstart and config options refresher can be found from:\n:help sniprun\n".to_owned());
 
         if self.data.return_message_type == ReturnMessageType::Multiline {
             info!("[INFO] Returning info directly");
-            return Ok(v.join("\n"));
+            Ok(v.join("\n"))
         } else {
             //write to infofile
             info!("[INFO] Writing info to file");
             let filename = self.data.sniprun_root_dir.clone() + "/ressources/infofile.txt";
             let mut file = File::create(filename).unwrap();
             file.write_all(v.join("\n").as_bytes()).unwrap();
-            return Ok("".to_owned());
+            Ok("".to_owned())
         }
     }
 }

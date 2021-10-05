@@ -134,11 +134,11 @@ impl Interpreter for C_original {
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         self.fetch_imports()?;
     
-        self.code = String::from("int main() {\n") + &self.code + &"\nreturn 0;}";
+        self.code = String::from("int main() {\n") + &self.code + "\nreturn 0;}";
         if !self.imports.iter().any(|s| s.contains("<stdio.h>")) {
             self.code = String::from("#include <stdio.h>\n") + &self.code;
         }
-        self.code = self.imports.join("\n") + &"\n" + &self.code;
+        self.code = self.imports.join("\n") + "\n" + &self.code;
 
         Ok(())
     }
@@ -165,13 +165,12 @@ impl Interpreter for C_original {
             let mut break_loop = false;
             for line in error_message.lines() {
                 if break_loop {
-                    relevant_error = relevant_error + "\n" + &line;
+                    relevant_error = relevant_error + "\n" + line;
                     return Err(SniprunError::CompilationError(relevant_error));
                 }
                 if line.contains("error") {
                     // info!("breaking at position {:?}", line.split_at(line.find("error").unwrap()).1);
-                    relevant_error = relevant_error
-                        + line
+                    relevant_error += line
                             .split_at(line.find("error").unwrap())
                             .1
                             .trim_start_matches("error: ")
@@ -181,9 +180,9 @@ impl Interpreter for C_original {
                 }
             }
 
-            return Err(SniprunError::CompilationError(relevant_error));
+            Err(SniprunError::CompilationError(relevant_error))
         } else {
-            return Ok(());
+            Ok(())
         }
     }
 
@@ -193,11 +192,11 @@ impl Interpreter for C_original {
             .output()
             .expect("Unable to start process");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }

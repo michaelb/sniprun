@@ -119,12 +119,12 @@ impl Interpreter for Scala_original {
 
         // if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            return Err(SniprunError::CompilationError(
+            Err(SniprunError::CompilationError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         } else {
             info!("scala compiled successfully");
-            return Ok(());
+            Ok(())
         }
     }
 
@@ -138,12 +138,12 @@ impl Interpreter for Scala_original {
 
         if output.status.success() {
             //return stdout
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
             // return stderr
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }

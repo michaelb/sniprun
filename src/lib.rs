@@ -89,9 +89,8 @@ pub enum ReturnMessageType {
     Multiline,
 }
 
-impl DataHolder {
-    ///create a new but almost empty DataHolder
-    pub fn new() -> Self {
+impl Default for DataHolder {
+    fn default() -> Self {
         std::fs::create_dir_all(format!(
             "{}/{}",
             cache_dir().unwrap().to_str().unwrap(),
@@ -120,6 +119,13 @@ impl DataHolder {
             display_no_output: vec![DisplayType::Classic],
             cli_args: vec![],
         }
+    }
+}
+
+impl DataHolder {
+    ///create a new but almost empty DataHolder
+    pub fn new() -> Self {
+        DataHolder::default()
     }
     ///remove and recreate the cache directory (is invoked by `:SnipReset`)
     pub fn clean_dir(&mut self) {
@@ -158,8 +164,8 @@ impl From<String> for Messages {
     }
 }
 
-impl EventHandler {
-    pub fn new() -> EventHandler {
+impl Default for EventHandler {
+    fn default() -> EventHandler {
         let session = Session::new_parent().unwrap();
         let nvim = Neovim::new(session);
         let mut data = DataHolder::new();
@@ -176,8 +182,14 @@ impl EventHandler {
             interpreter_data,
         }
     }
+}
 
-    fn index_from_name(&mut self, name: &str, config: &Vec<(Value, Value)>) -> Option<usize> {
+impl EventHandler {
+    pub fn new() -> EventHandler {
+        EventHandler::default()
+    }
+
+    fn index_from_name(&mut self, name: &str, config: &[(Value, Value)]) -> Option<usize> {
         for (i, kv) in config.iter().enumerate() {
             if name == kv.0.as_str().unwrap() {
                 info!("looped on key {}", kv.0.as_str().unwrap());
@@ -185,11 +197,11 @@ impl EventHandler {
             }
         }
         info!("key {} not found", name);
-        return None;
+        None
     }
 
     /// fill the DataHolder with data from sniprun and Neovim
-    pub fn fill_data(&mut self, values: &Vec<Value>) {
+    pub fn fill_data(&mut self, values: &[Value]) {
         // info!("[FILLDATA_ENTRY] received data from RPC: {:?}", values);
         let config = values[2].as_map().unwrap();
         {
@@ -219,7 +231,7 @@ impl EventHandler {
             //get filetype
             let ft = self.nvim.lock().unwrap().command_output("set ft?");
             if let Ok(real_ft) = ft {
-                self.data.filetype = String::from(real_ft.split("=").last().unwrap());
+                self.data.filetype = String::from(real_ft.split('=').last().unwrap());
             }
         }
 
@@ -494,7 +506,7 @@ mod test_main {
     #[test]
     fn test_main() {
         let mut event_handler = fake_event();
-        let _ = log_to_file(&format!("test_sniprun.log"), LevelFilter::Info);
+        let _ = log_to_file(&"test_sniprun.log".to_string(), LevelFilter::Info);
 
         event_handler.fill_data(&fake_msgpack());
         event_handler.data.filetype = String::from("javascript");
@@ -534,23 +546,25 @@ mod test_main {
         data.push(line_start);
         data.push(line_end);
 
-        let mut config_as_vec: Vec<(Value, Value)> = Vec::new();
-        config_as_vec.push((
-            Value::from("selected_interpreters"),
-            Value::from(Vec::<Value>::new()),
-        ));
-        config_as_vec.push((Value::from("repl_enable"), Value::from(Vec::<Value>::new())));
-        config_as_vec.push((
-            Value::from("repl_disable"),
-            Value::from(Vec::<Value>::new()),
-        ));
+        let mut config_as_vec: Vec<(Value, Value)> = vec![
+            (
+                Value::from("selected_interpreters"),
+                Value::from(Vec::<Value>::new()),
+            ),
+            (Value::from("repl_enable"), Value::from(Vec::<Value>::new())),
+            (
+                Value::from("repl_disable"),
+                Value::from(Vec::<Value>::new()),
+            ),
+        ];
 
-        let mut display_types: Vec<Value> = Vec::new();
-        display_types.push(Value::from("Classic"));
-        display_types.push(Value::from("Terminal"));
-        display_types.push(Value::from("VirtualTextOk"));
-        display_types.push(Value::from("VirtualTextErr"));
-        display_types.push(Value::from("TempFloatingWindow"));
+        let display_types: Vec<Value> = vec![
+            Value::from("Classic"),
+            Value::from("Terminal"),
+            Value::from("VirtualTextOk"),
+            Value::from("VirtualTextErr"),
+            Value::from("TempFloatingWindow"),
+        ];
 
         config_as_vec.push((Value::from("display"), Value::from(display_types)));
         config_as_vec.push((
@@ -562,6 +576,6 @@ mod test_main {
         data.push(Value::from(config_as_vec));
         data.push(Value::from(""));
 
-        return data;
+        data
     }
 }

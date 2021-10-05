@@ -139,9 +139,9 @@ impl Interpreter for Rust_original {
                 .unwrap_or_default()
                 .trim_start_matches("error: ")
                 .trim_start_matches("error");
-            return Err(SniprunError::CompilationError(first_line.to_owned()));
+            Err(SniprunError::CompilationError(first_line.to_owned()))
         } else {
-            return Ok(());
+            Ok(())
         }
     }
 
@@ -152,11 +152,11 @@ impl Interpreter for Rust_original {
             .output()
             .expect("Unable to start process");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }
