@@ -21,7 +21,7 @@ impl Sage_fifo {
         err_path: String,
         id: u32,
     ) -> Result<String, SniprunError> {
-        let end_mark = String::from("sniprun_finished_id=") + &id.to_string()+"\n";
+        let end_mark = String::from("sniprun_finished_id=") + &id.to_string() + "\n";
         let start_mark = String::from("sniprun_started_id=") + &id.to_string();
 
         info!(
@@ -46,8 +46,8 @@ impl Sage_fifo {
                     // info!("file : {:?}", contents);
                     if err_contents.contains(&end_mark) {
                         if let Some(index) = err_contents.rfind(&start_mark) {
-                            let err_to_display = err_contents[index + start_mark.len()
-                                ..err_contents.len() - end_mark.len() - 1]
+                            let err_to_display = err_contents
+                                [index + start_mark.len()..err_contents.len() - end_mark.len() - 1]
                                 .to_owned();
                             info!("err to display : {:?}", err_to_display);
                             if !err_to_display.trim().is_empty() {
@@ -71,13 +71,37 @@ impl Sage_fifo {
                     if out_contents.contains(&end_mark) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark).unwrap();
-                        let out_contents_current = out_contents[index + start_mark.len()
-                            ..out_contents.len() - end_mark.len() - 1].to_string();
+                        let out_contents_current = out_contents
+                            [index + start_mark.len()..out_contents.len() - end_mark.len() - 1]
+                            .to_string();
 
                         //check it's not actually an error
-                        let error_indicators = ["AssertionError","AttributeError","EOFError","FloatingPointError","GeneratorExit","ImportError","IndexError","KeyError","KeyboardInterrupt","MemoryError","NameError","NotImplementedError","OSError","OverflowError","ReferenceError","RuntimeError","StopIteration","SyntaxError","IndentationError","TabError","SystemError", "ModuleNotFoundError"];
+                        let error_indicators = [
+                            "AssertionError",
+                            "AttributeError",
+                            "EOFError",
+                            "FloatingPointError",
+                            "GeneratorExit",
+                            "ImportError",
+                            "IndexError",
+                            "KeyError",
+                            "KeyboardInterrupt",
+                            "MemoryError",
+                            "NameError",
+                            "NotImplementedError",
+                            "OSError",
+                            "OverflowError",
+                            "ReferenceError",
+                            "RuntimeError",
+                            "StopIteration",
+                            "SyntaxError",
+                            "IndentationError",
+                            "TabError",
+                            "SystemError",
+                            "ModuleNotFoundError",
+                        ];
                         for try_error_indicator in error_indicators.iter() {
-                            if out_contents_current.contains(try_error_indicator){
+                            if out_contents_current.contains(try_error_indicator) {
                                 info!("stdout contains error indicator");
                                 err_contents = out_contents.clone();
                                 // info!("file : {:?}", contents);
@@ -98,8 +122,8 @@ impl Sage_fifo {
                             }
                         }
 
-                        return Ok(out_contents[index + start_mark.len()
-                            ..out_contents.len() - end_mark.len() - 1]
+                        return Ok(out_contents
+                            [index + start_mark.len()..out_contents.len() - end_mark.len() - 1]
                             .to_owned());
                     }
                 }
@@ -237,10 +261,6 @@ impl Interpreter for Sage_fifo {
         String::from("Sage_fifo")
     }
 
-    fn default_for_filetype() -> bool {
-        false
-    }
-
     fn behave_repl_like_default() -> bool {
         true
     }
@@ -270,6 +290,10 @@ impl Interpreter for Sage_fifo {
 
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Import
+    }
+
+    fn default_for_filetype() -> bool {
+        true
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -309,7 +333,6 @@ impl Interpreter for Sage_fifo {
 
 impl ReplLikeInterpreter for Sage_fifo {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
-
         if !self.read_previous_code().is_empty() {
             // nothing to do, kernel already running
             info!("Sage kernel already running");
@@ -322,12 +345,13 @@ impl ReplLikeInterpreter for Sage_fifo {
             } else {
                 info!("Could not retrieve a previous id even if the kernel is running");
                 info!("This was in saved code: {}", self.read_previous_code());
-                return Err(SniprunError::CustomError("Sniprun failed to connect to the running kernel, please SnipReset".to_string()));
+                return Err(SniprunError::CustomError(
+                    "Sniprun failed to connect to the running kernel, please SnipReset".to_string(),
+                ));
             }
 
             self.fetch_code()?;
             Ok(())
-
         } else {
             self.fetch_config();
             // launch everything
@@ -339,13 +363,12 @@ impl ReplLikeInterpreter for Sage_fifo {
                 init_repl_cmd, &self.cache_dir
             );
             match daemon() {
-
                 Ok(Fork::Child) => {
                     let nodotstage_arg = if self.user_sage_config {
-                            ""
-                        } else {
-                            "--nodotsage"
-                        };
+                        ""
+                    } else {
+                        "--nodotsage"
+                    };
 
                     let _res = Command::new("bash")
                         .args(&[
@@ -364,9 +387,9 @@ impl ReplLikeInterpreter for Sage_fifo {
                     ));
                 }
                 Ok(Fork::Parent(_)) => {}
-                Err(_) => info!(
-                    "Sage_fifo could not fork itself to the background to launch the kernel"
-                ),
+                Err(_) => {
+                    info!("Sage_fifo could not fork itself to the background to launch the kernel")
+                }
             };
 
             let pause = std::time::Duration::from_millis(100);
@@ -377,7 +400,6 @@ impl ReplLikeInterpreter for Sage_fifo {
                 "Sage kernel launched, re-run your snippet".to_owned(),
             ))
         }
-
     }
 
     fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
