@@ -74,7 +74,7 @@ impl Interpreter for Lua_original {
             );
             return Some(good_interpreter.run());
         }
-        return None;
+        None
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -116,11 +116,11 @@ impl Interpreter for Lua_original {
             .expect("Unable to start process");
         info!("yay from lua interpreter");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }

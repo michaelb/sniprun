@@ -48,7 +48,7 @@ impl Python3_original {
         for line in v.iter() {
             // info!("lines are : {}", line);
             if (line.trim().starts_with("import ") || line.trim().starts_with("from "))  //basic selection
-                && line.trim().chars().next() != Some('#')
+                && !line.trim().starts_with('#')
             && self.module_used(line, &self.code)
             {
                 // embed in try catch blocs in case uneeded module is unavailable
@@ -63,11 +63,11 @@ impl Python3_original {
             "checking for python module usage: line {} in code {}",
             line, code
         );
-        if line.contains("*") {
+        if line.contains('*') {
             return true;
         }
         if line.contains(" as ") {
-            if let Some(name) = line.split(" ").last() {
+            if let Some(name) = line.split(' ').last() {
                 return code.contains(name);
             }
         }
@@ -75,14 +75,14 @@ impl Python3_original {
             .replace(",", " ")
             .replace("from", " ")
             .replace("import ", " ")
-            .split(" ")
+            .split(' ')
             .filter(|&x| !x.is_empty())
         {
             if code.contains(name.trim()) {
                 return true;
             }
         }
-        return false;
+        false
     }
     fn fetch_config(&mut self) {
         let default_compiler = String::from("python3");
@@ -243,7 +243,7 @@ impl Interpreter for Python3_original {
             .output()
             .expect("Unable to start process");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
             return Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
@@ -276,9 +276,9 @@ impl ReplLikeInterpreter for Python3_original {
         let klepto_memo = String::from("'") + &self.cache_dir.clone() + "/" + "memo" + "'";
 
         let mut final_code = self.imports.clone();
-        final_code.push_str("\n");
+        final_code.push('\n');
         final_code.push_str(&python_functions);
-        final_code.push_str("\n");
+        final_code.push('\n');
         if self.read_previous_code().is_empty() {
             //first run
             self.save_code("Not the first run anymore".to_string());
@@ -287,17 +287,17 @@ impl ReplLikeInterpreter for Python3_original {
             {
                 final_code.push_str("sniprun142859_load(");
                 final_code.push_str(&klepto_memo);
-                final_code.push_str(")");
+                final_code.push(')');
             }
-            final_code.push_str("\n");
+            final_code.push('\n');
         }
 
         final_code.push_str(&unindent(&format!("{}{}", "\n", self.code.as_str())));
-        final_code.push_str("\n");
+        final_code.push('\n');
         {
             final_code.push_str("sniprun142859_save("); // if the run has not failed, save new variables
             final_code.push_str(&klepto_memo);
-            final_code.push_str(")");
+            final_code.push(')');
         }
 
         self.code = final_code.clone();

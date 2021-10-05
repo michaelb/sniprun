@@ -36,7 +36,7 @@ impl Cpp_original {
         }
 
         for line in v.iter() {
-            if (line.starts_with("namespace") && line.contains("="))
+            if (line.starts_with("namespace") && line.contains('='))
                 || line.starts_with("using")
                 || line.starts_with("#include <")
             {
@@ -138,11 +138,11 @@ impl Interpreter for Cpp_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         self.fetch_imports()?;
-        self.code = String::from("int main() {\n") + &self.code + &"\nreturn 0;}";
+        self.code = String::from("int main() {\n") + &self.code + "\nreturn 0;}";
         if !self.imports.iter().any(|s| s.contains("<iostream>")) {
             self.code = String::from("#include <iostream>\n") + &self.code;
         }
-        self.code = self.imports.join("\n") + &"\n" + &self.code;
+        self.code = self.imports.join("\n") + "\n" + &self.code;
         Ok(())
     }
 
@@ -160,9 +160,9 @@ impl Interpreter for Cpp_original {
 
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            return Err(SniprunError::CompilationError("".to_string()));
+            Err(SniprunError::CompilationError("".to_string()))
         } else {
-            return Ok(());
+            Ok(())
         }
     }
 
@@ -172,11 +172,11 @@ impl Interpreter for Cpp_original {
             .output()
             .expect("Unable to start process");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }

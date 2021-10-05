@@ -68,7 +68,7 @@ pub trait Interpreter: ReplLikeInterpreter {
     /// You should override this method as soon as you wish to test your interpreter.
     fn get_max_support_level() -> SupportLevel {
         //to overwrite in trait impls
-        return SupportLevel::Unsupported;
+        SupportLevel::Unsupported
     }
 
     /// This function should be overwritten if your intepreter cannot run
@@ -186,15 +186,15 @@ impl<T: Interpreter> InterpreterUtils for T {
         let data = self.get_data();
         info!("reading previous code");
         if data.interpreter_data.is_none() {
-            return String::new();
+            String::new()
         } else {
             info!("found interpreter_data");
             let interpreter_data = data.interpreter_data.unwrap().lock().unwrap().clone();
             let content_owner = T::get_name();
             if interpreter_data.owner == content_owner {
-                return interpreter_data.content;
+                interpreter_data.content
             } else {
-                return String::new();
+                String::new()
             }
         }
     }
@@ -207,7 +207,7 @@ impl<T: Interpreter> InterpreterUtils for T {
         let data = self.get_data();
         if data.interpreter_data.is_none() {
             info!("Unable to save code for next usage");
-            return;
+            
         } else {
             {
                 data.interpreter_data.clone().unwrap().lock().unwrap().owner = T::get_name();
@@ -253,13 +253,9 @@ impl<T: Interpreter> InterpreterUtils for T {
     /// get a unsigned integer previously saved in sniprun memory
     fn get_pid(&self) -> Option<u32> {
         if let Some(di) = self.get_data().interpreter_data {
-            if let Some(real_pid) = di.lock().unwrap().pid {
-                return Some(real_pid);
-            } else {
-                return None;
-            }
+            di.lock().unwrap().pid
         } else {
-            return None;
+            None
         }
     }
 
@@ -267,7 +263,7 @@ impl<T: Interpreter> InterpreterUtils for T {
     fn get_interpreter_option(&self, option: &str) -> Option<neovim_lib::Value> {
         fn index_from_name(
             name: &str,
-            config: &Vec<(neovim_lib::Value, neovim_lib::Value)>,
+            config: &[(neovim_lib::Value, neovim_lib::Value)],
         ) -> Option<usize> {
             for (i, kv) in config.iter().enumerate() {
                 if name == kv.0.as_str().unwrap() {
@@ -275,7 +271,7 @@ impl<T: Interpreter> InterpreterUtils for T {
                 }
             }
             info!("key '{}' not found in interpreter option", name);
-            return None;
+            None
         }
         // this is the ugliness required to fetch something from the interpreter options
         if let Some(config) = &self.get_data().interpreter_options {

@@ -95,10 +95,8 @@ impl Interpreter for Generic {
         let output = Command::new(&self.glot_bin_path)
             .stdin(File::open(&self.main_file_path).unwrap())
             .output()
-            .expect(&format!(
-                "Unable to start process, bin path : {}",
-                &self.glot_bin_path
-            ));
+            .unwrap_or_else(|_| panic!("Unable to start process, bin path : {}",
+                &self.glot_bin_path));
         info!(
             "generic executed, status.success?:{}",
             output.status.success()
@@ -113,22 +111,22 @@ impl Interpreter for Generic {
 
             if !res_stdout.is_empty() {
                 info!("res_stdout :{}", res_stdout);
-                return Ok(String::from("Generic interpreter (!): ") + &res_stdout.to_string());
+                Ok(String::from("Generic interpreter (!): ") + &res_stdout)
             } else if !res_stderr.is_empty() {
-                return Err(SniprunError::RuntimeError(
-                    String::from("Generic interpreter (!): ") + &res_stderr.to_string(),
-                ));
+                Err(SniprunError::RuntimeError(
+                    String::from("Generic interpreter (!): ") + &res_stderr,
+                ))
             } else {
-                return Err(SniprunError::CompilationError(String::from(
+                Err(SniprunError::CompilationError(String::from(
                     "Generic interpreter (!): unknown compilation error",
-                )));
+                )))
             }
         } else {
             //this should not happen but anyway
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from("Generic interpreter (!): ")
                     + &String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }
@@ -150,6 +148,6 @@ mod test_generic {
 
         // should panic if not an Ok()
         let string_result = res.unwrap();
-        assert!(string_result.contains("3"));
+        assert!(string_result.contains('3'));
     }
 }

@@ -20,10 +20,10 @@ impl Mathematica_original {
         if let Some(index) = line.find("//") {
             owned_line.drain(index..);
         }
-        return owned_line;
+        owned_line
     }
 
-    fn wrap_line_print_if_necessary<'a>(&self, line: &'a str) -> String {
+    fn wrap_line_print_if_necessary(&self, line: &str) -> String {
         let line = self.remove_comment(line);
         if !line.contains("Print")
             && !line.contains("Plot")
@@ -37,7 +37,7 @@ impl Mathematica_original {
         {
             return String::from("Print[") + &line + "];";
         }
-        return line;
+        line
     }
 
     fn wait_out_file(&self, path: String, id: u32) -> Result<String, String> {
@@ -58,7 +58,6 @@ impl Mathematica_original {
                 info!("file exists");
                 let res = file.read_to_string(&mut contents);
                 if res.is_ok() {
-                    res.unwrap();
                     info!("file could be read : {:?}", contents);
                     // info!("file : {:?}", contents);
                     if contents.contains(&end_mark) {
@@ -81,9 +80,9 @@ impl Mathematica_original {
         }
 
         let index = contents.rfind(&start_mark).unwrap();
-        return Ok(
-            contents[index + &start_mark.len()..&contents.len() - &end_mark.len() - 1].to_owned(),
-        );
+        Ok(
+            contents[index + start_mark.len()..contents.len() - end_mark.len() - 1].to_owned(),
+        )
     }
 }
 
@@ -184,9 +183,7 @@ impl Interpreter for Mathematica_original {
                             {
                                 if let Some(time) = time_mgspack.as_i64() {
                                     if time >= 0 {
-                                        wait_for_graphics = String::from(
-                                            "Pause[".to_owned() + &time.to_string() + "];",
-                                        );
+                                        wait_for_graphics = "Pause[".to_owned() + &time.to_string() + "];";
                                     }
                                 }
                             }
@@ -252,12 +249,12 @@ impl Interpreter for Mathematica_original {
 
         if output.status.success() {
             //return stdout
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
             // return stderr
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }

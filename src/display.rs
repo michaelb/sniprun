@@ -32,7 +32,7 @@ impl FromStr for DisplayType {
             "Api" => Ok(Api),
             "NvimNotify" => Ok(NvimNotify),
             _ => Err(SniprunError::InternalError(
-                "Invalid display type: ".to_string() + &s,
+                "Invalid display type: ".to_string() + s,
             )),
         }
     }
@@ -82,7 +82,7 @@ pub fn display_nvim_notify(
     let res = match message {
         Ok(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".display_nvim_notify(\"{}\", true)",
-            no_output_wrap(&result, data, &DisplayType::Terminal),
+            no_output_wrap(result, data, &DisplayType::Terminal),
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".display_nvim_notify(\"{}\", false)",
@@ -102,7 +102,7 @@ pub fn send_api(
             let mut nvim_instance = nvim.lock().unwrap();
             nvim_instance.command_async(&format!(
             "lua require\"sniprun.display\".send_api(\"{}\", true)",
-            no_output_wrap(&result, data, &DisplayType::Terminal),
+            no_output_wrap(result, data, &DisplayType::Terminal),
         ))},
         Err(result) => {let mut nvim_instance = nvim.lock().unwrap();
             nvim_instance.command_async(&format!(
@@ -195,7 +195,7 @@ pub fn display_terminal(
     let res = match message {
         Ok(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\", true)",
-            no_output_wrap(&result, data, &DisplayType::Terminal),
+            no_output_wrap(result, data, &DisplayType::Terminal),
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\", false)",
@@ -228,7 +228,7 @@ pub fn display_floating_window(
         .last()
         .unwrap_or(&data.current_line)
         .len();
-    let row = data.range[0] + data.current_bloc.trim_end_matches("\n").lines().count() as i64 - 1;
+    let row = data.range[0] + data.current_bloc.trim_end_matches('\n').lines().count() as i64 - 1;
     info!(
         "trying to open a floating window on row, col = {}, {}",
         row, col
@@ -239,7 +239,7 @@ pub fn display_floating_window(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", true)",
             row - 1,
             col,
-            no_output_wrap(&result, data, &DisplayType::TempFloatingWindow),
+            no_output_wrap(result, data, &DisplayType::TempFloatingWindow),
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", false)",
@@ -331,8 +331,8 @@ fn cleanup_and_escape(message: &str) -> String {
         .trim_start_matches('\n')
         .trim_end_matches('\n')
         .to_string();
-    let answer_str = answer_str.replace("\n", "\\\n");
-    answer_str
+    
+    answer_str.replace("\n", "\\\n")
 }
 
 fn no_output_wrap(message: &str, data: &DataHolder, current_type: &DisplayType) -> String {
@@ -344,5 +344,5 @@ fn no_output_wrap(message: &str, data: &DataHolder, current_type: &DisplayType) 
         }
     }
     info!("message '{}' cleaned out", message_clean);
-    return message_clean;
+    message_clean
 }

@@ -103,11 +103,11 @@ impl Interpreter for R_original {
             .expect("Unable to start process");
         info!("yay from R interpreter");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }
@@ -139,9 +139,9 @@ impl ReplLikeInterpreter for R_original {
                 final_code.push_str("')");
             }
         }
-        final_code.push_str("\n");
+        final_code.push('\n');
         final_code.push_str(&self.code);
-        final_code.push_str("\n");
+        final_code.push('\n');
 
         {
             //save state

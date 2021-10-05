@@ -111,11 +111,11 @@ impl Interpreter for Bash_original {
             .output()
             .expect("Unable to start process");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }
@@ -140,24 +140,24 @@ impl ReplLikeInterpreter for Bash_original {
         fn strip_prints(code: &str) -> String {
             let mut striped_code = String::new();
             let print_statements = vec!["echo ", "print "];
-            let mut count = 0;
+            let mut count = 0i64;
             for line in code.lines() {
                 //basic splitting only
-                let opening_bracket = line.matches("{").count();
-                let closing_bracket = line.matches("}").count();
+                let opening_bracket = line.matches('{').count() as i64;
+                let closing_bracket = line.matches('}').count() as i64;
                 count += opening_bracket - closing_bracket;
                 if count <= 0 {
                     if print_statements.iter().all(|ps| !line.contains(ps)) {
                         // does not contains any print statement
                         striped_code.push_str(line);
-                        striped_code.push_str("\n");
+                        striped_code.push('\n');
                     }
                 } else {
                     striped_code.push_str(line);
-                    striped_code.push_str("\n");
+                    striped_code.push('\n');
                 }
             }
-            return striped_code;
+            striped_code
         }
 
         let res = self.execute();
@@ -167,7 +167,7 @@ impl ReplLikeInterpreter for Bash_original {
         }
 
         info!("executed as repl");
-        return res;
+        res
     }
 }
 

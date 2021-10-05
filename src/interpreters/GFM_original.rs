@@ -55,7 +55,7 @@ impl GFM_original {
                     .unwrap()
                     .join("");
                 if line_i.starts_with("```") {
-                    let ft = line_i[3..].trim().to_owned();
+                    let ft = line_i.strip_prefix("```").unwrap().trim().to_owned();
                     return self.filetype_from_str(&ft);
                 }
             }
@@ -97,7 +97,7 @@ impl Interpreter for GFM_original {
         builder
             .create(&lwd)
             .expect("Could not create directory for example");
-        let mut data_clone = data.clone();
+        let mut data_clone = data;
         data_clone.work_dir = lwd.clone(); //trick other interpreter at creating their files here
 
         let ddf = String::from("python"); //default default
@@ -117,7 +117,7 @@ impl Interpreter for GFM_original {
             }
         }
 
-        return gfm_interpreter;
+        gfm_interpreter
 
     }
 
@@ -202,9 +202,9 @@ impl Interpreter for GFM_original {
                 }
             }
         }
-        return Err(SniprunError::CustomError(String::from(
+        Err(SniprunError::CustomError(String::from(
             "Failed to determine language of code bloc",
-        )));
+        )))
     }
 }
 

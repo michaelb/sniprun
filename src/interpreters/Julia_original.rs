@@ -29,7 +29,6 @@ impl Julia_original {
                 info!("file exists");
                 let res = file.read_to_string(&mut contents);
                 if res.is_ok() {
-                    res.unwrap();
                     info!("file could be read : {:?}", contents);
                     // info!("file : {:?}", contents);
                     if contents.contains(&end_mark) {
@@ -46,9 +45,9 @@ impl Julia_original {
         }
 
         let index = contents.rfind(&start_mark).unwrap();
-        return Ok(
-            contents[index + &start_mark.len()..&contents.len() - &end_mark.len() - 1].to_owned(),
-        );
+        Ok(
+            contents[index + start_mark.len()..contents.len() - end_mark.len() - 1].to_owned(),
+        )
     }
 }
 
@@ -158,7 +157,7 @@ impl Interpreter for Julia_original {
             .output()
             .expect("Unable to start process");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
             return Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())

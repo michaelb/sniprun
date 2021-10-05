@@ -107,7 +107,7 @@ impl Interpreter for Julia_jupyter {
             .output()
             .expect("Unable to start process");
         if output.status.success() {
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
             return Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
@@ -189,7 +189,7 @@ impl ReplLikeInterpreter for Julia_jupyter {
 
         info!("cleaned result: {:?}", cleaned_result);
         if String::from_utf8(output.stderr.clone()).unwrap().is_empty() {
-            return Ok(cleaned_result.join("\n") + "\n");
+            Ok(cleaned_result.join("\n") + "\n")
         } else {
             return Err(SniprunError::RuntimeError(
                 String::from_utf8(strip_ansi_escapes::strip(output.stderr.clone()).unwrap())
@@ -198,7 +198,7 @@ impl ReplLikeInterpreter for Julia_jupyter {
                     .last()
                     .unwrap_or(
                         &String::from_utf8(
-                            strip_ansi_escapes::strip(output.stderr.clone()).unwrap(),
+                            strip_ansi_escapes::strip(output.stderr).unwrap(),
                         )
                         .unwrap(),
                     )

@@ -42,13 +42,12 @@ impl Python3_fifo {
                 out_contents.clear();
                 let res = file.read_to_string(&mut err_contents);
                 if res.is_ok() {
-                    res.unwrap();
                     info!("errfile could be read : {:?}", err_contents);
                     // info!("file : {:?}", contents);
                     if err_contents.contains(&end_mark) {
                         if let Some(index) = err_contents.rfind(&start_mark) {
-                            let err_to_display = err_contents[index + &start_mark.len()
-                                ..&err_contents.len() - &end_mark.len() - 1]
+                            let err_to_display = err_contents[index + start_mark.len()
+                                ..err_contents.len() - end_mark.len() - 1]
                                 .to_owned();
                             info!("err to display : {:?}", err_to_display);
                             if !err_to_display.trim().is_empty() {
@@ -66,14 +65,13 @@ impl Python3_fifo {
                 out_contents.clear();
                 let res = file.read_to_string(&mut out_contents);
                 if res.is_ok() {
-                    res.unwrap();
                     info!("file could be read : {:?}", out_contents);
                     // info!("file : {:?}", contents);
                     if out_contents.contains(&end_mark) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark).unwrap();
-                        return Ok(out_contents[index + &start_mark.len()
-                                  ..&out_contents.len() - &end_mark.len() - 1]
+                        return Ok(out_contents[index + start_mark.len()
+                                  ..out_contents.len() - end_mark.len() - 1]
                                   .to_owned());
                     }
                 }
@@ -119,7 +117,7 @@ impl Python3_fifo {
         for line in v.iter() {
             // info!("lines are : {}", line);
             if (line.trim().starts_with("import ") || line.trim().starts_with("from"))  //basic selection
-                && line.trim().chars().next() != Some('#')
+                && !line.trim().starts_with('#')
                     && self.module_used(line, &self.code)
                     {
                         // embed in try catch blocs in case uneeded module is unavailable
@@ -139,11 +137,11 @@ impl Python3_fifo {
             "checking for python module usage: line {} in code {}",
             line, code
             );
-        if line.contains("*") {
+        if line.contains('*') {
             return true;
         }
         if line.contains(" as ") {
-            if let Some(name) = line.split(" ").last() {
+            if let Some(name) = line.split(' ').last() {
                 return code.contains(name);
             }
         }
@@ -151,14 +149,14 @@ impl Python3_fifo {
             .replace(",", " ")
                 .replace("from", " ")
                 .replace("import ", " ")
-                .split(" ")
+                .split(' ')
                 .filter(|&x| !x.is_empty())
                 {
                     if code.contains(name.trim()) {
                         return true;
                     }
                 }
-        return false;
+        false
     }
 
     fn fetch_config(&mut self) {

@@ -116,7 +116,7 @@ impl Interpreter for Ada_original {
             ));
         }
 
-        return Ok(());
+        Ok(())
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
@@ -126,12 +126,12 @@ impl Interpreter for Ada_original {
 
         if output.status.success() {
             //return stdout
-            return Ok(String::from_utf8(output.stdout).unwrap());
+            Ok(String::from_utf8(output.stdout).unwrap())
         } else {
             // return stderr
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }

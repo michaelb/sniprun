@@ -55,7 +55,7 @@ fn main() -> Result<(), std::io::Error> {
         }
         plugin = plugin[..plugin.len() - 3].to_string();
 
-        string_to_write.push_str("{");
+        string_to_write.push('{');
         string_to_write.push_str(&format!(
             "
             type Current = interpreters::{};

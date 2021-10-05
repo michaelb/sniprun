@@ -24,7 +24,7 @@ impl OrgMode_original {
                 .get_lines(&mut real_nvim_instance, line_n, line_n+1, false)
                 .unwrap();
             self.data.current_line = next_line.join("");
-            line_n = line_n +1;
+            line_n += 1;
         }
 
 
@@ -111,7 +111,7 @@ impl Interpreter for OrgMode_original {
         builder
             .create(&lwd)
             .expect("Could not create directory for example");
-        let mut data_clone = data.clone();
+        let mut data_clone = data;
         data_clone.work_dir = lwd.clone(); //trick other interpreter at creating their files here
 
         let ddf = String::from("python"); //default default
@@ -131,7 +131,7 @@ impl Interpreter for OrgMode_original {
             }
         }
 
-        return orgmode_interpreter;
+        orgmode_interpreter
 
     }
 
@@ -204,9 +204,9 @@ impl Interpreter for OrgMode_original {
         // for some languages, handle an eventual final 'return' as a print
         if last_line.starts_with("return") {
             let printing_last_line = match self.data.filetype.as_str() { // after 'fetch, contains the embbeded language filetype
-                "python" | "python3" | "py" | "sage.python" => String::from("print(") + &last_line[6..] + ")",
-                "rust" =>  String::from("println!(\"{}\",") + &last_line[6..] + ")",
-                "bash" => String::from("echo ") + &last_line[6..],
+                "python" | "python3" | "py" | "sage.python" => String::from("print(") + last_line.strip_prefix("return").unwrap() + ")",
+                "rust" =>  String::from("println!(\"{}\",") + last_line.strip_prefix("return").unwrap() + ")",
+                "bash" => String::from("echo ") + last_line.strip_prefix("return").unwrap(),
                 _ => last_line.to_string()
             };
             let mut code_in_lines: Vec<&str> = self.code.lines().collect();
@@ -231,9 +231,9 @@ impl Interpreter for OrgMode_original {
                 }
             }
         }
-        return Err(SniprunError::CustomError(String::from(
+        Err(SniprunError::CustomError(String::from(
             "Failed to determine language of code bloc",
-        )));
+        )))
     }
 }
 
