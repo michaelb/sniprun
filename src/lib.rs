@@ -429,7 +429,10 @@ pub fn start() {
 
     //main loop
     info!("[MAIN] Start of main event loop");
+    let mut counter = 1;
     for (event, values) in receiver {
+        info!("EVENT {} RECEIVED ##################", counter);
+        counter += 1;
         match Messages::from(event.clone()) {
             //Run command
             Messages::Run => {
@@ -437,7 +440,7 @@ pub fn start() {
 
                 let mut event_handler2 = event_handler.clone();
                 info!("[RUN] clone event handler");
-                let _res2 = send.send(HandleAction::New(thread::spawn(move || {
+                let _ = send.send(HandleAction::New(thread::spawn(move || {
                     // get up-to-date data
                     //
                     info!("[RUN] spawned thread");
