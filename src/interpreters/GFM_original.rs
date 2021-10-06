@@ -129,6 +129,9 @@ impl Interpreter for GFM_original {
         String::from("GFM_original")
     }
 
+    fn default_for_filetype() -> bool {
+        true
+    }
     fn get_current_level(&self) -> SupportLevel {
         self.support_level
     }

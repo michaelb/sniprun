@@ -2,7 +2,7 @@ name: Rust
 
 on:
   push:
-    branches: [ master, dev]
+    branches: [ master]
   pull_request:
     branches: [ master, dev]
   workflow_dispatch:
@@ -48,10 +48,10 @@ jobs:
 
 
     - name: Unit tests
-      run: cargo test --features ignore_in_ci
+      run: cargo test --release --features ignore_in_ci
 
     - name: Integration tests
-      run: cargo test --features ignore_in_ci --test integration
+      run: cargo test --release --features ignore_in_ci --test integration
 
 
 

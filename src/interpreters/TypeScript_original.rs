@@ -55,6 +55,9 @@ impl Interpreter for TypeScript_original {
         self.support_level = level;
     }
 
+    fn default_for_filetype() -> bool {
+        true
+    }
     fn get_data(&self) -> DataHolder {
         self.data.clone()
     }

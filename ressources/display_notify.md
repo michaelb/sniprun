@@ -14,9 +14,3 @@ require'sniprun'.setup({
 })
 EOF
 ```
-
-
-!! As of writing, virtual text gets deleted when a notification from nvim-notify expires for an unknown reason.
-
-
-
