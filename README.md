@@ -34,7 +34,7 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
 </br>
 
 ###### TLDR: ```Plug 'michaelb/sniprun', {'do': 'bash install.sh'}``` </br> ​ ​ ​   ​  ​  ​  ​  ​  ​  ​ ​ ```:SnipRun```, ```:'<,'>SnipRun```,```:SnipInfo```
-###### (but please configure the \<Plug> mappings)
+###### (but please [configure](README.md#my-usage-recommandatoin-tricks) the \<Plug> mappings)
 
 
 
@@ -114,10 +114,17 @@ Sniprun will then:
 - **Add boilerplate** when it exists. In C, it surrounds your snip with "int main() {", "}". (disclaimer: oversimplifed)
 - **Build** (write to a script file, or compile) the code
 - **Execute** the code, or send it to an active REPL for evaluation
-- Return stdout, or stderr using the chosen method
+- Display stdout, or stderr using the chosen method
 
 
 ![](ressources/visual_assets/760091.png)
+
+
+## What it is && isn't
+
+**It is** a way to quickly run small snippets of code, on the fly, and iterate very quickly and conveniently. To quickly experiment with new features (not yet embbeded in classes, a whole project etc...), or to develop simple code pipelines (like a machine learning exercise) that fit in a unique file, sniprun is probably _the_ best plugin out there.
+
+**It isn't** a way to run a whole 50k lines, 3 languages projects. A one-liner `:!make run` is better suited to do this most of the time
 
 ## Installation
 
@@ -325,6 +332,8 @@ All of sniprun functionnalities:
 | :SnipReset                   | lua require'sniprun'.reset()         | \<Plug\>SnipReset           |
 | :SnipReplMemoryClean         | lua require'sniprun'.clear\_repl()   | \<Plug\>SnipReplMemoryClean |
 | :SnipClose                   | lua require'sniprun.display'.close() | \<Plug\>SnipClose           |
+|         ✖                    | lua require'sniprun.api'.run\_range(..)|         ✖                 |
+|          ✖                   | lua require'sniprun.api'.run\_string(..)|          ✖               |
 
 
 You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to configure sniprun, still compatible but may be deprecated at some point.
@@ -343,9 +352,9 @@ You can find [here](ressources/old_configuration.md) the 'old'/vimscript way to 
 <p>
 
 ```
-vim.api.nvim_set_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
-vim.api.nvim_set_keymap('n', '<leader>f', '<Plug>SnipRunOperator', {silent = true})
-vim.api.nvim_set_keymap('n', '<leader>ff', '<Plug>SnipRun', {silent = true})
+vim.api.nvim\_set\_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
+vim.api.nvim\_set\_keymap('n', '<leader>f', '<Plug>SnipRunOperator', {silent = true})
+vim.api.nvim\_set\_keymap('n', '<leader>ff', '<Plug>SnipRun', {silent = true})
 ```
 </details>
 </p>
@@ -361,7 +370,7 @@ vmap f <Plug>SnipRun
 </details>
 </p>
 
-- For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire file.
+- For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire file. When running the whole file, SnipRun supports taking arguments on the command line: `:%SnipRun 5 "yay"`, but this will only be useful for interpreted/script languages.
 
 
 While both shorthands and \<Plug> are here to stay, **please use the `<Plug>` style ones in your mappings** or if using from another plugin.
@@ -382,7 +391,7 @@ As of writing, languages can be supported up to different extents:
 - **Bloc** : You can select any piece of code that is semantically correct (minus the eventual entry point) on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:
 
 ```
-let alphabet = String::from_utf8(
+let alphabet = String::from\_utf8(
     (b'a'..=b'z').chain(b'A'..=b'Z').collect()).unwrap();
 
 println!("-> {}", alphabet);
@@ -394,25 +403,32 @@ println!("-> {}", alphabet);
 
 ​
 
-| Language     | Support level |     | Language   | Support level    |
-| ------------ | ------------- | --- | ---------- | ---------------- |
-| Ada          | Line          |     | Java       | Bloc             |
-| Bash/Shell   | Bloc + REPL\* |     | JavaScript | Bloc             |
-| C            | Import        |     | Julia      | Bloc + REPL\*\*  |
-| C++          | Import        |     | Lisp       | Untested         |
-| Clojure      | Untested      |     | Lua        | Bloc             |
-| COBOL        | Untested      |     | Lua-nvim   | Bloc + REPL      |
-| Coffeescript | Bloc          |     | Markdown   | Bloc + REPL\*\*\*|
-| C#           | Untested      |     | Mathematica| Bloc + REPL\*\*  |
-| D            | Bloc          |     | OrgMode    | Bloc + REPL\*\*\*|
-| Elixir       | Untested      |     | Perl/Perl6 | Line             |
-| Elm          | Untested      |     | Python3    | Import +REPL\*\* |
-| Erlang       | Untested      |     | R          | Bloc + REPL\*\*  |
-| F#           | Untested      |     | Ruby       | Bloc             |
-| Go           | Bloc          |     | Rust       | Bloc             |
-| Groovy       | Untested      |     | SageMath   | Import + REPL\*\*|
-| Haskell      | Line          |     | Scala      | Bloc             |
-| Idris        | Untested      |     | TypeScript | Bloc             |
+| Language     | Support level | REPL Capabilities|    
+| ------------ | ------------- | ---------------- |
+| Ada          | Line          |  No              |
+| Bash/Shell   | Bloc          |  Yes\*           |
+| C            | Import        |  No              |
+| C++          | Import        |  No              | 
+| Coffeescript | Bloc          |  No              |   
+| D            | Bloc          |  No              | 
+| Go           | Bloc          |  No              | 
+| Haskell      | Line          |  No              | 
+| Java       | Bloc             | No              | 
+| JavaScript | Bloc             | No              | 
+| Julia      | Bloc + REPL\*\*  | Yes\*\*         | 
+| Lua        | Bloc             | No              | 
+| Lua-nvim   | Bloc + REPL      | Yes\*\*         |
+| Markdown   | Bloc + REPL\*\*\*| Yes\*\*\*       |
+| Mathematica| Bloc + REPL\*\*  | Yes\*\*         |
+| OrgMode    | Bloc + REPL\*\*\*| Yes\*\*\*       |
+| Perl/Perl6 | Line             | No              | 
+| Python3    | Import +REPL\*\* | Yes\*\*         |
+| R          | Bloc + REPL\*\*  | Yes\*\*         |
+| Ruby       | Bloc             | No              | 
+| Rust       | Bloc             | No              | 
+| SageMath   | Import + REPL\*\*| Yes\*\*         |
+| Scala      | Bloc             | No              | 
+| TypeScript | Bloc             | No              | 
 
 
 Want support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=), or even better, [contribute](CONTRIBUTING.md), it's easy!
@@ -439,13 +455,15 @@ Due to its nature, Sniprun may have trouble with programs that :
 Begin by updating the plugin and running `:SnipReset` and then `:checkhealth sniprun`
 
 - **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `bash ./install.sh 1` as post-install to compile locally.
-- Terminal and Floating Window display mode do not work: Linked to [this](https://github.com/michaelb/sniprun/issues/70) issue, no fix found yet.
-- Jupyter-based interpreter fails: due to a race condition that may trigger on some computers, see (or open) related issues.
 
-## Changelog
+## Changelog && roadmap
+
+v1, the first stable version, is out!
 
 It's been quite a journey already. For history fans:
 [Changelog](CHANGELOG.md)
+
+The next version will include LSP support for very interesting mechanics, but is not planned yet, and won't be ready anytime soon.
 
 ## Contribute
 
@@ -459,11 +477,12 @@ I actually thought out the project structure so you only have to worry about one
 
 This: [vscode-code-runner](https://github.com/formulahendry/vscode-code-runner) but sniprun is an attempt to make the same kind of plugin for Neovim, and more feature-complete. Actually, it already is (more complete, more extendable).
 
-All [quickrun](https://github.com/thinca/vim-quickrun/blob/master/autoload/quickrun.vim) derivatives, but they are all different in the way they always all execute your entire file.
-The [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](https://github.com/hanschen/vim-ipython-cell) [codi](https://github.com/metakirby5/codi.vim) as well as [neoterm](https://github.com/kassio/neoterm) and [vim-slime](https://github.com/jpalardy/vim-slime) can also be used in such a way, though they are only working with languages that have a REPL.
-[vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is / will be [conjure](https://github.com/Olical/conjure), but they do things differently enough I made sniprun instead.
+- [quickrun](https://github.com/thinca/vim-quickrun) derivatives, but they are all different in the way they always all execute your entire file. The limitation to a single bash/vimscript command to compile and execute looks suboptimal to me.
 
-And many more projects, somewhat similar, but never quite, that I didn't notice or wanted to include.
+- [replvim](https://gitlab.com/HiPhish/repl.nvim) project, [vim-ipython-cell](https://github.com/hanschen/vim-ipython-cell) [codi](https://github.com/metakirby5/codi.vim) as well as [neoterm](https://github.com/kassio/neoterm) and [vim-slime](https://github.com/jpalardy/vim-slime) can also be used in such a way, though they are only working with languages that have a REPL.
+- [vimcmdline](https://github.com/jalvesaq/vimcmdline) is a close contender and so is / will be [conjure](https://github.com/Olical/conjure),and more recently [dash](https://github.com/jbyuki/dash.nvim) but they do things differently enough I made sniprun instead.
+
+And many more projects, somewhat similar, but never quite, that I didn't like, notice, and I'm apologizing for not including yours if you want so but it's very long already.
 
 
 ​
@@ -472,5 +491,6 @@ And many more projects, somewhat similar, but never quite, that I didn't notice 
 
 - **All-language support**. Sniprun can work with virtually any language, including compiled ones. If the language is not supported yet, anyone can create a sniprun interpreter for it!
 - **Better output**. Sniprun doesn't use precious screen space (like [codi](https://github.com/metakirby5/codi.vim) or [vim-slime](https://github.com/jpalardy/vim-slime)) by default (but it can).
-- **Promising evolution perspectives**: LSP usage is in the goals plan, to make testing/ running even better (with things like auto-fecthing variables & functions definitions). Those will comply at least with the File support level for a truly amazing experience. (I'll need some help with that though).
 - **Fast, extendable and maintainable**: this is not a 2k-lines vim script, nor an inherently limited one-liner. It's a Rust project designed to be as clear and "contribuable" as possible.
+
+In a future version, I hope to include LSP support for a truly amazing experience. That's a bit out of reach for now.
