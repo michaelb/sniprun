@@ -131,7 +131,9 @@ impl Interpreter for Language_subname {
         //     example_option = "--optimize-with-debug-info",
         //   }
         // },
-        let mut configurable_option = String::from("--optimize");
+
+        let mut configurable_option = String::from("--optimize"); // no debug info by default, for example
+
         if let Some(config_value) = self.get_interpreter_option("example_option") {
             if let Some(config_value_valid_string) = config_value.as_str() {
                 configurable_option = config_value_valid_string.to_string();
@@ -181,13 +183,11 @@ impl Interpreter for Language_subname {
 #[cfg(test)]
 mod test_language_subname {
     use super::*;
+    use serial_test::serial;
+
     #[test]
-    fn run_all() {
-        // test of the same interpreter MUST be run sequentially usually, since they use a file
-        // that can't be written  to concurrently
-        simple_print();
-        another_test();
-    }
+    #[serial] // multiple test of the same interpreter should run sequentially:
+              // after all, they write and read to the same dir/files
     fn simple_print() {
         let mut data = DataHolder::new();
 
@@ -202,6 +202,9 @@ mod test_language_subname {
         // -> compare result with predicted
         // assert_eq!(string_result, "HW, 1+1 = 2\n");
     }
+
+    #[test]
+    #[serial]
     fn another_test() {
         //another test
     }
