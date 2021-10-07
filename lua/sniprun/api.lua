@@ -1,5 +1,6 @@
 local M = {}
 M.listeners = {}
+M.closers = {}
 
 local sniprun = require('sniprun')
 local sniprun_path = vim.fn.fnamemodify( vim.api.nvim_get_runtime_file("lua/sniprun.lua", false)[1], ":p:h") .. "/.."
@@ -28,8 +29,16 @@ function M.register_listener(f)
 	print("Only functions can be registered")
     end
     assert(type(f) == 'function')
-
     table.insert(M.listeners, f)
 end
+
+function M.register_closer(f)
+    if type(f) ~= 'function' then
+	print("Only functions can be registered")
+    end
+    assert(type(f) == 'function')
+    table.insert(M.closers, f)
+end
+
 
 return M

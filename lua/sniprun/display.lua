@@ -80,6 +80,8 @@ function M.close_all()
   M.fw_close()
   M.clear_virtual_text()
   M.term_close()
+
+  M.close_api()
 end
 
 
@@ -147,5 +149,13 @@ function M.send_api(message, ok)
 	f(d)
     end
 end
+
+function M.close_api()
+    local listeners = require('sniprun.api').closers
+    for i,f in ipairs(listeners) do
+	f()
+    end
+end
+
 
 return M
