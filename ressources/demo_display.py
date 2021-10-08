@@ -3,6 +3,7 @@ import numpy as np
 
 print(a)
 print("''lol\"\"")
+a=1
 
 
 print(sys.platform)
