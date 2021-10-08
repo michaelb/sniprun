@@ -376,7 +376,7 @@ impl ReplLikeInterpreter for Python3_fifo {
             + "\", file=sys.stderr)\n";
 
         let all_code = self.imports.clone() + "\n" + &self.code;
-        self.code = start_mark + &start_mark_err + &all_code + &end_mark + &end_mark_err;
+        self.code = String::from("\nimport sys\n\n") + &start_mark + &start_mark_err + &all_code + &end_mark + &end_mark_err;
         Ok(())
     }
 
