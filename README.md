@@ -132,7 +132,7 @@ Sniprun will then:
 
 - Sniprun is compatible with **Linux** and **MacOS**. (Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install))
 
-- **Neovim** (version >= 0.5 for the latest goodies), but 0.4.x is supported up to sniprun v0.4.9 and the installer will take care of installing the latest version 'that works', though you may miss on new features, and you will need to use the [old vimscript way to configure](ressources/old_configuration.md).
+- **Neovim** version >= 0.5
 
 - [optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
 

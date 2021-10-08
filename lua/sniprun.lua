@@ -52,15 +52,6 @@ M.config_values = {
 
 M.config_up=0
 
-function M.load_vimscript_config()
-  local vimscript_config = {}
-  vimscript_config["repl_enable"] = vim.g.SnipRun_repl_behavior_enable or M.config_values["repl_enable"]
-  vimscript_config["repl_disable"] = vim.g.SnipRun_repl_behavior_disable or M.config_values["repl_disable"]
-  vimscript_config["selected_interpreters"] = vim.g.SnipRun_select_interpreters or M.config_values["selected_interpreters"]
-  vimscript_config["inline_messages"] = vim.g.SnipRun_inline_messages or M.config_values["inline_messages"]
-  return vimscript_config
-end
-
 
 function M.initial_setup()
   if M.config_up == 1 then return end
@@ -71,7 +62,7 @@ end
 
 
 function M.setup(opts)
-  opts = opts or M.load_vimscript_config()
+  opts = opts or {}
   if next(opts) == nil then return end
   for key,value in pairs(opts) do
     if M.config_values[key] == nil then
