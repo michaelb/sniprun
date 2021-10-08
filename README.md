@@ -81,7 +81,7 @@ An example in C, look in the command area:
 
 Python, R, Mathematica, Sage, Julia (all real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
 
-![](ressources/visual_assets/demo_repl.gif)
+![](ressources/visual_assets/demo_repl.png)
 
 ##### Does it deal with errors ?
 
