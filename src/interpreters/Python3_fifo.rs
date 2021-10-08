@@ -52,8 +52,12 @@ impl Python3_fifo {
                             info!("err to display : {:?}", err_to_display);
                             if !err_to_display.trim().is_empty() {
                                 info!("err found");
-                                if err_to_display.lines().count() > 1 {
-                                    err_to_display = err_to_display.lines().skip(1).collect();
+                                if err_to_display.lines().count() > 2 {
+                                    err_to_display = err_to_display
+                                        .lines()
+                                        .skip(2)
+                                        .collect::<Vec<&str>>()
+                                        .join("\n");
                                 }
 
                                 return Err(SniprunError::RuntimeError(err_to_display));
