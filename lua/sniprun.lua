@@ -282,7 +282,7 @@ end
 function M.info(arg)
   if arg == nil or arg == "" then
     M.config_values["sniprun_root_dir"] = sniprun_path
-    M.notify("info",1,1,M.config_values)
+    M.notify("info",1,1,M.config_values, "")
 
     if M.config_values.inline_messages ~= 0 then
       vim.wait(300) -- let enough time for the sniprun binary to generate the file
