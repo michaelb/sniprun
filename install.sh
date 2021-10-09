@@ -8,7 +8,7 @@ force_build=$1
 
 cargo_build() {
   if command -v cargo >/dev/null; then
-    echo "Building..."
+    echo "Building sniprun from source..."
     cargo build --release &>/dev/null
     echo "Done"
     return 0
@@ -17,23 +17,21 @@ cargo_build() {
     return 1
   fi
 }
+
 get_latest_release() {
   curl --silent "https://api.github.com/repos/michaelb/sniprun/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' # Pluck JSON value
 }
 
+# download the sniprun binary (of the specified version) from Releases
 download() {
-  # command -v curl >/dev/null &&
-  # curl --fail --location "$1" --output target/release/sniprun
-  echo "Downloading" $1
-  # curl -s https://api.github.com/repos/michaelb/sniprun/releases/$1 | grep "sniprun" | cut -d ":" -f 2,3 | tr -d \" | wget -qi -
+  echo "Downloading sniprun binary: " $1
   curl -fsSL https://github.com/michaelb/sniprun/releases/download/$1/sniprun --output sniprun
   mkdir -p target/release/
   mv -f sniprun target/release/
 }
 
+# call download, make executable, and return status
 fetch_prebuilt_binary() {
-  mkdir -p target/release
-
   if (download $1); then
     chmod a+x target/release/sniprun
     echo "Done"
@@ -44,7 +42,7 @@ fetch_prebuilt_binary() {
 }
 
 arch=$(uname)
-if [ $arch != "Linux" ]; then
+if [[ $arch != "Linux" && $force_build != 1 ]]; then
   echo "Looks you are not running Linux: Mac users have to compile sniprun themselves and thus need the Rust toolchain"
   force_build=1
 fi
@@ -69,23 +67,12 @@ else
     tag_to_fetch="v0.4.9"
   fi
 
+  fetch_prebuilt_binary $tag_to_fetch
+  success=$?
 
-  #check if release is up to date
-  success=1
-  if [ $local_version == $remote_version ]; then
-    echo "Trying to get a up-to-date precompiled binary"
-    fetch_prebuilt_binary $tag_to_fetch
-    success=$?
-  else
-    echo "Release version is not up to date, building from source"
-    cargo_build
-    success=$?
-  fi
-
-  # if nothing succeeded
+  # if download failed
   if [ $success == 1 ]; then
-    echo "Could not build (missing rust/cargo toolchain?). Getting an out-of-date release if available"
-    fetch_prebuilt_binary $tag_to_fetch # get an older release
+    echo "Failed to download sniprun, check your network or build locally?"
   fi
 fi
 

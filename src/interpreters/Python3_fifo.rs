@@ -20,14 +20,14 @@ impl Python3_fifo {
         out_path: String,
         err_path: String,
         id: u32,
-        ) -> Result<String, SniprunError> {
-        let end_mark = String::from("sniprun_finished_id=") + &id.to_string()+"\n";
+    ) -> Result<String, SniprunError> {
+        let end_mark = String::from("sniprun_finished_id=") + &id.to_string() + "\n";
         let start_mark = String::from("sniprun_started_id=") + &id.to_string();
 
         info!(
             "searching for things between {:?} and {:?}",
             start_mark, end_mark
-            );
+        );
 
         let mut out_contents = String::new();
         let mut err_contents = String::new();
@@ -46,12 +46,21 @@ impl Python3_fifo {
                     // info!("file : {:?}", contents);
                     if err_contents.contains(&end_mark) {
                         if let Some(index) = err_contents.rfind(&start_mark) {
-                            let err_to_display = err_contents[index + start_mark.len()
-                                ..err_contents.len() - end_mark.len() - 1]
+                            let mut err_to_display = err_contents
+                                [index + start_mark.len()..err_contents.len() - end_mark.len() - 1]
                                 .to_owned();
                             info!("err to display : {:?}", err_to_display);
                             if !err_to_display.trim().is_empty() {
                                 info!("err found");
+                                if err_to_display.lines().count() > 2 {
+                                    let mut err_to_display_vec = err_to_display
+                                        .lines()
+                                        .skip(2)
+                                        .collect::<Vec<&str>>();
+                                    err_to_display_vec.dedup();
+                                    err_to_display = err_to_display_vec.join("\n");
+                                }
+
                                 return Err(SniprunError::RuntimeError(err_to_display));
                             }
                         }
@@ -70,9 +79,9 @@ impl Python3_fifo {
                     if out_contents.contains(&end_mark) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark).unwrap();
-                        return Ok(out_contents[index + start_mark.len()
-                                  ..out_contents.len() - end_mark.len() - 1]
-                                  .to_owned());
+                        return Ok(out_contents
+                            [index + start_mark.len()..out_contents.len() - end_mark.len() - 1]
+                            .to_owned());
                     }
                 }
             }
@@ -108,26 +117,26 @@ impl Python3_fifo {
 
         if !self
             .data
-                .current_bloc
-                .replace(&[' ', '\t', '\n', '\r'][..], "")
-                .is_empty()
-                {
-                    self.code = self.data.current_bloc.clone();
-                }
+            .current_bloc
+            .replace(&[' ', '\t', '\n', '\r'][..], "")
+            .is_empty()
+        {
+            self.code = self.data.current_bloc.clone();
+        }
         for line in v.iter() {
             // info!("lines are : {}", line);
             if (line.trim().starts_with("import ") || line.trim().starts_with("from"))  //basic selection
                 && !line.trim().starts_with('#')
                     && self.module_used(line, &self.code)
-                    {
-                        // embed in try catch blocs in case uneeded module is unavailable
+            {
+                // embed in try catch blocs in case uneeded module is unavailable
 
-                        let already_imported: String = self.read_previous_code();
-                        if !already_imported.contains(line) {
-                            self.imports = self.imports.clone() + "\n" + line;
-                            self.save_code(already_imported + "\n" + line);
-                        }
-                    }
+                let already_imported: String = self.read_previous_code();
+                if !already_imported.contains(line) {
+                    self.imports = self.imports.clone() + "\n" + line;
+                    self.save_code(already_imported + "\n" + line);
+                }
+            }
         }
         info!("import founds : {:?}", self.imports);
         Ok(())
@@ -136,7 +145,7 @@ impl Python3_fifo {
         info!(
             "checking for python module usage: line {} in code {}",
             line, code
-            );
+        );
         if line.contains('*') {
             return true;
         }
@@ -147,15 +156,15 @@ impl Python3_fifo {
         }
         for name in line
             .replace(",", " ")
-                .replace("from", " ")
-                .replace("import ", " ")
-                .split(' ')
-                .filter(|&x| !x.is_empty())
-                {
-                    if code.contains(name.trim()) {
-                        return true;
-                    }
-                }
+            .replace("from", " ")
+            .replace("import ", " ")
+            .split(' ')
+            .filter(|&x| !x.is_empty())
+        {
+            if code.contains(name.trim()) {
+                return true;
+            }
+        }
         false
     }
 
@@ -263,21 +272,21 @@ impl Interpreter for Python3_fifo {
         self.fetch_imports()?;
         if !self
             .data
-                .current_bloc
-                .replace(&[' ', '\t', '\n', '\r'][..], "")
-                .is_empty()
-                && self.get_current_level() >= SupportLevel::Bloc
-                {
-                    self.code = self.data.current_bloc.clone();
-                } else if !self.data.current_line.replace(" ", "").is_empty()
-                    && self.get_current_level() >= SupportLevel::Line
-                    {
-                        self.code = self.data.current_line.clone();
-                    } else {
-                        self.code = String::from("");
-                    }
+            .current_bloc
+            .replace(&[' ', '\t', '\n', '\r'][..], "")
+            .is_empty()
+            && self.get_current_level() >= SupportLevel::Bloc
+        {
+            self.code = self.data.current_bloc.clone();
+        } else if !self.data.current_line.replace(" ", "").is_empty()
+            && self.get_current_level() >= SupportLevel::Line
+        {
+            self.code = self.data.current_line.clone();
+        } else {
+            self.code = String::from("");
+        }
 
-                Ok(())
+        Ok(())
     }
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         Ok(())
@@ -288,14 +297,13 @@ impl Interpreter for Python3_fifo {
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
         Err(SniprunError::InterpreterLimitationError(
-                "Python3_fifo only works in REPL mode, please enable it".to_owned(),
-                ))
+            "Python3_fifo only works in REPL mode, please enable it".to_owned(),
+        ))
     }
 }
 
 impl ReplLikeInterpreter for Python3_fifo {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
-
         if !self.read_previous_code().is_empty() {
             // nothing to do, kernel already running
             info!("Python3 kernel already running");
@@ -308,12 +316,13 @@ impl ReplLikeInterpreter for Python3_fifo {
             } else {
                 info!("Could not retrieve a previous id even if the kernel is running");
                 info!("This was in saved code: {}", self.read_previous_code());
-                return Err(SniprunError::CustomError("Sniprun failed to connect to the running kernel, please SnipReset".to_string()));
+                return Err(SniprunError::CustomError(
+                    "Sniprun failed to connect to the running kernel, please SnipReset".to_string(),
+                ));
             }
 
             self.fetch_code()?;
             Ok(())
-
         } else {
             self.fetch_config();
             // launch everything
@@ -323,16 +332,16 @@ impl ReplLikeInterpreter for Python3_fifo {
             info!(
                 "launching kernel : {:?} on {:?}",
                 init_repl_cmd, &self.cache_dir
-                );
+            );
 
             match daemon() {
                 Ok(Fork::Child) => {
                     let _res = Command::new("bash")
                         .args(&[
-                              init_repl_cmd,
-                              self.cache_dir.clone(),
-                              self.interpreter.clone()
-                              + " -ic 'import sys; sys.ps1=\"\";sys.ps2=\"\"'",
+                            init_repl_cmd,
+                            self.cache_dir.clone(),
+                            self.interpreter.clone()
+                                + " -ic 'import sys; sys.ps1=\"\";sys.ps2=\"\"'",
                         ])
                         .output()
                         .unwrap();
@@ -340,13 +349,13 @@ impl ReplLikeInterpreter for Python3_fifo {
                     std::thread::sleep(pause);
 
                     return Err(SniprunError::CustomError(
-                            "Timeout expired for python3 REPL".to_owned(),
-                            ));
+                        "Timeout expired for python3 REPL".to_owned(),
+                    ));
                 }
                 Ok(Fork::Parent(_)) => {}
                 Err(_) => info!(
                     "Python3_fifo could not fork itself to the background to launch the kernel"
-                    ),
+                ),
             };
 
             let pause = std::time::Duration::from_millis(100);
@@ -354,10 +363,9 @@ impl ReplLikeInterpreter for Python3_fifo {
             self.save_code("kernel_launched\nimport sys".to_owned());
 
             Err(SniprunError::CustomError(
-                    "Python3 kernel launched, re-run your snippet".to_owned(),
-                    ))
+                "Python3 kernel launched, re-run your snippet".to_owned(),
+            ))
         }
-
     }
 
     fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
@@ -375,8 +383,13 @@ impl ReplLikeInterpreter for Python3_fifo {
             + &self.current_output_id.to_string()
             + "\", file=sys.stderr)\n";
 
-        let all_code = self.imports.clone() + "\n" + &self.code;
-        self.code = start_mark + &start_mark_err + &all_code + &end_mark + &end_mark_err;
+        let all_code = self.imports.clone() + "\n" + &self.code + "\n\n";
+        self.code = String::from("\nimport sys\n\n")
+            + &start_mark
+            + &start_mark_err
+            + &all_code
+            + &end_mark
+            + &end_mark_err;
         Ok(())
     }
 
@@ -426,5 +439,13 @@ mod test_python3_fifo {
         let mut interpreter = Python3_fifo::new(data);
         let res = interpreter.run_at_level_repl(SupportLevel::Bloc);
         assert!(res.is_err());
+    }
+
+    #[test]
+    fn module_usage() {
+        let data = DataHolder::new();
+        let interpreter = Python3_fifo::new(data);
+        assert!(interpreter.module_used("import numpy as np", "print(np.array([1,2,3]))"));
+        assert!(!interpreter.module_used("import numpy", "print(np.array([1,2,3]))"));
     }
 }

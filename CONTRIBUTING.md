@@ -31,7 +31,7 @@ I just finished some changes, how do I test my code quickly?
 
 Is _my_ code running?
 
--> Assert that the file type detected by Neovim is contained in your list of supported file types. If there is already a implementation for your filetype/language, set (temporarly) your max support level to "Selected", or run something like `:lua require'sniprun'.setup({selected_interpreters = {'<name>'}})` before `:SnipRun` .
+-> Assert that the file type detected by Neovim is contained in your list of supported file types. If there is already a implementation for your filetype/language, set (temporarly) your max support level to "Selected", or run something like `:lua require'sniprun'.setup({selected_interpreters = {'<name>'}})` before `:SnipRun` . `SnipInfo` will then tell you what interpreter will be used on an opened file.
 
 ---
 
@@ -50,7 +50,7 @@ Failing user code compilation or incorrect user code panicking should be handled
 
 My interpreter does not produce any output..?!
 
--> It's because your code is panicking. (unwrapping a `None` or these kind of things). Check the logs at ~/.cache/sniprun/sniprun.log .
+-> It's because your code is panicking. (unwrapping a `None` or these kind of things). Check the logs at ~/.cache/sniprun/sniprun.log for any interrpution, and see where your code can panic! .
 
 ---
 
@@ -62,7 +62,7 @@ I need to import some external dependencies.
 
 I need more than one file to write complicated code...
 
--> You can have a subfolder alongside your file (same name to prevent confusion and conflicts) and put some other code inside as you see fit.
+-> You can have a subfolder alongside your file (same name to prevent confusion and conflicts) and put some other code inside as you see fit. See the example.rs file: inside your work\_dir, you are free to do whatever you want
 
 ---
 
@@ -87,21 +87,21 @@ I lack the ReplLikeInterpreter trait implementation and don't want to do REPL-li
 My tests are inconsistent ..?!?
 
 -> Rust tests are run in parallel, and therefore a race condition may occur when writing to files and compiling.
-Run with `cargo test -- --test-threads=1` .
+Run with `cargo test -- --test-threads=1` or use the #[serial] attribute which you will probably need to pass the CI pipeline anyway.
 
 ---
 My tests fail in the CI pipeline
 
--> The CI has limited capabilities, especially about the REPL functionnality. Tag your non-working-in-CI tests with '#[cfg_attr(feature = "ignore_in_ci", ignore)]'
+-> The CI has limited capabilities, especially about the REPL functionnality. Tag your non-working-in-CI tests with '#[cfg\_attr(feature = "ignore\_in\_ci", ignore)]'
 
 ---
 I think I've done a good job, but am I ready to submit a PR?
 
--> You should check beforehand that the output of `cargo test -- --test-threads=1` and your own tests are satisfying. You've added the proper and necessary tests, and have documented any edge case in doc/.
+-> You should check beforehand that the output of `cargo test --release` and your own tests are satisfying. You've added the proper and necessary tests, and have documented any edge case in doc/.
 
 --- 
 REPL - based ?
-Mathematica\_original has a pipe (UNIX fifo) - based ReplLikeInterpreter implementation, that may be useful if your language has an interpreter with proper stdio support. Building everything from Rust doesn't quite work yet, so there is a bash script in src/interpreters/Mathematica\_original/init\_repl.sh
+Mathematica\_original has a pipe (UNIX fifo) - based ReplLikeInterpreter implementation, that may be useful if your language has an interpreter with proper stdio support. Building everything from Rust doesn't quite work yet, so there is a bash script in src/interpreters/Mathematica\_original/init\_repl.sh which can be of some use.
 
 ### What's the deal with...
 
@@ -115,7 +115,7 @@ Mathematica\_original has a pipe (UNIX fifo) - based ReplLikeInterpreter impleme
 
 A program (struct with methods) that can fetch code, execute it and return the result is called an interpreter.
 
-- The interpreter main file is named \<Language_name\>\_\<Differentiator\>.rs; for example "Python3_Lsp.rs", case-independent.
+- The interpreter main file is named \<Language\_name\>\_\<Differentiator\>.rs; for example "Python3\_Lsp.rs", case-independent.
 - The interpreter main file contains a struct has the **exact same name** as the file (minus the .rs extension).
 - Names for interpreters should be unique. Include filenames, and also the name returned by `get_name()` that should be identical (case difference is tolerated).
 - Extra files for the same interpreter go into a subdfolder alongside the interpreter's main file. The subfolder has the same name as the file, minus the extension.
