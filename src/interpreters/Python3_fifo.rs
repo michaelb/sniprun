@@ -440,4 +440,12 @@ mod test_python3_fifo {
         let res = interpreter.run_at_level_repl(SupportLevel::Bloc);
         assert!(res.is_err());
     }
+
+    #[test]
+    fn module_usage() {
+        let data = DataHolder::new();
+        let interpreter = Python3_fifo::new(data);
+        assert!(interpreter.module_used("import numpy as np", "print(np.array([1,2,3]))"));
+        assert!(!interpreter.module_used("import numpy", "print(np.array([1,2,3]))"));
+    }
 }
