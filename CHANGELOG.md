@@ -1,8 +1,13 @@
-## v0.5.11
+## v1.0.0
 - LCOV coverage
-- Many (non-REPL) interpreter accept cli arguments when invoked from `:%SnipRun <args>`
+- Many (non inherently REPL) interpreters accept cli arguments when invoked from `:%SnipRun <args>`
+- Deperecate vimscript configuration
+- Update documentation, README and example
 
-## v0.5.10
+## v0.5.10-orgmodepatch
+- orgmode fixes (indented blocks)
+
+## v0.5.10 
 - SageMath & orgmode support
 - API
 - nvim-notify display method
