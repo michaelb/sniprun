@@ -53,11 +53,12 @@ impl Python3_fifo {
                             if !err_to_display.trim().is_empty() {
                                 info!("err found");
                                 if err_to_display.lines().count() > 2 {
-                                    err_to_display = err_to_display
+                                    let mut err_to_display_vec = err_to_display
                                         .lines()
                                         .skip(2)
-                                        .collect::<Vec<&str>>()
-                                        .join("\n");
+                                        .collect::<Vec<&str>>();
+                                    err_to_display_vec.dedup();
+                                    err_to_display = err_to_display_vec.join("\n");
                                 }
 
                                 return Err(SniprunError::RuntimeError(err_to_display));
@@ -382,7 +383,7 @@ impl ReplLikeInterpreter for Python3_fifo {
             + &self.current_output_id.to_string()
             + "\", file=sys.stderr)\n";
 
-        let all_code = self.imports.clone() + "\n" + &self.code;
+        let all_code = self.imports.clone() + "\n" + &self.code + "\n\n";
         self.code = String::from("\nimport sys\n\n")
             + &start_mark
             + &start_mark_err
