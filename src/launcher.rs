@@ -79,9 +79,8 @@ impl Launcher {
             file.read_to_string(&mut content)?;
             info!("[INFO] Retrieved asciiart");
             v.push(content);
-            v.push("\n".to_owned());
         } else {
-            v.push(String::from("SNIPRUN\n"));
+            v.push(String::from("SNIPRUN"));
         }
 
         let gitscript = self.data.sniprun_root_dir.clone() + "/ressources/gitscript.sh";
@@ -112,21 +111,21 @@ impl Launcher {
 
         v.push("\nAvailable interpreters and languages".to_owned());
 
-        let separator = "|--------------------------|--------------|---------------|-------------|------------|--------------|------------|".to_string();
+        let separator = "|--------------------------|--------------|---------------|-------------|------------|--------------|".to_string();
         v.push(separator.clone());
-        v.push("| Interpreter              | Language     | Support Level | Default for |    REPL    | REPL enabled |    LSP     |".to_string());
-        v.push("|                          |              |               |  filetype   | capability |  by default  | capability |".to_string());
+        v.push("| Interpreter              | Language     | Support Level | Default for |    REPL    | REPL enabled |".to_string());
+        v.push("|                          |              |               |  filetype   | capability |  by default  |".to_string());
 
         let mut temp_vec = vec![];
         iter_types! {
-            let line = format!("| {:<25}| {:<13}| {:<14}|{:^13}|{:^12}|{:^14}|{:^12}|",
+            let line = format!("| {:<25}| {:<13}| {:<14}|{:^13}|{:^12}|{:^14}|",
                     Current::get_name(),
                     Current::get_supported_languages().get(0).unwrap_or(&"".to_string()),
                     Current::get_max_support_level().to_string(),
                     match Current::default_for_filetype() {true => "yes" ,false => "no"},
                     match Current::has_repl_capability() { true => "yes" ,false => "no"},
                     match Current::behave_repl_like_default() { true => "yes" ,false => "no"},
-                    match Current::has_lsp_capability() { true => "yes" ,false => "no"}
+                    // match Current::has_lsp_capability() { true => "yes" ,false => "no"}
                     );
             temp_vec.push(line);
         }
@@ -141,7 +140,7 @@ impl Launcher {
         }
 
         v.push(separator);
-        v.push("More help, quickstart and config options refresher can be found from:\n:help sniprun\n".to_owned());
+        v.push("More help, quickstart and config options refresher can be found from: ':help sniprun'\n".to_owned());
 
         if self.data.return_message_type == ReturnMessageType::Multiline {
             info!("[INFO] Returning info directly");
