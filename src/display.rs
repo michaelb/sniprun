@@ -9,13 +9,13 @@ use std::sync::{Arc, Mutex};
 #[derive(Clone, Debug, Ord, PartialOrd, PartialEq, Eq)]
 pub enum DisplayType {
     Classic = 0,
+    NvimNotify,
     VirtualTextOk,
     VirtualTextErr,
     Terminal,
     LongTempFloatingWindow,
     TempFloatingWindow,
     Api,
-    NvimNotify,
 }
 use DisplayType::*;
 
@@ -101,14 +101,17 @@ pub fn send_api(
         Ok(result) => {
             let mut nvim_instance = nvim.lock().unwrap();
             nvim_instance.command_async(&format!(
-            "lua require\"sniprun.display\".send_api(\"{}\", true)",
-            no_output_wrap(result, data, &DisplayType::Terminal),
-        ))},
-        Err(result) => {let mut nvim_instance = nvim.lock().unwrap();
+                "lua require\"sniprun.display\".send_api(\"{}\", true)",
+                no_output_wrap(result, data, &DisplayType::Terminal),
+            ))
+        }
+        Err(result) => {
+            let mut nvim_instance = nvim.lock().unwrap();
             nvim_instance.command_async(&format!(
-            "lua require\"sniprun.display\".send_api(\"{}\", false)",
-            no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
-        ))},
+                "lua require\"sniprun.display\".send_api(\"{}\", false)",
+                no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
+            ))
+        }
     };
     info!("!done displyaing notify");
 }
@@ -123,7 +126,11 @@ pub fn display_virtual_text(
         return; //don't display unasked-for things
     }
 
-    let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
+    let namespace_id = nvim
+        .lock()
+        .unwrap()
+        .create_namespace("sniprun")
+        .unwrap();
     info!("namespace_id = {:?}", namespace_id);
 
     let last_line = data.range[1] - 1;
@@ -147,7 +154,7 @@ pub fn display_virtual_text(
             .is_empty()
             {
                 return;
-            } 
+            }
             nvim.lock().unwrap().command(&format!(
                 "lua require\"sniprun.display\".display_extmark({},{},\"{}\",\"{}\")",
                 namespace_id,
@@ -159,8 +166,7 @@ pub fn display_virtual_text(
                 )),
                 hl_ok
             ))
-
-           }
+        }
         Err(message_err) => {
             if shorten_err(&no_output_wrap(
                 &message_err.to_string(),
@@ -331,7 +337,7 @@ fn cleanup_and_escape(message: &str) -> String {
         .trim_start_matches('\n')
         .trim_end_matches('\n')
         .to_string();
-    
+
     answer_str.replace("\n", "\\\n")
 }
 

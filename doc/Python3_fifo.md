@@ -15,3 +15,5 @@ require'sniprun'.setup({
     repl_enable = {'Python3_fifo'},
 })
 ```
+
+if a snippet produce an error important enough to crash the interpreter, you may be required to re-launch the kernel (with a `SnipRun`)

@@ -60,6 +60,14 @@ end
 sa.register_listener(api_listener)
 ```
 
+​
+
+If your function requires to be manually closed (on `SnipClose`), you can register a closer the same way:
+
+```
+sa.register_closer(custom_function)
+```
+
 
 ## Warnings
 

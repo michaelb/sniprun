@@ -1,10 +1,23 @@
-import sys
 import numpy as np
 
-print(a)
-print("''lol\"\"")
+
+def fact(n):
+    if type(n) is not int or n < 0:
+        print("Argument must be a positive integer")
+    if n == 0:
+        return 1
+    return n * fact(n-1)
 
 
-print(sys.platform)
+# Can you spot the error in fact()?
 
-print(np.array([1, 1, sys.platform]))
+There can be invalid & unfinished code here
+a = 5 / 0
+
+
+# Now testing things
+
+
+
+
+

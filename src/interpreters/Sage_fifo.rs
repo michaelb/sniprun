@@ -404,12 +404,12 @@ impl ReplLikeInterpreter for Sage_fifo {
 
     fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
         self.add_boilerplate()?;
-        let start_mark = String::from("\nprint(\"sniprun_started_id=")
+        let start_mark = String::from("\n\nprint(\"sniprun_started_id=")
             + &self.current_output_id.to_string()
-            + "\")\n";
-        let end_mark = String::from("\nprint(\"sniprun_finished_id=")
+            + "\")\n\n";
+        let end_mark = String::from("\n\nprint(\"sniprun_finished_id=")
             + &self.current_output_id.to_string()
-            + "\")\n";
+            + "\")\n\n";
         let start_mark_err = String::from("\nprint(\"sniprun_started_id=")
             + &self.current_output_id.to_string()
             + "\", file=sys.stderr)\n";
@@ -418,7 +418,7 @@ impl ReplLikeInterpreter for Sage_fifo {
             + "\", file=sys.stderr)\n";
 
         let all_code = self.imports.clone() + "\n" + &self.code;
-        self.code = start_mark + &start_mark_err + &all_code + &end_mark + &end_mark_err;
+        self.code = String::from("\nimport sys\n\n") + &start_mark + &start_mark_err + &all_code + &end_mark + &end_mark_err;
         Ok(())
     }
 
