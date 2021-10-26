@@ -63,7 +63,6 @@ end
 
 function M.setup(opts)
   opts = opts or {}
-  if next(opts) == nil then return end
   for key,value in pairs(opts) do
     if M.config_values[key] == nil then
       error(string.format('[Sniprun] Key %s does not exist in config values',key))
