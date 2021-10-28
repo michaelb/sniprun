@@ -322,7 +322,7 @@ function M.health()
   local terminate_after = M.job_id == nil
   local path_log_file = os.getenv('HOME').."/.cache/sniprun/sniprun.log"
   local path_log_file_mac = os.getenv('HOME').."/Library/Caches/sniprun/sniprun.log"
-  os.remove(path_log_file)
+  -- os.remove(path_log_file)
 
   -- check if the log is recreated
   M.ping()
