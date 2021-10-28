@@ -1,3 +1,7 @@
+## v1.0.2
+- fix issue with API functions & callbacks
+- fix double checkhealt crash issue
+
 ## v1.0.1
 - fix issue when using sniprun with an empty config
 
