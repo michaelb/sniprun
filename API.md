@@ -60,6 +60,8 @@ end
 sa.register_listener(api_listener)
 ```
 
+(You must also enable the 'Api' display option, and in this particular case where things are printed to the command line area, disabling 'Classic' is recommended)
+
 ​
 
 If your function requires to be manually closed (on `SnipClose`), you can register a closer the same way:

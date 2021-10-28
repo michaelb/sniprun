@@ -1,7 +1,7 @@
 use crate::error::SniprunError;
 use crate::{DataHolder, ReturnMessageType};
 use log::info;
-use neovim_lib::{Neovim, NeovimApi, NeovimApiAsync};
+use neovim_lib::{Neovim, NeovimApi};
 use std::fmt;
 use std::str::FromStr;
 use std::sync::{Arc, Mutex};
@@ -97,23 +97,27 @@ pub fn send_api(
     nvim: &Arc<Mutex<Neovim>>,
     data: &DataHolder,
 ) {
-    match message {
+    let res = match message {
         Ok(result) => {
             let mut nvim_instance = nvim.lock().unwrap();
-            nvim_instance.command_async(&format!(
+            nvim_instance.command(&format!(
                 "lua require\"sniprun.display\".send_api(\"{}\", true)",
                 no_output_wrap(result, data, &DisplayType::Terminal),
             ))
         }
         Err(result) => {
             let mut nvim_instance = nvim.lock().unwrap();
-            nvim_instance.command_async(&format!(
+            nvim_instance.command(&format!(
                 "lua require\"sniprun.display\".send_api(\"{}\", false)",
                 no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
             ))
         }
     };
-    info!("!done displyaing notify");
+    if res.is_ok() {
+        info!("done displaying api");
+    } else {
+        info!("failed to display via api");
+    }
 }
 
 pub fn display_virtual_text(

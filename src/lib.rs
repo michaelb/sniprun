@@ -210,7 +210,7 @@ impl EventHandler {
         }
 
         info!("values length: {}", values.len());
-        let cli_args = values[3].as_str().unwrap();
+        let cli_args = values[3].as_str().unwrap_or({info!("cli arguments are not a string");""});
         {
             if !cli_args.is_empty() {
                 self.data.cli_args = cli_args.split(' ').map(|s| s.to_string()).collect();
@@ -366,11 +366,11 @@ impl EventHandler {
     }
 
     pub fn override_data(&mut self, values: Vec<Value>) {
-        if values.len() < 4 {
+        if values.len() < 5 {
             info!("[OVERRIDE] No data to override");
             return;
         }
-        if let Some(override_map) = values[3].as_map() {
+        if let Some(override_map) = values[4].as_map() {
             {
                 if let Some(i) = self.index_from_name("filetype", override_map) {
                     if let Some(filetype_str) = override_map[i].1.as_str() {
