@@ -138,7 +138,6 @@ function M.send_api(message, ok)
     else
 	d.status = "error"
     end
-
     local listeners = require('sniprun.api').listeners
     
     if type(next(listeners)) == "nil" then

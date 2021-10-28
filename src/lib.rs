@@ -202,7 +202,7 @@ impl EventHandler {
 
     /// fill the DataHolder with data from sniprun and Neovim
     pub fn fill_data(&mut self, values: &[Value]) {
-        info!("[FILLDATA_ENTRY] received data from RPC: {:?}", values);
+        // info!("[FILLDATA_ENTRY] received data from RPC: {:?}", values);
         let config = values[2].as_map().unwrap();
         {
             self.data.interpreter_data = Some(self.interpreter_data.clone());
