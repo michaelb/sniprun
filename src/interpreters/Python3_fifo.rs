@@ -170,7 +170,7 @@ impl Python3_fifo {
 
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("python3");
-        if let Some(used_interpreter) = self.get_interpreter_option("interpreter") {
+        if let Some(used_interpreter) = Python3_fifo::get_interpreter_option(&self.get_data(), "interpreter") {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
                 self.interpreter = interpreter_string.to_string();
@@ -179,7 +179,7 @@ impl Python3_fifo {
         self.interpreter = default_interpreter;
 
         if let Ok(path) = env::current_dir() {
-            if let Some(venv_array_config) = self.get_interpreter_option("venv") {
+            if let Some(venv_array_config) = Python3_fifo::get_interpreter_option(&self.get_data(), "venv") {
                 if let Some(actual_vec_of_venv) = venv_array_config.as_array() {
                     for possible_venv in actual_vec_of_venv.iter() {
                         if let Some(possible_venv_str) = possible_venv.as_str() {

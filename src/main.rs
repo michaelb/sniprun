@@ -1,5 +1,3 @@
-
-
 fn main() {
     sniprun::start();
 }

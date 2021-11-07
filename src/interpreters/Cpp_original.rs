@@ -48,7 +48,7 @@ impl Cpp_original {
 
     fn fetch_config(&mut self) {
         let default_compiler = String::from("g++");
-        if let Some(used_compiler) = self.get_interpreter_option("compiler") {
+        if let Some(used_compiler) = Cpp_original::get_interpreter_option(&self.get_data(), "compiler") {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
                 self.compiler = compiler_string.to_string();

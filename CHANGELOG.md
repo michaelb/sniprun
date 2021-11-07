@@ -1,3 +1,6 @@
+## v1.0.3
+- configurable filetypes
+
 ## v1.0.2
 - fix issue with API functions & callbacks
 - fix double checkhealt crash issue

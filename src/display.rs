@@ -130,11 +130,7 @@ pub fn display_virtual_text(
         return; //don't display unasked-for things
     }
 
-    let namespace_id = nvim
-        .lock()
-        .unwrap()
-        .create_namespace("sniprun")
-        .unwrap();
+    let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
     info!("namespace_id = {:?}", namespace_id);
 
     let last_line = data.range[1] - 1;

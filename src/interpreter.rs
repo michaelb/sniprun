@@ -177,7 +177,7 @@ pub trait InterpreterUtils {
 
     fn set_pid(&self, pid: u32);
     fn get_pid(&self) -> Option<u32>;
-    fn get_interpreter_option(&self, option: &str) -> Option<neovim_lib::Value>;
+    fn get_interpreter_option(data: &DataHolder, option: &str) -> Option<neovim_lib::Value>;
 }
 
 impl<T: Interpreter> InterpreterUtils for T {
@@ -207,7 +207,6 @@ impl<T: Interpreter> InterpreterUtils for T {
         let data = self.get_data();
         if data.interpreter_data.is_none() {
             info!("Unable to save code for next usage");
-            
         } else {
             {
                 data.interpreter_data.clone().unwrap().lock().unwrap().owner = T::get_name();
@@ -260,7 +259,7 @@ impl<T: Interpreter> InterpreterUtils for T {
     }
 
     /// get an intepreter option
-    fn get_interpreter_option(&self, option: &str) -> Option<neovim_lib::Value> {
+    fn get_interpreter_option(data: &DataHolder, option: &str) -> Option<neovim_lib::Value> {
         fn index_from_name(
             name: &str,
             config: &[(neovim_lib::Value, neovim_lib::Value)],
@@ -274,7 +273,7 @@ impl<T: Interpreter> InterpreterUtils for T {
             None
         }
         // this is the ugliness required to fetch something from the interpreter options
-        if let Some(config) = &self.get_data().interpreter_options {
+        if let Some(config) = &data.interpreter_options {
             if let Some(ar) = config.as_map() {
                 if let Some(i) = index_from_name("interpreter_options", ar) {
                     if let Some(ar2) = ar[i].1.as_map() {

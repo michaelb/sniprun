@@ -274,7 +274,12 @@ require'sniprun'.setup({
   repl_enable = {},               --# enable REPL-like behavior for the given interpreters
   repl_disable = {},              --# disable REPL-like behavior for the given interpreters
 
-  interpreter_options = {},       --# intepreter-specific options, consult docs / :SnipInfo <name>
+  interpreter_options = {         --# intepreter-specific options, see docs / :SnipInfo <name>
+    GFM_original = {
+      use_on_filetypes = {"markdown.pandoc"}    --# the 'use_on_filetypes' configuration key is
+                                                --# available for every interpreter
+    }
+  },      
 
   --# you can combo different display modes as desired
   display = {
@@ -317,7 +322,7 @@ EOF
 Example, to use the interpreter 'Python3\_jupyter' whenever possible [instead of the 'Python3\_original' default],
 `lua require'sniprun'.setup({selected_interpreters = {'Python3_jupyter'}})`
 
-**NOTE**: Some interpreters have specific options and dependencies, such as what version / compiler to use: you cand find more about that with `:SnipInfo <interpreter_name>`
+**NOTE**: Some interpreters have specific options and dependencies, such as what version / compiler to use: you cand find more about that with `:SnipInfo <interpreter_name>`. The `use_on_filetypes` key is available for every interpreter (as an `interpreter_option`) and allow sniprun to understand that your particular/custom filetypes are compatible with an interpreter.
 
 
 ​

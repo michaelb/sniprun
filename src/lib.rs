@@ -210,7 +210,10 @@ impl EventHandler {
         }
 
         info!("values length: {}", values.len());
-        let cli_args = values[3].as_str().unwrap_or({info!("cli arguments are not a string");""});
+        let cli_args = values[3].as_str().unwrap_or({
+            info!("cli arguments are not a string");
+            ""
+        });
         {
             if !cli_args.is_empty() {
                 self.data.cli_args = cli_args.split(' ').map(|s| s.to_string()).collect();
