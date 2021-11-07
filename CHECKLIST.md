@@ -2,6 +2,7 @@
 
  - check compilation success
  - update Cargo.lock: `cargo update`
+ - Bump Cargo.toml to next version
  - cargo fmt --all / cargo check / cargo clippy
  - create a version bump commit
  - merge
@@ -12,4 +13,3 @@
 
  - Check CI status
  - Check Releases status
- - Bump Cargo.toml to next version
