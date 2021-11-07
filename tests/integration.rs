@@ -1,7 +1,7 @@
-use sniprun::*;
 use sniprun::interpreter::{Interpreter, InterpreterUtils, ReplLikeInterpreter, SupportLevel};
 use sniprun::interpreters::JS_original;
-use std::sync::{Arc,Mutex};
+use sniprun::*;
+use std::sync::{Arc, Mutex};
 
 #[test]
 fn test_implements() {
@@ -28,13 +28,15 @@ fn test_implements() {
 
 #[test]
 fn test_miscellaneous() {
-    for level in [SupportLevel::Unsupported,
-                  SupportLevel::Line,
-                  SupportLevel::Bloc,
-                  SupportLevel::Import,
-                  SupportLevel::File,
-                  SupportLevel::Project,
-                  SupportLevel::Selected] {
+    for level in [
+        SupportLevel::Unsupported,
+        SupportLevel::Line,
+        SupportLevel::Bloc,
+        SupportLevel::Import,
+        SupportLevel::File,
+        SupportLevel::Project,
+        SupportLevel::Selected,
+    ] {
         println!("{}", level);
     }
 
@@ -47,7 +49,6 @@ fn test_miscellaneous() {
     assert!(i.build_repl().is_ok());
     assert!(i.execute_repl().is_err());
 }
-
 
 #[test]
 fn test_interpreter_utils() {
@@ -75,4 +76,3 @@ fn test_interpreter_utils() {
     let string_result = res.unwrap();
     assert_eq!(string_result, "Hello, World!\n");
 }
-

@@ -1,3 +1,4 @@
+use crate::interpreter::InterpreterUtils;
 use crate::*;
 use error::SniprunError;
 use interpreter::{Interpreter, SupportLevel};
@@ -12,6 +13,26 @@ pub struct Launcher {
 impl Launcher {
     pub fn new(data: DataHolder) -> Self {
         Launcher { data }
+    }
+
+    fn match_filetype<T>(filetype: String, data: &DataHolder) -> bool
+    where
+        T: Interpreter,
+    {
+        if T::get_supported_languages().contains(&filetype) {
+            return true;
+        }
+
+        if let Some(configured_filetypes) = T::get_interpreter_option(data, "use_on_filetypes") {
+            if let Some(ft_array) = configured_filetypes.as_array() {
+                return ft_array
+                    .iter()
+                    .map(|f| f.as_str().unwrap_or("####").to_owned())
+                    .any(|f| f == filetype);
+            }
+        }
+
+        false
     }
 
     pub fn select_and_run(&self) -> Result<String, SniprunError> {
@@ -46,7 +67,7 @@ impl Launcher {
         //select the best interpreter for the language
         let mut skip_all = false;
         iter_types! {
-            if Current::get_supported_languages().contains(&self.data.filetype){
+            if Launcher::match_filetype::<Current>(self.data.filetype.clone(), &self.data){
                 if !skip_all && Current::get_max_support_level() > max_level_support {
                     max_level_support = Current::get_max_support_level();
                     name_best_interpreter = Current::get_name();
@@ -86,7 +107,7 @@ impl Launcher {
         let gitscript = self.data.sniprun_root_dir.clone() + "/ressources/gitscript.sh";
         let mut get_version = Command::new(gitscript);
         get_version.current_dir(self.data.sniprun_root_dir.clone());
-        if let Ok(res) = get_version.output(){
+        if let Ok(res) = get_version.output() {
             info!("gitscript result: {:?}", res);
             if res.status.success() {
                 let online_version = String::from_utf8(res.stdout).unwrap();
@@ -104,7 +125,10 @@ impl Launcher {
                 "\nCurrently selected interpreter: {}, at support level: {}\n",
                 name, level
             ));
-            v.push(format!("More information may be available via :SnipInfo {}\n\n", name));
+            v.push(format!(
+                "More information may be available via :SnipInfo {}\n\n",
+                name
+            ));
         } else {
             v.push("No interpreter selected\n\nYou can always get more info about one particular interpreter via:\n:SnipInfo <name>".to_string());
         }
