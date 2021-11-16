@@ -53,10 +53,8 @@ impl Python3_fifo {
                             if !err_to_display.trim().is_empty() {
                                 info!("err found");
                                 if err_to_display.lines().count() > 2 {
-                                    let mut err_to_display_vec = err_to_display
-                                        .lines()
-                                        .skip(2)
-                                        .collect::<Vec<&str>>();
+                                    let mut err_to_display_vec =
+                                        err_to_display.lines().skip(2).collect::<Vec<&str>>();
                                     err_to_display_vec.dedup();
                                     err_to_display = err_to_display_vec.join("\n");
                                 }
@@ -170,7 +168,9 @@ impl Python3_fifo {
 
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("python3");
-        if let Some(used_interpreter) = Python3_fifo::get_interpreter_option(&self.get_data(), "interpreter") {
+        if let Some(used_interpreter) =
+            Python3_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+        {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
                 self.interpreter = interpreter_string.to_string();
@@ -179,7 +179,9 @@ impl Python3_fifo {
         self.interpreter = default_interpreter;
 
         if let Ok(path) = env::current_dir() {
-            if let Some(venv_array_config) = Python3_fifo::get_interpreter_option(&self.get_data(), "venv") {
+            if let Some(venv_array_config) =
+                Python3_fifo::get_interpreter_option(&self.get_data(), "venv")
+            {
                 if let Some(actual_vec_of_venv) = venv_array_config.as_array() {
                     for possible_venv in actual_vec_of_venv.iter() {
                         if let Some(possible_venv_str) = possible_venv.as_str() {
@@ -382,6 +384,9 @@ impl ReplLikeInterpreter for Python3_fifo {
         let end_mark_err = String::from("\nprint(\"sniprun_finished_id=")
             + &self.current_output_id.to_string()
             + "\", file=sys.stderr)\n";
+
+        // remove empty lines interpreted as 'enter' by python
+        self.code = self.code.lines().filter(|l| !l.trim().is_empty()).collect::<Vec<&str>>().join("\n");
 
         let all_code = self.imports.clone() + "\n" + &self.code + "\n\n";
         self.code = String::from("\nimport sys\n\n")
