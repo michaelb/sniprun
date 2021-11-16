@@ -1,3 +1,6 @@
+## v1.0.4
+- fix python3 fifo and sage interpreters empty line in indented bloc bug
+
 ## v1.0.3
 - configurable filetypes
 

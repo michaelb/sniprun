@@ -417,6 +417,9 @@ impl ReplLikeInterpreter for Sage_fifo {
             + &self.current_output_id.to_string()
             + "\", file=sys.stderr)\n";
 
+        // remove empty lines interpreted as 'enter' by the sage interpreter
+        self.code = self.code.lines().filter(|l| !l.trim().is_empty()).collect::<Vec<&str>>().join("\n");
+
         let all_code = self.imports.clone() + "\n" + &self.code;
         self.code = String::from("\nimport sys\n\n") + &start_mark + &start_mark_err + &all_code + &end_mark + &end_mark_err;
         Ok(())
