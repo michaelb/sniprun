@@ -221,7 +221,7 @@ impl Interpreter for Python3_fifo {
         let pgr = data.sniprun_root_dir.clone();
         Box::new(Python3_fifo {
             cache_dir: rwd + "/" + &Python3_fifo::get_nvim_pid(&data),
-            data: data,
+            data,
             support_level: level,
             code: String::from(""),
             imports: String::from(""),
