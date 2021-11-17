@@ -69,6 +69,8 @@ pub struct DataHolder {
     pub display_no_output: Vec<DisplayType>,
 
     pub cli_args: Vec<String>,
+
+    pub nvim_pid: usize,
 }
 
 #[derive(Clone, Default, Debug)]
@@ -118,6 +120,7 @@ impl Default for DataHolder {
             display_type: vec![DisplayType::Classic],
             display_no_output: vec![DisplayType::Classic],
             cli_args: vec![],
+            nvim_pid: 0,
         }
     }
 }
@@ -358,6 +361,16 @@ impl EventHandler {
                     self.data.return_message_type = ReturnMessageType::Multiline;
                 }
                 info!("[FILLDATA] got inline_messages setting");
+            }
+        }
+        {
+            if let Some(i) = self.index_from_name("neovim_pid", config) {
+                if let Some(pid) = config[i].1.as_u64() {
+                    self.data.nvim_pid = pid as usize;
+                    info!("[FILLDATA] got neovim_pid value setting: {}", pid);
+                } else {
+                    info!("[FILLDATA] could get neovim_pid");
+                }
             }
         }
 

@@ -59,6 +59,11 @@ impl Python3_jupyter {
         info!("import founds : {:?}", self.imports);
         Ok(())
     }
+
+    fn get_nvim_pid(data: &DataHolder) -> String {
+        data.nvim_pid.to_string()
+    }
+
     fn module_used(&self, line: &str, code: &str) -> bool {
         info!(
             "checking for python module usage: line {} in code {}",
@@ -123,6 +128,7 @@ impl Interpreter for Python3_jupyter {
 
         let kp = pwd.clone() + "/kernel_sniprun.json";
         Box::new(Python3_jupyter {
+            cache_dir: pwd + "/" + &Python3_jupyter::get_nvim_pid(&data),
             data,
             support_level: level,
             code: String::new(),
@@ -131,7 +137,6 @@ impl Interpreter for Python3_jupyter {
             main_file_path: mfp,
             launcher_path: lp,
             plugin_root: pgr,
-            cache_dir: pwd,
         })
     }
 
@@ -355,10 +360,8 @@ impl ReplLikeInterpreter for Python3_jupyter {
                     .lines()
                     .last()
                     .unwrap_or(
-                        &String::from_utf8(
-                            strip_ansi_escapes::strip(output.stderr).unwrap(),
-                        )
-                        .unwrap(),
+                        &String::from_utf8(strip_ansi_escapes::strip(output.stderr).unwrap())
+                            .unwrap(),
                     )
                     .to_owned(),
             ));

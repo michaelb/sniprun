@@ -88,6 +88,10 @@ impl Python3_fifo {
         }
     }
 
+    fn get_nvim_pid(data: &DataHolder) -> String {
+        data.nvim_pid.to_string()
+    }
+
     fn fetch_imports(&mut self) -> Result<(), SniprunError> {
         if self.support_level < SupportLevel::Import {
             return Ok(());
@@ -216,13 +220,13 @@ impl Interpreter for Python3_fifo {
 
         let pgr = data.sniprun_root_dir.clone();
         Box::new(Python3_fifo {
-            data,
+            cache_dir: rwd + "/" + &Python3_fifo::get_nvim_pid(&data),
+            data: data,
             support_level: level,
             code: String::from(""),
             imports: String::from(""),
             main_file_path: mfp,
             plugin_root: pgr,
-            cache_dir: rwd,
             current_output_id: 0,
             interpreter: String::new(),
             venv: None,
@@ -386,7 +390,12 @@ impl ReplLikeInterpreter for Python3_fifo {
             + "\", file=sys.stderr)\n";
 
         // remove empty lines interpreted as 'enter' by python
-        self.code = self.code.lines().filter(|l| !l.trim().is_empty()).collect::<Vec<&str>>().join("\n");
+        self.code = self
+            .code
+            .lines()
+            .filter(|l| !l.trim().is_empty())
+            .collect::<Vec<&str>>()
+            .join("\n");
 
         let all_code = self.imports.clone() + "\n" + &self.code + "\n\n";
         self.code = String::from("\nimport sys\n\n")
@@ -406,7 +415,7 @@ impl ReplLikeInterpreter for Python3_fifo {
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         info!("running launcher {}", send_repl_cmd);
         let res = Command::new(send_repl_cmd)
-            .arg(self.cache_dir.clone() + "/main.py")
+            .arg(self.main_file_path.clone())
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn();
         info!("cmd status: {:?}", res);
