@@ -45,7 +45,9 @@ M.config_values = {
     SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
     SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
     SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
-  }
+  },
+
+  neovim_pid=0
 
 }
 
@@ -77,6 +79,8 @@ function M.setup(opts)
   M.setup_highlights()
   M.setup_autocommands()
   M.setup_display()
+
+  M.config_values.neovim_pid = vim.fn.getpid()
 
   M.config_up = 1
 end

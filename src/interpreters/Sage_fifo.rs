@@ -210,17 +210,24 @@ impl Sage_fifo {
         }
         false
     }
+    fn get_nvim_pid(data: &DataHolder) -> String {
+        data.nvim_pid.to_string()
+    }
 
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("sage");
-        if let Some(used_interpreter) = Sage_fifo::get_interpreter_option(&self.get_data(), "interpreter") {
+        if let Some(used_interpreter) =
+            Sage_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+        {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
                 self.interpreter = interpreter_string.to_string();
             }
         }
         self.interpreter = default_interpreter;
-        if let Some(user_sage_config) = Sage_fifo::get_interpreter_option(&self.get_data(), "interpreter") {
+        if let Some(user_sage_config) =
+            Sage_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+        {
             if let Some(_user_sage_config_str) = user_sage_config.as_str() {
                 info!("Using user sage config");
                 self.user_sage_config = true;
@@ -244,13 +251,13 @@ impl Interpreter for Sage_fifo {
 
         let pgr = data.sniprun_root_dir.clone();
         Box::new(Sage_fifo {
+            cache_dir: rwd + "/" + &Sage_fifo::get_nvim_pid(&data),
             data,
             support_level: level,
             code: String::from(""),
             imports: String::from(""),
             main_file_path: mfp,
             plugin_root: pgr,
-            cache_dir: rwd,
             current_output_id: 0,
             interpreter: String::new(),
             user_sage_config: false,
@@ -418,10 +425,20 @@ impl ReplLikeInterpreter for Sage_fifo {
             + "\", file=sys.stderr)\n";
 
         // remove empty lines interpreted as 'enter' by the sage interpreter
-        self.code = self.code.lines().filter(|l| !l.trim().is_empty()).collect::<Vec<&str>>().join("\n");
+        self.code = self
+            .code
+            .lines()
+            .filter(|l| !l.trim().is_empty())
+            .collect::<Vec<&str>>()
+            .join("\n");
 
         let all_code = self.imports.clone() + "\n" + &self.code;
-        self.code = String::from("\nimport sys\n\n") + &start_mark + &start_mark_err + &all_code + &end_mark + &end_mark_err;
+        self.code = String::from("\nimport sys\n\n")
+            + &start_mark
+            + &start_mark_err
+            + &all_code
+            + &end_mark
+            + &end_mark_err;
         Ok(())
     }
 
@@ -433,7 +450,7 @@ impl ReplLikeInterpreter for Sage_fifo {
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         info!("running launcher {}", send_repl_cmd);
         let res = Command::new(send_repl_cmd)
-            .arg(self.cache_dir.clone() + "/main.sage")
+            .arg(self.main_file_path.clone())
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn();
         info!("cmd status: {:?}", res);

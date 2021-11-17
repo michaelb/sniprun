@@ -29,6 +29,7 @@ impl Interpreter for Julia_jupyter {
 
         let kp = pwd.clone() + "/kernel_sniprun.json";
         Box::new(Julia_jupyter {
+            cache_dir: pwd + "/" + &data.nvim_pid.to_string(),
             data,
             support_level: level,
             code: String::new(),
@@ -36,7 +37,6 @@ impl Interpreter for Julia_jupyter {
             main_file_path: mfp,
             launcher_path: lp,
             plugin_root: pgr,
-            cache_dir: pwd,
         })
     }
 
