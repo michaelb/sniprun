@@ -1,3 +1,7 @@
+## v1.0.5
+- fix issue with REPL interpreters staying active after nvim exit
+- isolate backend REPL from different neovim instances
+
 ## v1.0.4
 - fix python3 fifo and sage interpreters empty line in indented bloc bug
 
