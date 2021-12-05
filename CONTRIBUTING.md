@@ -101,7 +101,7 @@ I think I've done a good job, but am I ready to submit a PR?
 
 --- 
 REPL - based ?
-Python3\_fifo has a pipe (UNIX fifo) - based ReplLikeInterpreter implementation, that may be useful if your language has an interpreter with proper stdio support. See [ressources/CONTRIBUTING_REPL.md](CONTRIBUTING_REPL.md) for more info.
+Python3\_fifo has a pipe (UNIX fifo) - based ReplLikeInterpreter implementation, that may be useful if your language has an interpreter with proper stdio support. See [CONTRIBUTING\_REPL.md](ressources/CONTRIBUTING_REPL.md) for more info.
 
 ### What's the deal with...
 
