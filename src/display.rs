@@ -200,13 +200,17 @@ pub fn display_terminal(
 ) {
     let res = match message {
         Ok(result) => nvim.lock().unwrap().command(&format!(
-            "lua require\"sniprun.display\".write_to_term(\"> {}\\n{}\", true)",
-            data.current_bloc.trim_end_matches('\n'),
+            "lua require\"sniprun.display\".write_to_term(\"{}\\n{}\", true)",
+            cleanup_and_escape(&data.current_bloc.lines().fold("".to_string(), |cur_bloc, line_in_bloc| {
+                cur_bloc + "> " + line_in_bloc + "\n"
+            })),
             no_output_wrap(result, data, &DisplayType::Terminal),
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
-            "lua require\"sniprun.display\".write_to_term(\"> {}\\n{}\", false)",
-            data.current_bloc.trim_end_matches('\n'),
+            "lua require\"sniprun.display\".write_to_term(\"{}\\n{}\", false)",
+            cleanup_and_escape(&data.current_bloc.lines().fold("".to_string(), |cur_bloc, line_in_bloc| {
+                cur_bloc + "> " + line_in_bloc + "\n"
+            })),
             no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
         )),
     };
