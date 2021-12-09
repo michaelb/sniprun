@@ -13,6 +13,7 @@ pub enum DisplayType {
     VirtualTextOk,
     VirtualTextErr,
     Terminal,
+    TerminalWithCode,
     LongTempFloatingWindow,
     TempFloatingWindow,
     Api,
@@ -27,6 +28,7 @@ impl FromStr for DisplayType {
             "VirtualTextOk" => Ok(VirtualTextOk),
             "VirtualTextErr" => Ok(VirtualTextErr),
             "Terminal" => Ok(Terminal),
+            "TerminalWithCode" => Ok(TerminalWithCode),
             "LongTempFloatingWindow" => Ok(LongTempFloatingWindow),
             "TempFloatingWindow" => Ok(TempFloatingWindow),
             "Api" => Ok(Api),
@@ -45,6 +47,7 @@ impl fmt::Display for DisplayType {
             DisplayType::VirtualTextOk => "VirtualTextOk",
             DisplayType::VirtualTextErr => "VirtualTextErr",
             DisplayType::Terminal => "Terminal",
+            DisplayType::TerminalWithCode => "TerminalWithCode",
             DisplayType::LongTempFloatingWindow => "LongTempFloatingWindow",
             DisplayType::TempFloatingWindow => "TempFloatingWindow",
             DisplayType::Api => "Api",
@@ -66,6 +69,7 @@ pub fn display(result: Result<String, SniprunError>, nvim: Arc<Mutex<Neovim>>, d
             VirtualTextOk => display_virtual_text(&result, &nvim, data, true),
             VirtualTextErr => display_virtual_text(&result, &nvim, data, false),
             Terminal => display_terminal(&result, &nvim, data),
+            TerminalWithCode => display_terminal_with_code(&result, &nvim, data),
             LongTempFloatingWindow => display_floating_window(&result, &nvim, data, true),
             TempFloatingWindow => display_floating_window(&result, &nvim, data, false),
             Api => send_api(&result, &nvim, data),
@@ -200,18 +204,36 @@ pub fn display_terminal(
 ) {
     let res = match message {
         Ok(result) => nvim.lock().unwrap().command(&format!(
+            "lua require\"sniprun.display\".write_to_term(\"{}\", true)",
+            no_output_wrap(result, data, &DisplayType::Terminal),
+        )),
+        Err(result) => nvim.lock().unwrap().command(&format!(
+            "lua require\"sniprun.display\".write_to_term(\"{}\", false)",
+            no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
+        )),
+    };
+    info!("display terminal res = {:?}", res);
+}
+
+pub fn display_terminal_with_code(
+    message: &Result<String, SniprunError>,
+    nvim: &Arc<Mutex<Neovim>>,
+    data: &DataHolder,
+) {
+    let res = match message {
+        Ok(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\\n{}\", true)",
             cleanup_and_escape(&data.current_bloc.lines().fold("".to_string(), |cur_bloc, line_in_bloc| {
                 cur_bloc + "> " + line_in_bloc + "\n"
             })),
-            no_output_wrap(result, data, &DisplayType::Terminal),
+            no_output_wrap(result, data, &DisplayType::TerminalWithCode),
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\\n{}\", false)",
             cleanup_and_escape(&data.current_bloc.lines().fold("".to_string(), |cur_bloc, line_in_bloc| {
                 cur_bloc + "> " + line_in_bloc + "\n"
             })),
-            no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
+            no_output_wrap(&result.to_string(), data, &DisplayType::TerminalWithCode),
         )),
     };
     info!("display terminal res = {:?}", res);
