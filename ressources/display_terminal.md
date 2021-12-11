@@ -33,5 +33,5 @@ If you also want the history of the execute code printed to the terminal, then u
 
 
 
-![](visual_assets/TerminalWithCode.png)
+![](visual_assets/terminalWithCode.png)
 
