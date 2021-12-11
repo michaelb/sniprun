@@ -223,45 +223,20 @@ pub fn display_terminal_with_code(
     nvim: &Arc<Mutex<Neovim>>,
     data: &DataHolder,
 ) {
-    info!("data_bloc = {:?}", data.current_bloc);
-    info!(
-            "lua require\"sniprun.display\".write_to_term(\"{} output \", true)",
-            &data.current_bloc.lines().fold("".to_string(), |cur_bloc, line_in_bloc| {
-                cur_bloc + "> " + line_in_bloc + "\\n"
-            })
-        );
-    info!(
-            "lua require\"sniprun.display\".write_to_term(\"{:?} output \", true)",
-            &data.current_bloc.lines().fold("".to_string(), |cur_bloc, line_in_bloc| {
-                cur_bloc + "> " + line_in_bloc + "\\n"
-            })
-        );
-    info!(
-            "lua require\"sniprun.display\".write_to_term(\"{} output \", true)",
-            cleanup_and_escape(&data.current_bloc.lines().fold("".to_string(), |cur_bloc, line_in_bloc| {
-                cur_bloc + "> " + line_in_bloc + "\n"
-            })).replace("\\\\\"", "\\\\\\\"")
-        );
-    info!(
-            "lua require\"sniprun.display\".write_to_term(\"{:?} output \", true)",
-            cleanup_and_escape(&data.current_bloc.lines().fold("".to_string(), |cur_bloc, line_in_bloc| {
-                cur_bloc + "> " + line_in_bloc + "\n"
-            }))
-        );
     let res = match message {
         Ok(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\\n{}\", true)",
             cleanup_and_escape(&data.current_bloc.lines().fold("".to_string(), |cur_bloc, line_in_bloc| {
                 cur_bloc + "> " + line_in_bloc + "\n"
-            })).replace("\\\\\"", "\\\\\\\""), // replace is a fix for a missing backslash
-            no_output_wrap(result, data, &DisplayType::TerminalWithCode),
+            })).replace("\n", "\\\n"),
+            no_output_wrap(result, data, &DisplayType::TerminalWithCode).replace("\n", "\\\n"),
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\\n{}\", false)",
             cleanup_and_escape(&data.current_bloc.lines().fold("".to_string(), |cur_bloc, line_in_bloc| {
                 cur_bloc + "> " + line_in_bloc + "\n"
-            })).replace("\\\\\"", "\\\\\\\""), // replace is a fix for a missing backslash
-            no_output_wrap(&result.to_string(), data, &DisplayType::TerminalWithCode),
+            })).replace("\n", "\\\n"),
+            no_output_wrap(&result.to_string(), data, &DisplayType::TerminalWithCode).replace("\n", "\\\n"),
         )),
     };
     info!("display terminal res = {:?}", res);
