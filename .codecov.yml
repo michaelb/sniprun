@@ -5,3 +5,9 @@ coverage:
         target: 1%
         threshold: 1%
         path: "src"
+
+    project:
+      default:
+        target: 50%
+        threshold: 50%
+        path: "src"
