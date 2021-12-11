@@ -208,11 +208,11 @@ pub fn display_terminal(
     let res = match message {
         Ok(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\", true)",
-            no_output_wrap(result, data, &DisplayType::Terminal),
+            no_output_wrap(result, data, &DisplayType::Terminal).replace("\n", "\\\n"),
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\", false)",
-            no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
+            no_output_wrap(&result.to_string(), data, &DisplayType::Terminal).replace("\n", "\\\n"),
         )),
     };
     info!("display terminal res = {:?}", res);
