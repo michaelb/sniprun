@@ -328,17 +328,24 @@ fn shorten_err(message: &str) -> String {
 }
 
 fn cleanup_and_escape(message: &str) -> String {
-    let answer_str = message.replace("\\", "\\\\");
-    let answer_str = answer_str.replace("\\\"", "\"");
-    let answer_str = answer_str.replace("\"", "\\\"");
+    let mut escaped = String::with_capacity(message.len());
+    for c in message.chars() {
+        match c {
+            '\x08' => escaped += "\\b",
+            '\x0c' => escaped += "\\f",
+            '\t' => escaped += "\\t",
+            '"' => escaped += "\\\"",
+            '\\' => escaped += "\\\\",
+            c => escaped += &c.to_string(),
+        }
+    }
 
     //remove trailing /starting newlines
-    let answer_str = answer_str
+    let answer_str = escaped
         .trim_start_matches('\n')
         .trim_end_matches('\n')
         .to_string();
-
-    answer_str.replace("\n", "\\\n")
+    answer_str
 }
 
 fn no_output_wrap(message: &str, data: &DataHolder, current_type: &DisplayType) -> String {
