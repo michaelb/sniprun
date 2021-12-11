@@ -1,3 +1,6 @@
+## v1.0.6
+- fix output with escape sequences
+
 ## v1.0.5
 - fix issue with REPL interpreters staying active after nvim exit
 - isolate backend REPL from different neovim instances
