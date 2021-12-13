@@ -15,13 +15,13 @@ pub struct Rust_original {
 impl Rust_original {
     fn fetch_config(&mut self) {
         let default_compiler = String::from("rustc");
+        self.compiler = default_compiler;
         if let Some(used_compiler) = Rust_original::get_interpreter_option(&self.get_data(), "compiler") {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
                 self.compiler = compiler_string.to_string();
             }
         }
-        self.compiler = default_compiler;
     }
 }
 

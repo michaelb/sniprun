@@ -216,6 +216,7 @@ impl Sage_fifo {
 
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("sage");
+        self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
             Sage_fifo::get_interpreter_option(&self.get_data(), "interpreter")
         {
@@ -224,7 +225,6 @@ impl Sage_fifo {
                 self.interpreter = interpreter_string.to_string();
             }
         }
-        self.interpreter = default_interpreter;
         if let Some(user_sage_config) =
             Sage_fifo::get_interpreter_option(&self.get_data(), "interpreter")
         {

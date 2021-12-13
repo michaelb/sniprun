@@ -172,6 +172,7 @@ impl Python3_fifo {
 
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("python3");
+        self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
             Python3_fifo::get_interpreter_option(&self.get_data(), "interpreter")
         {
@@ -180,7 +181,6 @@ impl Python3_fifo {
                 self.interpreter = interpreter_string.to_string();
             }
         }
-        self.interpreter = default_interpreter;
 
         if let Ok(path) = env::current_dir() {
             if let Some(venv_array_config) =
