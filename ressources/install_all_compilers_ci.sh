@@ -14,5 +14,6 @@ sudo apt install scala
 pip3 install jupyter 
 sudo apt install lua5.3 
 sudo apt install sagemath
+sudo apt install gprolog
 ./ressources/go_install.sh 
 export PATH=$PATH:$HOME/golang/go/bin/
