@@ -27,6 +27,7 @@ M.config_values = {
     -- "LongTempFloatingWindow",
     -- "TempFloatingWindow",
     -- "Terminal",
+    -- "TerminalWithCode",
     -- "Api",
     -- "NvimNotify"
   },

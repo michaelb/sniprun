@@ -172,6 +172,7 @@ impl Python3_fifo {
 
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("python3");
+        self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
             Python3_fifo::get_interpreter_option(&self.get_data(), "interpreter")
         {
@@ -180,7 +181,6 @@ impl Python3_fifo {
                 self.interpreter = interpreter_string.to_string();
             }
         }
-        self.interpreter = default_interpreter;
 
         if let Ok(path) = env::current_dir() {
             if let Some(venv_array_config) =
@@ -295,6 +295,25 @@ impl Interpreter for Python3_fifo {
         Ok(())
     }
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
+        if !self.imports.is_empty() {
+            let mut indented_imports = String::new();
+            for import in self.imports.lines() {
+                indented_imports = indented_imports + "\t" + import + "\n";
+            }
+
+            self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
+        }
+
+        let mut source_venv = String::new();
+        if let Some(venv_path) = &self.venv {
+            info!("loading venv: {}", venv_path);
+            source_venv = source_venv + "\n" + "activate_this_file = \"" + venv_path + "\"";
+            source_venv += "\nexec(compile(open(activate_this_file, \"rb\").read(), activate_this_file, 'exec'), dict(__file__=activate_this_file))\n";
+        }
+
+        self.code = source_venv
+            + &self.imports.clone()
+            + &unindent(&format!("{}{}", "\n", self.code.as_str()));
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {

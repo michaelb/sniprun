@@ -86,13 +86,13 @@ impl Python3_original {
     }
     fn fetch_config(&mut self) {
         let default_compiler = String::from("python3");
+        self.interpreter = default_compiler;
         if let Some(used_compiler) = Python3_original::get_interpreter_option(&self.get_data(), "interpreter") {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
                 self.interpreter = compiler_string.to_string();
             }
         }
-        self.interpreter = default_compiler;
 
         if let Ok(path) = env::current_dir() {
             if let Some(venv_array_config) = Python3_original::get_interpreter_option(&self.get_data(), "venv") {
