@@ -6,6 +6,7 @@ pub struct Prolog_gnu {
     code: String,
     prolog_work_dir: String,
     main_file_path: String,
+    interpreter: String,
 }
 impl ReplLikeInterpreter for Prolog_gnu {}
 impl Interpreter for Prolog_gnu {
@@ -23,6 +24,7 @@ impl Interpreter for Prolog_gnu {
             code: String::from(""),
             prolog_work_dir: bwd,
             main_file_path: mfp,
+            interpreter: String::new(),
         })
     }
     fn get_name() -> String {
@@ -52,6 +54,17 @@ impl Interpreter for Prolog_gnu {
         SupportLevel::Bloc
     }
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
+        let default_interpreter = String::from("gprolog");
+        self.interpreter = default_interpreter;
+        if let Some(used_interpreter) =
+            Python3_fifo::get_interpreter_option(&self.get_data(), "compiler")
+        {
+            if let Some(interpreter_string) = used_interpreter.as_str() {
+                info!("Using custom interpreter: {}", interpreter_string);
+                self.interpreter = interpreter_string.to_string();
+            }
+        }
+
         if !self
             .data
             .current_bloc
@@ -80,12 +93,22 @@ impl Interpreter for Prolog_gnu {
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("gprolog")
-            .arg(String::from("--consult-file"))
-            .arg(&self.main_file_path)
-            .args(&self.get_data().cli_args)
-            .output()
-            .expect("Unable to start process");
+        let output;
+        if self.interpreter != "gprolog" {
+            output = Command::new(self.interpreter.clone())
+                .arg(&self.main_file_path)
+                .args(&self.get_data().cli_args)
+                .output()
+                .expect("Unable to start process");
+
+        } else { // special case for gprolog which needs the --consult-file arg
+            output = Command::new("gprolog")
+                .arg(String::from("--consult-file"))
+                .arg(&self.main_file_path)
+                .args(&self.get_data().cli_args)
+                .output()
+                .expect("Unable to start process");
+        }
         info!("yay from gnu Prolog interpreter");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
