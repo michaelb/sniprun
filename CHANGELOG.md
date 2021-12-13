@@ -1,3 +1,9 @@
+## v1.1.0
+- TerminalWithCode display option (courtesy of @control13)
+- Prolog interpreter
+- Fix default interpreter issue
+- Python3\_fifo venv support + doc + fix indented bloc failure
+
 ## v1.0.6
 - fix output with escape sequences
 
