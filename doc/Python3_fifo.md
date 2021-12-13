@@ -17,3 +17,20 @@ require'sniprun'.setup({
 ```
 
 if a snippet produce an error important enough to crash the interpreter, you may be required to re-launch the kernel (with a `SnipRun`)
+
+
+setting a custom python interpreter and venv is also supported
+
+
+```
+require'sniprun'.setup({
+    interpreter_options = {
+        Python3_fifo = {
+            intepreter = "python3.9",
+            venv = {"venv_project1", "venv_project2", "../venv_project2"},
+            }
+        }
+    }
+})
+```
+
