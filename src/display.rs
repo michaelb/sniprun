@@ -5,6 +5,7 @@ use neovim_lib::{Neovim, NeovimApi};
 use std::fmt;
 use std::str::FromStr;
 use std::sync::{Arc, Mutex};
+use unindent::Unindent;
 
 #[derive(Clone, Debug, Ord, PartialOrd, PartialEq, Eq)]
 pub enum DisplayType {
@@ -232,8 +233,8 @@ pub fn display_terminal_with_code(
         Ok(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\\n{}\", true)",
             cleanup_and_escape(
-                &data
-                    .current_bloc
+                &format!("\n{}", &data.current_bloc)
+                    .unindent()
                     .lines()
                     .fold("".to_string(), |cur_bloc, line_in_bloc| {
                         cur_bloc + "> " + line_in_bloc + "\n"
@@ -245,8 +246,8 @@ pub fn display_terminal_with_code(
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\\n{}\", false)",
             cleanup_and_escape(
-                &data
-                    .current_bloc
+                &format!("\n{}", &data.current_bloc)
+                    .unindent()
                     .lines()
                     .fold("".to_string(), |cur_bloc, line_in_bloc| {
                         cur_bloc + "> " + line_in_bloc + "\n"
