@@ -29,3 +29,9 @@ EOF
 ![](visual_assets/terminal.png)
 
 
+If you also want the history of the execute code printed to the terminal, then use `"TerminalWithCode"` instead in the 'display' key.
+
+
+
+![](visual_assets/terminalWithCode.png)
+

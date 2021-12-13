@@ -580,6 +580,7 @@ mod test_main {
         let display_types: Vec<Value> = vec![
             Value::from("Classic"),
             Value::from("Terminal"),
+            Value::from("TerminalWithCode"),
             Value::from("VirtualTextOk"),
             Value::from("VirtualTextErr"),
             Value::from("TempFloatingWindow"),
