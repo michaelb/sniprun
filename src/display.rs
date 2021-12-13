@@ -62,6 +62,11 @@ pub fn display(result: Result<String, SniprunError>, nvim: Arc<Mutex<Neovim>>, d
     display_type.sort();
     display_type.dedup(); //now only uniques display types
 
+    // remove transparently incompatible/redundant displays
+    if display_type.contains(&TerminalWithCode) {
+        display_type.retain(|dt| dt != &Terminal);
+    }
+
     info!("Display type chosen: {:?}", display_type);
     for dt in display_type.iter() {
         match dt {
