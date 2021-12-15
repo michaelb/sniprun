@@ -1,6 +1,6 @@
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct Prolog_gnu {
+pub struct Prolog_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
@@ -8,17 +8,17 @@ pub struct Prolog_gnu {
     main_file_path: String,
     interpreter: String,
 }
-impl ReplLikeInterpreter for Prolog_gnu {}
-impl Interpreter for Prolog_gnu {
-    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Prolog_gnu> {
-        let bwd = data.work_dir.clone() + "/prolog-gnu";
+impl ReplLikeInterpreter for Prolog_original {}
+impl Interpreter for Prolog_original {
+    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Prolog_original> {
+        let bwd = data.work_dir.clone() + "/prolog-original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
             .create(&bwd)
-            .expect("Could not create directory for prolog-gnu");
+            .expect("Could not create directory for prolog-original");
         let mfp = bwd.clone() + "/main.pl";
-        Box::new(Prolog_gnu {
+        Box::new(Prolog_original {
             data,
             support_level: level,
             code: String::from(""),
@@ -28,7 +28,7 @@ impl Interpreter for Prolog_gnu {
         })
     }
     fn get_name() -> String {
-        String::from("Prolog_gnu")
+        String::from("Prolog_original")
     }
     fn get_supported_languages() -> Vec<String> {
         vec![String::from("Prolog"), String::from("prolog")]
@@ -86,9 +86,9 @@ impl Interpreter for Prolog_gnu {
     }
     fn build(&mut self) -> Result<(), SniprunError> {
         let mut _file =
-            File::create(&self.main_file_path).expect("Failed to create file for prolog-gnu");
+            File::create(&self.main_file_path).expect("Failed to create file for prolog-original");
 
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for prolog-gnu");
+        write(&self.main_file_path, &self.code).expect("Unable to write to file for prolog-original");
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
@@ -108,7 +108,7 @@ impl Interpreter for Prolog_gnu {
                 .output()
                 .expect("Unable to start process");
         }
-        info!("yay from gnu Prolog interpreter");
+        info!("yay from Prolog interpreter");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
         } else {
@@ -119,14 +119,14 @@ impl Interpreter for Prolog_gnu {
     }
 }
 #[cfg(test)]
-mod test_prolog_gnu {
+mod test_prolog_original {
     use super::*;
 
     // #[test]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from(":- write(ok), halt.");
-        let mut interpreter = Prolog_gnu::new(data);
+        let mut interpreter = Prolog_original::new(data);
         let res = interpreter.run();
 
         // should panic if not an Ok()
