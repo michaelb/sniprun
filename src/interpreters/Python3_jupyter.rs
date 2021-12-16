@@ -53,7 +53,8 @@ impl Python3_jupyter {
             && self.module_used(line, &self.code)
             {
                 // embed in try catch blocs in case uneeded module is unavailable
-                self.imports = self.imports.clone() + "\n" + line;
+                let line = unindent(&line);
+                self.imports = self.imports.clone() + "\n" + &line;
             }
         }
         info!("import founds : {:?}", self.imports);
