@@ -32,9 +32,14 @@ M.config_values = {
     -- "NvimNotify"
   },
 
+  display_options = {
+    terminal_width = 45,       -- change the terminal display option width
+    notification_timeout = 5   -- timeout for nvim_notify output
+  },
+
   show_no_output = {
     "Classic",
-    "TempFloatingWindow", -- implies LongTempFloatingWindow, which is not a correct key here 
+    "TempFloatingWindow", -- implies LongTempFloatingWindow, which is not a correct key here
   },
 
   inline_messages = 0,
@@ -109,7 +114,7 @@ end
 
 function M.setup_highlights()
   local colors_table = M.config_values["snipruncolors"]
-  if M.custom_highlight then 
+  if M.custom_highlight then
     vim.cmd('augroup snip_highlights')
     vim.cmd('autocmd!')
     for group, styles in pairs(colors_table) do

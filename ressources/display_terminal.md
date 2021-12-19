@@ -23,7 +23,12 @@ require'sniprun'.setup({
 })
 EOF
 ```
-
+You can change the width of the terminal by using the display option in the configuration:
+```
+  display_options = {
+    terminal_width = 45,       -- change the terminal display option width
+  },
+```
 
 
 ![](visual_assets/terminal.png)

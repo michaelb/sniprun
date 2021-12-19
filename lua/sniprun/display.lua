@@ -35,12 +35,14 @@ end
 
 function M.term_open()
   if M.term.opened ~= 0 then return end
-  vim.cmd(':rightb45vsplit')
+  local open_term_cmd = ':rightb'.. M.display_options.terminal_width .. 'vsplit'
+  vim.cmd(open_term_cmd)
   local buf = vim.api.nvim_create_buf(false,true)
   local win = vim.api.nvim_get_current_win()
   vim.api.nvim_win_set_buf(win,buf)
   local chan = vim.api.nvim_open_term(buf, {})
   vim.cmd("set scrollback=1")
+  vim.cmd('setlocal nonu')
 
   vim.cmd("wincmd p")
   M.term.opened = 1
@@ -122,7 +124,7 @@ function M.display_nvim_notify(message, ok)
 
     local title = ok and "Sniprun: Ok" or "Sniprun: Error"
     local notif_style = ok and "info" or "error"
-    require("notify")(message, notif_style, {title=title})
+    require("notify")(message, notif_style, {title=title, timeout=M.display_options.notification_timeout})
 end
 
 function M.display_extmark(ns,line, message, highlight)

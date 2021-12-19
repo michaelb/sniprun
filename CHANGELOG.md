@@ -1,3 +1,7 @@
+## v1.1.1
+- Fix terminal display issues
+- Configurable display options
+
 ## v1.1.0
 - TerminalWithCode display option (courtesy of @control13)
 - Fix default interpreter issue
