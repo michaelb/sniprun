@@ -14,3 +14,11 @@ require'sniprun'.setup({
 })
 EOF
 ```
+
+The notification timeout can be changed with this configuration option:
+
+```
+  display_options = {
+    notification_timeout = 5   -- timeout for nvim_notify output
+  },
+```

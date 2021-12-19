@@ -15,10 +15,10 @@ To avoid confusion, we'll call the language interpreter 'interpreter', and snipr
  - you make use of a named pipe (fifo) and pipe what sniprun says into it. the pipe is connected to a live, running, interpreter for your language. Its output is written to a file and sniprun waits for landmarks (start, end) to be printed. 
 
 
- I strongly advise the latter methodology, which has several advantages that I won't discuss here, but can be harder to implement if your language's interpreter has weird stdin/stdou/stderr behavior. Like non-disablable prompts printed to stdout.
+ I strongly advise the latter methodology, which has several advantages that I won't discuss here, but can be harder to implement if your language's interpreter has weird stdin/stdout/stderr behavior. Like non-disablable prompts printed to stdout.
 
 
- ## How to implement a pipe-based repl-capable runner
+## How to implement a pipe-based repl-capable runner
 
 The best example I'm going to discuss is Python3\_fifo, even if it's a bit bloated from python-specific things.
 
@@ -119,4 +119,5 @@ fn new_with_level(...)
 	    ....
 ```
 
-- disable prompts for your interpreter. They'll pollute stdout
+- disable prompts for your interpreter. They'll pollute stdout. For example, in python, you'll have to set `sys.ps1` and `sys.ps2` to `""`.
+

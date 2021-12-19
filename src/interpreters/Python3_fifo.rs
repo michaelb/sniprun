@@ -135,8 +135,9 @@ impl Python3_fifo {
 
                 let already_imported: String = self.read_previous_code();
                 if !already_imported.contains(line) {
-                    self.imports = self.imports.clone() + "\n" + line;
-                    self.save_code(already_imported + "\n" + line);
+                    let line = unindent(&line);
+                    self.imports = self.imports.clone() + "\n" + &line;
+                    self.save_code(already_imported + "\n" + &line);
                 }
             }
         }
@@ -313,7 +314,9 @@ impl Interpreter for Python3_fifo {
 
         self.code = source_venv
             + &self.imports.clone()
-            + &unindent(&format!("{}{}", "\n", self.code.as_str()));
+            + "\n## Imports above, code below, a #\\n# marker is very important to separate the try/catch bloc from the code  ##Here it is: #\n#"
+            + &unindent(&format!("{}{}", "\n\n", self.code.as_str()));
+        info!("source code::::: {}", self.code);
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {
@@ -414,9 +417,10 @@ impl ReplLikeInterpreter for Python3_fifo {
             .lines()
             .filter(|l| !l.trim().is_empty())
             .collect::<Vec<&str>>()
-            .join("\n");
+            .join("\n")
+            .replace("#\n#","\n");
 
-        let all_code = self.imports.clone() + "\n" + &self.code + "\n\n";
+        let all_code = String::from("\n") + &self.code + "\n\n";
         self.code = String::from("\nimport sys\n\n")
             + &start_mark
             + &start_mark_err

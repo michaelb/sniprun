@@ -8,7 +8,7 @@ you can set it with the following key:
 ```
 require'sniprun'.setup({
     interpreter_options = {
-        Prolog_gnu = { interpreter = "swipl" }
+        Prolog_original = { interpreter = "swipl" }
         }
     }
 })
