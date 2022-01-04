@@ -441,10 +441,12 @@ impl ReplLikeInterpreter for Python3_fifo {
             .replace("#\n#", "\n");
 
         let mut run_ion = String::new();
-        if self.read_previous_code().contains("pyplot") {
+        let mut run_ioff = String::new();
+        if self.imports.contains("pyplot") {
             run_ion.push_str(
                 &"try:\n\timport matplotlib.pyplot ; matplotlib.pyplot.ion()\nexcept:\n\tpass\n\n",
             );
+            run_ioff.push_str(&"\nmatplotlib.pyplot.ioff()\n");
         }
 
         let all_code = String::from("\n") + &self.code + "\n\n";
@@ -454,7 +456,8 @@ impl ReplLikeInterpreter for Python3_fifo {
             + &start_mark_err
             + &all_code
             + &end_mark
-            + &end_mark_err;
+            + &end_mark_err
+            + &run_ioff;
         Ok(())
     }
 
