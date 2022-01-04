@@ -312,16 +312,6 @@ function M.health()
   local health_error = vim.fn['health#report_error']
   local health_warn = vim.fn['health#report_warn']
   health_start('Installation')
-  if vim.fn.executable('tree-sitter') == 0 then
-    health_warn('`tree-sitter` executable not found (): File support and higher may not work properly')
-  else
-    local handle = io.popen('tree-sitter  -V')
-    local result = handle:read("*a")
-    handle:close()
-    local version = vim.split(result,'\n')[1]:match('[^tree%psitter].*')
-    health_ok('`tree-sitter` found '..version..' , sniprun will try to make good use of that')
-  end
-
 
   if vim.fn.executable('cargo') == 0 then health_warn("Rust toolchain not available", {"[optionnal] Install the rust toolchain https://www.rust-lang.org/tools/install"})
   else health_ok("Rust toolchain found") end
