@@ -32,9 +32,14 @@ impl Python3_fifo {
         let mut out_contents = String::new();
         let mut err_contents = String::new();
 
+        let start = std::time::Instant::now();
         loop {
             let pause = std::time::Duration::from_millis(50);
             std::thread::sleep(pause);
+
+            if start.elapsed().as_secs() > 10 {
+                return Err(SniprunError::CustomError(String::from("python3_fifo: Timeout waiting on result")));
+            }
 
             //check for stderr first
             if let Ok(mut file) = std::fs::File::open(&err_path) {
