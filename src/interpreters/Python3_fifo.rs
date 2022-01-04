@@ -313,6 +313,8 @@ impl Interpreter for Python3_fifo {
         Ok(())
     }
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
+        self.unblock_plot();
+
         if !self.imports.is_empty() {
             let mut indented_imports = String::new();
             for import in self.imports.lines() {
@@ -321,8 +323,6 @@ impl Interpreter for Python3_fifo {
 
             self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
         }
-
-        self.unblock_plot();
 
         let mut source_venv = String::new();
         if let Some(venv_path) = &self.venv {
