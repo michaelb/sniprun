@@ -171,6 +171,17 @@ impl Python3_fifo {
         false
     }
 
+    /// needs imports to have been fetched already
+    fn unblock_plot(&mut self) {
+
+        //it's not really pretty but should work most of the time
+        if self.imports.split_whitespace().collect::<String>().contains("pyplotasplt") {
+            self.code = self.code.replace("plt.show()", "plt.show(block=False)")
+        }
+        self.code = self.code.replace("pyplot.show()", "pyplot.show(block=False)")
+    }
+        
+
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("python3");
         self.interpreter = default_interpreter;
@@ -304,6 +315,8 @@ impl Interpreter for Python3_fifo {
 
             self.imports = String::from("\ntry:\n") + &indented_imports + "\nexcept:\n\tpass\n";
         }
+
+        self.unblock_plot();
 
         let mut source_venv = String::new();
         if let Some(venv_path) = &self.venv {
