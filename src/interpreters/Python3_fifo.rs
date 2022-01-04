@@ -173,9 +173,10 @@ impl Python3_fifo {
 
     /// needs imports to have been fetched already
     fn unblock_plot(&mut self) {
+        let all_imports = self.imports.clone() + &self.read_previous_code();
 
         //it's not really pretty but should work most of the time
-        if self.imports.split_whitespace().collect::<String>().contains("pyplotasplt") {
+        if all_imports.split_whitespace().collect::<String>().contains("pyplotasplt") {
             self.code = self.code.replace("plt.show()", "plt.show(block=False);plt.pause(0.001)")
         }
         self.code = self.code.replace("pyplot.show()", "pyplot.show(block=False);plt.plause(0.001)")
