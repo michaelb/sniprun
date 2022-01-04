@@ -176,7 +176,7 @@ impl Python3_fifo {
         let all_imports = self.imports.clone() + &self.read_previous_code();
 
         if self.imports.contains("pyplot") {
-            self.imports = self.imports.clone() + "\nion()\n";
+            self.imports = self.imports.clone() + "\nimport matplotlib.pyplot ; matplotlib.pyplot.ion()\n";
         }
 
         //it's not really pretty but should work most of the time
