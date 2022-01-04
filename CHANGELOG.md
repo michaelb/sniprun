@@ -1,3 +1,6 @@
+## v1.1.2
+- auto dectection of entry point for many languages
+
 ## v1.1.1
 - Fix terminal display issues
 - Configurable display options

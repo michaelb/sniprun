@@ -96,8 +96,11 @@ impl Interpreter for Scala_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         // an example following Rust's syntax
-        self.code =
-            String::from("object Main {\ndef main(arg: Array[String]) = {") + &self.code + "}\n}";
+
+        if !Scala_original::contains_main(&"int main (", &self.code, &"//") {
+            self.code =
+                String::from("object Main {\ndef main(arg: Array[String]) = {") + &self.code + "}\n}";
+        }
         Ok(())
     }
 
