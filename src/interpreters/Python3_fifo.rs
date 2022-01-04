@@ -449,6 +449,7 @@ impl ReplLikeInterpreter for Python3_fifo {
 
         let all_code = String::from("\n") + &self.code + "\n\n";
         self.code = String::from("\nimport sys\n\n")
+            + &run_ion
             + &start_mark
             + &start_mark_err
             + &all_code
