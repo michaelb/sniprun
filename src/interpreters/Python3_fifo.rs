@@ -175,18 +175,19 @@ impl Python3_fifo {
     fn unblock_plot(&mut self) {
         let all_imports = self.imports.clone() + &self.read_previous_code();
 
-        if self.imports.contains("pyplot") {
-            self.imports = self.imports.clone() + "\nimport matplotlib.pyplot ; matplotlib.pyplot.ion()\n";
-        }
-
         //it's not really pretty but should work most of the time
-        if all_imports.split_whitespace().collect::<String>().contains("pyplotasplt") {
+        if all_imports
+            .split_whitespace()
+            .collect::<String>()
+            .contains("pyplotasplt")
+        {
             self.code = self.code.replace("plt.show()", "plt.show(block=False)")
         }
         // self.code = self.code.replace("matplotlib.pyplot.show()", "matplotlib.pyplot.plause(0.001);matplotlib.pyplot.pause");
-        self.code = self.code.replace("pyplot.show()", "pyplot.show(block=False)");
+        self.code = self
+            .code
+            .replace("pyplot.show()", "pyplot.show(block=False)");
     }
-        
 
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("python3");
@@ -437,7 +438,14 @@ impl ReplLikeInterpreter for Python3_fifo {
             .filter(|l| !l.trim().is_empty())
             .collect::<Vec<&str>>()
             .join("\n")
-            .replace("#\n#","\n");
+            .replace("#\n#", "\n");
+
+        let mut run_ion = String::new();
+        if self.read_previous_code().contains("pyplot") {
+            run_ion.push_str(
+                &"try:\n\timport matplotlib.pyplot ; matplotlib.pyplot.ion()\nexcept:\n\tpass\n\n",
+            );
+        }
 
         let all_code = String::from("\n") + &self.code + "\n\n";
         self.code = String::from("\nimport sys\n\n")
