@@ -176,9 +176,9 @@ impl Python3_fifo {
 
         //it's not really pretty but should work most of the time
         if self.imports.split_whitespace().collect::<String>().contains("pyplotasplt") {
-            self.code = self.code.replace("plt.show()", "plt.show(block=False)")
+            self.code = self.code.replace("plt.show()", "plt.show(block=False);plt.pause(0.001)")
         }
-        self.code = self.code.replace("pyplot.show()", "pyplot.show(block=False)")
+        self.code = self.code.replace("pyplot.show()", "pyplot.show(block=False);plt.plause(0.001)")
     }
         
 
