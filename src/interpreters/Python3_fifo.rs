@@ -38,7 +38,13 @@ impl Python3_fifo {
             std::thread::sleep(pause);
 
             if start.elapsed().as_secs() > 10 {
-                return Err(SniprunError::CustomError(String::from("python3_fifo: Timeout waiting on result")));
+                if let Ok(mut file) = std::fs::OpenOptions::new().write(true).append(true).open(&out_path) {
+                    let _ = file.write_all(end_mark.as_bytes());
+                }
+
+                if let Ok(mut file) = std::fs::OpenOptions::new().write(true).append(true).open(&err_path) {
+                    let _ =file.write_all(end_mark.as_bytes());
+                }
             }
 
             //check for stderr first
