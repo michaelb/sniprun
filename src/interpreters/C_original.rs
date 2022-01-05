@@ -184,7 +184,7 @@ impl Interpreter for C_original {
             .arg(&self.bin_path)
             .args(&build_args);
 
-        info!("full gcc command emitted:\n{}\n", format!("{:?}",cmd));
+        info!("full gcc command emitted:\n{}\n", format!("{:?}",cmd).replace("\"", ""));
 
         let output = cmd.output().expect("Unable to start process");
 
