@@ -37,6 +37,17 @@ impl Python3_fifo {
             let pause = std::time::Duration::from_millis(50);
             std::thread::sleep(pause);
 
+            // Python3_fifo-specific things to workaround nonblocking plot issues
+            if start.elapsed().as_secs() > 5 {
+                let sync_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/sync_repl.sh";
+                let res = Command::new(sync_repl_cmd).arg(self.cache_dir.clone()).output();
+                info!(
+                    "had to sync the repl because of timeout on awaiting result:\
+                    happens  when a blocking command (plot, infinite loop) is run: {:?}",
+                    res
+                );
+            }
+
             //check for stderr first
             if let Ok(mut file) = std::fs::File::open(&err_path) {
                 info!("errfile exists");
