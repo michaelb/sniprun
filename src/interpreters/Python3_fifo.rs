@@ -32,12 +32,13 @@ impl Python3_fifo {
         let mut out_contents = String::new();
         let mut err_contents = String::new();
 
+        let start = std::time::Instant::now();
         loop {
             let pause = std::time::Duration::from_millis(50);
             std::thread::sleep(pause);
 
             // Python3_fifo-specific things to workaround nonblocking plot issues
-            {
+            if start.elapsed().as_secs() > 2 {
                 let sync_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/sync_repl.sh";
                 let res = Command::new(sync_repl_cmd).arg(self.cache_dir.clone()).output();
                 info!(
@@ -455,9 +456,9 @@ impl ReplLikeInterpreter for Python3_fifo {
         let mut run_ioff = String::new();
         if self.imports.contains("pyplot") {
             run_ion.push_str(
-                &"try:\n\timport matplotlib.pyplot ; matplotlib.pyplot.ion()\nexcept:\n\tpass\n\n",
+                &"try:\n\timport matplotlib.pyplot ;sniprun_ion_status_on = matplotlib.pyplot.ion()\nexcept:\n\tpass\n\n",
             );
-            run_ioff.push_str(&"\nmatplotlib.pyplot.ioff()\n");
+            run_ioff.push_str(&"\nsniprun_ion_status_off = matplotlib.pyplot.ioff()\n");
         }
 
         let all_code = String::from("\n") + &self.code + "\n\n";
