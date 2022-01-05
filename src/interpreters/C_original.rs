@@ -148,6 +148,29 @@ impl Interpreter for C_original {
     fn build(&mut self) -> Result<(), SniprunError> {
         info!("starting build");
         //write code to file
+
+        let mut build_args: Vec<String> = vec![];
+        if let Ok(cflags) = std::env::var("CFLAGS") {
+            build_args.push(String::from("-l"));
+            build_args.push(cflags);
+        }
+
+        if let Ok(c_incl_path) = std::env::var("C_INCLUDE_PATH") {
+            build_args.push(String::from("-I"));
+            build_args.push(c_incl_path);
+        }
+
+        if let Ok(cplus_incl_path) = std::env::var("CPLUS_INCLUDE_PATH") {
+            build_args.push(String::from("-I"));
+            build_args.push(cplus_incl_path);
+        }
+
+        if let Ok(library_path) = std::env::var("LIBRARY_PATH") {
+            build_args.push(String::from("-L"));
+            build_args.push(library_path);
+        }
+        info!("build args are: {:?}", build_args);
+
         let mut _file =
             File::create(&self.main_file_path).expect("Failed to create file for c-original");
         write(&self.main_file_path, &self.code).expect("Unable to write to file for c-original");
@@ -155,6 +178,7 @@ impl Interpreter for C_original {
             .arg(&self.main_file_path)
             .arg("-o")
             .arg(&self.bin_path)
+            .args(&build_args)
             .output()
             .expect("Unable to start process");
 
