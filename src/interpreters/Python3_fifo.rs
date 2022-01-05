@@ -38,7 +38,7 @@ impl Python3_fifo {
             std::thread::sleep(pause);
 
             // Python3_fifo-specific things to workaround nonblocking plot issues
-            if start.elapsed().as_secs() > 2 {
+            if start.elapsed().as_millis() > 150 {
                 let sync_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/sync_repl.sh";
                 let res = Command::new(sync_repl_cmd).arg(self.cache_dir.clone()).output();
                 info!(
