@@ -12,7 +12,7 @@ pub struct C_original {
 }
 
 impl C_original {
-    fn fetch_imports(&mut self)-> Result<(), SniprunError> {
+    fn fetch_imports(&mut self) -> Result<(), SniprunError> {
         if self.support_level < SupportLevel::Import {
             return Ok(());
         }
@@ -40,6 +40,12 @@ impl C_original {
             if line.starts_with("#include <") {
                 self.imports.push(line.to_string());
             }
+            if line.starts_with("#include")
+                && (std::env::var("C_INCLUDE_PATH").is_ok()
+                    || std::env::var("CPLUS_INCLUDE_PATH").is_ok())
+            {
+                self.imports.push(line.to_string());
+            }
         }
         info!("fecthed imports : {:?}", self.imports);
         Ok(())
@@ -48,7 +54,9 @@ impl C_original {
     fn fetch_config(&mut self) {
         let default_compiler = String::from("gcc");
         self.compiler = default_compiler;
-        if let Some(used_compiler) = C_original::get_interpreter_option(&self.get_data(), "compiler") {
+        if let Some(used_compiler) =
+            C_original::get_interpreter_option(&self.get_data(), "compiler")
+        {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
                 self.compiler = compiler_string.to_string();
@@ -133,7 +141,7 @@ impl Interpreter for C_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         self.fetch_imports()?;
-    
+
         if !C_original::contains_main(&"int main (", &self.code, &"//") {
             self.code = String::from("int main() {\n") + &self.code + "\nreturn 0;}";
         }
@@ -196,11 +204,11 @@ impl Interpreter for C_original {
                 if line.contains("error") {
                     // info!("breaking at position {:?}", line.split_at(line.find("error").unwrap()).1);
                     relevant_error += line
-                            .split_at(line.find("error").unwrap())
-                            .1
-                            .trim_start_matches("error: ")
-                            .trim_end_matches("error:")
-                            .trim_start_matches("error");
+                        .split_at(line.find("error").unwrap())
+                        .1
+                        .trim_start_matches("error: ")
+                        .trim_end_matches("error:")
+                        .trim_start_matches("error");
                     break_loop = true;
                 }
             }
@@ -242,7 +250,7 @@ mod test_c_original {
         // should panic if not an Ok()
         let string_result = res.unwrap();
         assert_eq!(string_result, "1=1\n");
-    } 
+    }
 
     #[test]
     #[serial(c_original)]
@@ -254,8 +262,7 @@ mod test_c_original {
 
         match res {
             Err(SniprunError::CompilationError(_)) => (),
-            _ => panic!("Compilation should have failed")
+            _ => panic!("Compilation should have failed"),
         };
     }
-
 }
