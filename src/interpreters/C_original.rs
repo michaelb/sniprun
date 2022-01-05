@@ -151,8 +151,7 @@ impl Interpreter for C_original {
 
         let mut build_args: Vec<String> = vec![];
         if let Ok(cflags) = std::env::var("CFLAGS") {
-            build_args.push(String::from("-l"));
-            build_args.push(cflags);
+            build_args.extend(cflags.split_whitespace().map(|s| s.to_owned()));
         }
 
         if let Ok(c_incl_path) = std::env::var("C_INCLUDE_PATH") {
