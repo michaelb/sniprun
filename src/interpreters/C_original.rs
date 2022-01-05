@@ -163,31 +163,30 @@ impl Interpreter for C_original {
         }
 
         if let Ok(c_incl_path) = std::env::var("C_INCLUDE_PATH") {
-            build_args.push(String::from("-I"));
-            build_args.push(c_incl_path);
+            build_args.extend(c_incl_path.split(':').map(|s| String::from("-I") + s));
         }
 
         if let Ok(cplus_incl_path) = std::env::var("CPLUS_INCLUDE_PATH") {
-            build_args.push(String::from("-I"));
-            build_args.push(cplus_incl_path);
+            build_args.extend(cplus_incl_path.split(':').map(|s| String::from("-I") + s));
         }
 
         if let Ok(library_path) = std::env::var("LIBRARY_PATH") {
-            build_args.push(String::from("-L"));
-            build_args.push(library_path);
+            build_args.extend(library_path.split(':').map(|s| String::from("-L") + s));
         }
-        info!("build args are: {:?}", build_args);
 
         let mut _file =
             File::create(&self.main_file_path).expect("Failed to create file for c-original");
         write(&self.main_file_path, &self.code).expect("Unable to write to file for c-original");
-        let output = Command::new(&self.compiler)
+        let mut cmd = Command::new(&self.compiler);
+        let cmd = cmd
             .arg(&self.main_file_path)
             .arg("-o")
             .arg(&self.bin_path)
-            .args(&build_args)
-            .output()
-            .expect("Unable to start process");
+            .args(&build_args);
+
+        info!("full gcc command emitted:\n{}\n", format!("{:?}",cmd));
+
+        let output = cmd.output().expect("Unable to start process");
 
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
