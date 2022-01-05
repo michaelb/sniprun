@@ -32,13 +32,12 @@ impl Python3_fifo {
         let mut out_contents = String::new();
         let mut err_contents = String::new();
 
-        let start = std::time::Instant::now();
         loop {
             let pause = std::time::Duration::from_millis(50);
             std::thread::sleep(pause);
 
             // Python3_fifo-specific things to workaround nonblocking plot issues
-            if start.elapsed().as_secs() > 5 {
+            {
                 let sync_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/sync_repl.sh";
                 let res = Command::new(sync_repl_cmd).arg(self.cache_dir.clone()).output();
                 info!(
