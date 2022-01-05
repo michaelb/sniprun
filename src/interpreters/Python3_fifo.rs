@@ -37,16 +37,6 @@ impl Python3_fifo {
             let pause = std::time::Duration::from_millis(50);
             std::thread::sleep(pause);
 
-            if start.elapsed().as_secs() > 10 {
-                if let Ok(mut file) = std::fs::OpenOptions::new().write(true).append(true).open(&out_path) {
-                    let _ = file.write_all(end_mark.as_bytes());
-                }
-
-                if let Ok(mut file) = std::fs::OpenOptions::new().write(true).append(true).open(&err_path) {
-                    let _ =file.write_all(end_mark.as_bytes());
-                }
-            }
-
             //check for stderr first
             if let Ok(mut file) = std::fs::File::open(&err_path) {
                 info!("errfile exists");
