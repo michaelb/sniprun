@@ -20,7 +20,7 @@ impl C_original {
         let mut v = vec![];
         let mut errored = true;
         if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
-            info!("got real nvim isntance");
+            info!("got real nvim instance");
             let mut rvi = real_nvim_instance.lock().unwrap();
             if let Ok(buffer) = rvi.get_current_buf() {
                 info!("got buffer");
@@ -159,18 +159,22 @@ impl Interpreter for C_original {
 
         let mut build_args: Vec<String> = vec![];
         if let Ok(cflags) = std::env::var("CFLAGS") {
+            info!("CLFAGS env var found : {}", cflags);
             build_args.extend(cflags.split_whitespace().map(|s| s.to_owned()));
         }
 
         if let Ok(c_incl_path) = std::env::var("C_INCLUDE_PATH") {
+            info!("C_INCLUDE_PATH env var found : {}", c_incl_path);
             build_args.extend(c_incl_path.split(':').map(|s| String::from("-I") + s));
         }
 
         if let Ok(cplus_incl_path) = std::env::var("CPLUS_INCLUDE_PATH") {
+            info!("CPLUS_INCLUDE_PATH env var found : {}", cplus_incl_path);
             build_args.extend(cplus_incl_path.split(':').map(|s| String::from("-I") + s));
         }
 
         if let Ok(library_path) = std::env::var("LIBRARY_PATH") {
+            info!("LIBRARY_PATH env var found : {}", library_path);
             build_args.extend(library_path.split(':').map(|s| String::from("-L") + s));
         }
 
@@ -182,6 +186,7 @@ impl Interpreter for C_original {
             .arg(&self.main_file_path)
             .arg("-o")
             .arg(&self.bin_path)
+            .arg("-v")
             .args(&build_args);
 
         info!("full gcc command emitted:\n{}\n", format!("{:?}",cmd).replace("\"", ""));
@@ -191,7 +196,7 @@ impl Interpreter for C_original {
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
             let error_message = String::from_utf8(output.stderr).unwrap();
-            info!("Returning nice C error message: {}", error_message);
+            info!("Full GCC error message: {}", error_message);
             let mut relevant_error = String::new();
 
             let mut break_loop = false;
@@ -214,6 +219,9 @@ impl Interpreter for C_original {
 
             Err(SniprunError::CompilationError(relevant_error))
         } else {
+
+            let compiler_output = String::from_utf8(output.stdout).unwrap();
+            info!("compiler output:\n{}\n", compiler_output);
             Ok(())
         }
     }
