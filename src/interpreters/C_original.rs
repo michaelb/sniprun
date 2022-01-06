@@ -159,7 +159,7 @@ impl Interpreter for C_original {
 
         let mut build_args: Vec<String> = vec![];
         if let Ok(cflags) = std::env::var("CFLAGS") {
-            info!("CLFAGS env var found : {}", cflags);
+            info!("CFLAGS env var found : {}", cflags);
             build_args.extend(cflags.split_whitespace().map(|s| s.to_owned()));
         }
 
