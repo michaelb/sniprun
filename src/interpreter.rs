@@ -178,6 +178,7 @@ pub trait InterpreterUtils {
     fn set_pid(&self, pid: u32);
     fn get_pid(&self) -> Option<u32>;
     fn get_interpreter_option(data: &DataHolder, option: &str) -> Option<neovim_lib::Value>;
+    fn contains_main(entry: &str, snippet: &str, comment: &str) -> bool;
 }
 
 impl<T: Interpreter> InterpreterUtils for T {
@@ -290,6 +291,17 @@ impl<T: Interpreter> InterpreterUtils for T {
         }
 
         None
+    }
+
+    fn contains_main(entry: &str, snippet: &str, comment: &str) -> bool {
+        let compact_main: String = entry.split_whitespace().collect();
+        let compact_snippet: String = snippet
+            .lines()
+            .filter(|l| !l.trim().starts_with(comment))
+            .collect::<String>()
+            .split_whitespace()
+            .collect();
+        return compact_snippet.contains(&compact_main);
     }
 }
 

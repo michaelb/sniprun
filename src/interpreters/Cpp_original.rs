@@ -138,7 +138,10 @@ impl Interpreter for Cpp_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         self.fetch_imports()?;
-        self.code = String::from("int main() {\n") + &self.code + "\nreturn 0;}";
+
+        if !Cpp_original::contains_main(&"int main (", &self.code, &"//") {
+            self.code = String::from("int main() {\n") + &self.code + "\nreturn 0;}";
+        }
         if !self.imports.iter().any(|s| s.contains("<iostream>")) {
             self.code = String::from("#include <iostream>\n") + &self.code;
         }

@@ -109,7 +109,10 @@ impl Interpreter for Rust_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("fn main() {") + &self.code + "}";
+        
+        if !Rust_original::contains_main(&"fn main(", &self.code, &"//") {
+            self.code = String::from("fn main() {") + &self.code + "}";
+        }
         Ok(())
     }
 

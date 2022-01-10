@@ -1,3 +1,8 @@
+## v1.1.2
+- auto detection of entry point for many languages
+- CFLAGS and other variables
+- Python3\_fifo plots work
+
 ## v1.1.1
 - Fix terminal display issues
 - Configurable display options

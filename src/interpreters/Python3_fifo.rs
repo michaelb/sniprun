@@ -32,9 +32,21 @@ impl Python3_fifo {
         let mut out_contents = String::new();
         let mut err_contents = String::new();
 
+        let start = std::time::Instant::now();
         loop {
             let pause = std::time::Duration::from_millis(50);
             std::thread::sleep(pause);
+
+            // Python3_fifo-specific things to workaround nonblocking plot issues
+            if start.elapsed().as_millis() > 150 {
+                let sync_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/sync_repl.sh";
+                let res = Command::new(sync_repl_cmd).arg(self.cache_dir.clone()).output();
+                info!(
+                    "had to sync the repl because of timeout on awaiting result:\
+                    happens  when a blocking command (plot, infinite loop) is run: {:?}",
+                    res
+                );
+            }
 
             //check for stderr first
             if let Ok(mut file) = std::fs::File::open(&err_path) {
@@ -171,6 +183,24 @@ impl Python3_fifo {
         false
     }
 
+    /// needs imports to have been fetched already
+    fn unblock_plot(&mut self) {
+        let all_imports = self.imports.clone() + &self.read_previous_code();
+
+        //it's not really pretty but should work most of the time
+        if all_imports
+            .split_whitespace()
+            .collect::<String>()
+            .contains("pyplotasplt")
+        {
+            self.code = self.code.replace("plt.show()", "plt.show(block=False)")
+        }
+        // self.code = self.code.replace("matplotlib.pyplot.show()", "matplotlib.pyplot.plause(0.001);matplotlib.pyplot.pause");
+        self.code = self
+            .code
+            .replace("pyplot.show()", "pyplot.show(block=False)");
+    }
+
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("python3");
         self.interpreter = default_interpreter;
@@ -296,6 +326,8 @@ impl Interpreter for Python3_fifo {
         Ok(())
     }
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
+        self.unblock_plot();
+
         if !self.imports.is_empty() {
             let mut indented_imports = String::new();
             for import in self.imports.lines() {
@@ -418,15 +450,26 @@ impl ReplLikeInterpreter for Python3_fifo {
             .filter(|l| !l.trim().is_empty())
             .collect::<Vec<&str>>()
             .join("\n")
-            .replace("#\n#","\n");
+            .replace("#\n#", "\n");
+
+        let mut run_ion = String::new();
+        let mut run_ioff = String::new();
+        if self.imports.contains("pyplot") {
+            run_ion.push_str(
+                &"try:\n\timport matplotlib.pyplot ;sniprun_ion_status_on = matplotlib.pyplot.ion()\nexcept:\n\tpass\n\n",
+            );
+            run_ioff.push_str(&"\nsniprun_ion_status_off = matplotlib.pyplot.ioff()\n");
+        }
 
         let all_code = String::from("\n") + &self.code + "\n\n";
         self.code = String::from("\nimport sys\n\n")
+            + &run_ion
             + &start_mark
             + &start_mark_err
             + &all_code
             + &end_mark
-            + &end_mark_err;
+            + &end_mark_err
+            + &run_ioff;
         Ok(())
     }
 

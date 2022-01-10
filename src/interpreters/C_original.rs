@@ -12,7 +12,7 @@ pub struct C_original {
 }
 
 impl C_original {
-    fn fetch_imports(&mut self)-> Result<(), SniprunError> {
+    fn fetch_imports(&mut self) -> Result<(), SniprunError> {
         if self.support_level < SupportLevel::Import {
             return Ok(());
         }
@@ -20,7 +20,7 @@ impl C_original {
         let mut v = vec![];
         let mut errored = true;
         if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
-            info!("got real nvim isntance");
+            info!("got real nvim instance");
             let mut rvi = real_nvim_instance.lock().unwrap();
             if let Ok(buffer) = rvi.get_current_buf() {
                 info!("got buffer");
@@ -40,6 +40,12 @@ impl C_original {
             if line.starts_with("#include <") {
                 self.imports.push(line.to_string());
             }
+            if line.starts_with("#include")
+                && (std::env::var("C_INCLUDE_PATH").is_ok()
+                    || std::env::var("CPLUS_INCLUDE_PATH").is_ok())
+            {
+                self.imports.push(line.to_string());
+            }
         }
         info!("fecthed imports : {:?}", self.imports);
         Ok(())
@@ -48,7 +54,9 @@ impl C_original {
     fn fetch_config(&mut self) {
         let default_compiler = String::from("gcc");
         self.compiler = default_compiler;
-        if let Some(used_compiler) = C_original::get_interpreter_option(&self.get_data(), "compiler") {
+        if let Some(used_compiler) =
+            C_original::get_interpreter_option(&self.get_data(), "compiler")
+        {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
                 self.compiler = compiler_string.to_string();
@@ -133,8 +141,10 @@ impl Interpreter for C_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         self.fetch_imports()?;
-    
-        self.code = String::from("int main() {\n") + &self.code + "\nreturn 0;}";
+
+        if !C_original::contains_main(&"int main (", &self.code, &"//") {
+            self.code = String::from("int main() {\n") + &self.code + "\nreturn 0;}";
+        }
         if !self.imports.iter().any(|s| s.contains("<stdio.h>")) {
             self.code = String::from("#include <stdio.h>\n") + &self.code;
         }
@@ -146,20 +156,47 @@ impl Interpreter for C_original {
     fn build(&mut self) -> Result<(), SniprunError> {
         info!("starting build");
         //write code to file
+
+        let mut build_args: Vec<String> = vec![];
+        if let Ok(cflags) = std::env::var("CFLAGS") {
+            info!("CFLAGS env var found : {}", cflags);
+            build_args.extend(cflags.split_whitespace().map(|s| s.to_owned()));
+        }
+
+        if let Ok(c_incl_path) = std::env::var("C_INCLUDE_PATH") {
+            info!("C_INCLUDE_PATH env var found : {}", c_incl_path);
+            build_args.extend(c_incl_path.split(':').map(|s| String::from("-I") + s));
+        }
+
+        if let Ok(cplus_incl_path) = std::env::var("CPLUS_INCLUDE_PATH") {
+            info!("CPLUS_INCLUDE_PATH env var found : {}", cplus_incl_path);
+            build_args.extend(cplus_incl_path.split(':').map(|s| String::from("-I") + s));
+        }
+
+        if let Ok(library_path) = std::env::var("LIBRARY_PATH") {
+            info!("LIBRARY_PATH env var found : {}", library_path);
+            build_args.extend(library_path.split(':').map(|s| String::from("-L") + s));
+        }
+
         let mut _file =
             File::create(&self.main_file_path).expect("Failed to create file for c-original");
         write(&self.main_file_path, &self.code).expect("Unable to write to file for c-original");
-        let output = Command::new(&self.compiler)
+        let mut cmd = Command::new(&self.compiler);
+        let cmd = cmd
             .arg(&self.main_file_path)
             .arg("-o")
             .arg(&self.bin_path)
-            .output()
-            .expect("Unable to start process");
+            .arg("-v")
+            .args(&build_args);
+
+        info!("full gcc command emitted:\n{}\n", format!("{:?}",cmd).replace("\"", ""));
+
+        let output = cmd.output().expect("Unable to start process");
 
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
             let error_message = String::from_utf8(output.stderr).unwrap();
-            info!("Returning nice C error message: {}", error_message);
+            info!("Full GCC error message: {}", error_message);
             let mut relevant_error = String::new();
 
             let mut break_loop = false;
@@ -171,17 +208,20 @@ impl Interpreter for C_original {
                 if line.contains("error") {
                     // info!("breaking at position {:?}", line.split_at(line.find("error").unwrap()).1);
                     relevant_error += line
-                            .split_at(line.find("error").unwrap())
-                            .1
-                            .trim_start_matches("error: ")
-                            .trim_end_matches("error:")
-                            .trim_start_matches("error");
+                        .split_at(line.find("error").unwrap())
+                        .1
+                        .trim_start_matches("error: ")
+                        .trim_end_matches("error:")
+                        .trim_start_matches("error");
                     break_loop = true;
                 }
             }
 
             Err(SniprunError::CompilationError(relevant_error))
         } else {
+
+            let compiler_output = String::from_utf8(output.stdout).unwrap();
+            info!("compiler output:\n{}\n", compiler_output);
             Ok(())
         }
     }
@@ -217,7 +257,7 @@ mod test_c_original {
         // should panic if not an Ok()
         let string_result = res.unwrap();
         assert_eq!(string_result, "1=1\n");
-    } 
+    }
 
     #[test]
     #[serial(c_original)]
@@ -229,8 +269,7 @@ mod test_c_original {
 
         match res {
             Err(SniprunError::CompilationError(_)) => (),
-            _ => panic!("Compilation should have failed")
+            _ => panic!("Compilation should have failed"),
         };
     }
-
 }

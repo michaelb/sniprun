@@ -110,7 +110,19 @@ impl Interpreter for Go_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("package main \nimport \"fmt\"\nfunc main() {") + &self.code + "}";
+
+        if !Go_original::contains_main(&"func main (", &self.code, &"//") {
+            self.code = String::from("func main() {") + &self.code + "}";
+        }
+
+        if !Go_original::contains_main(&"import \"fmt\"", &self.code, &"//") {
+            self.code = String::from("import \"fmt\"\n") + &self.code;
+        }
+
+        if !Go_original::contains_main(&"package main", &self.code, &"//") {
+            self.code = String::from("package main\n") + &self.code;
+        }
+
         Ok(())
     }
 
