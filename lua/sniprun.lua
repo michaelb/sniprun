@@ -53,6 +53,7 @@ M.config_values = {
     SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
   },
 
+  -- auto-filled with the real nvim's PID
   neovim_pid=0
 
 }

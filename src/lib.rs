@@ -207,6 +207,7 @@ impl EventHandler {
     pub fn fill_data(&mut self, values: &[Value]) {
         // info!("[FILLDATA_ENTRY] received data from RPC: {:?}", values);
         let config = values[2].as_map().unwrap();
+        info!("[FILLDATA] got config: {:?}", config);
         {
             self.data.interpreter_data = Some(self.interpreter_data.clone());
             info!("[FILLDATA] got back eventual interpreter data");
@@ -214,7 +215,7 @@ impl EventHandler {
 
         info!("values length: {}", values.len());
         let cli_args = values[3].as_str().unwrap_or({
-            info!("cli arguments are not a string");
+            info!("cli arguments are not a string: {:?}", values[3]);
             ""
         });
         {
@@ -225,6 +226,7 @@ impl EventHandler {
 
         {
             self.data.range = [values[0].as_i64().unwrap(), values[1].as_i64().unwrap()];
+            info!("got data range: {:?}", self.data.range);
         }
         {
             if let Some(i) = self.index_from_name("sniprun_root_dir", config) {
@@ -239,6 +241,7 @@ impl EventHandler {
             if let Ok(real_ft) = ft {
                 self.data.filetype = String::from(real_ft.split('=').last().unwrap());
             }
+            info!("[FILLDATA] got filetype");
         }
 
         {
