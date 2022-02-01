@@ -207,7 +207,6 @@ impl EventHandler {
     pub fn fill_data(&mut self, values: &[Value]) {
         // info!("[FILLDATA_ENTRY] received data from RPC: {:?}", values);
         let config = values[2].as_map().unwrap();
-        info!("[FILLDATA] got config: {:?}", config);
         {
             self.data.interpreter_data = Some(self.interpreter_data.clone());
             info!("[FILLDATA] got back eventual interpreter data");

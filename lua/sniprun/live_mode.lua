@@ -19,7 +19,7 @@ function M.run()
     sa.run_range(line,line, ft, opts)
 end
 
-function M.enable_sniprun()
+function M.enable()
   vim.cmd [[
     augroup _sniprun
      autocmd!
@@ -28,23 +28,23 @@ function M.enable_sniprun()
     augroup end
     call Test()
   ]]
-  vim.notify "Enabled SnipRun"
+  vim.notify "Enabled Sniprun live mode"
 end
 
-function M.disable_sniprun()
+function M.disable()
   M.remove_augroup "_sniprun"
   vim.cmd [[
     SnipClose
     SnipTerminate
     ]]
-  vim.notify "Disabled SnipRun"
+  vim.notify "Disabled Sniprun live mode"
 end
 
-function M.toggle_sniprun()
+function M.toggle()
   if vim.fn.exists "#_sniprun#TextChanged" == 0 then
-    M.enable_sniprun()
+    M.enable()
   else
-    M.disable_sniprun()
+    M.disable()
   end
 end
 
@@ -54,6 +54,7 @@ function M.remove_augroup(name)
   end
 end
 
-vim.cmd [[ command! SnipRunToggle execute 'lua require("sniprun.live_mode").toggle_sniprun()' ]]
+vim.cmd [[ command! SnipLive execute 'lua require("sniprun.live_mode").toggle()' ]]
+vim.api.nvim_set_keymap("n", "<Plug>SnipLive", ":lua require'sniprun.live_mode'.toggle()<CR>",{silent=true})
 
 return M

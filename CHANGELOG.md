@@ -1,3 +1,6 @@
+## v1.2
+- live mode (a @ChristianChiarulli idea and partial realisation)
+
 ## v1.1.2
 - auto detection of entry point for many languages
 - CFLAGS and other variables

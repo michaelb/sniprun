@@ -53,6 +53,10 @@ M.config_values = {
     SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
   },
 
+  -- whether the user can toggle the live_mode. It's kept as an option so it's not activated by chance
+  -- by an user that would be unaware of the potentially dangerous behavior
+  live_mode_toggle='enable',
+
   -- auto-filled with the real nvim's PID
   neovim_pid=0
 
@@ -79,6 +83,9 @@ function M.setup(opts)
     end
     if key == 'snipruncolors' then
       M.custom_highlight = true
+    end
+    if key == 'live_mode_toggle' and opts[key] == 'enable' then
+      require('sniprun.live_mode')
     end
     M.config_values[key] = value
   end
