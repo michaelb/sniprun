@@ -32,9 +32,11 @@ impl Sage_fifo {
         let mut out_contents = String::new();
         let mut err_contents = String::new();
 
+        let mut pause = std::time::Duration::from_millis(50);
+        let start = std::time::Instant::now();
         loop {
-            let pause = std::time::Duration::from_millis(50);
             std::thread::sleep(pause);
+            pause = pause.saturating_add(std::time::Duration::from_millis(50));
 
             //check for stderr first
             if let Ok(mut file) = std::fs::File::open(&err_path) {

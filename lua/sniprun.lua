@@ -55,7 +55,7 @@ M.config_values = {
 
   -- whether the user can toggle the live_mode. It's kept as an option so it's not activated by chance
   -- by an user that would be unaware of the potentially dangerous behavior
-  live_mode_toggle='enable',
+  live_mode_toggle='off',
 
   -- auto-filled with the real nvim's PID
   neovim_pid=0

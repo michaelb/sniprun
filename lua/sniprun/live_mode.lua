@@ -1,13 +1,5 @@
 local M = {}
 
-vim.cmd [[
-  function Test()
-    lua require("sniprun.live_mode").run()
-  endfunction
-  function TestI()
-    lua require("sniprun.live_mode").run()
-  endfunction
-]]
 
 function M.run()
     local sa = require('sniprun.api')
@@ -21,27 +13,24 @@ end
 
 function M.enable()
   vim.cmd [[
-    augroup _sniprun
+    augroup _sniprunlive
      autocmd!
-     autocmd TextChanged * call Test()
-     autocmd TextChangedI * call TestI()
+     autocmd TextChanged * lua require'sniprun.live_mode'.run()
+     autocmd TextChangedI * lua require'sniprun.live_mode'.run()
     augroup end
-    call Test()
+    lua require'sniprun.live_mode'.run()
   ]]
   vim.notify "Enabled Sniprun live mode"
 end
 
 function M.disable()
-  M.remove_augroup "_sniprun"
-  vim.cmd [[
-    SnipClose
-    SnipTerminate
-    ]]
+  M.remove_augroup "_sniprunlive"
+  require('sniprun.display').clear_virtual_text()
   vim.notify "Disabled Sniprun live mode"
 end
 
 function M.toggle()
-  if vim.fn.exists "#_sniprun#TextChanged" == 0 then
+  if vim.fn.exists "#_sniprunlive#TextChanged" == 0 then
     M.enable()
   else
     M.disable()

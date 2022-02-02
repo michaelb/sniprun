@@ -32,10 +32,16 @@ impl Python3_fifo {
         let mut out_contents = String::new();
         let mut err_contents = String::new();
 
+        let mut pause = std::time::Duration::from_millis(50);
         let start = std::time::Instant::now();
         loop {
-            let pause = std::time::Duration::from_millis(50);
             std::thread::sleep(pause);
+            pause = pause.saturating_add(std::time::Duration::from_millis(50));
+
+            // timeout after 30s if no result found
+            if start.elapsed().as_secs() > 30 {
+                return Err(SniprunError::InterpreterLimitationError(String::from("reached the 30s timeout")));
+            }
 
             // Python3_fifo-specific things to workaround nonblocking plot issues
             if start.elapsed().as_millis() > 150 {

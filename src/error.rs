@@ -18,6 +18,7 @@ pub enum SniprunError {
     FetchCodeError,
 
     ///when the user's code run into problems because of an interpreter's implementation
+    /// It's also the only Err that won't clear the virtual text if VirtualTextOk is selected
     #[error("Interpreter limitation error: {0}")]
     InterpreterLimitationError(String),
 
