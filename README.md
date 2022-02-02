@@ -101,6 +101,7 @@ Do either of:
 - Position the cursor on a line and `:SnipRun`
 - Select some visual range, then `:'<,'>SnipRun`
 - Combine a motion with the operator
+- Activate the live mode
 
   (through a shortcut!)
 
