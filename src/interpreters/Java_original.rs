@@ -83,7 +83,7 @@ impl Interpreter for Java_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
 
-        if !Java_original::contains_main(&"public static void main(", &self.code, &"//") {
+        if !Java_original::contains_main("public static void main(", &self.code, "//") {
             self.code = String::from(
                 "public class Main {
                 public static void main(String[] args) {

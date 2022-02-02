@@ -33,7 +33,7 @@ impl Sage_fifo {
         let mut err_contents = String::new();
 
         let mut pause = std::time::Duration::from_millis(50);
-        let start = std::time::Instant::now();
+        let _start = std::time::Instant::now();
         loop {
             std::thread::sleep(pause);
             pause = pause.saturating_add(std::time::Duration::from_millis(50));
