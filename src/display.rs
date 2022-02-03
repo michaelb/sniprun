@@ -138,7 +138,6 @@ pub fn display_virtual_text(
 ) {
     let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
     if is_ok != result.is_ok() {
-
         if let Err(SniprunError::InterpreterLimitationError(_)) = result {
             return; // without clearing the line
         }
