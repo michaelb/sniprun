@@ -1,3 +1,7 @@
+## v1.2
+- Live mode (a @ChristianChiarulli idea and partial realisation)
+- Lower ressources usage for REPL interpreters
+
 ## v1.1.2
 - auto detection of entry point for many languages
 - CFLAGS and other variables

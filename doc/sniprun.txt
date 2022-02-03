@@ -46,6 +46,9 @@ ALL COMMANDS                                       *sniprun-commands*
 
 :SnipClose              Clear virtual text and close splits and floating windows created by sniprun
 
+:SnipLive               Toggle live mode (read the docs on github.com/michaelb/sniprun first !)
+                        This command is not available by default given how much important knowledge about that is
+
 
 ==============================================================================
 CONFIGURATION                                       *sniprun-configuration*

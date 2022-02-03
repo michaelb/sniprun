@@ -301,7 +301,7 @@ impl<T: Interpreter> InterpreterUtils for T {
             .collect::<String>()
             .split_whitespace()
             .collect();
-        return compact_snippet.contains(&compact_main);
+        compact_snippet.contains(&compact_main)
     }
 }
 

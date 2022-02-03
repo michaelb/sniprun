@@ -136,11 +136,23 @@ pub fn display_virtual_text(
     data: &DataHolder,
     is_ok: bool,
 ) {
+    let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
     if is_ok != result.is_ok() {
+        if let Err(SniprunError::InterpreterLimitationError(_)) = result {
+            return; // without clearing the line
+        }
+        // clear the current line
+        let last_line = data.range[1] - 1;
+        let _ = nvim.lock().unwrap().command(&format!(
+            "call nvim_buf_clear_namespace(0,{},{},{})",
+            namespace_id,
+            data.range[0] - 1,
+            last_line + 1
+        ));
+
         return; //don't display unasked-for things
     }
 
-    let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
     info!("namespace_id = {:?}", namespace_id);
 
     let last_line = data.range[1] - 1;

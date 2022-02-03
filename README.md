@@ -101,6 +101,7 @@ Do either of:
 - Position the cursor on a line and `:SnipRun`
 - Select some visual range, then `:'<,'>SnipRun`
 - Combine a motion with the operator
+- Activate the live mode
 
   (through a shortcut!)
 
@@ -212,6 +213,8 @@ You can do basically two things: **run** your code selection and **stop** it (in
 ```
 (see mapping [example](README.md#my-usage-recommandation--tricks)),
 
+**Running 'live'** (aka running the current line as you're typing is possible, but it's very important to read the warnings about this, so I'm keeping the instructions in [a separate place](ressources/live_mode.md).
+
 **Bloc mode:** Select the code you want to execute in visual mode and type in:
 
 `:'<,'>SnipRun`
@@ -321,6 +324,7 @@ require'sniprun'.setup({
 
   borders = 'single'               --# display borders around floating windows
                                    --# possible values are 'none', 'single', 'double', or 'shadow'
+  live_mode_toggle='off'       --# live mode toggle, see Usage - Running for more info   
 })
 EOF
 ```
@@ -344,6 +348,7 @@ All of sniprun functionnalities:
 | :SnipReset                   | lua require'sniprun'.reset()         | \<Plug\>SnipReset           |
 | :SnipReplMemoryClean         | lua require'sniprun'.clear\_repl()   | \<Plug\>SnipReplMemoryClean |
 | :SnipClose                   | lua require'sniprun.display'.close() | \<Plug\>SnipClose           |
+| :SnipLive                    | lua require'sniprun.live_mode'.toggle()| \<Plug\>SnipLive          |
 |         ✖                    | lua require'sniprun.api'.run\_range(..)|         ✖                 |
 |          ✖                   | lua require'sniprun.api'.run\_string(..)|          ✖               |
 
@@ -381,7 +386,7 @@ vmap f <Plug>SnipRun
 </details>
 </p>
 
-- For interpreted languages with simple output, `:%SnipRun` (or a shortcut) may be a more convenient way to run your entire file. When running the whole file, SnipRun supports taking arguments on the command line: `:%SnipRun 5 "yay"` frictionlessly for interpreted languages, and compiled languages with entry point detection implemented (most of them).
+- For interpreted languages with simple output, `:%SnipRun` (or a shortcut, wrapping it with `let b:caret=winsaveview()` and `call winrestview(b:caret)` in order to keep the cursor at the current position) may be a more convenient way to run your entire file. When running the whole file, SnipRun supports taking arguments on the command line: `:%SnipRun 5 "yay"` frictionlessly for interpreted languages, and compiled languages with entry point detection implemented (most of them).
 
 
 While both shorthands and \<Plug> are here to stay, **please use the `<Plug>` style ones in your mappings** or if using from another plugin.

@@ -23,8 +23,12 @@ impl Julia_original {
         );
 
         let mut contents = String::new();
-
+    
+        let mut pause = std::time::Duration::from_millis(50);
         loop {
+            std::thread::sleep(pause);
+            pause = pause.saturating_add(std::time::Duration::from_millis(50));
+
             if let Ok(mut file) = std::fs::File::open(&path) {
                 info!("file exists");
                 let res = file.read_to_string(&mut contents);
@@ -40,8 +44,6 @@ impl Julia_original {
             }
             info!("not found yet");
 
-            let pause = std::time::Duration::from_millis(50);
-            std::thread::sleep(pause);
         }
 
         let index = contents.rfind(&start_mark).unwrap();
