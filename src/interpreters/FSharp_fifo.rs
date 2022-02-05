@@ -43,19 +43,6 @@ impl FSharp_fifo {
                 )));
             }
 
-            // FSharp_fifo-specific things to workaround nonblocking plot issues
-            if start.elapsed().as_millis() > 150 {
-                let sync_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/sync_repl.sh";
-                let res = Command::new(sync_repl_cmd)
-                    .arg(self.cache_dir.clone())
-                    .output();
-                info!(
-                    "had to sync the repl because of timeout on awaiting result:\
-                    happens  when a blocking command (plot, infinite loop) is run: {:?}",
-                    res
-                );
-            }
-
             //check for stderr first
             if let Ok(mut file) = std::fs::File::open(&err_path) {
                 info!("errfile exists");
@@ -165,7 +152,7 @@ impl Interpreter for FSharp_fifo {
     }
 
     fn has_repl_capability() -> bool {
-        false
+        true
     }
 
     fn get_supported_languages() -> Vec<String> {
@@ -275,7 +262,7 @@ impl ReplLikeInterpreter for FSharp_fifo {
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
-                            self.interpreter.clone() + " --nologo ",
+                            self.interpreter.clone(),
                         ])
                         .output()
                         .unwrap();
@@ -305,18 +292,18 @@ impl ReplLikeInterpreter for FSharp_fifo {
 
     fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
         self.add_boilerplate()?;
-        let start_mark = String::from("\nprint(\"sniprun_started_id=")
+        let start_mark = String::from("\nprintfn \"sniprun_started_id=")
             + &self.current_output_id.to_string()
-            + "\")\n";
-        let end_mark = String::from("\nprint(\"sniprun_finished_id=")
+            + "\"\n";
+        let end_mark = String::from("\nprintfn \"sniprun_finished_id=")
             + &self.current_output_id.to_string()
-            + "\")\n";
-        let start_mark_err = String::from("\nprint(\"sniprun_started_id=")
+            + "\"\n";
+        let start_mark_err = String::from("\neprintfn \"sniprun_started_id=")
             + &self.current_output_id.to_string()
-            + "\", file=sys.stderr)\n";
-        let end_mark_err = String::from("\nprint(\"sniprun_finished_id=")
+            + "\" \n";
+        let end_mark_err = String::from("\neprintfn \"sniprun_finished_id=")
             + &self.current_output_id.to_string()
-            + "\", file=sys.stderr)\n";
+            + "\"\n";
 
         // remove empty lines interpreted as 'enter' by the repl
         self.code = self
@@ -324,8 +311,7 @@ impl ReplLikeInterpreter for FSharp_fifo {
             .lines()
             .filter(|l| !l.trim().is_empty())
             .collect::<Vec<&str>>()
-            .join("\n")
-            .replace("#\n#", "\n");
+            .join("\n");
 
         let all_code = String::from("\n") + &self.code + "\n\n";
         self.code = start_mark + &start_mark_err + &all_code + &end_mark + &end_mark_err;
@@ -337,6 +323,7 @@ impl ReplLikeInterpreter for FSharp_fifo {
     }
 
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         info!("running launcher {}", send_repl_cmd);
         let res = Command::new(send_repl_cmd)
@@ -358,33 +345,12 @@ impl ReplLikeInterpreter for FSharp_fifo {
 mod test_fsharp_fifo {
     use super::*;
 
-    use serial_test::serial;
-
     #[test]
-    #[serial(pythonfifo)]
     fn simple_print() {
         let mut data = DataHolder::new();
-        data.current_bloc = String::from("print(\"lol\",1);");
+        data.current_bloc = String::from("printfn \"lol\"");
         let mut interpreter = FSharp_fifo::new(data);
-        let res = interpreter.run_at_level_repl(SupportLevel::Bloc);
-        assert!(res.is_err());
-    }
-
-    #[test]
-    #[serial(pythonfifo)]
-    fn print_quote() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("print(\"->\\\"\",1);");
-        let mut interpreter = FSharp_fifo::new(data);
-        let res = interpreter.run_at_level_repl(SupportLevel::Bloc);
-        assert!(res.is_err());
-    }
-
-    #[test]
-    fn module_usage() {
-        let data = DataHolder::new();
-        let interpreter = FSharp_fifo::new(data);
-        assert!(interpreter.module_used("import numpy as np", "print(np.array([1,2,3]))"));
-        assert!(!interpreter.module_used("import numpy", "print(np.array([1,2,3]))"));
+        let res = interpreter.run_at_level(SupportLevel::Bloc);
+        assert!(res.is_ok());
     }
 }
