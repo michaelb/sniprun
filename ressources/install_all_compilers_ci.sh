@@ -15,5 +15,6 @@ pip3 install jupyter
 sudo apt install lua5.3 
 sudo apt install sagemath
 sudo apt install gprolog
+sudo apt install dotnet
 ./ressources/go_install.sh 
 export PATH=$PATH:$HOME/golang/go/bin/
