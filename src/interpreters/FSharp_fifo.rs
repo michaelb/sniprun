@@ -351,6 +351,8 @@ mod test_fsharp_fifo {
         data.current_bloc = String::from("printfn \"lol\"");
         let mut interpreter = FSharp_fifo::new(data);
         let res = interpreter.run_at_level(SupportLevel::Bloc);
-        assert!(res.is_ok());
+         // should panic if not an Ok()
+        let string_result = res.unwrap();
+        assert_eq!(string_result, "lol\n");
     }
 }
