@@ -1,3 +1,6 @@
+## v1.2.1
+- F# support
+
 ## v1.2
 - Live mode (a @ChristianChiarulli idea and partial realisation)
 - Lower ressources usage for REPL interpreters

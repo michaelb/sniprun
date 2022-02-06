@@ -431,6 +431,7 @@ println!("-> {}", alphabet);
 | C++          | Import        |  No              | 
 | Coffeescript | Bloc          |  No              |   
 | D            | Bloc          |  No              | 
+| F#           | Bloc          |  No, but _could_ \*\* |
 | Go           | Bloc          |  No              | 
 | Haskell      | Line          |  No              | 
 | Java       | Bloc             | No              | 
