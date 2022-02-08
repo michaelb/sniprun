@@ -1,5 +1,6 @@
 ## v1.2.1
 - F# support
+- Fix multiline display in floating windows
 
 ## v1.2
 - Live mode (a @ChristianChiarulli idea and partial realisation)
