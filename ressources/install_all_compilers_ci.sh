@@ -18,3 +18,6 @@ sudo apt install gprolog
 sudo apt install dotnet
 ./ressources/go_install.sh 
 export PATH=$PATH:$HOME/golang/go/bin/
+
+# deno for typescript and javascript
+curl -fsSL https://deno.land/x/install/install.sh | sh

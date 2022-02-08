@@ -435,7 +435,7 @@ println!("-> {}", alphabet);
 | Go           | Bloc          |  No              | 
 | Haskell      | Line          |  No              | 
 | Java       | Bloc             | No              | 
-| JavaScript | Bloc             | No              | 
+| JavaScript | Bloc             | Yes\*\*   (Deno)| 
 | Julia      | Bloc             | Yes\*\*         | 
 | Lua        | Bloc             | No              | 
 | Lua-nvim   | Bloc             | Yes\*\*         |
@@ -449,8 +449,7 @@ println!("-> {}", alphabet);
 | Rust       | Bloc             | No              | 
 | SageMath   | Import           | Yes\*\*         |
 | Scala      | Bloc             | No              | 
-| TypeScript | Bloc             | No              | 
-
+| TypeScript | Bloc             | Yes\*\*   (Deno)|  
 
 Want support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=), or even better, [contribute](CONTRIBUTING.md), it's easy!
 
