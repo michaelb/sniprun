@@ -22,5 +22,5 @@ export PATH=$PATH:$HOME/golang/go/bin/
 
 # deno for typescript and javascript
 curl -fsSL https://deno.land/x/install/install.sh | sh
-export DENO_INSTALL=$HOME"/.deno"
+export DENO_INSTALL="/home/runner/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"

@@ -377,7 +377,7 @@ mod test_ts_js_deno_original {
     fn print_repl() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("let message: string = 'Hi';\nconsole.log(message);");
-        let mut interpreter = Python3_fifo::new(data);
+        let mut interpreter = JS_TS_deno::new(data);
         let res = interpreter.run_at_level_repl(SupportLevel::Bloc);
         assert!(res.is_err());
     }
