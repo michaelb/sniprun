@@ -374,7 +374,7 @@ mod test_ts_js_deno_original {
     }
     #[test]
     #[serial(deno)]
-    fn print_quote() {
+    fn print_repl() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("let message: string = 'Hi';\nconsole.log(message);");
         let mut interpreter = Python3_fifo::new(data);
