@@ -1,6 +1,6 @@
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct TypeScript_original {
+pub struct JS_TS_deno {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
@@ -9,12 +9,12 @@ pub struct TypeScript_original {
     main_file_path: String,
 }
 
-impl ReplLikeInterpreter for TypeScript_original {}
+impl ReplLikeInterpreter for JS_TS_deno {}
 
-impl Interpreter for TypeScript_original {
-    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<TypeScript_original> {
+impl Interpreter for JS_TS_deno {
+    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<JS_TS_deno> {
         //create a subfolder in the cache folder
-        let lwd = data.work_dir.clone() + "/typescript_original";
+        let lwd = data.work_dir.clone() + "/js-ts_deno";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
@@ -23,7 +23,7 @@ impl Interpreter for TypeScript_original {
 
         //pre-create string pointing to main file's and binary's path
         let mfp = lwd.clone() + "/main.ts";
-        Box::new(TypeScript_original {
+        Box::new(JS_TS_deno {
             data,
             support_level,
             code: String::new(),
@@ -34,18 +34,19 @@ impl Interpreter for TypeScript_original {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
-            String::from("TypeScript"), // in 1st position of vector, used for info only
+            String::from("TS/JS via Deno"), // in 1st position of vector, used for info only
             //':set ft?' in nvim to get the filetype of opened file
             String::from("typescript"),
             String::from("typescriptreact"),
             String::from("ts"), //should not be necessary, but just in case
-                                       // another similar name (like python and python3)?
+            String::from("js"),
+            String::from("javascript"),
         ]
     }
 
     fn get_name() -> String {
         // get your interpreter name
-        String::from("TypeScript_original")
+        String::from("JS_TS_deno")
     }
 
     fn get_current_level(&self) -> SupportLevel {
@@ -56,7 +57,7 @@ impl Interpreter for TypeScript_original {
     }
 
     fn default_for_filetype() -> bool {
-        true
+        false
     }
     fn get_data(&self) -> DataHolder {
         self.data.clone()
@@ -115,7 +116,10 @@ impl Interpreter for TypeScript_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let output = Command::new("ts-node")
+        let output = Command::new("deno")
+            .arg("run")
+            .arg("-A")
+            .arg("--unstable")
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
@@ -132,9 +136,8 @@ impl Interpreter for TypeScript_original {
     }
 }
 
-// You can add tests if you want to
 #[cfg(test)]
-mod test_typescript_original {
+mod test_ts_js_deno_original {
     use super::*;
     #[test]
      fn simple_print() {
@@ -142,7 +145,7 @@ mod test_typescript_original {
 
         //inspired from Rust syntax
         data.current_bloc = String::from("let message: string = 'Hi';\nconsole.log(message);");
-        let mut interpreter = TypeScript_original::new(data);
+        let mut interpreter = JS_TS_deno::new(data);
         let res = interpreter.run();
 
         // -> should panic if not an Ok()
