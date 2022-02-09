@@ -3,11 +3,11 @@ coverage:
     patch:
       default:
         target: 1%
-        threshold: 1%
+        threshold: 90%
         path: "src"
 
     project:
       default:
-        target: 50%
-        threshold: 50%
+        target: 1%
+        threshold: 90%
         path: "src"
