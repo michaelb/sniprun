@@ -307,16 +307,18 @@ pub fn display_floating_window(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", true)",
             row - 1,
             col,
-            no_output_wrap(result, data, &DisplayType::TempFloatingWindow),
+            no_output_wrap(&result.to_string(), data, &DisplayType::TempFloatingWindow)
+                .replace("\n", "\\\n"),
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", false)",
             row - 1,
             col,
-            no_output_wrap(&result.to_string(), data, &DisplayType::TempFloatingWindow),
+            no_output_wrap(&result.to_string(), data, &DisplayType::TempFloatingWindow)
+                .replace("\n", "\\\n"),
         )),
     };
-    info!("disaply floating window res = {:?}", res);
+    info!("display floating window res = {:?}", res);
 }
 
 pub fn return_message_classic(

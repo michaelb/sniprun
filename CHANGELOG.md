@@ -1,3 +1,8 @@
+## v1.2.1
+- F# support
+- Fix multiline display in floating windows
+- Deno brings REPL support for Javascript and TypeScript
+
 ## v1.2
 - Live mode (a @ChristianChiarulli idea and partial realisation)
 - Lower ressources usage for REPL interpreters
