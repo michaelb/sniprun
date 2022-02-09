@@ -21,4 +21,6 @@ sudo apt install dotnet
 export PATH=$PATH:$HOME/golang/go/bin/
 
 # deno for typescript and javascript
-cargo install deno --locked
+# cargo install deno --locked # too long, takes 20 min!
+curl -fsSL https://deno.land/x/install/install.sh | sh
+cp $HOME/.deno/bin/* $HOME/.cargo/bin
