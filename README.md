@@ -138,7 +138,7 @@ Sniprun will then:
 
 - [optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
 
-- [optionnal] the plugin [nvim-notify](github.com/rcarriga/nvim-notify) for the notification display style
+- [optionnal] the plugin [nvim-notify](https://github.com/rcarriga/nvim-notify) for the notification display style
 
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
