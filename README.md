@@ -112,7 +112,7 @@ and ... that's it!
 Sniprun will then:
 
 - **Get the code** you selected (selections are rounded line-wise)
-- Optionnaly, get additional information if necessary (auto retrieve import when supported for example)
+- Optionally, get additional information if necessary (auto retrieve import when supported for example)
 - **Add boilerplate** when it exists. In C, it surrounds your snip with "int main() {", "}". (disclaimer: oversimplifed)
 - **Build** (write to a script file, or compile) the code
 - **Execute** the code, or send it to an active REPL for evaluation
