@@ -337,7 +337,7 @@ Example, to use the interpreter 'Python3\_jupyter' whenever possible [instead of
 
 ​
 
-All of sniprun functionnalities:
+All of sniprun functionalities:
 
 | Shorthand                    | Lua backend                          | \<Plug> mapping            |
 |------------------------------|--------------------------------------|----------------------------|
