@@ -35,7 +35,7 @@ impl OrgMode_original {
                 .unwrap()
                 .line_count(&mut real_nvim_instance)
                 .unwrap();
-            let capped_end_line = std::cmp::min(line_n + 200, end_line); // in case there is a very long file, don't search for nothing up to line 500k
+            let capped_end_line = std::cmp::min(line_n + 400, end_line); // in case there is a very long file, don't search for nothing up to line 500k
             let it = line_n + 1..capped_end_line + 1;
 
             let mut code_bloc = vec![];
@@ -67,7 +67,7 @@ impl OrgMode_original {
                     .get_lines(&mut real_nvim_instance, i - 1, i, false)
                     .unwrap()
                     .join("");
-                if line_i.trim_start().starts_with("#+BEGIN_SRC") {
+                if line_i.trim_start().starts_with("#+BEGIN_SRC")  || self.data.current_line.trim_start().starts_with("#+begin_src") {
                     let flavor = line_i.trim_start().split_whitespace().nth(1).unwrap_or("").to_owned();
                     return self.filetype_from_str(&flavor);
                 }

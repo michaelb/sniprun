@@ -25,7 +25,7 @@ Yeah cool but what _code_ goes inside?
 ---
 I just finished some changes, how do I test my code quickly?
 
--> compile `cargo build --release` and run `nvim --cmd "set rtp+=. -u NONE <testfile>` from the sniprun project root.
+-> compile `cargo build --release` and run `nvim --cmd "set rtp+=. -u NONE <testfile>` from the sniprun project root. You may want to remove the 'release' sniprun with your plugin manager in case your runtimepath (rtp) still loads up the release version instead of your development version.
 
 ---
 
