@@ -10,20 +10,56 @@ pub struct GFM_original {
 }
 
 impl GFM_original {
-    pub fn get_filetype_of_embbeded_code(&mut self) -> String {
+    pub fn get_filetype_of_embbeded_code(&mut self) -> Result<String, SniprunError> {
         let nvim_instance = self.data.nvim_instance.clone().unwrap();
         let mut real_nvim_instance = nvim_instance.lock().unwrap();
+
+        // walk the whole visual selection in case multiple code block are contained
+        let lines = real_nvim_instance.get_current_buf().unwrap().get_lines(
+            &mut real_nvim_instance,
+            self.data.range[0] -1 ,
+            self.data.range[1],
+            false).unwrap();
+        let mut counter = 0;
+        let selection_line = self.data.range[0]  as usize;
+        let mut v = vec![];
+        for l in lines {
+            if l.trim_start().starts_with("```"){
+                counter += 1;
+            }
+            if ! l.trim_start()[3..].trim().is_empty() && counter % 2 == 1{
+                return Err(SniprunError::CustomError(String::from("Partially selected code bloc")));
+            }
+
+            if counter % 2 ==  0 {
+                v.push((selection_line + counter,0));
+            } else {
+                v[(counter / 2) as usize].1 = selection_line + counter;
+            }
+        }
+        if counter != 0 {
+            if counter % 2 == 1 {
+                return Err(SniprunError::CustomError(String::from("Selection contains an odd number of code bloc delimiters")))
+            }
+            return Err(SniprunError::ReRunRanges(v));
+        }
+
+        
+
+
+
+
         let line_n = self.data.range[0]; // no matter which one
 
         //first check if we not on boundary of block
-        if self.data.current_line.starts_with("```") {
-            let flavor = self.data.current_line[3..].to_owned();
+        if self.data.current_line.trim_start().starts_with("```") {
+            let flavor = self.data.current_line.trim_start()[3..].to_owned();
             let end_line = real_nvim_instance
                 .get_current_buf()
                 .unwrap()
                 .line_count(&mut real_nvim_instance)
                 .unwrap();
-            let capped_end_line = std::cmp::min(line_n + 200, end_line); // in case there is a very long file, don't search for nothing up to line 500k
+            let capped_end_line = std::cmp::min(line_n + 400, end_line); // in case there is a very long file, don't search for nothing up to line 500k
             let it = line_n + 1..capped_end_line + 1;
 
             let mut code_bloc = vec![];
@@ -34,10 +70,10 @@ impl GFM_original {
                     .get_lines(&mut real_nvim_instance, i - 1, i, false)
                     .unwrap()
                     .join("");
-                if line_i.starts_with("```") {
+                if line_i.trim_start().starts_with("```") {
                     //found end of bloc
                     self.data.current_bloc = code_bloc.join("\n");
-                    return self.filetype_from_str(flavor.trim());
+                    return Ok(self.filetype_from_str(flavor.trim())?);
                 } else {
                     info!("adding line {} to current bloc", i);
                     code_bloc.push(line_i.to_string());
@@ -54,19 +90,22 @@ impl GFM_original {
                     .get_lines(&mut real_nvim_instance, i - 1, i, false)
                     .unwrap()
                     .join("");
-                if line_i.starts_with("```") {
-                    let ft = line_i.strip_prefix("```").unwrap().trim().to_owned();
-                    return self.filetype_from_str(&ft);
+                if line_i.trim_start().starts_with("```") {
+                    let ft = line_i.trim_start().strip_prefix("```").unwrap().trim().to_owned();
+                    return Ok(self.filetype_from_str(&ft)?);
                 }
             }
         }
-        String::new()
+        Ok(String::new())
     }
 
     /// Convert markdowncode block flavor (Github Flavored Markdown) to filetype
-    pub fn filetype_from_str(&self, s: &str) -> String {
+    pub fn filetype_from_str(&self, s: &str) -> Result<String,SniprunError> {
         let cleaned_str = s.replace(&['{', '}', '.'][..], "");
-        match cleaned_str.as_str() {
+        if cleaned_str == "plain" {
+            return Err(SniprunError::CustomError(String::new())); // empty error for no display, this bloc should be ignored
+        }
+        Ok(match cleaned_str.as_str() {
             "bash" => "sh",
             "zsh" => "sh",
             "shell" => "sh",
@@ -81,7 +120,7 @@ impl GFM_original {
             "" => &self.default_filetype,
             a => a,
         }
-        .to_string()
+        .to_string())
     }
 }
 
@@ -177,7 +216,7 @@ impl Interpreter for GFM_original {
             self.code = String::from("");
         }
 
-        self.data.filetype = self.get_filetype_of_embbeded_code();
+        self.data.filetype = self.get_filetype_of_embbeded_code()?;
         info!("filetype/flavor found: {}", self.data.filetype);
         info!("Code to run with new filetype: {}", self.data.current_bloc);
         Ok(())
