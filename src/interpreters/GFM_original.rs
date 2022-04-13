@@ -29,28 +29,23 @@ impl GFM_original {
         let selection_line = self.data.range[0] as usize;
         let mut v = vec![];
         for (i,l) in lines.iter().enumerate() {
-            info!("checking code bloc delimiter in : {l}");
-            if l.trim_start().starts_with("```") {
-                counter += 1;
-                if counter % 2 == 1 {
-                    info!("here3");
-                    v.push((selection_line + i + 1, 0));
-                } else {
-                    info!("here4: v is {v:?}");
-                    v[((counter - 1) / 2) as usize].1 = selection_line + i - 1;
-                    info!("here4done");
-                }
-            }
-            if (l.trim_start().starts_with("```") && !l.trim_start()[3..].trim().is_empty())
+ if (l.trim_start().starts_with("```") && !l.trim_start()[3..].trim().is_empty())
                 && counter % 2 == 1
             {
-                info!("here2");
                 return Err(SniprunError::CustomError(String::from(
                     "Partially selected code bloc",
                 )));
             }
-        }
-        info!("here4");
+
+            if l.trim_start().starts_with("```") {
+                counter += 1;
+                if counter % 2 == 1 {
+                    v.push((selection_line + i + 1, 0));
+                } else {
+                    v[((counter - 1) / 2) as usize].1 = selection_line + i - 1;
+                }
+            }
+                   }
         if counter >= 2 {
             info!("counting {counter} code blocs delimiters");
             if counter % 2 == 1 {

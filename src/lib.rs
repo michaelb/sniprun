@@ -500,6 +500,7 @@ pub fn start() {
                             info!("[RUN] created launcher");
                             let result = launcher.select_and_run();
                             info!("[RUN] Interpreter return a result");
+                            data.range[1]=data.range[1]+1; // display on end of code bloc
                             display(result, nvim, &data);
                         }
                     } else {
