@@ -149,9 +149,9 @@ impl DataHolder {
         );
         if let Ok(real_current_bloc) = current_bloc {
             self.current_bloc = real_current_bloc.join("\n");
+            self.current_line = real_current_bloc[0].to_string();
         }
 
-        self.current_line = String::from("current line empty due to modify_for_range");
     }
 }
 
@@ -496,11 +496,11 @@ pub fn start() {
                             let mut data = event_handler2.data.clone();
                             let nvim = data.nvim_instance.clone().expect("Nvim instance not available");
                             data.modify_for_range(range);
-                            let launcher = launcher::Launcher::new(data);
+                            let launcher = launcher::Launcher::new(data.clone());
                             info!("[RUN] created launcher");
                             let result = launcher.select_and_run();
                             info!("[RUN] Interpreter return a result");
-                            display(result, nvim, &event_handler2.data);
+                            display(result, nvim, &data);
                         }
                     } else {
                         // normal, unique result

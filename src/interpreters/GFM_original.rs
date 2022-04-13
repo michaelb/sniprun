@@ -15,39 +15,53 @@ impl GFM_original {
         let mut real_nvim_instance = nvim_instance.lock().unwrap();
 
         // walk the whole visual selection in case multiple code block are contained
-        let lines = real_nvim_instance.get_current_buf().unwrap().get_lines(
-            &mut real_nvim_instance,
-            self.data.range[0] -1 ,
-            self.data.range[1],
-            false).unwrap();
+        let lines = real_nvim_instance
+            .get_current_buf()
+            .unwrap()
+            .get_lines(
+                &mut real_nvim_instance,
+                self.data.range[0] - 1,
+                self.data.range[1],
+                false,
+            )
+            .unwrap();
         let mut counter = 0;
-        let selection_line = self.data.range[0]  as usize;
+        let selection_line = self.data.range[0] as usize;
         let mut v = vec![];
-        for l in lines {
-            if l.trim_start().starts_with("```"){
+        for (i,l) in lines.iter().enumerate() {
+            info!("checking code bloc delimiter in : {l}");
+            if l.trim_start().starts_with("```") {
                 counter += 1;
+                if counter % 2 == 1 {
+                    info!("here3");
+                    v.push((selection_line + i + 1, 0));
+                } else {
+                    info!("here4: v is {v:?}");
+                    v[((counter - 1) / 2) as usize].1 = selection_line + i - 1;
+                    info!("here4done");
+                }
             }
-            if ! l.trim_start()[3..].trim().is_empty() && counter % 2 == 1{
-                return Err(SniprunError::CustomError(String::from("Partially selected code bloc")));
-            }
-
-            if counter % 2 ==  0 {
-                v.push((selection_line + counter,0));
-            } else {
-                v[(counter / 2) as usize].1 = selection_line + counter;
+            if (l.trim_start().starts_with("```") && !l.trim_start()[3..].trim().is_empty())
+                && counter % 2 == 1
+            {
+                info!("here2");
+                return Err(SniprunError::CustomError(String::from(
+                    "Partially selected code bloc",
+                )));
             }
         }
-        if counter != 0 {
+        info!("here4");
+        if counter >= 2 {
+            info!("counting {counter} code blocs delimiters");
             if counter % 2 == 1 {
-                return Err(SniprunError::CustomError(String::from("Selection contains an odd number of code bloc delimiters")))
+                return Err(SniprunError::CustomError(String::from(
+                    "Selection contains an odd number of code bloc delimiters",
+                )));
             }
+            info!("running separately ranges : {v:?}");
             return Err(SniprunError::ReRunRanges(v));
         }
-
-        
-
-
-
+        info!("no muliple bloc was found");
 
         let line_n = self.data.range[0]; // no matter which one
 
@@ -91,7 +105,12 @@ impl GFM_original {
                     .unwrap()
                     .join("");
                 if line_i.trim_start().starts_with("```") {
-                    let ft = line_i.trim_start().strip_prefix("```").unwrap().trim().to_owned();
+                    let ft = line_i
+                        .trim_start()
+                        .strip_prefix("```")
+                        .unwrap()
+                        .trim()
+                        .to_owned();
                     return Ok(self.filetype_from_str(&ft)?);
                 }
             }
@@ -100,7 +119,7 @@ impl GFM_original {
     }
 
     /// Convert markdowncode block flavor (Github Flavored Markdown) to filetype
-    pub fn filetype_from_str(&self, s: &str) -> Result<String,SniprunError> {
+    pub fn filetype_from_str(&self, s: &str) -> Result<String, SniprunError> {
         let cleaned_str = s.replace(&['{', '}', '.'][..], "");
         if cleaned_str == "plain" {
             return Err(SniprunError::CustomError(String::new())); // empty error for no display, this bloc should be ignored
@@ -128,7 +147,6 @@ impl ReplLikeInterpreter for GFM_original {}
 
 impl Interpreter for GFM_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Self> {
-       
         //create a subfolder in the cache folder
         let lwd = data.work_dir.clone() + "/gfm_original";
         let mut builder = DirBuilder::new();
@@ -149,15 +167,15 @@ impl Interpreter for GFM_original {
             default_filetype: ddf,
         });
 
-
-        if let Some(value) = GFM_original::get_interpreter_option(&gfm_interpreter.get_data(), "default_filetype") {
+        if let Some(value) =
+            GFM_original::get_interpreter_option(&gfm_interpreter.get_data(), "default_filetype")
+        {
             if let Some(valid_string) = value.as_str() {
                 gfm_interpreter.default_filetype = valid_string.to_string();
             }
         }
 
         gfm_interpreter
-
     }
 
     fn get_supported_languages() -> Vec<String> {
@@ -250,23 +268,21 @@ impl Interpreter for GFM_original {
     }
 }
 
-
 #[cfg(test)]
 mod test_gfm_original {
     use super::*;
 
     #[test]
-    fn simple_bloc(){
+    fn simple_bloc() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("\necho 3");
 
         data.filetype = String::from("bash");
-        data.range = [1,3];
-        
+        data.range = [1, 3];
+
         let mut interpreter = GFM_original::new(data);
         let res = interpreter.execute();
         let string_result = res.unwrap();
         assert_eq!(string_result, "3\n");
     }
 }
-        

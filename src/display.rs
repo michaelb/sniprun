@@ -136,6 +136,7 @@ pub fn display_virtual_text(
     data: &DataHolder,
     is_ok: bool,
 ) {
+    info!("range is : {:?}", data.range);
     let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
     if is_ok != result.is_ok() {
         if let Err(SniprunError::InterpreterLimitationError(_)) = result {
