@@ -42,4 +42,9 @@ pub enum SniprunError {
     ///custom error for advanced interpreters, the error will be displayed as-is
     #[error("{0}")]
     CustomError(String),
+
+    /// Divide one sniprun into many. Useful for markup language, when several
+    /// code blocs are to be run from 1 'sniprun' command
+    #[error("")]
+    ReRunRanges(Vec<(usize, usize)>),
 }

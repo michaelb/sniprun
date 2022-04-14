@@ -10,3 +10,6 @@ require'sniprun'.setup({
 })
 ```
 ![](visual_assets/api.png)
+
+
+Changing the contents of the buffer will generally not interfere with sniprun with the exception of running multiple code blocs in a markup language (such as markdown or orgmode), because sniprun gets the list of the positions of the code blocs once, before running & displaying once per code bloc

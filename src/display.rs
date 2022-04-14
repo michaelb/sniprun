@@ -92,11 +92,12 @@ pub fn display_nvim_notify(
     let res = match message {
         Ok(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".display_nvim_notify(\"{}\", true)",
-            no_output_wrap(result, data, &DisplayType::Terminal),
+            no_output_wrap(result, data, &DisplayType::NvimNotify).replace("\n", "\\\n"),
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".display_nvim_notify(\"{}\", false)",
-            no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
+            no_output_wrap(&result.to_string(), data, &DisplayType::NvimNotify)
+                .replace("\n", "\\\n"),
         )),
     };
     info!("display notify res = {:?}", res);
@@ -112,14 +113,14 @@ pub fn send_api(
             let mut nvim_instance = nvim.lock().unwrap();
             nvim_instance.command(&format!(
                 "lua require\"sniprun.display\".send_api(\"{}\", true)",
-                no_output_wrap(result, data, &DisplayType::Terminal),
+                no_output_wrap(result, data, &DisplayType::Api).replace("\n", "\\\n"),
             ))
         }
         Err(result) => {
             let mut nvim_instance = nvim.lock().unwrap();
             nvim_instance.command(&format!(
                 "lua require\"sniprun.display\".send_api(\"{}\", false)",
-                no_output_wrap(&result.to_string(), data, &DisplayType::Terminal),
+                no_output_wrap(&result.to_string(), data, &DisplayType::Api).replace("\n", "\\\n"),
             ))
         }
     };
@@ -136,6 +137,7 @@ pub fn display_virtual_text(
     data: &DataHolder,
     is_ok: bool,
 ) {
+    info!("range is : {:?}", data.range);
     let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
     if is_ok != result.is_ok() {
         if let Err(SniprunError::InterpreterLimitationError(_)) = result {

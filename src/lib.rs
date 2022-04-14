@@ -136,6 +136,22 @@ impl DataHolder {
         std::fs::remove_dir_all(&work_dir_path).unwrap();
         std::fs::create_dir_all(&work_dir_path).unwrap();
     }
+
+    pub fn modify_for_range(&mut self, range: (usize, usize)) {
+        self.range = [range.0 as i64, range.1 as i64];
+        let nvim_instance = self.nvim_instance.clone().unwrap();
+        let mut nvim_instance = nvim_instance.lock().unwrap();
+        let current_bloc = nvim_instance.get_current_buf().unwrap().get_lines(
+            &mut nvim_instance,
+            self.range[0] - 1,
+            self.range[1],
+            false,
+        );
+        if let Ok(real_current_bloc) = current_bloc {
+            self.current_bloc = real_current_bloc.join("\n");
+            self.current_line = real_current_bloc[0].to_string();
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -472,7 +488,27 @@ pub fn start() {
                     let result = launcher.select_and_run();
                     info!("[RUN] Interpreter return a result");
 
-                    display(result, event_handler2.nvim, &event_handler2.data);
+                    if let Err(error::SniprunError::ReRunRanges(vec)) = result {
+                        // sniprun separated into multiple ranges from
+                        // markup languages code blocs
+                        for range in vec {
+                            let mut data = event_handler2.data.clone();
+                            let nvim = data
+                                .nvim_instance
+                                .clone()
+                                .expect("Nvim instance not available");
+                            data.modify_for_range(range);
+                            let launcher = launcher::Launcher::new(data.clone());
+                            info!("[RUN] created launcher");
+                            let result = launcher.select_and_run();
+                            info!("[RUN] Interpreter return a result");
+                            data.range[1] = data.range[1] + 1; // display on end of code bloc
+                            display(result, nvim, &data);
+                        }
+                    } else {
+                        // normal, unique result
+                        display(result, event_handler2.nvim, &event_handler2.data);
+                    }
 
                     //clean data
                     event_handler2.data = DataHolder::new();

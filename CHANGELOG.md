@@ -1,3 +1,7 @@
+## v1.2.2
+- Run multiple code blocs at one in markup languages
+- Fix multiline display for nvim-notify
+
 ## v1.2.1
 - F# support
 - Fix multiline display in floating windows
