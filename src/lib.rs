@@ -151,7 +151,6 @@ impl DataHolder {
             self.current_bloc = real_current_bloc.join("\n");
             self.current_line = real_current_bloc[0].to_string();
         }
-
     }
 }
 
@@ -494,13 +493,16 @@ pub fn start() {
                         // markup languages code blocs
                         for range in vec {
                             let mut data = event_handler2.data.clone();
-                            let nvim = data.nvim_instance.clone().expect("Nvim instance not available");
+                            let nvim = data
+                                .nvim_instance
+                                .clone()
+                                .expect("Nvim instance not available");
                             data.modify_for_range(range);
                             let launcher = launcher::Launcher::new(data.clone());
                             info!("[RUN] created launcher");
                             let result = launcher.select_and_run();
                             info!("[RUN] Interpreter return a result");
-                            data.range[1]=data.range[1]+1; // display on end of code bloc
+                            data.range[1] = data.range[1] + 1; // display on end of code bloc
                             display(result, nvim, &data);
                         }
                     } else {

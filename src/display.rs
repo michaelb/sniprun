@@ -96,7 +96,8 @@ pub fn display_nvim_notify(
         )),
         Err(result) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".display_nvim_notify(\"{}\", false)",
-            no_output_wrap(&result.to_string(), data, &DisplayType::NvimNotify).replace("\n", "\\\n"),
+            no_output_wrap(&result.to_string(), data, &DisplayType::NvimNotify)
+                .replace("\n", "\\\n"),
         )),
     };
     info!("display notify res = {:?}", res);
