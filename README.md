@@ -339,18 +339,18 @@ Example, to use the interpreter 'Python3\_jupyter' whenever possible [instead of
 
 All of sniprun functionalities:
 
-| Shorthand                    | Lua backend                          | \<Plug> mapping            |
-|------------------------------|--------------------------------------|----------------------------|
-| :SnipRun                     | lua require'sniprun'.run()           | \<Plug\>SnipRun             |
-| (normal node)                | lua require'sniprun'.run('n')        | \<Plug\>SnipRunOperator     |
-| :'\<,'\>SnipRun (visual mode)| lua require'sniprun'.run('v')        | \<Plug\>SnipRun             |
-| :SnipInfo                    | lua require'sniprun'.info()          | \<Plug\>SnipInfo            |
-| :SnipReset                   | lua require'sniprun'.reset()         | \<Plug\>SnipReset           |
-| :SnipReplMemoryClean         | lua require'sniprun'.clear\_repl()   | \<Plug\>SnipReplMemoryClean |
-| :SnipClose                   | lua require'sniprun.display'.close() | \<Plug\>SnipClose           |
-| :SnipLive                    | lua require'sniprun.live_mode'.toggle()| \<Plug\>SnipLive          |
-|         ✖                    | lua require'sniprun.api'.run\_range(..)|         ✖                 |
-|          ✖                   | lua require'sniprun.api'.run\_string(..)|          ✖               |
+| Shorthand                     | Lua backend                               | \<Plug> mapping             |
+|-------------------------------|-------------------------------------------|-----------------------------|
+| :SnipRun                      | lua require'sniprun'.run()                | \<Plug\>SnipRun             |
+| (normal node)                 | lua require'sniprun'.run('n')             | \<Plug\>SnipRunOperator     |
+| :'\<,'\>SnipRun (visual mode) | lua require'sniprun'.run('v')             | \<Plug\>SnipRun             |
+| :SnipInfo                     | lua require'sniprun'.info()               | \<Plug\>SnipInfo            |
+| :SnipReset                    | lua require'sniprun'.reset()              | \<Plug\>SnipReset           |
+| :SnipReplMemoryClean          | lua require'sniprun'.clear\_repl()        | \<Plug\>SnipReplMemoryClean |
+| :SnipClose                    | lua require'sniprun.display'.close\_all() | \<Plug\>SnipClose           |
+| :SnipLive                     | lua require'sniprun.live\_mode'.toggle()  | \<Plug\>SnipLive            |
+| ✖                             | lua require'sniprun.api'.run\_range(..)   | ✖                           |
+| ✖                             | lua require'sniprun.api'.run\_string(..)  | ✖                           |
 
 
 
