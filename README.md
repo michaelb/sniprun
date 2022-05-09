@@ -322,7 +322,7 @@ require'sniprun'.setup({
   inline_messages = 0,             --# inline_message (0/1) is a one-line way to display messages
 				   --# to workaround sniprun not being able to display anything
 
-  borders = 'single'               --# display borders around floating windows
+  borders = 'single',              --# display borders around floating windows
                                    --# possible values are 'none', 'single', 'double', or 'shadow'
   live_mode_toggle='off'       --# live mode toggle, see Usage - Running for more info   
 })
