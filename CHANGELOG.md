@@ -1,5 +1,8 @@
+## v1.2.3
+- no signcolumn in Terminal display + fix line wrapping
+
 ## v1.2.2
-- Run multiple code blocs at one in markup languages
+- Run multiple code blocs at once in markup languages
 - Fix multiline display for nvim-notify
 
 ## v1.2.1
