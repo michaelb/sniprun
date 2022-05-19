@@ -43,6 +43,7 @@ function M.term_open()
   local chan = vim.api.nvim_open_term(buf, {})
   vim.cmd("set scrollback=1")
   vim.cmd('setlocal nonu')
+  vim.cmd('setlocal signcolumn=no')
 
   vim.cmd("wincmd p")
   M.term.opened = 1
@@ -64,7 +65,7 @@ function M.write_to_term(message, ok)
   end
   
   local width = vim.api.nvim_win_get_width(M.term.window_handle)  
-  local half_width = (width - 6 - 4) / 2
+  local half_width = (width - 6 - 4 - 4) / 2
   message = "  "..string.rep("-",half_width)..status..string.rep("-", half_width).."  ".."\n"..message
 
   for line in message:gmatch("([^\n]*)\n?") do

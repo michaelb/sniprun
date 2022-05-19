@@ -86,12 +86,12 @@ impl Python3_original {
         false
     }
     fn fetch_config(&mut self) {
-        let default_compiler = String::from("python3");
-        self.interpreter = default_compiler;
-        if let Some(used_compiler) = Python3_original::get_interpreter_option(&self.get_data(), "interpreter") {
-            if let Some(compiler_string) = used_compiler.as_str() {
-                info!("Using custom compiler: {}", compiler_string);
-                self.interpreter = compiler_string.to_string();
+        let default_interpreter = String::from("python3");
+        self.interpreter = default_interpreter;
+        if let Some(used_interpreter) = Python3_original::get_interpreter_option(&self.get_data(), "interpreter") {
+            if let Some(interpreter_string) = used_interpreter.as_str() {
+                info!("Using custom interpreter: {}", interpreter_string);
+                self.interpreter = interpreter_string.to_string();
             }
         }
 
