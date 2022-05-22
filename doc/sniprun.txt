@@ -42,7 +42,7 @@ ALL COMMANDS                                       *sniprun-commands*
 
 :SnipTerminate          Kill Sniprun and child processes (equivalent to SnipReset but does not clean the cache)
 
-:SnipInfo               Get Sniprun version info and info about the available intepreters
+:SnipInfo               Get Sniprun version info and info about the available interpreters
 
 :SnipClose              Clear virtual text and close splits and floating windows created by sniprun
 

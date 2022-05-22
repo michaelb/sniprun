@@ -1,3 +1,6 @@
+## v1.2.4
+- fix typo in documentation
+
 ## v1.2.3
 - no signcolumn in Terminal display + fix line wrapping
 
@@ -161,7 +164,7 @@
 
 ## v0.4.3
 - Rust interpreter and example now have tests
-- Julia intepreter
+- Julia interpreter
 - example.rs interpreter
 
 

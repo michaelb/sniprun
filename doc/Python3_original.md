@@ -19,14 +19,14 @@ With or without REPL, the star imports may also not be automatically fetched, ev
 
 
 
-To use a custom python intepreterv( maybe python2, or a particular version?) you can provide the following interpreter options:, using a venv is also supported (provide one or several relative paths "../venv" etc.. may be necessary if you didn't open neovim at the root of the project)
+To use a custom python interpreter ( maybe python2, or a particular version?) you can provide the following interpreter options:, using a venv is also supported (provide one or several relative paths "../venv" etc.. may be necessary if you didn't open neovim at the root of the project)
 
 
 ```
 require'sniprun'.setup({
     interpreter_options = {
         Python3_original = {
-            intepreter = "python3.9",
+            interpreter = "python3.9",
             venv = {"venv_project1", "venv_project2", "../venv_project2"},
             }
         }
