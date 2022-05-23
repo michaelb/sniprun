@@ -5,6 +5,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  RUSTFLAGS: -C target-feature=+crt-static
 
 
 jobs:
@@ -15,10 +16,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: build
-      run: cargo build --release --verbose && mv ./target/release/sniprun .
+      run: cargo build --target x86_64-unknown-linux-gnu --release --verbose && mv ./target/x86_64-unknown-linux-gnu/release/sniprun .
 
     - name: upload to releases
-      uses: svenstaro/upload-release-action@v2 
+      uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: sniprun
