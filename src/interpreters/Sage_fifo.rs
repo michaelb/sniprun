@@ -6,7 +6,6 @@ pub struct Sage_fifo {
     code: String,
     imports: String,
     main_file_path: String,
-    plugin_root: String,
     cache_dir: String,
 
     interpreter: String,
@@ -251,7 +250,6 @@ impl Interpreter for Sage_fifo {
         //pre-create string pointing to main file's and binary's path
         let mfp = rwd.clone() + "/main.sage";
 
-        let pgr = data.sniprun_root_dir.clone();
         Box::new(Sage_fifo {
             cache_dir: rwd + "/" + &Sage_fifo::get_nvim_pid(&data),
             data,
@@ -259,7 +257,6 @@ impl Interpreter for Sage_fifo {
             code: String::from(""),
             imports: String::from(""),
             main_file_path: mfp,
-            plugin_root: pgr,
             current_output_id: 0,
             interpreter: String::new(),
             user_sage_config: false,

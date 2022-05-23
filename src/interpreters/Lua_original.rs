@@ -4,7 +4,6 @@ pub struct Lua_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    lua_work_dir: String,
     main_file_path: String,
 }
 impl ReplLikeInterpreter for Lua_original {}
@@ -16,12 +15,11 @@ impl Interpreter for Lua_original {
         builder
             .create(&bwd)
             .expect("Could not create directory for lua-original");
-        let mfp = bwd.clone() + "/main.lua";
+        let mfp = bwd + "/main.lua";
         Box::new(Lua_original {
             data,
             support_level: level,
             code: String::from(""),
-            lua_work_dir: bwd,
             main_file_path: mfp,
         })
     }

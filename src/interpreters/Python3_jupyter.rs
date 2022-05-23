@@ -8,8 +8,6 @@ pub struct Python3_jupyter {
     kernel_file: String,
     main_file_path: String,
     launcher_path: String,
-    plugin_root: String,
-    cache_dir: String,
 }
 
 impl Python3_jupyter {
@@ -61,6 +59,7 @@ impl Python3_jupyter {
         Ok(())
     }
 
+    #[allow(dead_code)]
     fn get_nvim_pid(data: &DataHolder) -> String {
         data.nvim_pid.to_string()
     }
@@ -125,11 +124,8 @@ impl Interpreter for Python3_jupyter {
         let mfp = pwd.clone() + "/main.py";
         let lp = pwd.clone() + "/main.sh";
 
-        let pgr = data.sniprun_root_dir.clone();
-
         let kp = pwd.clone() + "/kernel_sniprun.json";
         Box::new(Python3_jupyter {
-            cache_dir: pwd + "/" + &Python3_jupyter::get_nvim_pid(&data),
             data,
             support_level: level,
             code: String::new(),
@@ -137,7 +133,6 @@ impl Interpreter for Python3_jupyter {
             kernel_file: kp,
             main_file_path: mfp,
             launcher_path: lp,
-            plugin_root: pgr,
         })
     }
 
@@ -388,6 +383,7 @@ mod test_python3_jupyter {
         assert!(string_result.contains(&"a 1"));
     }
 
+    #[allow(dead_code)]
     fn test_repl() {
         let mut event_handler = fake_event();
         event_handler.fill_data(&fake_msgpack());

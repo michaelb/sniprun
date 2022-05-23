@@ -7,8 +7,6 @@ pub struct Julia_jupyter {
     kernel_file: String,
     main_file_path: String,
     launcher_path: String,
-    plugin_root: String,
-    cache_dir: String,
 }
 
 impl Interpreter for Julia_jupyter {
@@ -25,18 +23,14 @@ impl Interpreter for Julia_jupyter {
         let mfp = pwd.clone() + "/main.jl";
         let lp = pwd.clone() + "/main.sh";
 
-        let pgr = data.sniprun_root_dir.clone();
-
         let kp = pwd.clone() + "/kernel_sniprun.json";
         Box::new(Julia_jupyter {
-            cache_dir: pwd + "/" + &data.nvim_pid.to_string(),
             data,
             support_level: level,
             code: String::new(),
             kernel_file: kp,
             main_file_path: mfp,
             launcher_path: lp,
-            plugin_root: pgr,
         })
     }
 

@@ -8,9 +8,6 @@ pub struct Mathematica_original {
     language_work_dir: String,
     main_file_path: String,
 
-    fifo_in: Option<String>,
-    file_out: Option<String>,
-
     current_output_id: u32,
 }
 
@@ -106,8 +103,6 @@ impl Interpreter for Mathematica_original {
             code: String::new(),
             language_work_dir: lwd,
             main_file_path: mfp,
-            fifo_in: None,
-            file_out: None,
             current_output_id: 0,
         })
     }

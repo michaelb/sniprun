@@ -5,7 +5,6 @@ pub struct GFM_original {
     data: DataHolder,
     code: String,
 
-    language_work_dir: String,
     default_filetype: String,
 }
 
@@ -158,7 +157,6 @@ impl Interpreter for GFM_original {
             data: data_clone,
             support_level,
             code: String::new(),
-            language_work_dir: lwd,
             default_filetype: ddf,
         });
 

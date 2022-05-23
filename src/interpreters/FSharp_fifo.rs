@@ -5,7 +5,6 @@ pub struct FSharp_fifo {
     data: DataHolder,
     code: String,
     main_file_path: String,
-    plugin_root: String,
     cache_dir: String,
 
     interpreter: String,
@@ -126,14 +125,12 @@ impl Interpreter for FSharp_fifo {
         //pre-create string pointing to main file's and binary's path
         let mfp = rwd.clone() + "/main.fsx";
 
-        let pgr = data.sniprun_root_dir.clone();
         Box::new(FSharp_fifo {
             cache_dir: rwd + "/" + &FSharp_fifo::get_nvim_pid(&data),
             data,
             support_level: level,
             code: String::from(""),
             main_file_path: mfp,
-            plugin_root: pgr,
             current_output_id: 0,
             interpreter: String::new(),
         })

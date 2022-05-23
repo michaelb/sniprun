@@ -4,7 +4,6 @@ pub struct CS_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    cs_work_dir: String,
     main_file_path: String,
 }
 impl ReplLikeInterpreter for CS_original {}
@@ -16,12 +15,11 @@ impl Interpreter for CS_original {
         builder
             .create(&bwd)
             .expect("Could not create directory for cs-original");
-        let mfp = bwd.clone() + "/main.coffee";
+        let mfp = bwd + "/main.coffee";
         Box::new(CS_original {
             data,
             support_level: level,
             code: String::from(""),
-            cs_work_dir: bwd,
             main_file_path: mfp,
         })
     }

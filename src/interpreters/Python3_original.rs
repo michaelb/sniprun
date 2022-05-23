@@ -327,6 +327,7 @@ mod test_python3_original {
         assert_eq!(string_result, "lol 1\n");
     }
   
+    #[allow(dead_code)]
     fn test_repl() {
         let mut event_handler = fake_event();
         event_handler.fill_data(&fake_msgpack());

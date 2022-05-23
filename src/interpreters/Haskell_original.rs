@@ -5,8 +5,6 @@ pub struct Haskell_original {
     data: DataHolder,
     code: String,
 
-    ///specific to haskell
-    haskell_work_dir: String,
     bin_path: String,
     main_file_path: String,
 }
@@ -22,13 +20,12 @@ impl Interpreter for Haskell_original {
             .expect("Could not create directory for haskell-original");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = rwd.clone() + "/main.hs";
+        let mfp = rwd + "/main.hs";
         let bp = String::from(&mfp[..mfp.len() - 3]); // remove extension so binary is named 'main'
         Box::new(Haskell_original {
             data,
             support_level,
             code: String::from(""),
-            haskell_work_dir: rwd,
             bin_path: bp,
             main_file_path: mfp,
         })
