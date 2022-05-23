@@ -112,7 +112,7 @@ and ... that's it!
 Sniprun will then:
 
 - **Get the code** you selected (selections are rounded line-wise)
-- Optionnaly, get additional information if necessary (auto retrieve import when supported for example)
+- Optionally, get additional information if necessary (auto retrieve import when supported for example)
 - **Add boilerplate** when it exists. In C, it surrounds your snip with "int main() {", "}". (disclaimer: oversimplifed)
 - **Build** (write to a script file, or compile) the code
 - **Execute** the code, or send it to an active REPL for evaluation
@@ -124,7 +124,7 @@ Sniprun will then:
 
 ## What it is && isn't
 
-**It is** a way to quickly run small snippets of code, on the fly, and iterate very quickly and conveniently. To quickly experiment with new features (not yet embbeded in classes, a whole project etc...), or to develop simple code pipelines (like a machine learning exercise) that fit in a unique file, sniprun is probably _the_ best plugin out there.
+**It is** a way to quickly run small snippets of code, on the fly, and iterate very quickly and conveniently. To quickly experiment with new features (not yet embedded in classes, a whole project etc...), or to develop simple code pipelines (like a machine learning exercise) that fit in a unique file, sniprun is probably _the_ best plugin out there.
 
 **It isn't** a way to run a whole 50k lines, 3 languages projects. A one-liner `:!make run` is better suited to do this most of the time.
 
@@ -136,9 +136,9 @@ Sniprun will then:
 
 - **Neovim** version >= 0.5
 
-- [optionnal] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
+- [optional] **cargo and the rust toolchain** version >= 1.43.0 (you can find those [here](https://www.rust-lang.org/tools/install)).
 
-- [optionnal] the plugin [nvim-notify](github.com/rcarriga/nvim-notify) for the notification display style
+- [optional] the plugin [nvim-notify](https://github.com/rcarriga/nvim-notify) for the notification display style
 
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [doc](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can also be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
@@ -322,7 +322,7 @@ require'sniprun'.setup({
   inline_messages = 0,             --# inline_message (0/1) is a one-line way to display messages
 				   --# to workaround sniprun not being able to display anything
 
-  borders = 'single'               --# display borders around floating windows
+  borders = 'single',              --# display borders around floating windows
                                    --# possible values are 'none', 'single', 'double', or 'shadow'
   live_mode_toggle='off'       --# live mode toggle, see Usage - Running for more info   
 })
@@ -337,20 +337,20 @@ Example, to use the interpreter 'Python3\_jupyter' whenever possible [instead of
 
 ​
 
-All of sniprun functionnalities:
+All of sniprun functionalities:
 
-| Shorthand                    | Lua backend                          | \<Plug> mapping            |
-|------------------------------|--------------------------------------|----------------------------|
-| :SnipRun                     | lua require'sniprun'.run()           | \<Plug\>SnipRun             |
-| (normal node)                | lua require'sniprun'.run('n')        | \<Plug\>SnipRunOperator     |
-| :'\<,'\>SnipRun (visual mode)| lua require'sniprun'.run('v')        | \<Plug\>SnipRun             |
-| :SnipInfo                    | lua require'sniprun'.info()          | \<Plug\>SnipInfo            |
-| :SnipReset                   | lua require'sniprun'.reset()         | \<Plug\>SnipReset           |
-| :SnipReplMemoryClean         | lua require'sniprun'.clear\_repl()   | \<Plug\>SnipReplMemoryClean |
-| :SnipClose                   | lua require'sniprun.display'.close() | \<Plug\>SnipClose           |
-| :SnipLive                    | lua require'sniprun.live_mode'.toggle()| \<Plug\>SnipLive          |
-|         ✖                    | lua require'sniprun.api'.run\_range(..)|         ✖                 |
-|          ✖                   | lua require'sniprun.api'.run\_string(..)|          ✖               |
+| Shorthand                     | Lua backend                               | \<Plug> mapping             |
+|-------------------------------|-------------------------------------------|-----------------------------|
+| :SnipRun                      | lua require'sniprun'.run()                | \<Plug\>SnipRun             |
+| (normal node)                 | lua require'sniprun'.run('n')             | \<Plug\>SnipRunOperator     |
+| :'\<,'\>SnipRun (visual mode) | lua require'sniprun'.run('v')             | \<Plug\>SnipRun             |
+| :SnipInfo                     | lua require'sniprun'.info()               | \<Plug\>SnipInfo            |
+| :SnipReset                    | lua require'sniprun'.reset()              | \<Plug\>SnipReset           |
+| :SnipReplMemoryClean          | lua require'sniprun'.clear\_repl()        | \<Plug\>SnipReplMemoryClean |
+| :SnipClose                    | lua require'sniprun.display'.close\_all() | \<Plug\>SnipClose           |
+| :SnipLive                     | lua require'sniprun.live\_mode'.toggle()  | \<Plug\>SnipLive            |
+| ✖                             | lua require'sniprun.api'.run\_range(..)   | ✖                           |
+| ✖                             | lua require'sniprun.api'.run\_string(..)  | ✖                           |
 
 
 
