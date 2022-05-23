@@ -12,14 +12,25 @@ env:
 
 jobs:
   build:
-    name : build
-
+    name : build-latest-stable
     runs-on: ubuntu-20.04
-
     steps:
     - uses: actions/checkout@v2
     - name: Build
       run: cargo build --verbose --release
+
+  buildmsrv:
+    name: build-nightly
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Rust 1.55 toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: 1.55
+          override: true
+      - name: build
+        run: cargo build --release
 
   buildnightly:
     name: build-nightly

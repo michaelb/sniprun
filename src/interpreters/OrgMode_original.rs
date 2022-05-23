@@ -28,7 +28,7 @@ impl OrgMode_original {
         let selection_line = self.data.range[0] as usize;
         let mut v = vec![];
         for (i, l) in lines.iter().enumerate() {
-            info!("checking code bloc delimiter in : {l}");
+            info!("checking code bloc delimiter in : {}",l);
             if l.trim_start().to_lowercase().starts_with("#+begin_src") {
                 if counter % 2 == 1 { return Err(SniprunError::CustomError(String::from("Incomplete or nested code blocs")))} 
                 counter += 1;

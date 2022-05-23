@@ -52,7 +52,7 @@ impl GFM_original {
                     "Selection contains an odd number of code bloc delimiters",
                 )));
             }
-            info!("running separately ranges : {v:?}");
+            info!("running separately ranges : {:?}",v);
             return Err(SniprunError::ReRunRanges(v));
         }
         info!("no muliple bloc was found");

@@ -1,4 +1,5 @@
 ## v1.2.4
+- set Rust 1.55 as MSRV
 - fix typo in documentation
 
 ## v1.2.3
