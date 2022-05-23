@@ -4,7 +4,6 @@ pub struct Prolog_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    prolog_work_dir: String,
     main_file_path: String,
     interpreter: String,
 }
@@ -22,7 +21,6 @@ impl Interpreter for Prolog_original {
             data,
             support_level: level,
             code: String::from(""),
-            prolog_work_dir: bwd,
             main_file_path: mfp,
             interpreter: String::new(),
         })
@@ -123,6 +121,7 @@ mod test_prolog_original {
     use super::*;
 
     // #[test]
+    #[allow(dead_code)]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from(":- write(ok), halt.");

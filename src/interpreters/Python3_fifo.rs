@@ -6,7 +6,6 @@ pub struct Python3_fifo {
     code: String,
     imports: String,
     main_file_path: String,
-    plugin_root: String,
     cache_dir: String,
 
     interpreter: String,
@@ -255,7 +254,6 @@ impl Interpreter for Python3_fifo {
         //pre-create string pointing to main file's and binary's path
         let mfp = rwd.clone() + "/main.py";
 
-        let pgr = data.sniprun_root_dir.clone();
         Box::new(Python3_fifo {
             cache_dir: rwd + "/" + &Python3_fifo::get_nvim_pid(&data),
             data,
@@ -263,7 +261,6 @@ impl Interpreter for Python3_fifo {
             code: String::from(""),
             imports: String::from(""),
             main_file_path: mfp,
-            plugin_root: pgr,
             current_output_id: 0,
             interpreter: String::new(),
             venv: None,

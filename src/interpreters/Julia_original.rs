@@ -4,9 +4,7 @@ pub struct Julia_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    imports: String,
     main_file_path: String,
-    plugin_root: String,
     cache_dir: String,
 
     current_output_id: u32,
@@ -66,14 +64,11 @@ impl Interpreter for Julia_original {
         //pre-create string pointing to main file's and binary's path
         let mfp = rwd.clone() + "/main.jl";
 
-        let pgr = data.sniprun_root_dir.clone();
         Box::new(Julia_original {
             data,
             support_level: level,
             code: String::from(""),
-            imports: String::from(""),
             main_file_path: mfp,
-            plugin_root: pgr,
             cache_dir: rwd,
             current_output_id: 0,
         })

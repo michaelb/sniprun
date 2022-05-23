@@ -4,7 +4,6 @@ pub struct JS_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    js_work_dir: String,
     main_file_path: String,
 }
 impl ReplLikeInterpreter for JS_original {}
@@ -21,7 +20,6 @@ impl Interpreter for JS_original {
             data,
             support_level: level,
             code: String::from(""),
-            js_work_dir: bwd,
             main_file_path: mfp,
         })
     }

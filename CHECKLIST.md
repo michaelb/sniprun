@@ -14,3 +14,4 @@
 
  - Check CI status
  - Check Releases status
+ - Edit release name

@@ -4,7 +4,6 @@ pub struct Bash_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    bash_work_dir: String,
     main_file_path: String,
 }
 
@@ -16,12 +15,11 @@ impl Interpreter for Bash_original {
         builder
             .create(&bwd)
             .expect("Could not create directory for bash-original");
-        let mfp = bwd.clone() + "/main.sh";
+        let mfp = bwd + "/main.sh";
         Box::new(Bash_original {
             data,
             support_level: level,
             code: String::from(""),
-            bash_work_dir: bwd,
             main_file_path: mfp,
         })
     }

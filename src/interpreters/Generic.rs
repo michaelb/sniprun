@@ -4,7 +4,6 @@ pub struct Generic {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    generic_work_dir: String,
     glot_bin_path: String,
     main_file_path: String,
 }
@@ -17,13 +16,12 @@ impl Interpreter for Generic {
         builder
             .create(&rwd)
             .expect("Could not create directory for generic");
-        let mfp = rwd.clone() + "/main.json";
+        let mfp = rwd + "/main.json";
         let bp = String::from(&data.sniprun_root_dir) + "/ressources/runner";
         Box::new(Generic {
             data,
             support_level,
             code: String::from(""),
-            generic_work_dir: rwd,
             glot_bin_path: bp,
             main_file_path: mfp,
         })

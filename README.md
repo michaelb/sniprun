@@ -132,7 +132,7 @@ Sniprun will then:
 
 ### Prerequisites && dependencies
 
-- Sniprun is compatible with **Linux** and **MacOS**. (Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install))
+- Sniprun is compatible with **Linux** and **MacOS**. (Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install)) >= 1.55
 
 - **Neovim** version >= 0.5
 
@@ -257,7 +257,7 @@ Some languages, see support [table](README.md#support-levels-and-languages), als
 This is easier/cleaner to implement on interpreted languages, but **compiled languages can have a REPL-like behavior too** using dirty tricks, or through an intrepreter such as [evcxr](https://github.com/google/evcxr), but no compiled language has REPL behavior for now.
 
 Many interpreted languages will have this behavior enabled or disabled by default, you can change this with the
-`repl_enable = { 'Intepreter_name', 'Another_one' }` and `repl_disable = {'Disabled_interpreter'}` keys in the configuration. Relevant info is available in `:SnipInfo` / `:SnipInfo <name> `
+`repl_enable = { 'Interpreter_name', 'Another_one' }` and `repl_disable = {'Disabled_interpreter'}` keys in the configuration. Relevant info is available in `:SnipInfo` / `:SnipInfo <name> `
 
 
 Hopefully, if something does not work, or if the 'memory' is corrupted by bad code you can clear the REPL memory with `:SnipReplMemoryClean` that is a faster and less error-prone alternative to `:SnipReset` for this use case.
@@ -277,7 +277,7 @@ require'sniprun'.setup({
   repl_enable = {},               --# enable REPL-like behavior for the given interpreters
   repl_disable = {},              --# disable REPL-like behavior for the given interpreters
 
-  interpreter_options = {         --# intepreter-specific options, see docs / :SnipInfo <name>
+  interpreter_options = {         --# interpreter-specific options, see docs / :SnipInfo <name>
     GFM_original = {
       use_on_filetypes = {"markdown.pandoc"}    --# the 'use_on_filetypes' configuration key is
                                                 --# available for every interpreter

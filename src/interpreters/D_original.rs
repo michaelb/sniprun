@@ -5,8 +5,6 @@ pub struct D_original {
     data: DataHolder,
     code: String,
 
-    ///specific to d
-    d_work_dir: String,
     main_file_path: String,
 }
 impl ReplLikeInterpreter for D_original {}
@@ -26,7 +24,6 @@ impl Interpreter for D_original {
             data,
             support_level,
             code: String::from(""),
-            d_work_dir: rwd,
             main_file_path: mfp,
         })
     }

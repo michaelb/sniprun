@@ -71,7 +71,7 @@ pub trait Interpreter: ReplLikeInterpreter {
         SupportLevel::Unsupported
     }
 
-    /// This function should be overwritten if your intepreter cannot run
+    /// This function should be overwritten if your interpreter cannot run
     /// all the files for the advertised filetypes.
     /// It's up to you to detect it, and initialize (new()) and .run() it and return the result
     fn fallback(&mut self) -> Option<Result<String, SniprunError>> {
@@ -259,7 +259,7 @@ impl<T: Interpreter> InterpreterUtils for T {
         }
     }
 
-    /// get an intepreter option
+    /// get an interpreter option
     fn get_interpreter_option(data: &DataHolder, option: &str) -> Option<neovim_lib::Value> {
         fn index_from_name(
             name: &str,
@@ -317,7 +317,7 @@ pub trait ReplLikeInterpreter {
     }
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
         Err(SniprunError::InterpreterLimitationError(String::from(
-            "REPL-like behavior is not implemented for this intepreter",
+            "REPL-like behavior is not implemented for this interpreter",
         )))
     }
 }

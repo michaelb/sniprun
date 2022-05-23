@@ -4,8 +4,6 @@ pub struct TypeScript_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-
-    language_work_dir: String,
     main_file_path: String,
 }
 
@@ -22,12 +20,11 @@ impl Interpreter for TypeScript_original {
             .expect("Could not create directory for example");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = lwd.clone() + "/main.ts";
+        let mfp = lwd + "/main.ts";
         Box::new(TypeScript_original {
             data,
             support_level,
             code: String::new(),
-            language_work_dir: lwd,
             main_file_path: mfp,
         })
     }

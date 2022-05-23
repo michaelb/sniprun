@@ -4,7 +4,6 @@ pub struct Lua_nvim {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
-    lua_work_dir: String,
     main_file_path: String,
 }
 impl ReplLikeInterpreter for Lua_nvim {}
@@ -21,7 +20,6 @@ impl Interpreter for Lua_nvim {
             data,
             support_level: level,
             code: String::from(""),
-            lua_work_dir: bwd,
             main_file_path: mfp,
         })
     }

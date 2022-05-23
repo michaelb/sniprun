@@ -7,7 +7,6 @@ pub struct Scala_original {
 
     ///specific to compiled languages, can be modified of course
     language_work_dir: String,
-    bin_path: String,
     main_file_path: String,
     // you can and should add fields as needed
 }
@@ -28,13 +27,11 @@ impl Interpreter for Scala_original {
 
         //pre-create string pointing to main file's and binary's path
         let mfp = lwd.clone() + "/Main.scala";
-        let bp = lwd.clone() + "/Main"; // remove extension so binary is named 'main'
         Box::new(Scala_original {
             data,
             support_level,
             code: String::new(),
             language_work_dir: lwd,
-            bin_path: bp,
             main_file_path: mfp,
         })
     }

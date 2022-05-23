@@ -7,7 +7,6 @@ pub struct JS_TS_deno {
     cache_dir: String,
 
     current_output_id: u32,
-    language_work_dir: String,
     main_file_path: String,
 }
 
@@ -118,7 +117,6 @@ impl Interpreter for JS_TS_deno {
             data,
             support_level,
             code: String::new(),
-            language_work_dir: lwd,
             main_file_path: mfp,
             current_output_id: 0,
         })

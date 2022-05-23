@@ -1,8 +1,8 @@
-# Making a REPL-capable intepreter for sniprun
+# Making a REPL-capable interpreter for sniprun
 
 ## Is it possible ?
 
-Yes, most of the time, if the language already has an available intepreter. It _could_ be possible otherwise but has yet to be really done.
+Yes, most of the time, if the language already has an available interpreter. It _could_ be possible otherwise but has yet to be really done.
 
 To avoid confusion, we'll call the language interpreter 'interpreter', and sniprun's part (implementing the Interpreter trait) the runner.
 
@@ -22,7 +22,7 @@ To avoid confusion, we'll call the language interpreter 'interpreter', and snipr
 
 The best example I'm going to discuss is Python3\_fifo, even if it's a bit bloated from python-specific things.
 
-Just like you implemented the Intepreter trait for a conventional runner, you'll have to implement the ReplLikeInterpreter trait. Another trait (InterpreterUtils) is automatically implemented and provides features & data persistency to help you survive across different/independent runs. 
+Just like you implemented the Interpreter trait for a conventional runner, you'll have to implement the ReplLikeInterpreter trait. Another trait (InterpreterUtils) is automatically implemented and provides features & data persistency to help you survive across different/independent runs. 
 
 1. Running something in the background:
     
@@ -106,7 +106,7 @@ fn wait_out_file (....){
 is executed & returned at the end of `execute_repl` that firsts send the user's snippet (wrapped with landmarks) to the FIFO pipe.
 
 4. Helper scripts
-Though not very documented, the `ressources/init_repl.sh` and `ressources/launcher.sh` script are resuable for other runners than Python3\_fifo (see Mathematica that has its own similar scripts in `src/interpreters/Mathematica_original/`. They take care of plugging together the fifo, stdout, stderr files and the interpreter's process. They also take care of closing the intepreter (and free the ressources) when nvim exits
+Though not very documented, the `ressources/init_repl.sh` and `ressources/launcher.sh` script are resuable for other runners than Python3\_fifo (see Mathematica that has its own similar scripts in `src/interpreters/Mathematica_original/`. They take care of plugging together the fifo, stdout, stderr files and the interpreter's process. They also take care of closing the interpreter (and free the ressources) when nvim exits
 
 
 ### End notes:
