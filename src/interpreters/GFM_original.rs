@@ -28,7 +28,7 @@ impl GFM_original {
         let selection_line = self.data.range[0] as usize;
         let mut v = vec![];
         for (i,l) in lines.iter().enumerate() {
- if (l.trim_start().starts_with("```") && !l.trim_start()[3..].trim().is_empty())
+        if (l.trim_start().starts_with("```") && !l.trim_start()[3..].trim().is_empty())
                 && counter % 2 == 1
             {
                 return Err(SniprunError::CustomError(String::from(
@@ -46,7 +46,7 @@ impl GFM_original {
             }
                    }
         if counter >= 2 {
-            info!("counting {counter} code blocs delimiters");
+            info!("counting {} code blocs delimiters", counter);
             if counter % 2 == 1 {
                 return Err(SniprunError::CustomError(String::from(
                     "Selection contains an odd number of code bloc delimiters",

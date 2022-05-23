@@ -41,13 +41,13 @@ impl OrgMode_original {
             }
         }
         if counter >= 2 {
-            info!("counting {counter} code blocs delimiters");
+            info!("counting {} code blocs delimiters", counter);
             if counter % 2 == 1 {
                 return Err(SniprunError::CustomError(String::from(
                     "Selection contains an odd number of code bloc delimiters",
                 )));
             }
-            info!("running separately ranges : {v:?}");
+            info!("running separately ranges : {:?}", v);
             return Err(SniprunError::ReRunRanges(v));
         }
         info!("no muliple bloc was found");
