@@ -20,7 +20,7 @@ jobs:
       run: cargo build --verbose --release
 
   buildmsrv:
-    name: build-nightly
+    name: build-msrv
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2

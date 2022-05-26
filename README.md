@@ -34,7 +34,6 @@ I know that this README is exhaustively long (for the sake of clarity, bear with
 </br>
 
 ###### TLDR: ```Plug 'michaelb/sniprun', {'do': 'bash install.sh'}``` </br> ​ ​ ​   ​  ​  ​  ​  ​  ​  ​ ​ ```:SnipRun```, ```:'<,'>SnipRun```,```:SnipInfo```
-###### (but please [configure](README.md#my-usage-recommandatoin-tricks) the \<Plug> mappings)
 
 
 
