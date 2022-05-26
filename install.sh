@@ -2,7 +2,7 @@
 
 
 echo "Runnning Sniprun Installer"
-local_version=v$(cat Cargo.toml | grep version | cut -d "\"" -f 2)
+local_version=v$(cat Cargo.toml | grep ^version | cut -d "\"" -f 2)
 name="sniprun"
 force_build=$1
 
