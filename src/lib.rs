@@ -3,7 +3,7 @@
 //! Sniprun is a neovim plugin that run parts of code.
 
 use dirs::cache_dir;
-pub use display::{display, return_message_classic, DisplayType};
+pub use display::{display, display_floating_window, DisplayType};
 use log::{info, LevelFilter};
 use neovim_lib::{Neovim, NeovimApi, Session, Value};
 use simple_logging::log_to_file;
@@ -540,11 +540,11 @@ pub fn start() {
                 let launcher = launcher::Launcher::new(event_handler2.data.clone());
                 let result = launcher.info();
                 if let Ok(infomsg) = result {
-                    return_message_classic(
+                    display_floating_window(
                         &Ok(infomsg),
                         &event_handler2.nvim,
-                        &ReturnMessageType::Multiline,
-                        &event_handler2.data.clone(),
+                        &event_handler.data,
+                        false,
                     );
                 }
             }

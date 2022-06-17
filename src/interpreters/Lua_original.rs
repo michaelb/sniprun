@@ -68,7 +68,7 @@ impl Interpreter for Lua_original {
             //then this is not pure lua code but  lua-nvim one
             let mut good_interpreter = crate::interpreters::Lua_nvim::new_with_level(
                 self.data.clone(),
-                self.get_current_level(),
+                SupportLevel::Selected, //prevent fallbacking from fallback
             );
             return Some(good_interpreter.run());
         }

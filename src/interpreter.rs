@@ -130,13 +130,18 @@ pub trait Interpreter: ReplLikeInterpreter {
     /// set the current support level to the one provided, run fetch(), add_boilerplate(), build() and execute() in order if each step is successfull
     fn run_at_level(&mut self, level: SupportLevel) -> Result<String, SniprunError> {
         self.set_current_level(level);
-        if let Some(res) = self.fallback() {
-            return res;
-        }
-        self.fetch_code()
+        let res = self.fetch_code()
             .and_then(|_| self.add_boilerplate())
             .and_then(|_| self.build())
-            .and_then(|_| self.execute())
+            .and_then(|_| self.execute());
+        if res.is_err() {
+            let alt_res  = self.fallback();
+            if let Some(Ok(alt_res_ok)) = alt_res {
+                return Ok(alt_res_ok);
+            }
+        }
+
+        return res;
     }
 
     fn run_at_level_repl(&mut self, level: SupportLevel) -> Result<String, SniprunError> {

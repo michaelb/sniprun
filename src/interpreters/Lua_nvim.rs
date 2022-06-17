@@ -6,7 +6,6 @@ pub struct Lua_nvim {
     code: String,
     main_file_path: String,
 }
-impl ReplLikeInterpreter for Lua_nvim {}
 impl Interpreter for Lua_nvim {
     fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Lua_nvim> {
         let bwd = data.work_dir.clone() + "/nvim-lua";
@@ -22,6 +21,14 @@ impl Interpreter for Lua_nvim {
             code: String::from(""),
             main_file_path: mfp,
         })
+    }
+
+    fn behave_repl_like_default() -> bool {
+        true
+    }
+
+    fn has_repl_capability() -> bool {
+        true
     }
 
     fn get_name() -> String {
@@ -56,9 +63,12 @@ impl Interpreter for Lua_nvim {
         self.fetch_code().expect("could not fetch code");
         if !(self.code.contains("nvim") || self.code.contains("vim")) {
             //then this is not lua_nvim code but pure lua one
+            //that doesn't work in nvim context for some reason
+            // note that since Lua_original is the default and if lua_nvim is selected, we should 
+            // never take this code path
             let mut good_interpreter = crate::interpreters::Lua_original::new_with_level(
                 self.data.clone(),
-                self.get_current_level(),
+                SupportLevel::Selected, //prevent fallback infinite loop
             );
             return Some(good_interpreter.run());
         }
@@ -97,6 +107,24 @@ impl Interpreter for Lua_nvim {
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
+
+        Err(SniprunError::InterpreterLimitationError(
+            "Python3_fifo only works in REPL mode, please enable it".to_owned(),
+        ))
+    }
+}
+impl ReplLikeInterpreter for Lua_nvim {
+
+    fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
+        self.fetch_code()
+    }
+    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
+        self.add_boilerplate()
+    }
+    fn build_repl(&mut self) -> Result<(), SniprunError> {
+        self.build()
+    }
+    fn execute_repl(&mut self) -> Result<String, SniprunError> {
         // if current nvim instance is available, execute there
         if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
             info!("yay from lua interpreter - in current nvim instance");
