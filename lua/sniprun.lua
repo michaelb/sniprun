@@ -285,14 +285,9 @@ function M.display_lines_in_floating_win(lines)
     })
     -- vim.api.nvim_win_set_option(M.info_floatwin.win, 'winhighlight', 'Normal:CursorLine')
 
-    local namespace_id = vim.api.nvim_create_namespace("sniprun_info")
-    local h = -1
-    local hl=""
-    for line in lines:gmatch("([^\n]*)\n?") do
-	h = h+1
-	vim.api.nvim_buf_set_lines(M.info_floatwin.buf,h, h+1,false, lines)
+    -- local namespace_id = vim.api.nvim_create_namespace("sniprun_info")
+	vim.api.nvim_buf_set_lines(M.info_floatwin.buf,0,500,false, lines)
 	-- vim.api.nvim_buf_add_highlight(M.info_floatwin.buf, namespace_id, hl, h,0,-1) -- highlight lines in floating window
-    end
 end
 
 
@@ -301,18 +296,14 @@ function M.info(arg)
     M.config_values["sniprun_root_dir"] = sniprun_path
     M.notify("info",1,1,M.config_values, "")
 
-    vim.wait(300) -- let enough time for the sniprun binary to generate the file
+    vim.wait(500) -- let enough time for the sniprun binary to generate the file
     print(" ")
-    time = os.date("*t")
-    print(time.hour .. ":" .. time.min .. ":" .. time.sec)
     local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
     -- print all lines content
-    M.display_lines_in_floating_win(table.concat(lines,"\n"))
-    time = os.date("*t")
-    print(time.hour .. ":" .. time.min .. ":" .. time.sec)
+    M.display_lines_in_floating_win(lines)
     else --help about a particular interpreter
       local lines = lines_from(sniprun_path.."/doc/"..string.gsub(arg,"%s+","")..".md")
-      M.display_lines_in_floating_win(table.concat(lines,"\n"))
+      M.display_lines_in_floating_win(lines)
   end
 end
 
