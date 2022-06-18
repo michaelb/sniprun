@@ -88,7 +88,9 @@ impl Python3_original {
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("python3");
         self.interpreter = default_interpreter;
-        if let Some(used_interpreter) = Python3_original::get_interpreter_option(&self.get_data(), "interpreter") {
+        if let Some(used_interpreter) =
+            Python3_original::get_interpreter_option(&self.get_data(), "interpreter")
+        {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
                 self.interpreter = interpreter_string.to_string();
@@ -96,7 +98,9 @@ impl Python3_original {
         }
 
         if let Ok(path) = env::current_dir() {
-            if let Some(venv_array_config) = Python3_original::get_interpreter_option(&self.get_data(), "venv") {
+            if let Some(venv_array_config) =
+                Python3_original::get_interpreter_option(&self.get_data(), "venv")
+            {
                 if let Some(actual_vec_of_venv) = venv_array_config.as_array() {
                     for possible_venv in actual_vec_of_venv.iter() {
                         if let Some(possible_venv_str) = possible_venv.as_str() {
@@ -247,14 +251,20 @@ impl Interpreter for Python3_original {
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            return Err(SniprunError::RuntimeError(
-                String::from_utf8(output.stderr.clone())
-                    .unwrap()
-                    .lines()
-                    .last()
-                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                    .to_owned(),
-            ));
+            if Python3_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone())
+                        .unwrap()
+                        .lines()
+                        .last()
+                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                        .to_owned(),
+                ));
+            } else {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
+                ));
+            }
         }
     }
 }
@@ -312,8 +322,8 @@ impl ReplLikeInterpreter for Python3_original {
 #[cfg(test)]
 mod test_python3_original {
     use super::*;
-    use crate::*;
     use crate::test_main::*;
+    use crate::*;
 
     #[test]
     fn simple_print() {
@@ -326,7 +336,7 @@ mod test_python3_original {
         let string_result = res.unwrap();
         assert_eq!(string_result, "lol 1\n");
     }
-  
+
     #[allow(dead_code)]
     fn test_repl() {
         let mut event_handler = fake_event();
@@ -344,7 +354,4 @@ mod test_python3_original {
         let result = launcher.select_and_run();
         assert!(result.is_ok());
     }
-
-
-
 }

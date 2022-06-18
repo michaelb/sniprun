@@ -130,12 +130,13 @@ pub trait Interpreter: ReplLikeInterpreter {
     /// set the current support level to the one provided, run fetch(), add_boilerplate(), build() and execute() in order if each step is successfull
     fn run_at_level(&mut self, level: SupportLevel) -> Result<String, SniprunError> {
         self.set_current_level(level);
-        let res = self.fetch_code()
+        let res = self
+            .fetch_code()
             .and_then(|_| self.add_boilerplate())
             .and_then(|_| self.build())
             .and_then(|_| self.execute());
         if res.is_err() {
-            let alt_res  = self.fallback();
+            let alt_res = self.fallback();
             if let Some(Ok(alt_res_ok)) = alt_res {
                 return Ok(alt_res_ok);
             }
@@ -172,6 +173,11 @@ pub trait Interpreter: ReplLikeInterpreter {
         }
     }
 }
+#[derive(Debug, PartialEq)]
+pub enum ErrTruncate {
+    Short,
+    Long,
+}
 
 pub trait InterpreterUtils {
     ///read previously saved code from the interpreterdata object
@@ -184,6 +190,7 @@ pub trait InterpreterUtils {
     fn get_pid(&self) -> Option<u32>;
     fn get_interpreter_option(data: &DataHolder, option: &str) -> Option<neovim_lib::Value>;
     fn contains_main(entry: &str, snippet: &str, comment: &str) -> bool;
+    fn error_truncate(data: &DataHolder) -> ErrTruncate;
 }
 
 impl<T: Interpreter> InterpreterUtils for T {
@@ -296,6 +303,26 @@ impl<T: Interpreter> InterpreterUtils for T {
         }
 
         None
+    }
+
+    fn error_truncate(data: &DataHolder) -> ErrTruncate {
+        if let Some(error_truncate) = T::get_interpreter_option(&data, "error_truncate") {
+            if let Some(error_truncate) = error_truncate.as_str() {
+                info!("Setting truncate to: {}", error_truncate);
+                match error_truncate {
+                    "short" => return ErrTruncate::Short,
+                    "long" => return ErrTruncate::Long,
+                    "auto" => {}
+                    x => { info!("invalid truncate option: {} (must be 'long', 'short' or 'auto' (default)", x); }
+                };
+            }
+        }
+        // auto select
+        if data.current_bloc.lines().count() > 4 {
+            ErrTruncate::Long
+        } else {
+            ErrTruncate::Short
+        }
     }
 
     fn contains_main(entry: &str, snippet: &str, comment: &str) -> bool {
