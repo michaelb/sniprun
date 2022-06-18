@@ -289,9 +289,8 @@ function M.display_lines_in_floating_win(lines)
     local hl=""
     for line in lines:gmatch("([^\n]*)\n?") do
 	h = h+1
-	vim.api.nvim_buf_set_lines(M.info_floatwin.buf,h, h+1,false, {line})
+	vim.api.nvim_buf_set_lines(M.info_floatwin.buf,h, h+1,false, lines)
 	-- vim.api.nvim_buf_add_highlight(M.info_floatwin.buf, namespace_id, hl, h,0,-1) -- highlight lines in floating window
-	vim.cmd('set ft=markdown')
     end
 end
 
