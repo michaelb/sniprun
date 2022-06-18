@@ -258,12 +258,13 @@ end
 
 -- get all lines from a file, returns an empty
 -- list/table if the file does not exist
-local function lines_from(file)
-  local lines = {""}
-  for line in io.lines(file) do
-    lines[#lines + 1] = line or " "
-  end
-  return lines
+local function lines_from(filename)
+ local file = io.open(filename, "r")
+ local arr = {}
+ for line in file:lines() do
+    table.insert (arr, line)
+ end
+    return arr
 end
 
 function M.display_lines_in_floating_win(lines)
@@ -302,9 +303,13 @@ function M.info(arg)
 
     vim.wait(300) -- let enough time for the sniprun binary to generate the file
     print(" ")
+    time = os.date("*t")
+    print(time.hour .. ":" .. time.min .. ":" .. time.sec)
     local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
     -- print all lines content
     M.display_lines_in_floating_win(table.concat(lines,"\n"))
+    time = os.date("*t")
+    print(time.hour .. ":" .. time.min .. ":" .. time.sec)
     else --help about a particular interpreter
       local lines = lines_from(sniprun_path.."/doc/"..string.gsub(arg,"%s+","")..".md")
       M.display_lines_in_floating_win(table.concat(lines,"\n"))
