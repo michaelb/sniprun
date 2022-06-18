@@ -283,7 +283,7 @@ require'sniprun'.setup({
       use_on_filetypes = {"markdown.pandoc"}    --# the 'use_on_filetypes' configuration key is
                                                 --# available for every interpreter
     },
-    Python_original = {
+    Python3_original = {
         error_truncate = "auto"         --# Truncate runtime errors 'long', 'short' or 'auto'
                                         --# the hint is available for every interpreter
                                         --# but may not be always respected
