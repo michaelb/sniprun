@@ -313,7 +313,9 @@ impl<T: Interpreter> InterpreterUtils for T {
                     "short" => return ErrTruncate::Short,
                     "long" => return ErrTruncate::Long,
                     "auto" => {}
-                    x => { info!("invalid truncate option: {} (must be 'long', 'short' or 'auto' (default)", x); }
+                    x => {
+                        info!("invalid truncate option: {} (must be 'long', 'short' or 'auto' (default)", x);
+                    }
                 };
             }
         }
