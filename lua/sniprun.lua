@@ -325,7 +325,7 @@ function M.health()
   else health_ok("Rust toolchain found") end
 
   if vim.fn.executable(binary_path) == 0 then health_error("sniprun binary not found!")
-  else health_ok("sniprun binary found") end
+  else health_ok("sniprun binary found at "..binary_path) end
 
   local terminate_after = M.job_id == nil
   local path_log_file = os.getenv('HOME').."/.cache/sniprun/sniprun.log"
