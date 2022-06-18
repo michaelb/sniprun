@@ -1,3 +1,8 @@
+## v1.2.5
+- SnipInfo in floating windows and decently fast
+- auto + configurable error truncation
+- Lua_nvim REPL/non-REPL modes
+
 ## v1.2.4
 - set Rust 1.55 as MSRV
 - fix typo in documentation

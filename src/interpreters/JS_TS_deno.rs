@@ -226,9 +226,21 @@ impl Interpreter for JS_TS_deno {
             Ok(String::from_utf8(output.stdout).unwrap())
         } else {
             // return stderr
-            Err(SniprunError::RuntimeError(
-                String::from_utf8(output.stderr).unwrap(),
-            ))
+            if JS_TS_deno::error_truncate(&self.get_data()) == ErrTruncate::Short {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone())
+                        .unwrap()
+                        .lines()
+                        .filter(|l| l.contains("Error:"))
+                        .last()
+                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                        .to_owned(),
+                ));
+            } else {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
+                ));
+            }
         }
     }
 }

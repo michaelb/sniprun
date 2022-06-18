@@ -258,12 +258,13 @@ end
 
 -- get all lines from a file, returns an empty
 -- list/table if the file does not exist
-local function lines_from(file)
-  local lines = {""}
-  for line in io.lines(file) do
-    lines[#lines + 1] = line or " "
-  end
-  return lines
+local function lines_from(filename)
+ local file = io.open(filename, "r")
+ local arr = {}
+ for line in file:lines() do
+    table.insert (arr, line)
+ end
+    return arr
 end
 
 function M.display_lines_in_floating_win(lines)
@@ -284,15 +285,9 @@ function M.display_lines_in_floating_win(lines)
     })
     -- vim.api.nvim_win_set_option(M.info_floatwin.win, 'winhighlight', 'Normal:CursorLine')
 
-    local namespace_id = vim.api.nvim_create_namespace("sniprun_info")
-    local h = -1
-    local hl=""
-    for line in lines:gmatch("([^\n]*)\n?") do
-	h = h+1
-	vim.api.nvim_buf_set_lines(M.info_floatwin.buf,h, h+1,false, {line})
+    -- local namespace_id = vim.api.nvim_create_namespace("sniprun_info")
+	vim.api.nvim_buf_set_lines(M.info_floatwin.buf,0,500,false, lines)
 	-- vim.api.nvim_buf_add_highlight(M.info_floatwin.buf, namespace_id, hl, h,0,-1) -- highlight lines in floating window
-	vim.cmd('set ft=markdown')
-    end
 end
 
 
@@ -301,16 +296,14 @@ function M.info(arg)
     M.config_values["sniprun_root_dir"] = sniprun_path
     M.notify("info",1,1,M.config_values, "")
 
-    if M.config_values.inline_messages ~= 0 then
-      vim.wait(300) -- let enough time for the sniprun binary to generate the file
-      print(" ")
-      local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
-      -- print all lines content
-      M.display_lines_in_floating_win(table.concat(lines,"\n"))
-    end
-  else --help about a particular interpreter
+    vim.wait(500) -- let enough time for the sniprun binary to generate the file
+    print(" ")
+    local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
+    -- print all lines content
+    M.display_lines_in_floating_win(lines)
+    else --help about a particular interpreter
       local lines = lines_from(sniprun_path.."/doc/"..string.gsub(arg,"%s+","")..".md")
-      M.display_lines_in_floating_win(table.concat(lines,"\n"))
+      M.display_lines_in_floating_win(lines)
   end
 end
 
@@ -325,7 +318,7 @@ function M.health()
   else health_ok("Rust toolchain found") end
 
   if vim.fn.executable(binary_path) == 0 then health_error("sniprun binary not found!")
-  else health_ok("sniprun binary found") end
+  else health_ok("sniprun binary found at "..binary_path) end
 
   local terminate_after = M.job_id == nil
   local path_log_file = os.getenv('HOME').."/.cache/sniprun/sniprun.log"

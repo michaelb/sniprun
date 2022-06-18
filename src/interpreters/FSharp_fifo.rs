@@ -209,14 +209,20 @@ impl Interpreter for FSharp_fifo {
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            return Err(SniprunError::RuntimeError(
-                String::from_utf8(output.stderr.clone())
-                    .unwrap()
-                    .lines()
-                    .last()
-                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                    .to_owned(),
-            ));
+            if FSharp_fifo::error_truncate(&self.get_data()) == ErrTruncate::Short {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone())
+                        .unwrap()
+                        .lines()
+                        .last()
+                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                        .to_owned(),
+                ));
+            } else {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
+                ));
+            }
         }
     }
 }
@@ -320,7 +326,6 @@ impl ReplLikeInterpreter for FSharp_fifo {
     }
 
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
-        
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         info!("running launcher {}", send_repl_cmd);
         let res = Command::new(send_repl_cmd)
@@ -348,7 +353,7 @@ mod test_fsharp_fifo {
         data.current_bloc = String::from("printfn \"lol\"");
         let mut interpreter = FSharp_fifo::new(data);
         let res = interpreter.run_at_level(SupportLevel::Bloc);
-         // should panic if not an Ok()
+        // should panic if not an Ok()
         let string_result = res.unwrap();
         assert_eq!(string_result, "lol\n");
     }

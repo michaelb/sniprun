@@ -157,9 +157,20 @@ impl Interpreter for Rust_original {
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            Err(SniprunError::RuntimeError(
-                String::from_utf8(output.stderr).unwrap(),
-            ))
+            if Rust_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone())
+                        .unwrap()
+                        .lines()
+                        .next()
+                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                        .to_owned(),
+                ));
+            } else {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
+                ));
+            }
         }
     }
 }
@@ -198,7 +209,10 @@ mod test_rust_original {
             "
             let mock_input = \"153.2\";
             let parsed = mock_input.parse::<i32>().unwrap();
-            ",
+
+
+
+            ", // > 4 lines so the message doesn't  get shortened
         );
         let expected = String::from("ParseIntError { kind: InvalidDigit }");
         let mut interpreter = Rust_original::new(data);

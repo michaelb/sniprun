@@ -128,9 +128,20 @@ impl Interpreter for Java_original {
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            Err(SniprunError::RuntimeError(
-                String::from_utf8(output.stderr).unwrap(),
-            ))
+            if Java_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone())
+                        .unwrap()
+                        .lines()
+                        .next()
+                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                        .to_owned(),
+                ));
+            } else {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
+                ));
+            }
         }
     }
 }

@@ -68,7 +68,7 @@ impl Interpreter for Lua_original {
             //then this is not pure lua code but  lua-nvim one
             let mut good_interpreter = crate::interpreters::Lua_nvim::new_with_level(
                 self.data.clone(),
-                self.get_current_level(),
+                SupportLevel::Selected, //prevent fallbacking from fallback
             );
             return Some(good_interpreter.run());
         }
@@ -116,9 +116,20 @@ impl Interpreter for Lua_original {
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            Err(SniprunError::RuntimeError(
-                String::from_utf8(output.stderr).unwrap(),
-            ))
+            if Lua_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone())
+                        .unwrap()
+                        .lines()
+                        .next()
+                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                        .to_owned(),
+                ));
+            } else {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
+                ));
+            }
         }
     }
 }
