@@ -64,7 +64,7 @@ impl Interpreter for Lua_nvim {
         if !(self.code.contains("nvim") || self.code.contains("vim")) {
             //then this is not lua_nvim code but pure lua one
             //that doesn't work in nvim context for some reason
-            // note that since Lua_original is the default and if lua_nvim is selected, we should 
+            // note that since Lua_original is the default and if lua_nvim is selected, we should
             // never take this code path
             let mut good_interpreter = crate::interpreters::Lua_original::new_with_level(
                 self.data.clone(),
@@ -107,14 +107,36 @@ impl Interpreter for Lua_nvim {
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-
-        Err(SniprunError::InterpreterLimitationError(
-            "Python3_fifo only works in REPL mode, please enable it".to_owned(),
-        ))
+        let output = Command::new("nvim")
+            .arg("--headless")
+            .arg("-c")
+            .arg(format!("luafile {}", &self.main_file_path))
+            .arg("-c")
+            .arg("q!")
+            .output()
+            .expect("Unable to start process");
+        info!("yay from lua interpreter - in another nvim instance");
+        if output.status.success() {
+            Ok(String::from_utf8(output.stdout).unwrap())
+        } else {
+            if Lua_nvim::error_truncate(&self.get_data()) == ErrTruncate::Short {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone())
+                        .unwrap()
+                        .lines()
+                        .next()
+                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                        .to_owned(),
+                ));
+            } else {
+                return Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
+                ));
+            }
+        }
     }
 }
 impl ReplLikeInterpreter for Lua_nvim {
-
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
         self.fetch_code()
     }
@@ -129,30 +151,19 @@ impl ReplLikeInterpreter for Lua_nvim {
         if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
             info!("yay from lua interpreter - in current nvim instance");
             let command_nvim = String::from("luafile ") + &self.main_file_path;
-            let res = real_nvim_instance.lock().unwrap().command_output(&command_nvim);
+            let res = real_nvim_instance
+                .lock()
+                .unwrap()
+                .command_output(&command_nvim);
             info!("res : {:?}", res);
             match res {
                 Ok(message) => Ok(message),
-                Err(_) => Err(SniprunError::RuntimeError(String::from(""))),
+                Err(e) => Err(SniprunError::RuntimeError(format!("{}", e))),
             }
         } else {
-            //else, executing in another nvim instance
-            let output = Command::new("nvim")
-                .arg("--headless")
-                .arg("-c")
-                .arg(format!("luafile {}", &self.main_file_path))
-                .arg("-c")
-                .arg("q!")
-                .output()
-                .expect("Unable to start process");
-            info!("yay from lua interpreter - in another nvim instance");
-            if output.status.success() {
-                Ok(String::from_utf8(output.stdout).unwrap())
-            } else {
-                Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr).unwrap(),
-                ))
-            }
+            Err(SniprunError::CustomError(String::from(
+                "Failed to connect to the current nvim instance",
+            )))
         }
     }
 }
