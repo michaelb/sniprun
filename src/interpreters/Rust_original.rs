@@ -208,7 +208,8 @@ mod test_rust_original {
         data.current_bloc = String::from(
             "
             let mock_input = \"153.2\";
-            let parsed = mock_input.parse::<i32>().unwrap();
+            let _ = mock_input.parse::<i32>().unwrap();
+            
 
 
 
