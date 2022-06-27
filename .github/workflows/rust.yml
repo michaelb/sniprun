@@ -27,7 +27,7 @@ jobs:
           toolchain: 1.55
           override: true
       - name: build
-        run: cargo build --releas
+        run: cargo build --release
 
   buildnightly:
     name: build-nightly
