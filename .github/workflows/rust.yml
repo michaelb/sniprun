@@ -7,10 +7,6 @@ on:
     branches: [ master, dev]
   workflow_dispatch:
 
-env:
-  CARGO_TERM_COLOR: always
-  RUSTFLAGS: -C target-feature=+crt-static
-
 jobs:
   build:
     name : build-latest-stable
@@ -31,7 +27,7 @@ jobs:
           toolchain: 1.55
           override: true
       - name: build
-        run: cargo build --release --target x86_64-unknown-linux-gnu 
+        run: cargo build --releas
 
   buildnightly:
     name: build-nightly
