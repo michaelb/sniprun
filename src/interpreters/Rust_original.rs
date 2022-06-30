@@ -202,7 +202,6 @@ mod test_rust_original {
     }
 
     #[test]
-    #[serial(rust)]
     fn runtime_error() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from(
