@@ -115,7 +115,7 @@ impl Interpreter for Go_original {
             self.code = String::from("func main() {") + &self.code + "}";
         }
 
-        if !Go_original::contains_main("import \"fmt\"", &self.code, "//") {
+        if !Go_original::contains_main("\"fmt\"", &self.code, "//") {
             self.code = String::from("import \"fmt\"\n") + &self.code;
         }
 
