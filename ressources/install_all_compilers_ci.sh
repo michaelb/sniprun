@@ -29,46 +29,46 @@ then
 fi
 
 if ! command -v Rscript &> /dev/null
+then
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9  
     sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/' 
     sudo apt-get install r-base 
-then
 fi
 
 #ADA
 if ! command -v gnatmake &> /dev/null
-    sudo apt-get install gnat 
 then
+    sudo apt-get install gnat 
 fi
 
 if ! command -v scalac &> /dev/null
-    sudo apt-get install scala
 then
+    sudo apt-get install scala
 fi
 pip3 install jupyter 
 
 if ! command -v lua &> /dev/null
-    sudo apt-get install lua5.3 
 then
+    sudo apt-get install lua5.3 
 fi
 
 if ! command -v sage &> /dev/null
-    sudo apt-get install sagemath
 then
+    sudo apt-get install sagemath
 fi
 
 # sudo apt-get install gprolog
 
 if ! command -v dotnet &> /dev/null
-    sudo apt-get install dotnet
 then
+    sudo apt-get install dotnet
 fi
 
 
 if ! command -v go &> /dev/null
+then
     ./ressources/go_install.sh 
     export PATH=$PATH:$HOME/golang/go/bin/
-then
 fi
 
 # deno for typescript and javascript
