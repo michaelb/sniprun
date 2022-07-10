@@ -16,6 +16,8 @@ jobs:
         with:
           toolchain: nightly
           override: true
+
+      - run: './ressources/install_all_compilers_ci.sh'
       - uses: actions-rs/cargo@v1
         with:
           command: test
