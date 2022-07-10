@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
+  coverage:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
@@ -17,6 +17,7 @@ jobs:
           toolchain: nightly
           override: true
 
+      - uses: dlang-community/setup-dlang@v1
       - run: './ressources/install_all_compilers_ci.sh'
       - uses: actions-rs/cargo@v1
         with:
