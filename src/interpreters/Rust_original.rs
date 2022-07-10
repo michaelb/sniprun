@@ -182,6 +182,8 @@ mod test_rust_original {
 
     use serial_test::serial;
 
+    #[test]
+    #[serial(rust)]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("println!(\"HW, 1+1 = {}\", 1+1);");
@@ -193,6 +195,8 @@ mod test_rust_original {
         assert_eq!(string_result, "HW, 1+1 = 2\n");
     }
 
+    #[test]
+    #[serial(rust)]
     fn runtime_error() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from(

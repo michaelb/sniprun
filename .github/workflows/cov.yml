@@ -1,5 +1,3 @@
-
- 
 name: Coverage
 
 on:
@@ -10,28 +8,26 @@ on:
   workflow_dispatch:
 
 jobs:
-  coverage:
+  lint:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - run: './ressources/install_all_compilers_ci.sh'
-      - uses: dlang-community/setup-dlang@v1
-
-      - name: Install Rust
-        run: rustup component add llvm-tools-preview --toolchain stable-x86_64-unknown-linux-gnu
-      - name: Install cargo-llvm-cov
-        run: curl -LsSf https://github.com/taiki-e/cargo-llvm-cov/releases/latest/download/cargo-llvm-cov-x86_64-unknown-linux-gnu.tar.gz | tar xzf - -C ~/.cargo/bin
-      - name: clean
-        run: cargo llvm-cov clean --workspace
-      - name: Generate code coverage for unit test
-        run: cargo llvm-cov --features ignore_in_ci --workspace --no-report
-      - name: Generate code coverage for integration tests
-        run: cargo llvm-cov --lcov --no-report --test integration
-      - name: Aggregate reports
-        run: cargo llvm-cov --no-run --lcov --output-path lcov.info
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --features ignore_in_ci --no-fail-fast
+        env:
+          CARGO_INCREMENTAL: '0'
+          RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
+          RUSTDOCFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
+      - uses: actions-rs/grcov@v0.1
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-          files: lcov.info
+          files: ${{ steps.coverage.outputs.report }}
           fail_ci_if_error: false
