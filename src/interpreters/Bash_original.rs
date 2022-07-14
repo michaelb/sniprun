@@ -184,26 +184,11 @@ impl ReplLikeInterpreter for Bash_original {
 #[cfg(test)]
 mod test_bash_original {
     use super::*;
-    use serial_test::serial;
 
     #[test]
-    #[serial(bash)]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("A=2 && echo $A");
-        let mut interpreter = Bash_original::new(data);
-        let res = interpreter.run();
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert_eq!(string_result, "2\n");
-    }
-
-    #[test]
-    #[serial(bash)]
-    fn block_things() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("A=2\nsleep $A\necho $A");
         let mut interpreter = Bash_original::new(data);
         let res = interpreter.run();
 

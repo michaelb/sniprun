@@ -180,16 +180,12 @@ mod test_rust_original {
     use super::*;
     use crate::error::SniprunError;
 
-    use serial_test::serial;
-
     #[test]
-    #[serial(rust)]
-    fn run_all() {
-        //nececssary to run sequentially
-        //because of file access & shared things
+    fn all_rust() {
         simple_print();
         runtime_error();
     }
+
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("println!(\"HW, 1+1 = {}\", 1+1);");
@@ -201,14 +197,13 @@ mod test_rust_original {
         assert_eq!(string_result, "HW, 1+1 = 2\n");
     }
 
-    #[test]
-    #[serial(rust)]
     fn runtime_error() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from(
             "
             let mock_input = \"153.2\";
-            let parsed = mock_input.parse::<i32>().unwrap();
+            let _ = mock_input.parse::<i32>().unwrap();
+            
 
 
 

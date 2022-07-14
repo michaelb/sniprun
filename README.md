@@ -13,9 +13,6 @@
     <a href="https://github.com/michaelb/sniprun/pulse">
       <img alt="Last commit" src="https://img.shields.io/github/last-commit/michaelb/sniprun"/>
     </a>
-    <a href="https://app.codecov.io/gh/michaelb/sniprun">
-      <img alt="CI build" src="https://codecov.io/gh/michaelb/sniprun/branch/master/graph/badge.svg?token=PQQV79XYVN" />
-    </a>
 </p>
 </div>
 
