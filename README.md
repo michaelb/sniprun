@@ -428,31 +428,32 @@ println!("-> {}", alphabet);
 
 | Language     | Support level | REPL Capabilities|    
 | ------------ | ------------- | ---------------- |
-| Ada          | Line          |  No              |
-| Bash/Shell   | Bloc          |  Yes\*           |
-| C            | Import        |  No              |
-| C++          | Import        |  No              | 
-| Coffeescript | Bloc          |  No              |   
-| D            | Bloc          |  No              | 
-| F#           | Bloc          |  No, but _could_ \*\* |
-| Go           | Bloc          |  No              | 
-| Haskell      | Line          |  No              | 
-| Java       | Bloc             | No              | 
-| JavaScript | Bloc             | Yes\*\*   (Deno)| 
-| Julia      | Bloc             | Yes\*\*         | 
-| Lua        | Bloc             | No              | 
-| Lua-nvim   | Bloc             | Yes\*\*         |
-| Markdown   | Bloc             | Yes\*\*\*       |
-| Mathematica| Bloc             | Yes\*\*         |
-| OrgMode    | Bloc             | Yes\*\*\*       |
-| Perl/Perl6 | Line             | No              | 
-| Python3    | Import           | Yes\*\*         |
-| R          | Bloc             | Yes\*\*         |
-| Ruby       | Bloc             | No              | 
-| Rust       | Bloc             | No              | 
-| SageMath   | Import           | Yes\*\*         |
-| Scala      | Bloc             | No              | 
-| TypeScript | Bloc             | Yes\*\*   (Deno)|  
+| Ada          | Line          | No               |
+| Bash/Shell   | Bloc          | Yes\*            |
+| C            | Import        | No               |
+| C++          | Import        | No               | 
+| Clojure      | Bloc          | Yes \*\*         | 
+| Coffeescript | Bloc          | No               |   
+| D            | Bloc          | No               | 
+| F#           | Bloc          | No, but _could_ \*\* |
+| Go           | Bloc          | No               | 
+| Haskell      | Line          | No               | 
+| Java         | Bloc          | No               | 
+| JavaScript   | Bloc          | Yes\*\*   (Deno) | 
+| Julia        | Bloc          | Yes\*\*          | 
+| Lua          | Bloc          | No               | 
+| Lua-nvim     | Bloc          | Yes\*\*          |
+| Markdown     | Bloc          | Yes\*\*\*        |
+| Mathematica  | Bloc          | Yes\*\*          |
+| OrgMode      | Bloc          | Yes\*\*\*        |
+| Perl/Perl6   | Line          | No               | 
+| Python3      | Import        | Yes\*\*          |
+| R            | Bloc          | Yes\*\*          |
+| Ruby         | Bloc          | No               | 
+| Rust         | Bloc          | No               | 
+| SageMath     | Import        | Yes\*\*          |
+| Scala        | Bloc          | No               | 
+| TypeScript   | Bloc          | Yes\*\*   (Deno) |  
 
 Want support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=), or even better, [contribute](CONTRIBUTING.md), it's easy!
 
