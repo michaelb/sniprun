@@ -325,14 +325,6 @@ impl ReplLikeInterpreter for Clojure_fifo {
             + &self.current_output_id.to_string()
             + "\")\n";
 
-        // remove empty lines interpreted as 'enter' by the repl
-        self.code = self
-            .code
-            .lines()
-            .filter(|l| !l.trim().is_empty())
-            .collect::<Vec<&str>>()
-            .join("\n");
-
         let all_code = String::from("\n") + &self.code + "\n\n";
         self.code = start_mark_err + &start_mark + &all_code + &end_mark_err + &end_mark;
         Ok(())
