@@ -64,6 +64,11 @@ then
     sudo apt-get install dotnet
 fi
 
+if ! command -v clojure &> /dev/null
+then
+    sudo apt-get install clojure
+fi
+
 
 if ! command -v go &> /dev/null
 then
