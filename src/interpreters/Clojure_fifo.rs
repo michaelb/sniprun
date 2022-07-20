@@ -360,7 +360,7 @@ mod test_clojure_fifo {
     #[test]
     fn simple_print() {
         let mut data = DataHolder::new();
-        data.current_bloc = String::from("println \"lol\"");
+        data.current_bloc = String::from("(println \"lol\")");
         let mut interpreter = Clojure_fifo::new(data);
         let res = interpreter.run_at_level(SupportLevel::Bloc);
         // should panic if not an Ok()
