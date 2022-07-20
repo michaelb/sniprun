@@ -230,6 +230,7 @@ impl Interpreter for Clojure_fifo {
                     String::from_utf8(output.stderr.clone())
                         .unwrap()
                         .lines()
+                        .filter(|l| !l.to_lowercase().contains("warning"))
                         .take(2)
                         .collect::<Vec<&str>>()
                         .join("\n")
