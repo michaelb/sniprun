@@ -101,11 +101,11 @@ impl Clojure_fifo {
     }
 
     fn fetch_config(&mut self) {
-        let default_interpreter =
-            String::from("clojure -e \"(clojure.main/repl :prompt (defn f[] (\"\")) )\"");
         let default_interpreter_repl =
-            String::from("clojure");
+            String::from("clojure -e \"(clojure.main/repl :prompt (defn f[] (\"\")) )\"");
+        let default_interpreter = String::from("clojure");
         self.interpreter = default_interpreter;
+        self.interpreter_repl = default_interpreter_repl;
         if let Some(used_interpreter) =
             Clojure_fifo::get_interpreter_option(&self.get_data(), "interpreter")
         {
@@ -146,6 +146,7 @@ impl Interpreter for Clojure_fifo {
             main_file_path: mfp,
             current_output_id: 0,
             interpreter: String::new(),
+            interpreter_repl: String::new(),
         })
     }
 
