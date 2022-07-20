@@ -155,7 +155,7 @@ impl Interpreter for Clojure_fifo {
     }
 
     fn default_for_filetype() -> bool {
-        false
+        true
     }
 
     fn behave_repl_like_default() -> bool {
