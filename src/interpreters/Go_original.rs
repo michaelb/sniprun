@@ -301,7 +301,7 @@ mod test_go_original {
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("fmt.Println(\"Hello\")");
-        let mut interpreter = Go_original::new(data);
+        let mut interpreter = Go_original::new_with_level(data, SupportLevel::Bloc);
         let res = interpreter.run();
 
         // should panic if not an Ok()
