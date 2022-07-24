@@ -16,15 +16,113 @@ impl Go_original {
     fn fetch_config(&mut self) {
         let default_compiler = String::from("go");
         self.compiler = default_compiler;
-        if let Some(used_compiler) = Go_original::get_interpreter_option(&self.get_data(),"compiler") {
+        if let Some(used_compiler) =
+            Go_original::get_interpreter_option(&self.get_data(), "compiler")
+        {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
                 self.compiler = compiler_string.to_string();
             }
         }
     }
-}
+    fn fetch_imports(&mut self) -> Result<(), SniprunError> {
+        if self.support_level < SupportLevel::Import {
+            return Ok(());
+        }
 
+        let mut file_content = vec![];
+        let mut errored = true;
+        if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
+            info!("got real nvim isntance");
+            let mut rvi = real_nvim_instance.lock().unwrap();
+            if let Ok(buffer) = rvi.get_current_buf() {
+                info!("got buffer");
+                if let Ok(buf_lines) = buffer.get_lines(&mut rvi, 0, -1, false) {
+                    info!("got lines in buffer");
+                    file_content = buf_lines;
+                    errored = false;
+                }
+            }
+        }
+        if errored {
+            return Err(SniprunError::FetchCodeError);
+        }
+
+        let all_imports = Go_original::parse_imports(file_content);
+        let used_imports: Vec<(&str, &str)> = all_imports
+            .iter()
+            .map(|(a, p)| (a.as_str(), p.as_str()))
+            .filter(|s| self.import_used(&s.0))
+            .collect();
+        info!("used imports are {:?}", used_imports);
+
+        if used_imports.len() == 0 {
+            return Ok(());
+        }
+
+        let mut import_code = String::from("import (\n");
+        for import in used_imports.iter() {
+            let (alias, path) = import;
+            import_code.push_str(alias);
+            import_code.push_str(" ");
+            import_code.push_str(path);
+            import_code.push_str("\n");
+        }
+        import_code.push_str(")\n");
+
+        self.code = import_code + &self.code;
+
+        Ok(())
+    }
+    fn import_used(&self, import: &str) -> bool {
+        let r =Regex::new(&format!("[^a-zA-Z\\d_]{}\\.", import)).unwrap();
+        r.is_match(&self.code)
+    }
+
+    fn parse_imports(s: Vec<String>) -> Vec<(String, String)> {
+        // returns a list of "Name", "Path" for all imports
+        let mut vec_imports = vec![];
+        let mut in_import_bracket = false;
+        for l in s {
+            if l.trim().starts_with("import") {
+                if l.contains("(") {
+                    in_import_bracket = true;
+                    continue;
+                } else {
+                    // lone import
+                    let chunks: Vec<&str> = l.trim().split_whitespace().skip(1).collect();
+                    if let Some(alias_path) = Go_original::import_pathname(chunks) {
+                        vec_imports.push(alias_path);
+                    }
+                }
+            }
+            if l.contains(")") && in_import_bracket {
+                in_import_bracket = false;
+            }
+
+            if in_import_bracket {
+                let chunks: Vec<&str> = l.trim().split_whitespace().collect();
+                if let Some(alias_path) = Go_original::import_pathname(chunks) {
+                    vec_imports.push(alias_path);
+                }
+            }
+        }
+        return vec_imports;
+    }
+
+    fn import_pathname(vec: Vec<&str>) -> Option<(String, String)> {
+        match vec.len() {
+            0 => None,
+            1 => Some((Go_original::parse_import_path(vec[0]), vec[0].to_string())),
+            2 => Some((vec[0].to_string(), vec[1].to_string())),
+            _ => None,
+        }
+    }
+
+    fn parse_import_path(p: &str) -> String {
+        p.replace("\"", "").split("/").last().unwrap().to_string()
+    }
+}
 
 impl ReplLikeInterpreter for Go_original {}
 impl Interpreter for Go_original {
@@ -85,7 +183,7 @@ impl Interpreter for Go_original {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        SupportLevel::Bloc
+        SupportLevel::Import
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -110,18 +208,21 @@ impl Interpreter for Go_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-
         if !Go_original::contains_main("func main (", &self.code, "//") {
             self.code = String::from("func main() {") + &self.code + "}";
         }
 
-        if !Go_original::contains_main("\"fmt\"", &self.code, "//") {
-            self.code = String::from("import \"fmt\"\n") + &self.code;
+        if !Go_original::contains_main("import", &self.code, "//") {
+            self.fetch_imports()?;
+        } else {
+            warn!("import keyword detected in code: Sniprun should fetch the needed imports by itself");
         }
 
-        if !Go_original::contains_main("package main", &self.code, "//") {
-            self.code = String::from("package main\n") + &self.code;
+        if Go_original::contains_main("package main", &self.code, "//") {
+            warn!("\"package main\" detected in code: don't include that; sniprun adds it itself");
         }
+        self.code = self.code.replace("package main",""); //remove possibly and put it another at the right place
+        self.code = String::from("package main\n") + &self.code;
 
         Ok(())
     }
@@ -143,7 +244,20 @@ impl Interpreter for Go_original {
 
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            Err(SniprunError::CompilationError("".to_string()))
+            if Go_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+                return Err(SniprunError::CompilationError(
+                    String::from_utf8(output.stderr.clone())
+                        .unwrap()
+                        .lines()
+                        .last()
+                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                        .to_owned(),
+                ));
+            } else {
+                return Err(SniprunError::CompilationError(
+                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
+                ));
+            }
         } else {
             Ok(())
         }

@@ -1,14 +1,19 @@
+## v1.2.6
+- Clojure support (REPL-capable)
+- Improved & simplified CI
+- "Import" support level for Go
+
 ## v1.2.5
 - SnipInfo in floating windows and decently fast
-- auto + configurable error truncation
+- Auto + configurable error truncation
 - Lua_nvim REPL/non-REPL modes
 
 ## v1.2.4
-- set Rust 1.55 as MSRV
-- fix typo in documentation
+- Set Rust 1.55 as MSRV
+- Fix typo in documentation
 
 ## v1.2.3
-- no signcolumn in Terminal display + fix line wrapping
+- No signcolumn in Terminal display + fix line wrapping
 
 ## v1.2.2
 - Run multiple code blocs at once in markup languages
@@ -24,7 +29,7 @@
 - Lower ressources usage for REPL interpreters
 
 ## v1.1.2
-- auto detection of entry point for many languages
+- Auto detection of entry point for many languages
 - CFLAGS and other variables
 - Python3\_fifo plots work
 
@@ -38,24 +43,24 @@
 - Python3\_fifo venv support + doc + fix indented bloc failure
 
 ## v1.0.6
-- fix output with escape sequences
+- Fix output with escape sequences
 
 ## v1.0.5
-- fix issue with REPL interpreters staying active after nvim exit
-- isolate backend REPL from different neovim instances
+- Fix issue with REPL interpreters staying active after nvim exit
+- Isolate backend REPL from different neovim instances
 
 ## v1.0.4
-- fix python3 fifo and sage interpreters empty line in indented bloc bug
+- Fix python3 fifo and sage interpreters empty line in indented bloc bug
 
 ## v1.0.3
-- configurable filetypes
+- Configurable filetypes
 
 ## v1.0.2
-- fix issue with API functions & callbacks
-- fix double checkhealt crash issue
+- Fix issue with API functions & callbacks
+- Fix double checkhealt crash issue
 
 ## v1.0.1
-- fix issue when using sniprun with an empty config
+- Fix issue when using sniprun with an empty config
 
 ## v1.0.0
 - LCOV coverage
