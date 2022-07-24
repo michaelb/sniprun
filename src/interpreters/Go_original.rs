@@ -27,6 +27,8 @@ impl Go_original {
     }
     fn fetch_imports(&mut self) -> Result<(), SniprunError> {
         if self.support_level < SupportLevel::Import {
+            // still need the fmt package in its most likely form at least
+            self.code = String::from("import \"fmt\"\n") + &self.code;
             return Ok(());
         }
 
