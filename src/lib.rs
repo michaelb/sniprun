@@ -215,7 +215,6 @@ impl EventHandler {
                 return Some(i);
             }
         }
-        info!("key {} not found", name);
         None
     }
 

@@ -1,7 +1,7 @@
 use crate::error::SniprunError;
 use crate::interpreter::{Interpreter, InterpreterUtils, ReplLikeInterpreter, SupportLevel, ErrTruncate};
 use crate::DataHolder;
-use log::info;
+use log::{info,warn};
 use serde_json;
 
 use crate::interpreters;
@@ -24,3 +24,5 @@ use std::io::prelude::*;
 
 // use jupyter_client::Client;
 // use std::collections::HashMap;
+
+use regex::Regex;
