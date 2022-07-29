@@ -137,12 +137,12 @@ impl Launcher {
 
         let separator = "|--------------------------|---------------|---------------|-------------|------------|--------------|".to_string();
         v.push(separator.clone());
-        v.push("| Interpreter              | Language      | Support Level | Default for |    REPL    | REPL enabled |".to_string());
-        v.push("|                          |               |               |  filetype   | capability |  by default  |".to_string());
+        v.push("| Interpreter          | Language     | Support | Default for |    REPL    | REPL enabled |".to_string());
+        v.push("|                      |              |  Level  |  filetype   | capability |  by default  |".to_string());
 
         let mut temp_vec = vec![];
         iter_types! {
-            let line = format!("| {:<25}| {:<14}| {:<14}|{:^13}|{:^12}|{:^14}|",
+            let line = format!("| {:<21}| {:<13}| {:<8}|{:^13}|{:^12}|{:^14}|",
                     Current::get_name(),
                     Current::get_supported_languages().get(0).unwrap_or(&"".to_string()),
                     Current::get_max_support_level().to_string(),
