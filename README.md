@@ -416,7 +416,7 @@ let alphabet = String::from\_utf8(
 println!("-> {}", alphabet);
 ```
 
-- **Import** : Support external imports, so you don't have to select the top-of-file import to test a 'bloc-mode-style' code selection somewhere else.
+- **Import** : Support external imports, so you can test blocs of code that also depends on that external library import.
 >
 <ul>
 <li><span style="color:grey"><b>File</b> : Sniprun will recursively find the missing variable and function definitions to run your line of code(you don't have to select a bloc anymore).</span>
@@ -436,7 +436,7 @@ println!("-> {}", alphabet);
 | Coffeescript | Bloc          | No               |   
 | D            | Bloc          | No               | 
 | F#           | Bloc          | No, but _could_ \*\* |
-| Go           | Bloc          | No               | 
+| Go           | Import        | No               | 
 | Haskell      | Line          | No               | 
 | Java         | Bloc          | No               | 
 | JavaScript   | Bloc          | Yes\*\*   (Deno) | 
