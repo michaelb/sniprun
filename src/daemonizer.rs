@@ -2,6 +2,8 @@
 Derived from https://github.com/immortal/fork
 */
 
+
+
 /// Fork result
 pub enum Fork {
     Parent(libc::pid_t),
@@ -46,6 +48,13 @@ pub fn daemon() -> Result<Fork, i32> {
         Ok(Fork::Parent(child_pid)) => Ok(Fork::Parent(child_pid)),
         Ok(Fork::Child) => setsid().and_then(|_| {
             close_fd()?;
+            // close additionnal fds (logs, socket ?)
+            let mut keep_fds = [];
+
+            unsafe {
+                close_fds::close_open_fds(3, &keep_fds);
+            };
+
             fork()
         }),
         Err(n) => Err(n),

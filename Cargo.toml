@@ -15,6 +15,7 @@ ignore_in_ci = []
 neovim-lib="*"
 log="*"
 simple-logging="*"
+close_fds="*"
 thiserror="*"
 dirs="*"
 regex="*"
