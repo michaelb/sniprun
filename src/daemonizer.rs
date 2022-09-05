@@ -49,7 +49,7 @@ pub fn daemon() -> Result<Fork, i32> {
         Ok(Fork::Child) => setsid().and_then(|_| {
             close_fd()?;
             // close additionnal fds (logs, socket ?)
-            let mut keep_fds = [];
+            let keep_fds = [];
 
             unsafe {
                 close_fds::close_open_fds(3, &keep_fds);
