@@ -21,7 +21,7 @@ impl Julia_original {
         );
 
         let mut contents = String::new();
-    
+
         let mut pause = std::time::Duration::from_millis(50);
         loop {
             std::thread::sleep(pause);
@@ -41,13 +41,10 @@ impl Julia_original {
                 }
             }
             info!("not found yet");
-
         }
 
         let index = contents.rfind(&start_mark).unwrap();
-        Ok(
-            contents[index + start_mark.len()..contents.len() - end_mark.len() - 1].to_owned(),
-        )
+        Ok(contents[index + start_mark.len()..contents.len() - end_mark.len() - 1].to_owned())
     }
 }
 
@@ -170,7 +167,6 @@ impl Interpreter for Julia_original {
                     String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
                 ));
             }
-
         }
     }
 }
@@ -206,7 +202,12 @@ impl ReplLikeInterpreter for Julia_original {
             match daemon() {
                 Ok(Fork::Child) => {
                     let _res = Command::new("bash")
-                        .args(&[init_repl_cmd, self.cache_dir.clone(), "julia --banner=no --color=no".to_owned()])
+                        .args(&[
+                            init_repl_cmd,
+                            self.cache_dir.clone(),
+                            Julia_original::get_nvim_pid(&self.data),
+                            "julia --banner=no --color=no".to_owned(),
+                        ])
                         .output()
                         .unwrap();
                     let pause = std::time::Duration::from_millis(36_000_000);

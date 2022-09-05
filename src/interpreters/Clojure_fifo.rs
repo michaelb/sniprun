@@ -96,10 +96,6 @@ impl Clojure_fifo {
         }
     }
 
-    fn get_nvim_pid(data: &DataHolder) -> String {
-        data.nvim_pid.to_string()
-    }
-
     fn fetch_config(&mut self) {
         let default_interpreter_repl =
             String::from("clojure -e \"(clojure.main/repl :prompt (defn f[] (\"\")) )\"");

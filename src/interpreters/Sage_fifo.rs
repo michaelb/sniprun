@@ -211,9 +211,6 @@ impl Sage_fifo {
         }
         false
     }
-    fn get_nvim_pid(data: &DataHolder) -> String {
-        data.nvim_pid.to_string()
-    }
 
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("sage");
@@ -380,6 +377,7 @@ impl ReplLikeInterpreter for Sage_fifo {
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
+                            Sage_fifo::get_nvim_pid(&self.data),
                             self.interpreter.clone(),
                             nodotstage_arg.to_string(),
                         ])

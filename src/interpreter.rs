@@ -65,6 +65,10 @@ pub trait Interpreter: ReplLikeInterpreter {
     fn set_current_level(&mut self, level: SupportLevel);
     fn get_data(&self) -> DataHolder;
 
+    fn get_nvim_pid(data: &DataHolder) -> String { // associated utility function
+        data.nvim_pid.to_string()
+    }
+
     /// You should override this method as soon as you wish to test your interpreter.
     fn get_max_support_level() -> SupportLevel {
         //to overwrite in trait impls

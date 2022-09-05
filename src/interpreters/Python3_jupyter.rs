@@ -59,11 +59,6 @@ impl Python3_jupyter {
         Ok(())
     }
 
-    #[allow(dead_code)]
-    fn get_nvim_pid(data: &DataHolder) -> String {
-        data.nvim_pid.to_string()
-    }
-
     fn module_used(&self, line: &str, code: &str) -> bool {
         info!(
             "checking for python module usage: line {} in code {}",
