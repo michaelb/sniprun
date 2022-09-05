@@ -283,11 +283,9 @@ impl ReplLikeInterpreter for Clojure_fifo {
                         ])
                         .output()
                         .unwrap();
-                    let pause = std::time::Duration::from_millis(36_000_000);
-                    std::thread::sleep(pause);
 
                     return Err(SniprunError::CustomError(
-                        "Timeout expired for clojure REPL".to_owned(),
+                        "clojure REPL exited".to_owned(),
                     ));
                 }
                 Ok(Fork::Parent(_)) => {}

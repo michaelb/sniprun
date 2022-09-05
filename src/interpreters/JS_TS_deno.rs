@@ -287,11 +287,9 @@ impl ReplLikeInterpreter for JS_TS_deno {
                         ])
                         .output()
                         .unwrap();
-                    let pause = std::time::Duration::from_millis(36_000_000);
-                    std::thread::sleep(pause);
 
                     return Err(SniprunError::CustomError(
-                        "Timeout expired for python3 REPL".to_owned(),
+                        "deno REPL exited".to_owned(),
                     ));
                 }
                 Ok(Fork::Parent(_)) => {}

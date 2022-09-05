@@ -266,11 +266,9 @@ impl ReplLikeInterpreter for FSharp_fifo {
                         ])
                         .output()
                         .unwrap();
-                    let pause = std::time::Duration::from_millis(36_000_000);
-                    std::thread::sleep(pause);
 
                     return Err(SniprunError::CustomError(
-                        "Timeout expired for dotnet fsi REPL".to_owned(),
+                        "background dotnet fsi REPL exited".to_owned(),
                     ));
                 }
                 Ok(Fork::Parent(_)) => {}

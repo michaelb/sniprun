@@ -405,11 +405,9 @@ impl ReplLikeInterpreter for Python3_fifo {
                         ])
                         .output()
                         .unwrap();
-                    let pause = std::time::Duration::from_millis(36_000_000);
-                    std::thread::sleep(pause);
 
                     return Err(SniprunError::CustomError(
-                        "Timeout expired for python3 REPL".to_owned(),
+                        "python3 REPL exited".to_owned(),
                     ));
                 }
                 Ok(Fork::Parent(_)) => {}

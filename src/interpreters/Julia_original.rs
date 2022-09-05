@@ -210,11 +210,9 @@ impl ReplLikeInterpreter for Julia_original {
                         ])
                         .output()
                         .unwrap();
-                    let pause = std::time::Duration::from_millis(36_000_000);
-                    std::thread::sleep(pause);
 
                     return Err(SniprunError::CustomError(
-                        "Timeout expired for julia REPL".to_owned(),
+                        "julia REPL exited".to_owned(),
                     ));
                 }
                 Ok(Fork::Parent(_)) => {}

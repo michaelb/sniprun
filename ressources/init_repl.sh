@@ -13,7 +13,6 @@ if test -e "$working_dir" ; then
     exit 1
 fi
 
-echo "pid of parent neovim session is $2"
 
 
 
@@ -29,7 +28,8 @@ repl="$@" # the rest
 
 rm -rf $working_dir/
 mkdir -p $working_dir
-echo "setting up things" > $log
+echo "pid of parent neovim session is $nvim_pid" >> $log
+echo "setting up things" >> $log
 
 mkfifo $working_dir/$pipe
 touch $working_dir/$out
@@ -56,4 +56,4 @@ pkill -P $$
 
 echo $repl " and other backoung process terminated at $(date +"%F %T")." >> $log
 
-# rm -rf $working_dir
+rm -rf $working_dir
