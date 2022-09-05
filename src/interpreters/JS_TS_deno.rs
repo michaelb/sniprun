@@ -124,7 +124,7 @@ impl Interpreter for JS_TS_deno {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
-            String::from("TS/JS via Deno"), // in 1st position of vector, used for info only
+            String::from("TS/JS (Deno)"), // in 1st position of vector, used for info only
             //':set ft?' in nvim to get the filetype of opened file
             String::from("typescript"),
             String::from("typescriptreact"),

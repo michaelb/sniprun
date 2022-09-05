@@ -135,7 +135,7 @@ impl Launcher {
 
         v.push("\nAvailable interpreters and languages".to_owned());
 
-        let separator = "|--------------------------|---------------|---------------|-------------|------------|--------------|".to_string();
+        let separator = "|----------------------|--------------|---------|-------------|------------|--------------|".to_string();
         v.push(separator.clone());
         v.push("| Interpreter          | Language     | Support | Default for |    REPL    | REPL enabled |".to_string());
         v.push("|                      |              |  Level  |  filetype   | capability |  by default  |".to_string());

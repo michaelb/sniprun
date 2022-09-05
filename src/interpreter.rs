@@ -25,7 +25,7 @@ pub enum SupportLevel {
 impl Display for SupportLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::result::Result<(), std::fmt::Error> {
         match *self {
-            SupportLevel::Unsupported => f.write_str("Unsupported"),
+            SupportLevel::Unsupported => f.write_str("None"),
             SupportLevel::Line => f.write_str("Line"),
             SupportLevel::Bloc => f.write_str("Bloc"),
             SupportLevel::Import => f.write_str("Import"),
