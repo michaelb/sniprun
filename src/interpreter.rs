@@ -65,7 +65,8 @@ pub trait Interpreter: ReplLikeInterpreter {
     fn set_current_level(&mut self, level: SupportLevel);
     fn get_data(&self) -> DataHolder;
 
-    fn get_nvim_pid(data: &DataHolder) -> String { // associated utility function
+    fn get_nvim_pid(data: &DataHolder) -> String {
+        // associated utility function
         data.nvim_pid.to_string()
     }
 

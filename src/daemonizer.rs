@@ -2,8 +2,6 @@
 Derived from https://github.com/immortal/fork
 */
 
-
-
 /// Fork result
 pub enum Fork {
     Parent(libc::pid_t),
