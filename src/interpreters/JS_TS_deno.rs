@@ -113,7 +113,7 @@ impl Interpreter for JS_TS_deno {
         //pre-create string pointing to main file's and binary's path
         let mfp = lwd.clone() + "/main.ts";
         Box::new(JS_TS_deno {
-            cache_dir: lwd.clone() + "/" + &Python3_fifo::get_nvim_pid(&data),
+            cache_dir: lwd.clone() + "/" + &JS_TS_deno::get_nvim_pid(&data),
             data,
             support_level,
             code: String::new(),
@@ -124,7 +124,7 @@ impl Interpreter for JS_TS_deno {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
-            String::from("TS/JS via Deno"), // in 1st position of vector, used for info only
+            String::from("TS/JS (Deno)"), // in 1st position of vector, used for info only
             //':set ft?' in nvim to get the filetype of opened file
             String::from("typescript"),
             String::from("typescriptreact"),
@@ -282,17 +282,14 @@ impl ReplLikeInterpreter for JS_TS_deno {
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
+                            JS_TS_deno::get_nvim_pid(&self.data),
                             String::from("deno"),
-                            String::from("repl"),
-                            String::from("-q"),
                         ])
                         .output()
                         .unwrap();
-                    let pause = std::time::Duration::from_millis(36_000_000);
-                    std::thread::sleep(pause);
 
                     return Err(SniprunError::CustomError(
-                        "Timeout expired for python3 REPL".to_owned(),
+                        "deno REPL exited".to_owned(),
                     ));
                 }
                 Ok(Fork::Parent(_)) => {}

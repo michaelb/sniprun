@@ -25,7 +25,7 @@ pub enum SupportLevel {
 impl Display for SupportLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::result::Result<(), std::fmt::Error> {
         match *self {
-            SupportLevel::Unsupported => f.write_str("Unsupported"),
+            SupportLevel::Unsupported => f.write_str("None"),
             SupportLevel::Line => f.write_str("Line"),
             SupportLevel::Bloc => f.write_str("Bloc"),
             SupportLevel::Import => f.write_str("Import"),
@@ -64,6 +64,11 @@ pub trait Interpreter: ReplLikeInterpreter {
     fn get_current_level(&self) -> SupportLevel;
     fn set_current_level(&mut self, level: SupportLevel);
     fn get_data(&self) -> DataHolder;
+
+    fn get_nvim_pid(data: &DataHolder) -> String {
+        // associated utility function
+        data.nvim_pid.to_string()
+    }
 
     /// You should override this method as soon as you wish to test your interpreter.
     fn get_max_support_level() -> SupportLevel {

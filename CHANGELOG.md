@@ -1,3 +1,9 @@
+## v1.2.7
+- Fix bug where the display configuration was overwritten by live mode activation
+- Fix bug where REPL interpreter would get instantly stopped on MacOS
+- Mark SnipTerminate for deprecation, will be removed in a future release
+- Narrower and aligned SnipInfo
+
 ## v1.2.6
 - Clojure support (REPL-capable)
 - Improved & simplified CI

@@ -94,10 +94,6 @@ impl FSharp_fifo {
         }
     }
 
-    fn get_nvim_pid(data: &DataHolder) -> String {
-        data.nvim_pid.to_string()
-    }
-
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("dotnet fsi --nologo");
         self.interpreter = default_interpreter;
@@ -265,15 +261,14 @@ impl ReplLikeInterpreter for FSharp_fifo {
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
+                            FSharp_fifo::get_nvim_pid(&self.data),
                             self.interpreter.clone(),
                         ])
                         .output()
                         .unwrap();
-                    let pause = std::time::Duration::from_millis(36_000_000);
-                    std::thread::sleep(pause);
 
                     return Err(SniprunError::CustomError(
-                        "Timeout expired for dotnet fsi REPL".to_owned(),
+                        "background dotnet fsi REPL exited".to_owned(),
                     ));
                 }
                 Ok(Fork::Parent(_)) => {}

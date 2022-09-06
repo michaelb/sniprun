@@ -1,11 +1,26 @@
 local M = {}
 
+function deepcopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in next, orig, nil do
+            copy[deepcopy(orig_key)] = deepcopy(orig_value)
+        end
+        setmetatable(copy, deepcopy(getmetatable(orig)))
+    else -- number, string, boolean, etc
+        copy = orig
+    end
+    return copy
+
+end
 
 function M.run()
     local sa = require('sniprun.api')
     local line = vim.api.nvim_win_get_cursor(0)[1]
     local ft = vim.bo.filetype
-    local opts = require('sniprun').config_values
+    local opts = deepcopy(require('sniprun').config_values)
     opts.display  = { "VirtualTextOk"}
     opts.show_no_output = {}
     sa.run_range(line,line, ft, opts)

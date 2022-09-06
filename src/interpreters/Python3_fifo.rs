@@ -105,10 +105,6 @@ impl Python3_fifo {
         }
     }
 
-    fn get_nvim_pid(data: &DataHolder) -> String {
-        data.nvim_pid.to_string()
-    }
-
     fn fetch_imports(&mut self) -> Result<(), SniprunError> {
         if self.support_level < SupportLevel::Import {
             return Ok(());
@@ -403,16 +399,15 @@ impl ReplLikeInterpreter for Python3_fifo {
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
+                            Python3_fifo::get_nvim_pid(&self.data),
                             self.interpreter.clone()
                                 + " -ic 'import sys; sys.ps1=\"\";sys.ps2=\"\"'",
                         ])
                         .output()
                         .unwrap();
-                    let pause = std::time::Duration::from_millis(36_000_000);
-                    std::thread::sleep(pause);
 
                     return Err(SniprunError::CustomError(
-                        "Timeout expired for python3 REPL".to_owned(),
+                        "python3 REPL exited".to_owned(),
                     ));
                 }
                 Ok(Fork::Parent(_)) => {}

@@ -46,6 +46,13 @@ pub fn daemon() -> Result<Fork, i32> {
         Ok(Fork::Parent(child_pid)) => Ok(Fork::Parent(child_pid)),
         Ok(Fork::Child) => setsid().and_then(|_| {
             close_fd()?;
+            // close additionnal fds (logs, socket ?)
+            let keep_fds = [];
+
+            unsafe {
+                close_fds::close_open_fds(3, &keep_fds);
+            };
+
             fork()
         }),
         Err(n) => Err(n),
