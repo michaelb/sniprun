@@ -2,7 +2,7 @@
 name = "sniprun"
 version = "1.2.7"
 authors = ["michaelb <michael.bleuez2@gmail.com>"]
-rust-version="1.31"
+rust-version="1.55"
 edition = "2018"
 
 [features]
