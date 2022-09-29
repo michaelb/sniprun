@@ -10,15 +10,11 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-**What do the bug concerns? Sniprun itself, a particular interpreter?**
-The bug seems to stem from ....
-
 **To Reproduce**
 Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+1. Open a file containing '...'
+2. Run the command '....'
+3. See error '...'
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
@@ -27,9 +23,8 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Environment:**
- - Neovim version [e.g. v0.4.3]
+ - Neovim version [e.g. v0.6.1]
 - OS/distribution
-- if possible, GLIBC version (output of `ldd --version`)
 
 
 **Additional context**
