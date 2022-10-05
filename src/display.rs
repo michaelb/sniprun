@@ -7,33 +7,69 @@ use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 use unindent::Unindent;
 
+#[derive(Clone, Copy, Debug, Ord, PartialOrd)]
+pub enum DisplayFilter {
+    OnlyOk,
+    OnlyErr,
+    Both,
+}
+
+// abusing a little the system
+impl PartialEq for DisplayFilter {
+    fn eq(&self, other: &Self) -> bool {
+        match self {
+            Both => true,
+            OnlyOk => match other {
+                OnlyErr => false,
+                _ => true,
+            },
+            OnlyErr => match other {
+                OnlyOk => false,
+                _ => true,
+            },
+        }
+    }
+}
+impl Eq for DisplayFilter {}
+
+use DisplayFilter::*;
+
 #[derive(Clone, Debug, Ord, PartialOrd, PartialEq, Eq)]
 pub enum DisplayType {
-    Classic = 0,
-    NvimNotify,
-    VirtualTextOk,
-    VirtualTextErr,
-    Terminal,
-    TerminalWithCode,
-    LongTempFloatingWindow,
-    TempFloatingWindow,
-    Api,
+    Classic(DisplayFilter),
+    NvimNotify(DisplayFilter),
+    VirtualText(DisplayFilter),
+    Terminal(DisplayFilter),
+    TerminalWithCode(DisplayFilter),
+    LongTempFloatingWindow(DisplayFilter),
+    TempFloatingWindow(DisplayFilter),
+    Api(DisplayFilter),
 }
 use DisplayType::*;
 
 impl FromStr for DisplayType {
     type Err = SniprunError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Classic" => Ok(Classic),
-            "VirtualTextOk" => Ok(VirtualTextOk),
-            "VirtualTextErr" => Ok(VirtualTextErr),
-            "Terminal" => Ok(Terminal),
-            "TerminalWithCode" => Ok(TerminalWithCode),
-            "LongTempFloatingWindow" => Ok(LongTempFloatingWindow),
-            "TempFloatingWindow" => Ok(TempFloatingWindow),
-            "Api" => Ok(Api),
-            "NvimNotify" => Ok(NvimNotify),
+        let display_filter;
+        let mut display_type = s;
+        if s.ends_with("Ok") {
+            display_filter = OnlyOk;
+            display_type = s.strip_suffix("Ok").unwrap();
+        } else if s.ends_with("Err") {
+            display_filter = OnlyErr;
+            display_type = s.strip_suffix("Err").unwrap();
+        } else {
+            display_filter = Both;
+        }
+        match display_type {
+            "Classic" => Ok(Classic(display_filter)),
+            "VirtualText" => Ok(VirtualText(display_filter)),
+            "Terminal" => Ok(Terminal(display_filter)),
+            "TerminalWithCode" => Ok(TerminalWithCode(display_filter)),
+            "LongTempFloatingWindow" => Ok(LongTempFloatingWindow(display_filter)),
+            "TempFloatingWindow" => Ok(TempFloatingWindow(display_filter)),
+            "Api" => Ok(Api(display_filter)),
+            "NvimNotify" => Ok(NvimNotify(display_filter)),
             _ => Err(SniprunError::InternalError(
                 "Invalid display type: ".to_string() + s,
             )),
@@ -41,18 +77,30 @@ impl FromStr for DisplayType {
     }
 }
 
+impl fmt::Display for DisplayFilter {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let s = match self {
+            OnlyOk => "Ok",
+            OnlyErr => "Err",
+            Both => "",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 impl fmt::Display for DisplayType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match &self {
-            DisplayType::Classic => "Classic",
-            DisplayType::VirtualTextOk => "VirtualTextOk",
-            DisplayType::VirtualTextErr => "VirtualTextErr",
-            DisplayType::Terminal => "Terminal",
-            DisplayType::TerminalWithCode => "TerminalWithCode",
-            DisplayType::LongTempFloatingWindow => "LongTempFloatingWindow",
-            DisplayType::TempFloatingWindow => "TempFloatingWindow",
-            DisplayType::Api => "Api",
-            DisplayType::NvimNotify => "NvimNotify",
+            DisplayType::Classic(f) => "Classic".to_string() + &f.to_string(),
+            DisplayType::VirtualText(f) => "VirtualText".to_string() + &f.to_string(),
+            DisplayType::Terminal(f) => "Terminal".to_string() + &f.to_string(),
+            DisplayType::TerminalWithCode(f) => "TerminalWithCode".to_string() + &f.to_string(),
+            DisplayType::LongTempFloatingWindow(f) => {
+                "LongTempFloatingWindow".to_string() + &f.to_string()
+            }
+            DisplayType::TempFloatingWindow(f) => "TempFloatingWindow".to_string() + &f.to_string(),
+            DisplayType::Api(f) => "Api".to_string() + &f.to_string(),
+            DisplayType::NvimNotify(f) => "NvimNotify".to_string() + &f.to_string(),
         };
         write!(f, "{}", name)
     }
@@ -64,22 +112,28 @@ pub fn display(result: Result<String, SniprunError>, nvim: Arc<Mutex<Neovim>>, d
     display_type.dedup(); //now only uniques display types
 
     // remove transparently incompatible/redundant displays
-    if display_type.contains(&TerminalWithCode) {
-        display_type.retain(|dt| dt != &Terminal);
+    for filter in [OnlyOk, OnlyErr, Both] {
+        if display_type.contains(&TerminalWithCode(filter)) {
+            display_type.retain(|dt| dt != &Terminal(filter));
+        }
+        if display_type.contains(&TempFloatingWindow(filter)) {
+            display_type.retain(|dt| dt != &LongTempFloatingWindow(filter));
+        }
     }
 
     info!("Display type chosen: {:?}", display_type);
     for dt in display_type.iter() {
         match dt {
-            Classic => return_message_classic(&result, &nvim, &data.return_message_type, data),
-            VirtualTextOk => display_virtual_text(&result, &nvim, data, true),
-            VirtualTextErr => display_virtual_text(&result, &nvim, data, false),
-            Terminal => display_terminal(&result, &nvim, data),
-            TerminalWithCode => display_terminal_with_code(&result, &nvim, data),
-            LongTempFloatingWindow => display_floating_window(&result, &nvim, data, true),
-            TempFloatingWindow => display_floating_window(&result, &nvim, data, false),
-            Api => send_api(&result, &nvim, data),
-            NvimNotify => display_nvim_notify(&result, &nvim, data),
+            Classic(f) => {
+                return_message_classic(&result, &nvim, &data.return_message_type, data, *f)
+            }
+            VirtualText(f) => display_virtual_text(&result, &nvim, data, *f),
+            Terminal(f) => display_terminal(&result, &nvim, data, *f),
+            TerminalWithCode(f) => display_terminal_with_code(&result, &nvim, data, *f),
+            LongTempFloatingWindow(f) => display_floating_window(&result, &nvim, data, true, *f),
+            TempFloatingWindow(f) => display_floating_window(&result, &nvim, data, false, *f),
+            Api(f) => send_api(&result, &nvim, data, *f),
+            NvimNotify(f) => display_nvim_notify(&result, &nvim, data, *f),
         }
     }
 }
@@ -88,17 +142,19 @@ pub fn display_nvim_notify(
     message: &Result<String, SniprunError>,
     nvim: &Arc<Mutex<Neovim>>,
     data: &DataHolder,
+    filter: DisplayFilter,
 ) {
-    let res = match message {
-        Ok(result) => nvim.lock().unwrap().command(&format!(
+    let res = match (message, filter) {
+        (Ok(result), OnlyOk) | (Ok(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".display_nvim_notify(\"{}\", true)",
-            no_output_wrap(result, data, &DisplayType::NvimNotify).replace("\n", "\\\n"),
+            no_output_wrap(result, data, &DisplayType::NvimNotify(filter)).replace("\n", "\\\n"),
         )),
-        Err(result) => nvim.lock().unwrap().command(&format!(
+        (Err(result), OnlyErr) | (Err(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".display_nvim_notify(\"{}\", false)",
-            no_output_wrap(&result.to_string(), data, &DisplayType::NvimNotify)
+            no_output_wrap(&result.to_string(), data, &DisplayType::NvimNotify(filter))
                 .replace("\n", "\\\n"),
         )),
+        _ => Ok(()),
     };
     info!("display notify res = {:?}", res);
 }
@@ -107,22 +163,25 @@ pub fn send_api(
     message: &Result<String, SniprunError>,
     nvim: &Arc<Mutex<Neovim>>,
     data: &DataHolder,
+    filter: DisplayFilter,
 ) {
-    let res = match message {
-        Ok(result) => {
+    let res = match (message, filter) {
+        (Ok(result), OnlyOk) | (Ok(result), Both) => {
             let mut nvim_instance = nvim.lock().unwrap();
             nvim_instance.command(&format!(
                 "lua require\"sniprun.display\".send_api(\"{}\", true)",
-                no_output_wrap(result, data, &DisplayType::Api).replace("\n", "\\\n"),
+                no_output_wrap(result, data, &DisplayType::Api(filter)).replace("\n", "\\\n"),
             ))
         }
-        Err(result) => {
+        (Err(result), OnlyErr) | (Err(result), Both) => {
             let mut nvim_instance = nvim.lock().unwrap();
             nvim_instance.command(&format!(
                 "lua require\"sniprun.display\".send_api(\"{}\", false)",
-                no_output_wrap(&result.to_string(), data, &DisplayType::Api).replace("\n", "\\\n"),
+                no_output_wrap(&result.to_string(), data, &DisplayType::Api(filter))
+                    .replace("\n", "\\\n"),
             ))
         }
+        _ => Ok(()),
     };
     if res.is_ok() {
         info!("done displaying api");
@@ -135,11 +194,11 @@ pub fn display_virtual_text(
     result: &Result<String, SniprunError>,
     nvim: &Arc<Mutex<Neovim>>,
     data: &DataHolder,
-    is_ok: bool,
+    filter: DisplayFilter,
 ) {
     info!("range is : {:?}", data.range);
     let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
-    if is_ok != result.is_ok() {
+    if (filter == OnlyOk) != result.is_ok() {
         if let Err(SniprunError::InterpreterLimitationError(_)) = result {
             return; // without clearing the line
         }
@@ -168,12 +227,12 @@ pub fn display_virtual_text(
 
     let hl_ok = "SniprunVirtualTextOk";
     let hl_err = "SniprunVirtualTextErr";
-    let res = match result {
-        Ok(message_ok) => {
+    let res = match (result, filter) {
+        (Ok(message_ok), OnlyOk) | (Ok(message_ok), Both) => {
             if shorten_ok(&no_output_wrap(
                 message_ok,
                 data,
-                &DisplayType::VirtualTextOk,
+                &DisplayType::VirtualText(filter),
             ))
             .is_empty()
             {
@@ -186,16 +245,16 @@ pub fn display_virtual_text(
                 shorten_ok(&no_output_wrap(
                     message_ok,
                     data,
-                    &DisplayType::VirtualTextOk
+                    &DisplayType::VirtualText(filter)
                 )),
                 hl_ok
             ))
         }
-        Err(message_err) => {
+        (Err(message_err), OnlyErr) | (Err(message_err), Both) => {
             if shorten_err(&no_output_wrap(
                 &message_err.to_string(),
                 data,
-                &DisplayType::VirtualTextErr,
+                &DisplayType::VirtualText(filter),
             ))
             .is_empty()
             {
@@ -208,11 +267,12 @@ pub fn display_virtual_text(
                 shorten_err(&no_output_wrap(
                     &message_err.to_string(),
                     data,
-                    &DisplayType::VirtualTextErr
+                    &DisplayType::VirtualText(filter)
                 )),
                 hl_err
             ))
         }
+        _ => Ok(()),
     };
     info!("done displaying virtual text, {:?}", res);
 }
@@ -221,19 +281,23 @@ pub fn display_terminal(
     message: &Result<String, SniprunError>,
     nvim: &Arc<Mutex<Neovim>>,
     data: &DataHolder,
+    filter: DisplayFilter,
 ) {
     info!("data_bloc = {}", data.current_bloc);
     let a = data.current_bloc.lines();
     info!("length = {}", a.count());
-    let res = match message {
-        Ok(result) => nvim.lock().unwrap().command(&format!(
+    info!("display terminal, with filter: = {:?}", filter);
+    let res = match (message, filter) {
+        (Ok(result), OnlyOk) | (Ok(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\", true)",
-            no_output_wrap(result, data, &DisplayType::Terminal).replace("\n", "\\\n"),
+            no_output_wrap(result, data, &DisplayType::Terminal(filter)).replace("\n", "\\\n"),
         )),
-        Err(result) => nvim.lock().unwrap().command(&format!(
+        (Err(result), OnlyErr) | (Err(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\", false)",
-            no_output_wrap(&result.to_string(), data, &DisplayType::Terminal).replace("\n", "\\\n"),
+            no_output_wrap(&result.to_string(), data, &DisplayType::Terminal(filter))
+                .replace("\n", "\\\n"),
         )),
+        _ => Ok(()),
     };
     info!("display terminal res = {:?}", res);
 }
@@ -242,9 +306,10 @@ pub fn display_terminal_with_code(
     message: &Result<String, SniprunError>,
     nvim: &Arc<Mutex<Neovim>>,
     data: &DataHolder,
+    filter: DisplayFilter,
 ) {
-    let res = match message {
-        Ok(result) => nvim.lock().unwrap().command(&format!(
+    let res = match (message, filter) {
+        (Ok(result), OnlyOk) | (Ok(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\\n{}\", true)",
             cleanup_and_escape(
                 &format!("\n{}", &data.current_bloc)
@@ -255,9 +320,10 @@ pub fn display_terminal_with_code(
                     })
             )
             .replace("\n", "\\\n"),
-            no_output_wrap(result, data, &DisplayType::TerminalWithCode).replace("\n", "\\\n"),
+            no_output_wrap(result, data, &DisplayType::TerminalWithCode(filter))
+                .replace("\n", "\\\n"),
         )),
-        Err(result) => nvim.lock().unwrap().command(&format!(
+        (Err(result), OnlyErr) | (Err(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\\n{}\", false)",
             cleanup_and_escape(
                 &format!("\n{}", &data.current_bloc)
@@ -268,9 +334,14 @@ pub fn display_terminal_with_code(
                     })
             )
             .replace("\n", "\\\n"),
-            no_output_wrap(&result.to_string(), data, &DisplayType::TerminalWithCode)
-                .replace("\n", "\\\n"),
+            no_output_wrap(
+                &result.to_string(),
+                data,
+                &DisplayType::TerminalWithCode(filter)
+            )
+            .replace("\n", "\\\n"),
         )),
+        _ => Ok(()),
     };
     info!("display terminal res = {:?}", res);
 }
@@ -280,6 +351,7 @@ pub fn display_floating_window(
     nvim: &Arc<Mutex<Neovim>>,
     data: &DataHolder,
     long_only: bool,
+    filter: DisplayFilter,
 ) {
     if long_only {
         let do_no_display = match message {
@@ -304,21 +376,30 @@ pub fn display_floating_window(
         row, col
     );
 
-    let res = match message {
-        Ok(result) => nvim.lock().unwrap().command(&format!(
+    let res = match (message, filter) {
+        (Ok(result), OnlyOk) | (Ok(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", true)",
             row - 1,
             col,
-            no_output_wrap(&result.to_string(), data, &DisplayType::TempFloatingWindow)
-                .replace("\n", "\\\n"),
+            no_output_wrap(
+                &result.to_string(),
+                data,
+                &DisplayType::TempFloatingWindow(filter)
+            )
+            .replace("\n", "\\\n"),
         )),
-        Err(result) => nvim.lock().unwrap().command(&format!(
+        (Err(result), OnlyErr) | (Err(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", false)",
             row - 1,
             col,
-            no_output_wrap(&result.to_string(), data, &DisplayType::TempFloatingWindow)
-                .replace("\n", "\\\n"),
+            no_output_wrap(
+                &result.to_string(),
+                data,
+                &DisplayType::TempFloatingWindow(filter)
+            )
+            .replace("\n", "\\\n"),
         )),
+        _ => Ok(()),
     };
     info!("display floating window res = {:?}", res);
 }
@@ -328,11 +409,12 @@ pub fn return_message_classic(
     nvim: &Arc<Mutex<Neovim>>,
     rmt: &ReturnMessageType,
     data: &DataHolder,
+    filter: DisplayFilter,
 ) {
-    match message {
-        Ok(answer_ok) => {
+    match (message, filter) {
+        (Ok(answer_ok), OnlyOk) | (Ok(answer_ok), Both) => {
             //make sure there is no lone "
-            let answer_str = no_output_wrap(answer_ok, data, &DisplayType::Classic);
+            let answer_str = no_output_wrap(answer_ok, data, &DisplayType::Classic(filter));
             info!("Final str {}", answer_str);
 
             match rmt {
@@ -350,7 +432,7 @@ pub fn return_message_classic(
                 }
             }
         }
-        Err(e) => match rmt {
+        (Err(e), OnlyErr) | (Err(e), Both) => match rmt {
             ReturnMessageType::Multiline => {
                 let _ = nvim.lock().unwrap().err_writeln(&format!("{}", e));
             }
@@ -361,6 +443,7 @@ pub fn return_message_classic(
                 ));
             }
         },
+        _ => (),
     }
 }
 

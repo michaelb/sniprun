@@ -301,6 +301,8 @@ require'sniprun'.setup({
     -- "Api"                      --# return output to a programming interface
   },
 
+  live_display = { "VirtualTextOk" }, --# display mode used in live_mode
+
   display_options = {
     terminal_width = 45,       --# change the terminal display option width
     notification_timeout = 5   --# timeout for nvim_notify output
