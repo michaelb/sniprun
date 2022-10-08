@@ -17,9 +17,15 @@ If you're running a REPL-capable interpreter, while it'll probably work, mind th
 - the REPL will have to gulp a lot of incomplete code without crashing and stuff
 - typing b = b  + 1 + 1 will increment b by more than 2 !! (since an intermediate b=b+1 is valid and thus changes b before b=b+1+1)
 
+# Configuration
+    You can set different display modes for live mode, with the config key
+    ```
+    live_display = { "VirtualText", "TerminalOk"} --..or anything you want
+    ```
+
 # Enable and usage
 
-`live_mode_toggle='enable'` in the config, (set to either 'enable' or 'off' - the default -, the disreptancy is only to force people to come here and read the warnings in case some smart kid want to skip and just set it to 'on') 
+`live_mode_toggle='enable'` in the config, (set to either 'enable' or 'off' - the default -, the 'uncoherency' is only to force people to come here and read the warnings in case some smart kid want to skip and just set it to 'on') 
 
 and then use the :SnipLive command and start coding.
 
