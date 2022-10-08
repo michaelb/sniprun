@@ -14,6 +14,7 @@ ignore_in_ci = []
 [dependencies]
 neovim-lib="*"
 log="*"
+log-panics = { version = "2", features = ["with-backtrace"]}
 simple-logging="*"
 close_fds="*"
 thiserror="*"

@@ -3,7 +3,7 @@
 //! Sniprun is a neovim plugin that run parts of code.
 
 use dirs::cache_dir;
-pub use display::{display, display_floating_window, DisplayType};
+pub use display::{display, display_floating_window, DisplayType, DisplayFilter::*};
 use log::{info, LevelFilter};
 use neovim_lib::{Neovim, NeovimApi, Session, Value};
 use simple_logging::log_to_file;
@@ -117,8 +117,8 @@ impl Default for DataHolder {
             interpreter_options: None,
             interpreter_data: None,
             return_message_type: ReturnMessageType::Multiline,
-            display_type: vec![DisplayType::Classic],
-            display_no_output: vec![DisplayType::Classic],
+            display_type: vec![DisplayType::Classic(Both)],
+            display_no_output: vec![DisplayType::Classic(Both)],
             cli_args: vec![],
             nvim_pid: 0,
         }
@@ -436,6 +436,7 @@ pub fn start() {
         &format!("{}/{}", event_handler.data.work_dir, "sniprun.log"),
         LevelFilter::Info,
     );
+    log_panics::init();
 
     info!("[MAIN] SnipRun launched successfully");
 
@@ -544,6 +545,7 @@ pub fn start() {
                         &event_handler2.nvim,
                         &event_handler.data,
                         false,
+                        Both
                     );
                 }
             }

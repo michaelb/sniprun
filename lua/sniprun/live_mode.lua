@@ -21,7 +21,7 @@ function M.run()
     local line = vim.api.nvim_win_get_cursor(0)[1]
     local ft = vim.bo.filetype
     local opts = deepcopy(require('sniprun').config_values)
-    opts.display  = { "VirtualTextOk"}
+    opts.display  = opts.live_display
     opts.show_no_output = {}
     sa.run_range(line,line, ft, opts)
 end

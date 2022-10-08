@@ -32,6 +32,8 @@ M.config_values = {
     -- "NvimNotify"
   },
 
+  live_display = { "VirtualTextOk" }, -- displayed only for live mode
+
   display_options = {
     terminal_width = 45,       -- change the terminal display option width
     notification_timeout = 5   -- timeout for nvim_notify output
