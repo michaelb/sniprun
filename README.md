@@ -287,14 +287,15 @@ require'sniprun'.setup({
     }
   },      
 
-  --# you can combo different display modes as desired
+  --# you can combo different display modes as desired and with the 'Ok' or 'Err' suffix
+  --# to filter only sucessful runs (or errored-out runs respectively)
   display = {
     "Classic",                    --# display results in the command-line  area
     "VirtualTextOk",              --# display ok results as virtual text (multiline is shortened)
 
-    -- "VirtualTextErr",          --# display error results as virtual text
+    -- "VirtualText",             --# display results as virtual text
     -- "TempFloatingWindow",      --# display results in a floating window
-    -- "LongTempFloatingWindow",  --# same as above, but only long results. To use with VirtualText__
+    -- "LongTempFloatingWindow",  --# same as above, but only long results. To use with VirtualText[Ok/Err]
     -- "Terminal",                --# display results in a vertical split
     -- "TerminalWithCode",        --# display results and code history in a vertical split
     -- "NvimNotify",              --# display with the nvim-notify plugin
@@ -325,11 +326,11 @@ require'sniprun'.setup({
 
   --# miscellaneous compatibility/adjustement settings
   inline_messages = 0,             --# inline_message (0/1) is a one-line way to display messages
-				   --# to workaround sniprun not being able to display anything
+				                   --# to workaround sniprun not being able to display anything
 
   borders = 'single',              --# display borders around floating windows
                                    --# possible values are 'none', 'single', 'double', or 'shadow'
-  live_mode_toggle='off'       --# live mode toggle, see Usage - Running for more info   
+  live_mode_toggle='off'           --# live mode toggle, see Usage - Running for more info   
 })
 EOF
 ```
