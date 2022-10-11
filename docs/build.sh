@@ -13,6 +13,7 @@ export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
  
 # Python Sphinx, configured with source/conf.py
 # See https://www.sphinx-doc.org/
+cd docs
 make clean
 make html
 
@@ -24,7 +25,7 @@ git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
  
 docroot=`mktemp -d`
-rsync -av "build/html/" "${docroot}/"
+rsync -av "_build/html/" "${docroot}/"
  
 pushd "${docroot}"
 
