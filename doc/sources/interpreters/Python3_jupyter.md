@@ -1,11 +1,11 @@
-# Python3_jupyter
+## Python3_jupyter
 
-## Dependencies
+### Dependencies
 - jupyter
 
 (more specifically, you must be able to run `jupyter-kernel` and `jupyter-console` from the command line)
 
-## Notes
+### Notes
 
 
 (As there is a different interpreter for Python, you may want to force the selection of Python3_jupyter with:)
@@ -16,7 +16,7 @@ require'sniprun'.setup({
 ```
 
 
-## Limitations
+### Limitations
 
 The code runs on a separate jupyter python3 kernel which will NOT interefere with your own running kernels.
 

@@ -1,4 +1,6 @@
-# QuickStart
+## Mathematica original
+
+### QuickStart
 
 Check that `WolframKernel` and `pkill` are installed and on your path.
 
@@ -19,9 +21,9 @@ lua require'sniprun'.setup({
 
 
 
-# Enabling graphics
+### Enabling graphics
 
-You can specify whether the "<<JavaGraphics` command ought to be issued before running a snippet that contains some patterns, like 'Plot'. Enabling this may create a significant delay when the graphics are switched to that mode.
+You can specify whether the ``<<JavaGraphics` `` command ought to be issued before running a snippet that contains some patterns, like 'Plot'. Enabling this may create a significant delay when the graphics are switched to that mode.
 
 
 ```
@@ -47,9 +49,9 @@ As a general rule of thumb, in non-REPL mode, either sniprun a Plot _or_ normal 
 
 
 
-## Print on each sniprun (non-REPL only!)
+### Print on each sniprun (non-REPL only!)
 
-To make make the experience more notebook/REPL -like, those options (incompatible with the true REPL mode) can be configured.
+To make the experience more notebook/REPL -like, those options (incompatible with the true REPL mode) can be configured.
 
 They will wrap any/the last line, if they dont contain alread a Print, Plot or end with ";" or and open bracket
 
@@ -70,7 +72,7 @@ lua require'sniprun'.setup({
 
 
 
-## Quirks of REPL-mode
+### Quirks of REPL-mode
 
 
 Enabling REPL for mathematica will launch a WolframKernel instance in the background. This session will close when the last neovim instance quits, but is only usable by one neovim instance.
@@ -82,7 +84,7 @@ In REPL-mode, just like in the normal interpreter, suffix your expressions with 
 
 
 
-## Troubleshooting
+### Troubleshooting
 
 - No valid password found
 

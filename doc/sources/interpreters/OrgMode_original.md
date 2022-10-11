@@ -1,10 +1,11 @@
+## Orgmode original
+
 the Orgmode\_original interpreter helps you running code blocs defined in org code blocs delimiters
 
 inline, switches and headers are not supported/ignored
 
-# example 1
+### example 1
 
--------------
 
 ```
 #+NAME: demo
@@ -26,9 +27,8 @@ done
 ```
 
 
-# example 2
+### example 2
 
--------------
 
 ```
 #+NAME: demo_run_whole_bloc
@@ -40,7 +40,6 @@ println!("test2");
 
 ``` 
 
--------------
 
 **the language name must be there (otherwise the default * will be used) at the bloc start** and has to match the language name or the filetype associated 
 
