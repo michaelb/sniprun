@@ -1,8 +1,9 @@
+## GFM original (Markdown)
+
 the GFM_original (Github flavored markdown) can help run code blocs embedded in markdown.
 
-# example 1
+### example 1
 
--------------
 
 \```bash
 
@@ -21,9 +22,8 @@ done
 \```
 
 
-# example 2
+### example 2
 
--------------
 
 \``rust  << running on this line will run the entire bloc
 
@@ -31,7 +31,6 @@ println!("test");
 
 \``` 
 
--------------
 
 **the language name must be there (otherwise the default * will be used) at the bloc start** and has to match the github flavor syntax, and the underlying interpreter must be callable (no missing compiler etc...)
 

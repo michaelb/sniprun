@@ -1,3 +1,5 @@
+## Julia jupyter
+
 The setup for the julia_jupyter interpreter is quite convoluted:
 
 Indeed, the Julia jupyter kernel MUST be started before Sniprun can run (and there is even a consequent delay since the kernel is so slow to start).

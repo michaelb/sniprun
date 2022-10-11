@@ -1,4 +1,6 @@
-# This interpreter relies on `clojure`
+## Clojure fifo
+
+This interpreter relies on `clojure`
 
 
 The default interpreter command is `clojure` (or `clojure -e "(clojure.main/repl :prompt (defn f[] ("")) )"`, that allow not displaying the repl prompt) but it can be changed via the configuration key
@@ -20,7 +22,7 @@ You can change those value, (to use `clj` for example ?) but it could break snip
 
 
 
-# Blocked REPL
+### Blocked REPL
 
 Clojure is a bit capricious and sometimes a typo will block forever (and a timeout will appear after 30s). 
 

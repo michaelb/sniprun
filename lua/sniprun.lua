@@ -185,7 +185,7 @@ function M.configure_keymaps()
   vim.cmd("function! SnipRunOperator(...) \n lua require'sniprun'.run('n') \n endfunction")
   vim.cmd("command! SnipClose :lua require'sniprun.display'.close_all()")
 
-  vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('"..sniprun_path.."/doc/', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
+  vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('"..sniprun_path.."/docs/sources/interpreters', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
   vim.cmd("command! -nargs=* -complete=customlist,ListInterpreters SnipInfo :lua require'sniprun'.info(<q-args>)")
 
   vim.cmd("function! SnipRunLauncher(...) range \nif a:firstline == a:lastline \n lua require'sniprun'.run() \n elseif a:firstline == 1 && a:lastline == line(\"$\")\nlet g:sniprun_cli_args_list = a:000\n let g:sniprun_cli_args = join(g:sniprun_cli_args_list,\" \") \n lua require'sniprun'.run('w') \n else \n lua require'sniprun'.run('v') \n endif \n endfunction")
@@ -304,7 +304,7 @@ function M.info(arg)
     -- print all lines content
     M.display_lines_in_floating_win(lines)
     else --help about a particular interpreter
-      local lines = lines_from(sniprun_path.."/doc/"..string.gsub(arg,"%s+","")..".md")
+      local lines = lines_from(sniprun_path.."/docs/sources/interpreters/"..string.gsub(arg,"%s+","")..".md")
       M.display_lines_in_floating_win(lines)
   end
 end
