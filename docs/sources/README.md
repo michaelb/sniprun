@@ -1,4 +1,5 @@
 # Introduction
+
 Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to provide stupidly fast partial code testing for interpreted **and compiled** {ref}`languages <support-levels-and-languages>`. Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, and REPL/interpreters.
 
 
@@ -16,12 +17,12 @@ An example in C, look in the command area:
 
 **The result can be returned in multiple (even at the same time) ways:**
 
-[Classic](../../ressources/display_classic.md)|  [Virtual Text](../../ressources/display_virtualtext.md)
+{ref}`Classic <classic-display>` |  {ref}`Virtual Text <virtualtext-display>`
 :------------------------------------------:|:------------------:
 ![](../../ressources/visual_assets/classic.png)   | ![](../../ressources/visual_assets/virtual_text.png)
-[**Temporary Floating Window**](../../ressources/display_floating_window.md)  |  [**Terminal**](../../ressources/display_terminal.md)
+{ref}`Floating window <floatingwindow-display>` | {ref}`Terminal <terminal-display>`
 ![](../../ressources/visual_assets/floating_window.png) | ![](../../ressources/visual_assets/terminal.png)
-[**Notification**](../../ressources/display_notify.md) | [**API**](API.md)
+{ref}`Notification <notification-display>` | {ref}`Api display <api-display>`
 ![](../../ressources/visual_assets/nvimnotify.png) | ![](../../ressources/visual_assets/api.png)
 
 
@@ -33,7 +34,7 @@ Python, R, Mathematica, Sage, Julia (all real REPLs) and Bash (simulated), comin
 
 **Does it deal with errors ? **
 
-Yes for most interpreters, and many will actually provide additional information (compilation or runtime error etc..), but not all can.
+Yes for most interpreters, and many will actually provide additional information (compilation or runtime error etc...), but not all can.
 ![](../../ressources/visual_assets/rust_error.png)
 
 
@@ -89,7 +90,7 @@ Sniprun will then:
 
 ## Install Sniprun
 
-Use your favorite plugin manager (recommended) ...
+### Use your favorite plugin manager (recommended) ...
 
 (Run `install.sh` as a post-installation script, it will download or compile the sniprun binary)
 
@@ -117,7 +118,7 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 
 
 
-(AUR)
+### Or install from the AUR
 
 ![](https://img.shields.io/aur/maintainer/sniprun)
 <a href="https://aur.archlinux.org/packages/neovim-sniprun/">
@@ -127,7 +128,7 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 An independently maintained [AUR package](https://aur.archlinux.org/packages/neovim-sniprun/) is available for Arch users.
 
 
-... or install sniprun manually
+### or install sniprun manually
 
 
 I trust you know how to add a plugin to the runtimepath, just don't forget to run `./install.sh`, or alternatively, `cargo build --release` to fetch/build the binary.
@@ -150,9 +151,9 @@ You can do basically two things: **run** your code selection and **stop** it (in
 :lua require'sniprun'.run()
 "the first command is only a shorthand, you should configure the <Plug>SnipRun mapping
 ```
-(see mapping [example](README.md#my-usage-recommandation--tricks)),
+(see {ref}`Mappings <mapping>`),
 
-**Running 'live'** (aka running the current line as you're typing is possible, but it's very important to read the warnings about this, so I'm keeping the instructions in [a separate place](../../ressources/live_mode.md).
+**Running 'live'** (aka running the current line as you're typing is possible, but it's very important to read the warnings about this, so I'm keeping the instructions in {ref}`another chapter <livemode>`.
 
 **Bloc mode:** Select the code you want to execute in visual mode and type in:
 
@@ -164,7 +165,6 @@ You can do basically two things: **run** your code selection and **stop** it (in
 
 Configure a mapping to `<Plug>SnipRunOperator` and combine it with movements to sniprun 'text objects'. Every text-object will be rounded line-wise.
 
-​
 
 ## Stopping
 
@@ -294,8 +294,7 @@ All of sniprun functionalities:
 | ✖                             | lua require'sniprun.api'.run\_string(..)  | ✖                           |
 
 
-
-
+(mapping)=
 ## Mappings & recommandations
 
 - Map the run command to a simple command such as `<leader>ff` (or just `f` in visual mode)
@@ -392,7 +391,7 @@ println!("-> {}", alphabet);
 | Scala        | Bloc          | No               | 
 | TypeScript   | Bloc          | Yes\*\*   (Deno) |  
 
-Want support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=), or even better, [contribute](CONTRIBUTING.md), it's easy!
+Want support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=), or even better, contribute (see CONTRIBUTING.md), it's easy!
 
 \* (fake) REPL-like functionnality, with potential unwanted side-effects
 
@@ -400,6 +399,62 @@ Want support for your language? Submit an [issue](https://github.com/michaelb/sn
 
 \*\*\* if underlying language supports it
 
+(livemode)=
+# Live mode
+
+The live mode hook the SnipRun command to the TextChanged event, meaning that at every change to make to the buffer, the current line will be sent to sniprun for evaluation. This can mean a lot of times, especially if you type fast.
+
+The result is a virtual text, displaying at the end of the current line that print the result (stdout) of the line. Nothing is displayed when the line is incomplete / incorrect, a bit like codi.
+
+## Warnings
+
+The live mode **will execute code you didn't think really about** (and by that I mean even less than usual)
+Thus:
+ - Your code will get executed **lots** of times; check that your CPU can keep up. Even a slow 60wpm typing can make a Rust program recompile 3x per second, which is also different from sending 3 string/s to a running REPL.
+ - Sniprun will try to execute even incomplete lines. You hadn't finished typing that `rm /path/to/arghhh` ? sniprun' not aware and removed the parent directory. Whoops. For these reasons, I strongly suggest to:
+    - never run bash/shell with live mode
+    - disable the live mode whenever your code modifies files or invoke system commands.
+
+If you're running a REPL-capable interpreter, while it'll probably work, mind that:
+- the REPL will have to gulp a lot of incomplete code without crashing and stuff
+- typing b = b  + 1 + 1 will increment b by more than 2 !! (since an intermediate b=b+1 is valid and thus changes b before b=b+1+1)
+
+## Configuration
+    You can set different display modes for live mode, with the config key
+    ```
+    live_display = { "VirtualText", "TerminalOk"} --..or anything you want
+    ```
+
+## Enable and usage
+
+`live_mode_toggle='enable'` in the config, (set to either 'enable' or 'off' - the default -, the 'uncoherency' is only to force people to come here and read the warnings in case some smart kid want to skip and just set it to 'on') 
+
+and then use the `:SnipLive` command and start coding.
+
+
+# API
+
+You can use an API to communicate programmatically from sniprun, even though some goodies (combining motions with operators) may get lost in the process, and some others effects (fetching context and imports from the current buffer) may be undesirable.
+
+```lua
+
+local sa = require('sniprun.api')
+
+sa.run_range(r_start, r_end, <filetype>, <config>)
+sa.run_string(codestring, <filetype>, <config>)
+```
+
+`run_range` is a function that run the specified range of code from the current buffer and takes the following arguments:
+
+ - `r_start`, `r_end` (integers): (inclusive) line numbers of the range to run
+ - `filetype` (string, optional): run the range as this language (`:set ft?` gives the filetype of the current buffer, which is used as the default)
+ - `config` (dict, optional): override the default user config with this. (It may be interesting to provide only the {ref}`display type 'Api' <api-display>` to retrieve the results without interference on the user's UI)
+
+ `run_string` runs directly the provided string as code (but has still context from the current buffer etc...):
+
+ - `codestring` (string): the code to run
+ - `filetype` (string, optional): run the codestring as 'this language'
+ - `config` (dict, optional): overrides the default user config
 
 # Known limitations
 
@@ -416,25 +471,10 @@ Begin by updating the plugin and running `:SnipReset` and then `:checkhealth sni
 
 - **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `bash ./install.sh 1` as post-install to compile locally.
 
-# Changelog && Roadmap
-
-v1, the first stable version, is out!
-
-It's been quite a journey already. For history fans:
-[Changelog](CHANGELOG.md)
-
-Writing down some ideas here for future features:
-- LSP support (for File and Project support levels)
-- auto-print if only an expression is sniprun'd
-- allow running directly functions with arguments provided on the command line
-
-I'm currently taking a break from the sniprun project, especially developping complex features, but I will maintain this project and review PRs happily!
-
 # Contribute
 
-It's super easy: see the exhaustive (but simple I hope) [CONTRIBUTING.md](CONTRIBUTING.md).
+It's super easy: see the exhaustive (but simple I hope)(see CONTRIBUTING.md for starters).
 I actually thought out the project structure so you only have to worry about one file (yours), when creating an interpreter. All you have to do is copy the example.rs interpreter and modify some parts to suit the language you wish to support.
-
 
 
 # Related projects

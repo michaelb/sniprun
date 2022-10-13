@@ -1,4 +1,4 @@
-name: build-sphinx-to-gh-pages
+name: Doc
 
 env:
   GITHUB_ACTOR: michaelb
