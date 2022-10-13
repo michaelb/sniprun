@@ -2,7 +2,9 @@
 set -x
 
 apt-get update
-apt-get -y install git rsync python3-sphinx
+apt-get -y install git rsync python3-sphinx python3-pip
+
+python3 -m pip install myst-parser sphinx-rtd-theme
 
 pwd ls -lah
 export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
@@ -13,6 +15,7 @@ export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
  
 # Python Sphinx, configured with source/conf.py
 # See https://www.sphinx-doc.org/
+cd docs
 make clean
 make html
 
@@ -24,7 +27,7 @@ git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
  
 docroot=`mktemp -d`
-rsync -av "build/html/" "${docroot}/"
+rsync -av "_build/html/" "${docroot}/"
  
 pushd "${docroot}"
 

@@ -24,7 +24,7 @@ jobs:
       - name: Install Rust 1.55 toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: 1.55
+          toolchain: 1.59
           override: true
       - name: build
         run: cargo build --release

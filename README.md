@@ -29,11 +29,12 @@ Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to p
 
 TLDR: `Plug 'michaelb/sniprun', {'do': 'bash install.sh'}`, `:SnipRun`, `:'<,'>SnipRun`, `:SnipInfo`
 
-See [installation instructions](https://michaelb.github.io/sniprun/sources/README.html#installation), [configuration tips](https://michaelb.github.io/sniprun/sources/README.html#configuration), [usage explanations](https://michaelb.github.io/sniprun/sources/README.html#usage) and much more useful information on the [wiki](https://michaelb.github.io/sniprun/)
+See [installation instructions](https://michaelb.github.io/sniprun/sources/README.html#installation), [configuration tips](https://michaelb.github.io/sniprun/sources/README.html#configuration), [usage explanations (recommended)](https://michaelb.github.io/sniprun/sources/README.html#usage) and much more useful information on the [wiki](https://michaelb.github.io/sniprun/)
+
 ## Demos
 
 ##### Send to Sniprun snippets of any language.
-An very simple example (in C), aply the .gif and look in the command area:
+A very simple example (in C), play the .gif and look in the command area:
 
 ![](ressources/visual_assets/demo_c.gif)
 
@@ -50,8 +51,7 @@ An very simple example (in C), aply the .gif and look in the command area:
 
 ##### REPL-like behavior is available for some languages
 
-Python, R, Mathematica, Sage, Julia (all real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
-
+Python, Julia, Lua, JavaScript & Typescript (via deno), Clojure, R, Mathematica, Sage, coming soon for many other interpreted (and compiled languages).
 With [REPL-like behavior](https://michaelb.github.io/sniprun/sources/README.html#repl-like-behavior), you can run code dependent on previously executed code, just like in a REPL, from within your favorite editor.
 
 ![](ressources/visual_assets/760091.png)
