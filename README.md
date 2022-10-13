@@ -22,7 +22,7 @@
 
 
 # Introduction
-Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to provide stupidly fast partial code testing for interpreted **and compiled [languages](#support-levels-and-languages)** . Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, and REPL/interpreters.
+Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](https://michaelb.github.io/sniprun/sources/README.html#support-levels-and-languages). Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, and REPL/interpreters.
 
 
 </br>
@@ -33,9 +33,7 @@ See [installation instructions](https://michaelb.github.io/sniprun/sources/READM
 ## Demos
 
 ##### Send to Sniprun snippets of any language.
-A few lines of code are now within a print statement's reach :-) ([this may be cool](https://github.com/meain/vim-printer))
-
-An example in C, look in the command area:
+An very simple example (in C), aply the .gif and look in the command area:
 
 ![](ressources/visual_assets/demo_c.gif)
 
@@ -50,18 +48,18 @@ An example in C, look in the command area:
 ![](ressources/visual_assets/nvimnotify.png) | ![](ressources/visual_assets/api.png)
 
 
-##### send-to-REPL-like behavior is available for some languages
+##### REPL-like behavior is available for some languages
 
 Python, R, Mathematica, Sage, Julia (all real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
 
-![](ressources/visual_assets/demo_repl.png)
+With [REPL-like behavior](https://michaelb.github.io/sniprun/sources/README.html#repl-like-behavior), you can run code dependent on previously executed code, just like in a REPL, from within your favorite editor.
 
 ![](ressources/visual_assets/760091.png)
 
 
 ## Features
 
-**Sniprun is** a way to quickly run small snippets of code, on the fly, and iterate very quickly and conveniently. To quickly experiment with new features (not yet embedded in classes, a whole project etc...), or to develop simple code pipelines (like a machine learning exercise) that fit in a unique file, sniprun is probably _the_ best plugin out there.
+**Sniprun is** a way to quickly run small snippets of code, on the fly, and iterate very quickly and conveniently. To learn a language, to quickly experiment with new features (not yet embedded in classes or a whole project etc...), or to develop simple code pipelines (like a machine learning exercise) that fit in a unique file, sniprun is probably _the_ best plugin out there.
 
 As a matter of proof, Sniprun :
 
@@ -69,13 +67,13 @@ As a matter of proof, Sniprun :
  - can create and connect to REPLs in order to present an interactive and playful interface
  - can run things like GUI plots, networks requests or even Ansible playbooks
  - doesn't require even one line of configuration by default (but can be customized up to the tiniest things)
- - can run code from a part of the file which isn't complete / contains errors
+ - can run code from a part of a file which isn't complete / contains errors
  - can automatically fetch (in some languages) the `imports` necessary for your code snippet
  - can run [live: at every keystroke](https://michaelb.github.io/sniprun/sources/README.html#live-mode)
  - lends itself to easy [mappings](https://michaelb.github.io/sniprun/sources/README.html#mappings-recommandations) and Vim motions
  - has an API (for running code, and displaying results)
  - has many result display modes that can be enabled at the same time, and for different output status if wanted
- - Support literate programming in Markdown and Orgmode
+ - supports literate programming in Markdown and Orgmode
 
 ## Known limitations
 
@@ -87,4 +85,8 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Need to read from stdin
 - Print incorrect UTF8 characters, or just too many lines
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache/sniprun, and relative imports may miss.
+- No support for windows, and MacOS users have to compile sniprun manually 
 
+## Contributing
+
+Sniprun has been made contributor-friendly (see [CONTRIBUTING.md](CONTRIBUTING.md)), so it's relatively easy to create / fix interpreters for any language. But any (constructive) issue, discussion, or doc Pull Request is a welcome form of contribution !

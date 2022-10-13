@@ -397,7 +397,7 @@ Want support for your language? Submit an [issue](https://github.com/michaelb/sn
 (livemode)=
 # Live mode
 
-The live mode hook the SnipRun command to the TextChanged event, meaning that at every change to make to the buffer, the current line will be sent to sniprun for evaluation. This can mean a lot of times, especially if you type fast.
+The live mode hooks the SnipRun command to the TextChanged event, meaning that at every change to make to the buffer, the current line will be sent to sniprun for evaluation. This can mean a lot of times, especially if you type fast.
 
 The result is a virtual text, displaying at the end of the current line that print the result (stdout) of the line. Nothing is displayed when the line is incomplete / incorrect, a bit like codi.
 
