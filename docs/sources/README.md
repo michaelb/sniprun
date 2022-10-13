@@ -28,14 +28,9 @@ An example in C, look in the command area:
 
 **send-to-REPL-like behavior is available for some languages**
 
-Python, R, Mathematica, Sage, Julia (all real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
+Python, R, D, Mathematica, Sage, Julia, Javascript & Typescript (via deno), Clojure and Lua, coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
 
 ![](../../ressources/visual_assets/demo_repl.png)
-
-**Does it deal with errors ? **
-
-Yes for most interpreters, and many will actually provide additional information (compilation or runtime error etc...), but not all can.
-![](../../ressources/visual_assets/rust_error.png)
 
 
 # What does it do ?
