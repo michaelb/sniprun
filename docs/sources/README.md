@@ -28,14 +28,9 @@ An example in C, look in the command area:
 
 **send-to-REPL-like behavior is available for some languages**
 
-Python, R, Mathematica, Sage, Julia (all real REPLs) and Bash (simulated), coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
+Python, R, D, Mathematica, Sage, Julia, Javascript & Typescript (via deno), Clojure and Lua, coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
 
 ![](../../ressources/visual_assets/demo_repl.png)
-
-**Does it deal with errors ? **
-
-Yes for most interpreters, and many will actually provide additional information (compilation or runtime error etc...), but not all can.
-![](../../ressources/visual_assets/rust_error.png)
 
 
 # What does it do ?
@@ -402,7 +397,7 @@ Want support for your language? Submit an [issue](https://github.com/michaelb/sn
 (livemode)=
 # Live mode
 
-The live mode hook the SnipRun command to the TextChanged event, meaning that at every change to make to the buffer, the current line will be sent to sniprun for evaluation. This can mean a lot of times, especially if you type fast.
+The live mode hooks the SnipRun command to the TextChanged event, meaning that at every change to make to the buffer, the current line will be sent to sniprun for evaluation. This can mean a lot of times, especially if you type fast.
 
 The result is a virtual text, displaying at the end of the current line that print the result (stdout) of the line. Nothing is displayed when the line is incomplete / incorrect, a bit like codi.
 
