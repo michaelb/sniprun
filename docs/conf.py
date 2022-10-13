@@ -37,5 +37,5 @@ html_static_path = ['_static']
 
 
 html_title = "Welcome to sniprun documentation"
-# html_logo = "../ressources/visual_assets/logo-only.png"
+html_logo = "../ressources/visual_assets/logo-only.png"
 html_favicon = "../ressources/visual_assets/favicon.ico"
