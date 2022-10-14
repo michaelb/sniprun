@@ -1,4 +1,4 @@
-## Prolog
+## Prolog original
 
 This interpreter is currently a work in progress and is probably not usable
 

@@ -1,4 +1,4 @@
-## Sage_fifo interpreter
+## Sage fifo 
 
 This is a pipe-based implementation: you have to run sniprun once before being able to send code snippets (configure an autcmd?)
 

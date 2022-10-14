@@ -1,4 +1,4 @@
-## Python3_jupyter
+## Python3 jupyter
 
 ### Dependencies
 - jupyter
