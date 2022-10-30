@@ -1,3 +1,8 @@
+## v1.2.8
+- HTML doc deployed from github pages
+- Composable/filterable display options
+- Different display modes for live mode
+
 ## v1.2.7
 - Fix bug where the display configuration was overwritten by live mode activation
 - Fix bug where REPL interpreter would get instantly stopped on MacOS

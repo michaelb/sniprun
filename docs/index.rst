@@ -21,8 +21,10 @@ Welcome to Sniprun's documentation!
 .. toctree::
    :maxdepth: 1
    :hidden: 
-   :caption: Available interpreters:
+   :caption: Interpreters:
 
+
+   sources/common_options.md
    sources/interpreters/Ada_original.md
    sources/interpreters/Bash_original.md
    sources/interpreters/C_original.md

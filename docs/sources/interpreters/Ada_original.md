@@ -1,4 +1,4 @@
-## Ada_original
+## Ada original
 
 
 dependencies: Need gcc-ada and gnatmake

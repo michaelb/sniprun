@@ -29,7 +29,7 @@ impl Interpreter for Bash_original {
     }
 
     fn behave_repl_like_default() -> bool {
-        true
+        false
     }
     fn has_repl_capability() -> bool {
         true

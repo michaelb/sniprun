@@ -69,7 +69,7 @@ As a matter of proof, Sniprun :
  - doesn't require even one line of configuration by default (but can be customized up to the tiniest things)
  - can run code from a part of a file which isn't complete / contains errors
  - can automatically fetch (in some languages) the `imports` necessary for your code snippet
- - can run [live: at every keystroke](https://michaelb.github.io/sniprun/sources/README.html#live-mode)
+ - can run [live](https://michaelb.github.io/sniprun/sources/README.html#live-mode) (at every keystroke)
  - lends itself to easy [mappings](https://michaelb.github.io/sniprun/sources/README.html#mappings-recommandations) and Vim motions
  - has an API (for running code, and displaying results)
  - has many result display modes that can be enabled at the same time, and for different output status if wanted
@@ -81,11 +81,16 @@ As a matter of proof, Sniprun :
 
 Due to its nature, Sniprun may have trouble with programs that :
 
-- Mess with standart output / stderr
+- Mess with standard output / stderr
 - Need to read from stdin
 - Print incorrect UTF8 characters, or just too many lines
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache/sniprun, and relative imports may miss.
-- No support for windows, and MacOS users have to compile sniprun manually 
+- No support for Windows, and MacOS users have to compile sniprun manually 
+
+## Changelog
+
+It's been quite a journey already! For history fans, see the [full changelog]((CHANGELOG.md).
+
 
 ## Contributing
 

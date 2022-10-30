@@ -9,7 +9,7 @@ Display modes:
 - "Terminal"
 - "TerminalWithCode"
 - "TempFloatingWindow"
-- "LongTempFLoatingWindow"
+- "LongTempFloatingWindow"
 - "NvimNotify"
 - "Api"
 
