@@ -142,11 +142,14 @@ You can do basically two things: **run** your code selection and **stop** it (in
 
 ```vim
 :SnipRun
-"OR
-:lua require'sniprun'.run()
-"the first command is only a shorthand, you should configure the <Plug>SnipRun mapping
 ```
-(see {ref}`Mappings <mapping>`),
+OR
+
+```
+:lua require'sniprun'.run()
+```
+("the first command is only a shorthand, you should
+configure the <Plug>SnipRun {ref}`mappings <mapping>`),
 
 **Running 'live'** (aka running the current line as you're typing is possible, but it's very important to read the warnings about this, so I'm keeping the instructions in {ref}`another chapter <livemode>`.
 
