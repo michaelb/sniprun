@@ -450,6 +450,23 @@ impl ReplLikeInterpreter for Python3_fifo {
             .join("\n")
             .replace("#\n#", "\n");
 
+        // add empty lines (only containing correct indentation) to code when indentation decreases
+        let mut lines = vec![];
+        for i in 0..(self.code.lines().count() - 1) {
+            let l1 = self.code.lines().skip(i).next().unwrap();
+            let l2 = self.code.lines().skip(i+1).next().unwrap();
+            let nw1 = l1.len() - l1.trim_start().len();
+            let nw2 = l2.len() - l2.trim_start().len();
+            lines.push(l1);
+            if nw1 > nw2 {
+                lines.push(&l2[0..nw2]);
+            }
+        }
+        lines.push(self.code.lines().last().unwrap());
+
+        self.code = lines.join("\n");
+
+
         let mut run_ion = String::new();
         let mut run_ioff = String::new();
         if self.imports.contains("pyplot") {
