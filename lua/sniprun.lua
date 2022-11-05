@@ -178,7 +178,7 @@ function M.configure_keymaps()
   vim.api.nvim_set_keymap("n", "<Plug>SnipReplMemoryClean", ":lua require'sniprun'.clear_repl()<CR>",{silent=true})
   vim.api.nvim_set_keymap("n", "<Plug>SnipClose", ":lua require'sniprun.display'.close_all()<CR>",{silent=true})
 
-  vim.cmd("command! SnipReset :lua require'sniprun'.reset())")
+  vim.cmd("command! SnipReset :lua require'sniprun'.reset()")
   vim.cmd("command! SnipReplMemoryClean :lua require'sniprun'.clear_repl()")
   vim.cmd("function! SnipRunOperator(...) \n lua require'sniprun'.run('n') \n endfunction")
   vim.cmd("command! SnipClose :lua require'sniprun.display'.close_all()")
