@@ -1,4 +1,6 @@
 ## v1.2.8
+- remove SnipTerminate
+- Python_fifo3 fixes for indentation issues
 - HTML doc deployed from github pages
 - Composable/filterable display options
 - Different display modes for live mode
