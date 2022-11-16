@@ -94,4 +94,4 @@ It's been quite a journey already! For history fans, see the [full changelog](CH
 
 ## Contributing
 
-Sniprun has been made contributor-friendly (see [CONTRIBUTING.md](CONTRIBUTING.md), so it's relatively easy to create / fix interpreters for any language. But any (constructive) issue, discussion, or doc Pull Request is a welcome form of contribution !
+Sniprun has been made contributor-friendly (see [CONTRIBUTING.md](CONTRIBUTING.md)), so it's relatively easy to create / fix interpreters for any language. But any (constructive) issue, discussion, or doc Pull Request is a welcome form of contribution !
