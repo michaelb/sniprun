@@ -89,7 +89,7 @@ Due to its nature, Sniprun may have trouble with programs that :
 
 ## Changelog
 
-It's been quite a journey already! For history fans, see the [full changelog]((CHANGELOG.md).
+It's been quite a journey already! For history fans, see the [full changelog](CHANGELOG.md).
 
 
 ## Contributing
