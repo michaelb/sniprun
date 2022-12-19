@@ -44,7 +44,6 @@ bash $working_dir/real_launcher.sh > $working_dir/$out 2> $working_dir/$err &
 echo "done" >> $log
 
 
-
 # wait for the parent nvim process to exit, then kill the sniprun process that launched this script
 
 while ps -p $nvim_pid ;do
@@ -54,6 +53,6 @@ done
 
 pkill -P $$
 
-echo $repl " and other backoung process terminated at $(date +"%F %T")." >> $log
+echo $repl " and other background processes terminated at $(date +"%F %T")." >> $log
 
 rm -rf $working_dir
