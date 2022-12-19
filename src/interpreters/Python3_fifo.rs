@@ -147,8 +147,8 @@ impl Python3_fifo {
                 // embed in try catch blocs in case uneeded module is unavailable
 
                 let already_imported: String = self.read_previous_code();
-                if !already_imported.contains(line) {
-                    let line = unindent(line);
+                if !already_imported.contains(line.trim()) {
+                    let line = line.trim_start();
                     self.imports = self.imports.clone() + "\n" + &line;
                     self.save_code(already_imported + "\n" + &line);
                 }
