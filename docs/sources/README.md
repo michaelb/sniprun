@@ -369,6 +369,7 @@ println!("-> {}", alphabet);
 | Clojure      | Bloc          | Yes \*\*         | 
 | Coffeescript | Bloc          | No               |   
 | D            | Bloc          | No               | 
+| Elixir       | Bloc          | Yes \*\*         |
 | F#           | Bloc          | No, but _could_ \*\* |
 | Go           | Import        | No               | 
 | Haskell      | Line          | No               | 
@@ -391,7 +392,7 @@ println!("-> {}", alphabet);
 
 Want support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=), or even better, contribute (see CONTRIBUTING.md), it's easy!
 
-\* (fake) REPL-like functionnality, with potential unwanted side-effects
+\* (fake) REPL-like functionality, with potential unwanted side effects
 
 \*\* True REPL under the hood
 
