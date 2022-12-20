@@ -240,7 +240,7 @@ impl ReplLikeInterpreter for Julia_original {
             + &self.current_output_id.to_string()
             + "\")\n";
 
-        self.code = start_mark + &self.code + &end_mark;
+        self.code = start_mark + &self.code + "\n" + &end_mark;
         Ok(())
     }
 
@@ -250,9 +250,9 @@ impl ReplLikeInterpreter for Julia_original {
 
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
         info!("running launcher");
-        let send_repl_cmd = self.data.sniprun_root_dir.clone() + "ressources/launcher.sh";
+        let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         let res = Command::new(send_repl_cmd)
-            .arg(self.cache_dir.clone() + "/main.mma")
+            .arg(self.cache_dir.clone() + "/main.jl")
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn()
             .expect("could not run launcher");
