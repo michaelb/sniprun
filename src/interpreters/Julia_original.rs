@@ -84,7 +84,7 @@ impl Interpreter for Julia_original {
     }
 
     fn has_repl_capability() -> bool {
-        false
+        true
     }
 
     fn get_supported_languages() -> Vec<String> {
