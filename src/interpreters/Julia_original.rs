@@ -111,7 +111,7 @@ impl Interpreter for Julia_original {
     }
 
     fn check_cli_args(&self) -> Result<(), SniprunError> {
-        // All cli arguments are sendable to python
+        // All cli arguments are sendable to julia
         // Though they will be ignored in REPL mode
         Ok(())
     }

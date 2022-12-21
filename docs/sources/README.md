@@ -259,13 +259,14 @@ require'sniprun'.setup({
     SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
   },
 
-  --# miscellaneous compatibility/adjustement settings
-  inline_messages = 0,             --# inline_message (0/1) is a one-line way to display messages
-				                   --# to workaround sniprun not being able to display anything
+  live_mode_toggle='off'      --# live mode toggle, see Usage - Running for more info   
 
-  borders = 'single',              --# display borders around floating windows
-                                   --# possible values are 'none', 'single', 'double', or 'shadow'
-  live_mode_toggle='off'           --# live mode toggle, see Usage - Running for more info   
+  --# miscellaneous compatibility/adjustement settings
+  inline_messages = 0,        --# inline_message (0/1) is a one-line way to display messages
+                              --# to workaround sniprun not being able to display anything
+
+  borders = 'single',         --# display borders around floating windows
+                              --# possible values are 'none', 'single', 'double', or 'shadow'
 })
 EOF
 ```
