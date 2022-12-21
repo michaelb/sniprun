@@ -193,7 +193,7 @@ impl ReplLikeInterpreter for Julia_original {
             // launch everything
             self.set_pid(0);
 
-            let init_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/init_repl.sh";
+            let init_repl_cmd = self.data.sniprun_root_dir.clone() + "/src/interpreters/Julia_original/init_repl.sh";
             info!(
                 "launching kernel : {:?} on {:?}",
                 init_repl_cmd, &self.cache_dir
@@ -206,7 +206,7 @@ impl ReplLikeInterpreter for Julia_original {
                             init_repl_cmd,
                             self.cache_dir.clone(),
                             Julia_original::get_nvim_pid(&self.data),
-                            "julia --banner=no --color=no".to_owned(),
+                            "julia".to_owned(),
                         ])
                         .output()
                         .unwrap();
@@ -252,7 +252,7 @@ impl ReplLikeInterpreter for Julia_original {
         info!("running launcher");
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         let res = Command::new(send_repl_cmd)
-            .arg(self.cache_dir.clone() + "/main.jl")
+            .arg(self.main_file_path.clone())
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn()
             .expect("could not run launcher");
