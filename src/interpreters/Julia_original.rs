@@ -7,6 +7,9 @@ pub struct Julia_original {
     main_file_path: String,
     cache_dir: String,
 
+    interpreter: String,
+    interpreter_args: Vec<String>, // for now, used for --project=....
+
     current_output_id: u32,
 }
 
@@ -46,6 +49,35 @@ impl Julia_original {
         let index = contents.rfind(&start_mark).unwrap();
         Ok(contents[index + start_mark.len()..contents.len() - end_mark.len() - 1].to_owned())
     }
+
+    fn fetch_config(&mut self) {
+        let default_interpreter = String::from("julia");
+        self.interpreter = default_interpreter;
+        if let Some(used_interpreter) =
+            Julia_original::get_interpreter_option(&self.get_data(), "interpreter")
+        {
+            if let Some(interpreter_string) = used_interpreter.as_str() {
+                info!("Using custom interpreter: {}", interpreter_string);
+                self.interpreter = interpreter_string.to_string();
+            }
+        }
+
+        if let Some(project_opt) =
+            Julia_original::get_interpreter_option(&self.get_data(), "project")
+        {
+            if let Some(mut project_str) = project_opt.as_str() {
+                if project_str == "." {
+                    info!(
+                        "Using neovim's current working directory as julia --project: {}",
+                        self.data.projectroot
+                    );
+                    project_str = &self.data.projectroot;
+                }
+
+                self.interpreter_args = vec![String::from("--project=") + project_str];
+            }
+        }
+    }
 }
 
 impl Interpreter for Julia_original {
@@ -66,6 +98,8 @@ impl Interpreter for Julia_original {
             support_level: level,
             code: String::from(""),
             main_file_path: mfp,
+            interpreter: String::new(),
+            interpreter_args: Vec::new(),
             cache_dir: rwd,
             current_output_id: 0,
         })
@@ -117,6 +151,7 @@ impl Interpreter for Julia_original {
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
+        self.fetch_config();
         if !self
             .data
             .current_bloc
@@ -145,7 +180,8 @@ impl Interpreter for Julia_original {
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("julia")
+        let output = Command::new(&self.interpreter)
+            .args(&self.interpreter_args)
             .arg(&self.main_file_path)
             .args(&self.get_data().cli_args)
             .output()
@@ -193,7 +229,8 @@ impl ReplLikeInterpreter for Julia_original {
             // launch everything
             self.set_pid(0);
 
-            let init_repl_cmd = self.data.sniprun_root_dir.clone() + "/src/interpreters/Julia_original/init_repl.sh";
+            let init_repl_cmd = self.data.sniprun_root_dir.clone()
+                + "/src/interpreters/Julia_original/init_repl.sh";
             info!(
                 "launching kernel : {:?} on {:?}",
                 init_repl_cmd, &self.cache_dir
@@ -206,14 +243,13 @@ impl ReplLikeInterpreter for Julia_original {
                             init_repl_cmd,
                             self.cache_dir.clone(),
                             Julia_original::get_nvim_pid(&self.data),
-                            "julia".to_owned(),
+                            self.interpreter.clone(),
                         ])
+                        .args(&self.interpreter_args)
                         .output()
                         .unwrap();
 
-                    return Err(SniprunError::CustomError(
-                        "julia REPL exited".to_owned(),
-                    ));
+                    return Err(SniprunError::CustomError("julia REPL exited".to_owned()));
                 }
                 Ok(Fork::Parent(_)) => {}
                 Err(_) => info!(
@@ -240,6 +276,12 @@ impl ReplLikeInterpreter for Julia_original {
             + &self.current_output_id.to_string()
             + "\")\n";
 
+        let start_mark_err = String::from("println(stderr, \"sniprun_started_id=")
+            + &self.current_output_id.to_string()
+            + "\")\n";
+        let end_mark_err = String::from("println(stderr, \"sniprun_finished_id=")
+            + &self.current_output_id.to_string()
+            + "\")\n";
         self.code = start_mark + &self.code + "\n" + &end_mark;
         Ok(())
     }

@@ -36,7 +36,8 @@ pub struct DataHolder {
     pub range: [i64; 2],
     /// path of the current file that's being edited
     pub filepath: String,
-    /// Field is left blank as of v0.3
+    /// Current directory for Neovim. Neovim is responsible for setting correctly the current working directory
+    /// Sniprun retrieves the result from `getcwd()` as of v1.2.9
     pub projectroot: String,
     /// field is left blank as of v0.3
     pub dependencies_path: Vec<String>,
@@ -247,6 +248,14 @@ impl EventHandler {
                 self.data.sniprun_root_dir = String::from(config[i].1.as_str().unwrap());
                 info!("[FILLDATA] got sniprun root");
             }
+        }
+
+        {
+            //get neovim's current directory
+            let nvim_cwd = self.nvim.lock().unwrap().call_function("getcwd", vec![]).unwrap();
+            info!("nvimcwd as value: nvim_cwd: {:?}", nvim_cwd);
+            self.data.projectroot = String::from(nvim_cwd.as_str().unwrap());
+            info!("[FILLDATA] got neovim's current directory: {}", self.data.projectroot);
         }
 
         {
