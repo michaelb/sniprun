@@ -79,7 +79,7 @@ Sniprun will then:
 
 - [optional] the plugin [nvim-notify](https://github.com/rcarriga/nvim-notify) for the notification display style
 
-- **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [docs/sources/interpreters](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
+- **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [docs/sources/interpreters](https://github.com/michaelb/sniprun/tree/master/docs/sources/interpreters) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
 
 
