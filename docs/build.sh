@@ -7,6 +7,7 @@ apt-get -y install git rsync python3-sphinx python3-pip
 python3 -m pip install myst-parser sphinx-rtd-theme
 
 pwd ls -lah
+git config --global --add safe.directory /__w/sniprun/sniprun
 export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
  
 ##############
@@ -54,7 +55,7 @@ EOF
 git add .
  
 # Make a commit with changes and any new files
-msg="Updating Docs for commit ${GITHUB_SHA} made on `date --iso-8601=seconds` from ${GITHUB_REF} by ${GITHUB_ACTOR}"
+msg="Updating Docs for commit ${GITHUB_SHA} made on `date -d"@${SOURCE_DATE_EPOCH}" --iso-8601=seconds` from ${GITHUB_REF} by ${GITHUB_ACTOR}"
 git commit -am "${msg}"
  
 # overwrite the contents of the gh-pages branch on our github.com repo
