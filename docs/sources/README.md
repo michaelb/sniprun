@@ -369,6 +369,7 @@ println!("-> {}", alphabet);
 | Bash/Shell   | Bloc          | Yes\*            |
 | C            | Import        | No               |
 | C++          | Import        | No               | 
+| C#           | Bloc          | No               | 
 | Clojure      | Bloc          | Yes \*\*         | 
 | Coffeescript | Bloc          | No               |   
 | D            | Bloc          | No               | 
