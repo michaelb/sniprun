@@ -78,6 +78,11 @@ fi
 
 if ! command -v elixir &> /dev/null 
 then
+    sudo apt-get purge elixir
+    sudo apt-get purge esl-erlang
+    wget https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
+    sudo apt-key add erlang_solutions.asc
+    sudo apt-get update
     sudo apt-get install esl-erlang elixir -y
 fi
 
