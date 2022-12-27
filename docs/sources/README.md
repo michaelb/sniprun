@@ -75,13 +75,11 @@ Sniprun will then:
 
 - **Neovim** version >= 0.5
 
+- **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the navigation pane of this wiki, as well as in the [docs/sources/interpreters](https://github.com/michaelb/sniprun/tree/master/docs/sources/interpreters) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
+
 - [optional] **cargo and the rust toolchain** version >= 1.59 (you can find those [here](https://www.rust-lang.org/tools/install)).
 
 - [optional] the plugin [nvim-notify](https://github.com/rcarriga/nvim-notify) for the notification display style
-
-- **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the navigation pane of this wiki, as well as in the [docs/sources/interpreters](https://github.com/michaelb/sniprun/tree/master/doc) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
-
-
 
 ## Install Sniprun
 
@@ -93,7 +91,7 @@ Sniprun will then:
 <p>
 
 ```vim
-Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
+Plug 'michaelb/sniprun', {'do': 'bash ./install.sh'}
 " 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary,
 "  but you'll compile sniprun at every update & will need the rust toolchain
 ```
@@ -108,6 +106,9 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 ```
   use { 'michaelb/sniprun', run = 'bash ./install.sh'}
 ```
+
+(or likewise, `'bash ./install.sh 1'` to get the bleeding edge aka compile yourself the latest commit of sniprun)
+
 </details>
 </p>
 

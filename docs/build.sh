@@ -7,6 +7,7 @@ apt-get -y install git rsync python3-sphinx python3-pip
 python3 -m pip install myst-parser sphinx-rtd-theme
 
 pwd ls -lah
+git config --global --add safe.directory /__w/sniprun/sniprun
 export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
  
 ##############
