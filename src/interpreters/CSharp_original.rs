@@ -1,22 +1,23 @@
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct Rust_original {
+pub struct CSharp_original {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
 
-    ///specific to rust
+    ///specific to csharp
     compiler: String,
-    rust_work_dir: String,
     bin_path: String,
     main_file_path: String,
 }
 
-impl Rust_original {
+impl CSharp_original {
     fn fetch_config(&mut self) {
-        let default_compiler = String::from("rustc");
+        let default_compiler = String::from("csc");
         self.compiler = default_compiler;
-        if let Some(used_compiler) = Rust_original::get_interpreter_option(&self.get_data(), "compiler") {
+        if let Some(used_compiler) =
+            CSharp_original::get_interpreter_option(&self.get_data(), "compiler")
+        {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
                 self.compiler = compiler_string.to_string();
@@ -25,25 +26,24 @@ impl Rust_original {
     }
 }
 
-impl ReplLikeInterpreter for Rust_original {}
-impl Interpreter for Rust_original {
-    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Rust_original> {
+impl ReplLikeInterpreter for CSharp_original {}
+impl Interpreter for CSharp_original {
+    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<CSharp_original> {
         //create a subfolder in the cache folder
-        let rwd = data.work_dir.clone() + "/rust_original";
+        let rwd = data.work_dir.clone() + "/csharp_original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
             .create(&rwd)
-            .expect("Could not create directory for rust-original");
+            .expect("Could not create directory for csharp-original");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = rwd.clone() + "/main.rs";
+        let mfp = rwd.clone() + "/main.cs";
         let bp = String::from(&mfp[..mfp.len() - 3]); // remove extension so binary is named 'main'
-        Box::new(Rust_original {
+        Box::new(CSharp_original {
             data,
             support_level,
             code: String::new(),
-            rust_work_dir: rwd,
             bin_path: bp,
             main_file_path: mfp,
             compiler: String::new(),
@@ -52,15 +52,14 @@ impl Interpreter for Rust_original {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
-            String::from("Rust"),
-            String::from("rust"),
-            String::from("rust-lang"),
-            String::from("rs"),
+            String::from("C#"),
+            String::from("csharp"),
+            String::from("cs"),
         ]
     }
 
     fn get_name() -> String {
-        String::from("Rust_original")
+        String::from("CSharp_original")
     }
 
     fn default_for_filetype() -> bool {
@@ -82,6 +81,7 @@ impl Interpreter for Rust_original {
     }
 
     fn check_cli_args(&self) -> Result<(), SniprunError> {
+        // All cli arguments are sendable to Csharp
         Ok(())
     }
 
@@ -107,9 +107,15 @@ impl Interpreter for Rust_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        
-        if !Rust_original::contains_main("fn main", &self.code, "//") {
-            self.code = String::from("fn main() {") + &self.code + "}";
+        if !CSharp_original::contains_main("static void Main(string[] args)", &self.code, "//") {
+            self.code =
+                String::from("using System; class Hello { static void Main(string[] args) {\n ")
+                    + &self.code
+                    + "\n} }";
+        }
+
+        if !CSharp_original::contains_main("using System", &self.code, "//") {
+            self.code = String::from("using System;\n") + &self.code;
         }
         Ok(())
     }
@@ -117,14 +123,13 @@ impl Interpreter for Rust_original {
     fn build(&mut self) -> Result<(), SniprunError> {
         //write code to file
         let mut _file =
-            File::create(&self.main_file_path).expect("Failed to create file for rust-original");
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for rust-original");
+            File::create(&self.main_file_path).expect("Failed to create file for csharp-original");
+        write(&self.main_file_path, &self.code)
+            .expect("Unable to write to file for csharp-original");
 
         //compile it (to the bin_path that arleady points to the rigth path)
         let output = Command::new(&self.compiler)
-            .arg("-O")
-            .arg("--out-dir")
-            .arg(&self.rust_work_dir)
+            .arg(String::from("-out:") + &self.bin_path)
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
@@ -132,7 +137,6 @@ impl Interpreter for Rust_original {
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
             let error_message = String::from_utf8(output.stderr).unwrap();
-            //
             //take first line and remove first 'error' word (redondant)
             let first_line = error_message
                 .lines()
@@ -148,14 +152,15 @@ impl Interpreter for Rust_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let output = Command::new(&self.bin_path)
+        let output = Command::new("mono")
+            .arg(&self.bin_path)
             .args(&self.get_data().cli_args)
             .output()
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
         } else {
-            if Rust_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            if CSharp_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
                 return Err(SniprunError::RuntimeError(
                     String::from_utf8(output.stderr.clone())
                         .unwrap()
@@ -174,52 +179,18 @@ impl Interpreter for Rust_original {
 }
 
 #[cfg(test)]
-mod test_rust_original {
+mod test_csharp_original {
     use super::*;
-    use crate::error::SniprunError;
 
     #[test]
-    fn all_rust() {
-        simple_print();
-        runtime_error();
-    }
-
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("println!(\"HW, 1+1 = {}\", 1+1);");
-        let mut interpreter = Rust_original::new(data);
+        let mut interpreter = CSharp_original::new(data);
         let res = interpreter.run();
 
         // should panic if not an Ok()
         let string_result = res.unwrap();
         assert_eq!(string_result, "HW, 1+1 = 2\n");
-    }
-
-    fn runtime_error() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from(
-            "
-            let mock_input = \"153.2\";
-            let _ = mock_input.parse::<i32>().unwrap();
-            
-
-
-
-            ", // > 4 lines so the message doesn't  get shortened
-        );
-        let expected = String::from("ParseIntError { kind: InvalidDigit }");
-        let mut interpreter = Rust_original::new(data);
-        let res = interpreter.run();
-
-        assert!(res.is_err());
-        // should panic if not an Err()
-        if let Err(e) = res {
-            match e {
-                SniprunError::RuntimeError(full_message) => {
-                    assert!(full_message.contains(&expected))
-                }
-                _ => panic!("Not the right error message, wanted {:?} and got {:?} instead", expected, e),
-            }
-        }
     }
 }
