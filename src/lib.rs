@@ -252,10 +252,18 @@ impl EventHandler {
 
         {
             //get neovim's current directory
-            let nvim_cwd = self.nvim.lock().unwrap().call_function("getcwd", vec![]).unwrap();
+            let nvim_cwd = self
+                .nvim
+                .lock()
+                .unwrap()
+                .call_function("getcwd", vec![])
+                .unwrap();
             info!("nvimcwd as value: nvim_cwd: {:?}", nvim_cwd);
             self.data.projectroot = String::from(nvim_cwd.as_str().unwrap());
-            info!("[FILLDATA] got neovim's current directory: {}", self.data.projectroot);
+            info!(
+                "[FILLDATA] got neovim's current directory: {}",
+                self.data.projectroot
+            );
         }
 
         {
