@@ -76,6 +76,20 @@ then
     export PATH=$PATH:$HOME/golang/go/bin/
 fi
 
+if ! command -v elixir &> /dev/null 
+then
+    sudo apt-get install esl-erlang elixir -y
+fi
+
+if ! command -v mono &> /dev/null 
+then
+    sudo apt-get install dirmngr gnupg apt-transport-https ca-certificates -y
+    sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+    sudo apt-add-repository 'deb <a href="https://download.mono-project.com/repo/ubuntu">https://download.mono-project.com/repo/ubuntu</a> stable-bionic main'
+    sudo apt-get update
+    sudo apt-get install mono-complete -y
+fi
+
 # deno for typescript and javascript
 # cargo install deno --locked # too long, takes 20 min!
 curl -fsSL https://deno.land/x/install/install.sh | sh

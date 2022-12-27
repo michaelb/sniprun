@@ -185,12 +185,12 @@ mod test_csharp_original {
     #[test]
     fn simple_print() {
         let mut data = DataHolder::new();
-        data.current_bloc = String::from("println!(\"HW, 1+1 = {}\", 1+1);");
+        data.current_bloc = String::from("Console.WriteLine(\"Hello World!\");");
         let mut interpreter = CSharp_original::new(data);
         let res = interpreter.run();
 
         // should panic if not an Ok()
         let string_result = res.unwrap();
-        assert_eq!(string_result, "HW, 1+1 = 2\n");
+        assert_eq!(string_result, "Hello World!\n");
     }
 }
