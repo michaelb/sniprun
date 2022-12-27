@@ -282,7 +282,7 @@ impl ReplLikeInterpreter for Julia_original {
         let end_mark_err = String::from("println(stderr, \"sniprun_finished_id=")
             + &self.current_output_id.to_string()
             + "\")\n";
-        self.code = start_mark + &self.code + "\n" + &end_mark;
+        self.code = start_mark + &start_mark_err + "\n" + &self.code + "\n" + &end_mark_err + &end_mark;
         Ok(())
     }
 
