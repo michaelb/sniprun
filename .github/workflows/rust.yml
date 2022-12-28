@@ -52,7 +52,7 @@ jobs:
     - run: './ressources/install_all_compilers_ci.sh'
 
     - uses: dlang-community/setup-dlang@v1
-
+    - uses: actions/setup-elixir@v1
 
 
     - name: Unit tests
