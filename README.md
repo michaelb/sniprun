@@ -29,7 +29,9 @@ Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to p
 
 TLDR: `Plug 'michaelb/sniprun', {'do': 'bash install.sh'}`, `:SnipRun`, `:'<,'>SnipRun`, `:SnipInfo`
 
-See [installation instructions](https://michaelb.github.io/sniprun/sources/README.html#installation), [configuration tips](https://michaelb.github.io/sniprun/sources/README.html#configuration), [usage explanations (recommended)](https://michaelb.github.io/sniprun/sources/README.html#usage) and much more useful information on the [wiki](https://michaelb.github.io/sniprun/)
+# Installation, configuration, ...
+
+See [installation instructions](https://michaelb.github.io/sniprun/sources/README.html#installation), [configuration tips](https://michaelb.github.io/sniprun/sources/README.html#configuration), [usage explanations](https://michaelb.github.io/sniprun/sources/README.html#usage) and much more useful information on the [wiki](https://michaelb.github.io/sniprun/)
 
 ## Demos
 
