@@ -5,7 +5,7 @@
  - cargo fmt --all / cargo check / cargo clippy
  - update the changelog
  - bump Cargo.toml to next version
- - create a version bump commit
+ - create a version bump commit (with cargo.toml and cargo.lock)
  - merge
  - create a new tag vX.Y.Z on master
  - git push origin vX.Y.Z
