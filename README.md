@@ -33,6 +33,8 @@ TLDR: `Plug 'michaelb/sniprun', {'do': 'bash install.sh'}`, `:SnipRun`, `:'<,'>S
 
 See [installation instructions](https://michaelb.github.io/sniprun/sources/README.html#installation), [configuration tips](https://michaelb.github.io/sniprun/sources/README.html#configuration), [usage explanations](https://michaelb.github.io/sniprun/sources/README.html#usage) and much more useful information on the [wiki](https://michaelb.github.io/sniprun/)
 
+[![wiki status](https://github.com/michaelb/sniprun/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/michaelb/sniprun/actions/workflows/pages/pages-build-deployment)
+
 ## Demos
 
 ##### Send to Sniprun snippets of any language.
