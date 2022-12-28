@@ -39,7 +39,7 @@ echo "/bin/cat " $working_dir/$pipe " | " $repl  > $working_dir/real_launcher.sh
 chmod +x $working_dir/real_launcher.sh
 
 echo $repl " process started at $(date +"%F %T")." >> $log
-bash $working_dir/real_launcher.sh > $working_dir/$out 2> $working_dir/$err &
+bash $working_dir/real_launcher.sh | tee $working_dir/$out 2| tee $working_dir/$err &
 
 echo "done" >> $log
 

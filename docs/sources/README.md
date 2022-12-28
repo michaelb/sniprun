@@ -71,17 +71,15 @@ Sniprun will then:
 
 ## Prerequisites && dependencies
 
-- Sniprun is compatible with **Linux** and **MacOS**. (Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install)) >= 1.59
+- Sniprun is compatible with **Linux** and **MacOS**. (Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install) version >= 1.59 )
 
 - **Neovim** version >= 0.5
+
+- **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the navigation pane of this wiki, as well as in the [docs/sources/interpreters](https://github.com/michaelb/sniprun/tree/master/docs/sources/interpreters) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
 - [optional] **cargo and the rust toolchain** version >= 1.59 (you can find those [here](https://www.rust-lang.org/tools/install)).
 
 - [optional] the plugin [nvim-notify](https://github.com/rcarriga/nvim-notify) for the notification display style
-
-- **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the [docs/sources/interpreters](https://github.com/michaelb/sniprun/tree/master/docs/sources/interpreters) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
-
-
 
 ## Install Sniprun
 
@@ -89,11 +87,11 @@ Sniprun will then:
 
 (Run `install.sh` as a post-installation script, it will download or compile the sniprun binary)
 
-<details open><summary>vim-plug</summary>
+<details><summary>vim-plug</summary>
 <p>
 
 ```vim
-Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
+Plug 'michaelb/sniprun', {'do': 'bash ./install.sh'}
 " 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary,
 "  but you'll compile sniprun at every update & will need the rust toolchain
 ```
@@ -102,12 +100,15 @@ Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
 </p>
 
 
-<details><summary>packer</summary>
+<details open><summary>packer</summary>
 <p>
 
 ```
   use { 'michaelb/sniprun', run = 'bash ./install.sh'}
 ```
+
+(or likewise, `'bash ./install.sh 1'` to get the bleeding edge aka compile yourself the latest commit of sniprun)
+
 </details>
 </p>
 
@@ -259,13 +260,14 @@ require'sniprun'.setup({
     SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
   },
 
-  --# miscellaneous compatibility/adjustement settings
-  inline_messages = 0,             --# inline_message (0/1) is a one-line way to display messages
-				                   --# to workaround sniprun not being able to display anything
+  live_mode_toggle='off'      --# live mode toggle, see Usage - Running for more info   
 
-  borders = 'single',              --# display borders around floating windows
-                                   --# possible values are 'none', 'single', 'double', or 'shadow'
-  live_mode_toggle='off'           --# live mode toggle, see Usage - Running for more info   
+  --# miscellaneous compatibility/adjustement settings
+  inline_messages = 0,        --# inline_message (0/1) is a one-line way to display messages
+                              --# to workaround sniprun not being able to display anything
+
+  borders = 'single',         --# display borders around floating windows
+                              --# possible values are 'none', 'single', 'double', or 'shadow'
 })
 EOF
 ```
@@ -305,9 +307,9 @@ All of sniprun functionalities:
 <p>
 
 ```
-vim.api.nvim\_set\_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
-vim.api.nvim\_set\_keymap('n', '<leader>f', '<Plug>SnipRunOperator', {silent = true})
-vim.api.nvim\_set\_keymap('n', '<leader>ff', '<Plug>SnipRun', {silent = true})
+vim.api.nvim_set_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
+vim.api.nvim_set_keymap('n', '<leader>f', '<Plug>SnipRunOperator', {silent = true})
+vim.api.nvim_set_keymap('n', '<leader>ff', '<Plug>SnipRun', {silent = true})
 ```
 </details>
 </p>
@@ -323,10 +325,12 @@ vmap f <Plug>SnipRun
 </details>
 </p>
 
-- For interpreted languages with simple output, `:%SnipRun` (or a shortcut, wrapping it with `let b:caret=winsaveview()` and `call winrestview(b:caret)` in order to keep the cursor at the current position) may be a more convenient way to run your entire file. When running the whole file, SnipRun supports taking arguments on the command line: `:%SnipRun 5 "yay"` frictionlessly for interpreted languages, and compiled languages with entry point detection implemented (most of them).
+- For interpreted languages with simple output, `:%SnipRun` (or a shortcut, wrapping it with `let b:caret=winsaveview()` and `call winrestview(b:caret)` in order to keep the cursor at the current position) may be a more convenient way to run your entire file. Example mapping `:%SnipRun` to F5: `vim.keymap.set('n', '<F5>', ":let b:caret=winsaveview() <CR> | :%SnipRun <CR>| :call winrestview(b:caret) <CR>", {})`, with my apologies for poor vimscript.
+
+When running the whole file, SnipRun supports taking arguments on the command line: `:%SnipRun 5 "yay"` frictionlessly for interpreted languages, and compiled languages with entry point detection implemented (most of them).
 
 
-While both shorthands and \<Plug> are here to stay, **please use the `<Plug>` style ones in your mappings** or if using from another plugin.
+While both shorthands and \<Plug> are here to stay, **it's better practice to use the `<Plug>` style ones in your mappings** or if using from another plugin.
 
 
 
@@ -366,9 +370,11 @@ println!("-> {}", alphabet);
 | Bash/Shell   | Bloc          | Yes\*            |
 | C            | Import        | No               |
 | C++          | Import        | No               | 
+| C#           | Bloc          | No               | 
 | Clojure      | Bloc          | Yes \*\*         | 
 | Coffeescript | Bloc          | No               |   
 | D            | Bloc          | No               | 
+| Elixir       | Bloc          | Yes \*\*         |
 | F#           | Bloc          | No, but _could_ \*\* |
 | Go           | Import        | No               | 
 | Haskell      | Line          | No               | 
@@ -391,7 +397,7 @@ println!("-> {}", alphabet);
 
 Want support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=), or even better, contribute (see CONTRIBUTING.md), it's easy!
 
-\* (fake) REPL-like functionnality, with potential unwanted side-effects
+\* (fake) REPL-like functionality, with potential unwanted side effects
 
 \*\* True REPL under the hood
 

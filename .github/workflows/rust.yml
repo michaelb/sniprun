@@ -43,7 +43,7 @@ jobs:
         run: cargo build --release --target x86_64-unknown-linux-gnu 
 
   unittest:
-    name: Unit & integration tests
+    name: unit & integration tests
     runs-on: ubuntu-20.04
     steps:
 
@@ -53,12 +53,16 @@ jobs:
 
     - uses: dlang-community/setup-dlang@v1
 
+    - uses: erlef/setup-beam@v1
+      with:
+        otp-version: "23"
+        elixir-version: "1.14"
 
 
     - name: Unit tests
       run: cargo test --release --features ignore_in_ci
 
-    - name: Integration tests
+    - name: integration tests
       run: cargo test --release --features ignore_in_ci --test integration
 
 
@@ -69,7 +73,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
-    - name: Installation tests
+    - name: installation tests
       run: ./install.sh
 
 

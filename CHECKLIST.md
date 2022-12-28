@@ -2,9 +2,9 @@
 
  - check compilation success
  - update Cargo.lock: `cargo update`
- - Bump Cargo.toml to next version
  - cargo fmt --all / cargo check / cargo clippy
  - update the changelog
+ - bump Cargo.toml to next version
  - create a version bump commit
  - merge
  - create a new tag vX.Y.Z on master

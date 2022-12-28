@@ -1,5 +1,11 @@
+## v1.2.9
+- Elixir support (with REPL capabilities)
+- C# support
+- "--project"-aware Julia interpreter
+- Fixed Julia REPL capabilities (fifo in Julia_original, in addition to Julia_jupyter)
+
 ## v1.2.8
-- remove SnipTerminate
+- Remove SnipTerminate
 - Python_fifo3 fixes for indentation issues
 - HTML doc deployed from github pages
 - Composable/filterable display options
