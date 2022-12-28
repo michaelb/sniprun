@@ -71,7 +71,7 @@ Sniprun will then:
 
 ## Prerequisites && dependencies
 
-- Sniprun is compatible with **Linux** and **MacOS**. (Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install)) >= 1.59
+- Sniprun is compatible with **Linux** and **MacOS**. (Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install) version >= 1.59 )
 
 - **Neovim** version >= 0.5
 
@@ -87,7 +87,7 @@ Sniprun will then:
 
 (Run `install.sh` as a post-installation script, it will download or compile the sniprun binary)
 
-<details open><summary>vim-plug</summary>
+<details><summary>vim-plug</summary>
 <p>
 
 ```vim
@@ -100,7 +100,7 @@ Plug 'michaelb/sniprun', {'do': 'bash ./install.sh'}
 </p>
 
 
-<details><summary>packer</summary>
+<details open><summary>packer</summary>
 <p>
 
 ```
