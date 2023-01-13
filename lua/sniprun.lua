@@ -59,8 +59,10 @@ M.config_values = {
   -- by an user that would be unaware of the potentially dangerous behavior
   live_mode_toggle='off',
 
-  -- auto-filled with the real nvim's PID
-  neovim_pid=0
+  -- auto-filled with the real nvim's PID, sniprun's bin and source locations
+  neovim_pid=0,
+  binary_path=binary_path,
+  sniprun_path=sniprun_path,
 
 }
 
@@ -183,7 +185,7 @@ function M.configure_keymaps()
   vim.cmd("function! SnipRunOperator(...) \n lua require'sniprun'.run('n') \n endfunction")
   vim.cmd("command! SnipClose :lua require'sniprun.display'.close_all()")
 
-  vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('"..sniprun_path.."/docs/sources/interpreters', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
+  vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('".. M.config_values.sniprun_path .."/docs/sources/interpreters', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
   vim.cmd("command! -nargs=* -complete=customlist,ListInterpreters SnipInfo :lua require'sniprun'.info(<q-args>)")
 
   vim.cmd("function! SnipRunLauncher(...) range \nif a:firstline == a:lastline \n lua require'sniprun'.run() \n elseif a:firstline == 1 && a:lastline == line(\"$\")\nlet g:sniprun_cli_args_list = a:000\n let g:sniprun_cli_args = join(g:sniprun_cli_args_list,\" \") \n lua require'sniprun'.run('w') \n else \n lua require'sniprun'.run('v') \n endif \n endfunction")
@@ -194,7 +196,7 @@ end
 
 function M.start()
   if M.job_id ~= nil then return end
-  M.job_id = vim.fn.jobstart({ binary_path }, { rpc = true })
+  M.job_id = vim.fn.jobstart({ M.config_values.binary_path }, { rpc = true })
 end
 
 function M.notify(method, ...)
@@ -209,7 +211,7 @@ end
 
 function M.run(mode)
   local range_begin, range_end = M.get_range(mode)
-  M.config_values["sniprun_root_dir"] = sniprun_path
+  M.config_values["sniprun_root_dir"] = M.config_values.sniprun_path
   M.notify('run', range_begin, range_end, M.config_values, vim.g.sniprun_cli_args or "" )
 end
 
@@ -293,16 +295,16 @@ end
 
 function M.info(arg)
   if arg == nil or arg == "" then
-    M.config_values["sniprun_root_dir"] = sniprun_path
+    M.config_values["sniprun_root_dir"] = M.config_values.sniprun_path
     M.notify("info",1,1,M.config_values, "")
 
     vim.wait(500) -- let enough time for the sniprun binary to generate the file
     print(" ")
-    local lines = lines_from(sniprun_path.."/ressources/infofile.txt")
+    local lines = lines_from(M.config_values.sniprun_path.."/ressources/infofile.txt")
     -- print all lines content
     M.display_lines_in_floating_win(lines)
     else --help about a particular interpreter
-      local lines = lines_from(sniprun_path.."/docs/sources/interpreters/"..string.gsub(arg,"%s+","")..".md")
+      local lines = lines_from(M.config_values.sniprun_path.."/docs/sources/interpreters/"..string.gsub(arg,"%s+","")..".md")
       M.display_lines_in_floating_win(lines)
   end
 end
@@ -317,8 +319,8 @@ function M.health()
   if vim.fn.executable('cargo') == 0 then health_warn("Rust toolchain not available", {"[optionnal] Install the rust toolchain https://www.rust-lang.org/tools/install"})
   else health_ok("Rust toolchain found") end
 
-  if vim.fn.executable(binary_path) == 0 then health_error("sniprun binary not found!")
-  else health_ok("sniprun binary found at "..binary_path) end
+  if vim.fn.executable(M.config_values.binary_path) == 0 then health_error("sniprun binary not found!")
+  else health_ok("sniprun binary found at ".. M.config_values.binary_path) end
 
   local terminate_after = M.job_id == nil
   local path_log_file = os.getenv('HOME').."/.cache/sniprun/sniprun.log"

@@ -9,7 +9,7 @@ function M.run_range(range_start, range_end, filetype, config)
   local override = {}
   override.filetype = filetype
   local lconfig = config or sniprun.config_values
-  lconfig["sniprun_root_dir"] = sniprun_path
+  lconfig["sniprun_root_dir"] = M.config.sniprun_path
   sniprun.notify('run', range_start, range_end, lconfig, "", override)
 end
 
@@ -19,7 +19,7 @@ function M.run_string(codestring, filetype, config)
   override.codestring = codestring
   override.filetype = filetype or ""
   local lconfig = config or sniprun.config_values
-  lconfig["sniprun_root_dir"] = sniprun_path
+  lconfig["sniprun_root_dir"] = M.config.sniprun_path
   sniprun.notify('run', 0, 0, lconfig, "", override)
 end
 
