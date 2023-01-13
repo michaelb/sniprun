@@ -328,7 +328,7 @@ function M.health()
   -- os.remove(path_log_file)
 
   -- check if the log is recreated
-  if pcall(M.ping()) then health_ok("Sent a ping to the sniprun binary")
+  if pcall(M.ping) then health_ok("Sent a ping to the sniprun binary")
   else health_warn("Could not send a ping to the sniprun binary - is it present, executable and compatible with your CPU architecture?") end
     
 
