@@ -328,7 +328,10 @@ function M.health()
   -- os.remove(path_log_file)
 
   -- check if the log is recreated
-  M.ping()
+  if pcall(M.ping()) then health_ok("Sent a ping to the sniprun binary")
+  else health_warn("Could not send a ping to the sniprun binary - is it present, executable and compatible with your CPU architecture?") end
+    
+
   os.execute("sleep 0.2")
   if not M.file_exists(path_log_file) and not M.file_exists(path_log_file_mac)  then health_error("sniprun binary incompatible or crash at start", {"Compile sniprun locally, with a clean reinstall and 'bash ./install.sh 1' as post-install command."})
   else health_ok("sniprun binary runs correctly")
