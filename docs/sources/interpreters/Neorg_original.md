@@ -54,18 +54,6 @@ println!("test2");
 
 ``` 
 
-### example 3: running named code blocs
-
-```
-#name mycodebloc 
-@code rust                        
-println!("test");
-@end
-```
-
-running `:%SnipRun mycodebloc` will run this code bloc (and any code bloc named similarly, case-insensitively)
-
-running `:%SnipRun` without any further arguments will run all the code blocs
 
 **the language name must be there (otherwise the default * will be used) at the bloc start** and has to match the language name or the filetype associated 
 
@@ -80,3 +68,16 @@ require'sniprun'.setup({
     }
 })
 ```
+
+### example 3: running named code blocs
+
+```
+#name mycodebloc 
+@code rust                        
+println!("test");
+@end
+```
+
+running `:%SnipRun mycodebloc` will run this code bloc (and any code bloc named similarly, case-insensitively)
+
+running `:%SnipRun` without any further arguments will run all the code blocs

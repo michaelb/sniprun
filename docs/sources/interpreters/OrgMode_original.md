@@ -54,3 +54,16 @@ require'sniprun'.setup({
     }
 })
 ```
+
+### example 3: running named code blocs
+
+```
+#+NAME: mycodebloc 
+#+BEGIN_SRC rust                        
+println!("test");
+#+END_SRC
+```
+
+running `:%SnipRun mycodebloc` will run this code bloc (and any code bloc named similarly, case-insensitively)
+
+running `:%SnipRun` without any further arguments will run all the code blocs

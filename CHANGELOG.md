@@ -1,3 +1,8 @@
+## v1.2.10
+- Neorg support
+- Support for named code blocs (neorg, orgmode)
+- Allow setting custom locations for the sniprun binary
+
 ## v1.2.9
 - Elixir support (with REPL capabilities)
 - C# support
