@@ -27,14 +27,35 @@ impl OrgMode_original {
         let mut counter = 0;
         let selection_line = self.data.range[0] as usize;
         let mut v = vec![];
+        let mut run_next_code_bloc = 0;
         for (i, l) in lines.iter().enumerate() {
+            // rerunranges only named tags if any are asked for
+            if self.get_data().cli_args.is_empty()
+                || (l.trim_start().to_lowercase().starts_with("#+name:")
+                    && self
+                        .get_data()
+                        .cli_args
+                        .contains(&l.to_lowercase().replace("#+name:", "").trim().to_string()))
+            {
+                run_next_code_bloc = 2;
+            }
+
             info!("checking code bloc delimiter in : {}",l);
+
             if l.trim_start().to_lowercase().starts_with("#+begin_src") {
+                if run_next_code_bloc == 0 {
+                    continue;
+                }
+                run_next_code_bloc -= 1;
                 if counter % 2 == 1 { return Err(SniprunError::CustomError(String::from("Incomplete or nested code blocs")))} 
                 counter += 1;
                 v.push((selection_line + i + 1, 0));
             }
             if l.trim_start().to_lowercase().starts_with("#+end_src") {
+                if run_next_code_bloc == 0 {
+                    continue;
+                }
+                run_next_code_bloc -= 1;
                 if counter % 2 == 0 { return Err(SniprunError::CustomError(String::from("Incomplete or nested code blocs")))} 
                 counter += 1;
                 v[((counter - 1) / 2) as usize].1 = selection_line + i - 1;
@@ -46,6 +67,9 @@ impl OrgMode_original {
                 return Err(SniprunError::CustomError(String::from(
                     "Selection contains an odd number of code bloc delimiters",
                 )));
+            }
+            if v.is_empty() {
+                return Err(SniprunError::CustomError("No matching tag #+NAME: was found".to_string()));
             }
             info!("running separately ranges : {:?}", v);
             return Err(SniprunError::ReRunRanges(v));
@@ -219,6 +243,46 @@ impl Interpreter for OrgMode_original {
 
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Import
+    }
+
+    fn check_cli_args(&self) -> Result<(), SniprunError> {
+        info!("Checking cli-args: {:?}", self.get_data().cli_args);
+
+        // check arguments are #name tags
+        let nvim_instance = self.data.nvim_instance.clone().unwrap();
+        let mut real_nvim_instance = nvim_instance.lock().unwrap();
+        let lines = real_nvim_instance
+            .get_current_buf()
+            .unwrap()
+            .get_lines(
+                &mut real_nvim_instance,
+                self.data.range[0] - 1,
+                self.data.range[1],
+                false,
+            )
+            .unwrap();
+        for tag_name in self.get_data().cli_args {
+            // walk the whole visual selection in case multiple code block are contained
+
+            let mut found = false;
+            for (i, l) in lines.iter().enumerate() {
+                info!("checking named tag {} in line {}", tag_name, i);
+                if l.trim_start().to_lowercase().starts_with("#name:")
+                    && tag_name.to_lowercase()
+                        == (l.to_lowercase().replace("#name:", "").trim().to_string())
+                {
+                    found = true;
+                    info!("found named tag {} in line: {}", tag_name, l);
+                    break;
+                }
+            }
+
+            if !found {
+                info!("CLI arguments for Orgmode should be valid #+NAME tags");
+            }
+        }
+
+        return Ok(());
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
