@@ -1,6 +1,6 @@
 [package]
 name = "sniprun"
-version = "1.2.9"
+version = "1.2.10"
 authors = ["michaelb <michael.bleuez2@gmail.com>"]
 rust-version="1.55"
 edition = "2018"

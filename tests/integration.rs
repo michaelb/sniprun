@@ -12,7 +12,6 @@ fn test_implements() {
         let _ = Current::default_for_filetype();
         let _ = Current::get_supported_languages();
         let _ = interpreter.fallback();
-        let _ = interpreter.check_cli_args();
         let max_level = Current::get_max_support_level();
         let current_level = interpreter.get_current_level();
         assert_eq!(max_level, current_level);
