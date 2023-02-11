@@ -385,6 +385,7 @@ println!("-> {}", alphabet);
 | Lua-nvim     | Bloc          | Yes\*\*          |
 | Markdown     | Bloc          | Yes\*\*\*        |
 | Mathematica  | Bloc          | Yes\*\*          |
+| Neorg        | Bloc          | Yes\*\*\*        |
 | OrgMode      | Bloc          | Yes\*\*\*        |
 | Perl/Perl6   | Line          | No               | 
 | Python3      | Import        | Yes\*\*          |

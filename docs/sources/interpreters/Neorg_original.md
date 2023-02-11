@@ -1,6 +1,6 @@
 ## Neorg original
 
-the Neorg\_original interpreter helps you running code blocs defined in norg code blocs delimiters
+the Neorg\_original interpreter helps you running code blocs defined in neorg code blocs delimiters
 
 inline, switches and headers are not supported/ignored
 
@@ -39,6 +39,7 @@ println!("test2");
 @end
 ```
 
+
 Even though it is possible to have empty lines in between the #name tag and the @code block for this plugin this doesn't work. The #name has to be in the line directly above the @code block
 
 ```
@@ -53,6 +54,18 @@ println!("test2");
 
 ``` 
 
+### example 3: running named code blocs
+
+```
+#name mycodebloc 
+@code rust                        
+println!("test");
+@end
+```
+
+running `:%SnipRun mycodebloc` will run this code bloc (and any code bloc named similarly, case-insensitively)
+
+running `:%SnipRun` without any further arguments will run all the code blocs
 
 **the language name must be there (otherwise the default * will be used) at the bloc start** and has to match the language name or the filetype associated 
 
