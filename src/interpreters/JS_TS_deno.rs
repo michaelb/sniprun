@@ -212,12 +212,13 @@ impl Interpreter for JS_TS_deno {
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        //run th binary and get the std output (or stderr)
+        //run the binary and get the std output (or stderr)
         let output = Command::new("deno")
             .arg("run")
             .arg("-A")
             .arg("--unstable")
             .arg(&self.main_file_path)
+            .env("NO_COLOR","1")
             .output()
             .expect("Unable to start process");
 
@@ -285,6 +286,7 @@ impl ReplLikeInterpreter for JS_TS_deno {
                             JS_TS_deno::get_nvim_pid(&self.data),
                             String::from("deno"),
                         ])
+                        .env("NO_COLOR","1")
                         .output()
                         .unwrap();
 
