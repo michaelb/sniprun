@@ -451,6 +451,7 @@ impl ReplLikeInterpreter for Python3_fifo {
             .replace("#\n#", "\n");
 
         // add empty lines (only containing correct indentation) to code when indentation decreases
+        // unless it's a "except" or "finally" clause from a try-catch bloc
         let mut lines = vec![];
         for i in 0..(self.code.lines().count() - 1) {
             let l1 = self.code.lines().skip(i).next().unwrap();
@@ -458,7 +459,7 @@ impl ReplLikeInterpreter for Python3_fifo {
             let nw1 = l1.len() - l1.trim_start().len();
             let nw2 = l2.len() - l2.trim_start().len();
             lines.push(l1);
-            if nw1 > nw2 {
+            if nw1 > nw2 && !l2.trim().starts_with("except") && !l2.trim().starts_with("finally") {
                 lines.push(&l2[0..nw2]);
             }
         }
