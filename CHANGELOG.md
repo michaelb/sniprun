@@ -1,6 +1,9 @@
-## 1.2.11
-- fix python3_fifo issue with try/catch
-- fix deno's REPL ANSI color code appearing in result
+## v1.2.12
+- Fix (broken) SnipLive
+
+## v1.2.11
+- Fix python3_fifo issue with try/catch
+- Fix deno's REPL ANSI color code appearing in result
 
 ## v1.2.10
 - Neorg support
