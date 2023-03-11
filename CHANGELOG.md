@@ -1,3 +1,7 @@
+## 1.2.11
+- fix python3_fifo issue with try/catch
+- fix deno's REPL ANSI color code appearing in result
+
 ## v1.2.10
 - Neorg support
 - Support for named code blocs (neorg, orgmode)

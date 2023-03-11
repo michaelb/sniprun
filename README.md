@@ -75,7 +75,7 @@ As a matter of proof, Sniprun :
  - lends itself to easy [mappings](https://michaelb.github.io/sniprun/sources/README.html#mappings-recommandations) and Vim motions
  - has an API (for running code, and displaying results)
  - has many result display modes that can be enabled at the same time, and for different output status if wanted
- - supports literate programming in Markdown and Orgmode
+ - supports literate programming in Markdown, Orgmode and Neorg
 
 ## Known limitations
 
