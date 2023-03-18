@@ -1,3 +1,7 @@
+## v1.2.13
+- Fix broken snipinfo on NixOS
+- Document install on NixOS
+
 ## v1.2.12
 - Fix (broken) SnipLive
 
