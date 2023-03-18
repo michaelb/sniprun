@@ -144,7 +144,7 @@ The normal installation way will work, as long as you compile locally the snipru
 #### you do nothing like everyone else
 
 - Have a running sniprun binary somewhere (it should be runnable on the command-line, though it will just 'hang')
-- Have the repo added to neovim's runtimepath (for debugging: `nvim --cmd "set rtp+=/path/to/sniprun/repo`)
+- Have the repo added to neovim's runtimepath (for debugging: `nvim --cmd "set rtp+=/path/to/sniprun/repo"`)
 - Configure sniprun to get the correct location (by default, **from the repo**: ./target/release/sniprun)
 ```
 require('sniprun').setup({
