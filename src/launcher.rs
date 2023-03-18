@@ -167,7 +167,7 @@ impl Launcher {
         v.push("More help, quickstart and config options refresher can be found from: ':help sniprun'\n".to_owned());
 
         info!("[INFO] Writing info to file");
-        let filename = self.data.sniprun_root_dir.clone() + "/ressources/infofile.txt";
+        let filename = self.data.work_dir.clone() + "/infofile.txt";
         let mut file = File::create(filename).unwrap();
         file.write_all(v.join("\n").as_bytes()).unwrap();
         Ok("".to_owned())

@@ -300,7 +300,9 @@ function M.info(arg)
 
     vim.wait(500) -- let enough time for the sniprun binary to generate the file
     print(" ")
-    local lines = lines_from(M.config_values.sniprun_path.."/ressources/infofile.txt")
+    local cache_dir = os.getenv("XDG_CACHE_HOME") or os.getenv("HOME").."/.cache"
+    local sniprun_cache_dir = cache_dir.."/sniprun"
+    local lines = lines_from(sniprun_cache_dir.."/infofile.txt")
     -- print all lines content
     M.display_lines_in_floating_win(lines)
     else --help about a particular interpreter
