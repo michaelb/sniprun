@@ -71,7 +71,7 @@ Sniprun will then:
 
 ## Prerequisites && dependencies
 
-- Sniprun is compatible with **Linux** and **MacOS**. (Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install) version >= 1.59 ). Standard POSIX utilities (grep, cut, sed ...) are needed too.
+- Sniprun is compatible with **Linux** and **MacOS**. (NixOS and Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install) version >= 1.59 ). Standard POSIX utilities (grep, cut, sed ...) may be needed too, depending on the languages you want support for.
 
 - **Neovim** version >= 0.5
 
@@ -129,6 +129,28 @@ An independently maintained [AUR package](https://aur.archlinux.org/packages/neo
 
 I trust you know how to add a plugin to the runtimepath, just don't forget to run `./install.sh`, or alternatively, `cargo build --release` to fetch/build the binary.
 
+## or for NixOS users
+
+### with home-manager
+
+Sniprun is packaged for NixOS, so install ['as usual'](https://nix-community.github.io/home-manager/options.html#opt-programs.neovim.plugins), aka just add sniprun to your programs.neovim.plugins .
+
+### with a standard Lua config
+
+The normal installation way will work, as long as you compile locally the sniprun binary; example with packer
+
+ `use { 'michaelb/sniprun', run = 'bash ./install.sh 1'}`
+
+### you do nothing like everyone else
+
+- Have a running sniprun binary somewhere (it should be runnable on the command-line, though it will just 'hang')
+- Have the repo added to neovim's runtimepath (for debugging: `nvim --cmd "set rtp+=/path/to/sniprun/repo`)
+- Configure sniprun to get the correct location (by default, **from the repo**: ./target/release/sniprun)
+```
+require('sniprun').setup({
+    binary_path="/path/to/your/sniprun",
+})
+```
 
 # Usage
 
