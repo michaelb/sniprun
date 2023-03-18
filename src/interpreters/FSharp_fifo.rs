@@ -177,7 +177,7 @@ impl Interpreter for FSharp_fifo {
             && self.get_current_level() >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -204,21 +204,19 @@ impl Interpreter for FSharp_fifo {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
+        } else if FSharp_fifo::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr.clone())
+                    .unwrap()
+                    .lines()
+                    .last()
+                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                    .to_owned(),
+            ))
         } else {
-            if FSharp_fifo::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone())
-                        .unwrap()
-                        .lines()
-                        .last()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                        .to_owned(),
-                ));
-            } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
-            }
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr).unwrap(),
+            ))
         }
     }
 }

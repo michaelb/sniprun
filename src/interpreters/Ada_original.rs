@@ -79,7 +79,7 @@ impl Interpreter for Ada_original {
             && self.support_level >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();

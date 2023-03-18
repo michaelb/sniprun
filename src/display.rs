@@ -19,14 +19,8 @@ impl PartialEq for DisplayFilter {
     fn eq(&self, other: &Self) -> bool {
         match self {
             Both => true,
-            OnlyOk => match other {
-                OnlyErr => false,
-                _ => true,
-            },
-            OnlyErr => match other {
-                OnlyOk => false,
-                _ => true,
-            },
+            OnlyOk => !matches!(other, OnlyErr),
+            OnlyErr => !matches!(other, OnlyOk),
         }
     }
 }
@@ -147,12 +141,12 @@ pub fn display_nvim_notify(
     let res = match (message, filter) {
         (Ok(result), OnlyOk) | (Ok(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".display_nvim_notify(\"{}\", true)",
-            no_output_wrap(result, data, &DisplayType::NvimNotify(filter)).replace("\n", "\\\n"),
+            no_output_wrap(result, data, &DisplayType::NvimNotify(filter)).replace('\n', "\\\n"),
         )),
         (Err(result), OnlyErr) | (Err(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".display_nvim_notify(\"{}\", false)",
             no_output_wrap(&result.to_string(), data, &DisplayType::NvimNotify(filter))
-                .replace("\n", "\\\n"),
+                .replace('\n', "\\\n"),
         )),
         _ => Ok(()),
     };
@@ -170,7 +164,7 @@ pub fn send_api(
             let mut nvim_instance = nvim.lock().unwrap();
             nvim_instance.command(&format!(
                 "lua require\"sniprun.display\".send_api(\"{}\", true)",
-                no_output_wrap(result, data, &DisplayType::Api(filter)).replace("\n", "\\\n"),
+                no_output_wrap(result, data, &DisplayType::Api(filter)).replace('\n', "\\\n"),
             ))
         }
         (Err(result), OnlyErr) | (Err(result), Both) => {
@@ -178,7 +172,7 @@ pub fn send_api(
             nvim_instance.command(&format!(
                 "lua require\"sniprun.display\".send_api(\"{}\", false)",
                 no_output_wrap(&result.to_string(), data, &DisplayType::Api(filter))
-                    .replace("\n", "\\\n"),
+                    .replace('\n', "\\\n"),
             ))
         }
         _ => Ok(()),
@@ -290,12 +284,12 @@ pub fn display_terminal(
     let res = match (message, filter) {
         (Ok(result), OnlyOk) | (Ok(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\", true)",
-            no_output_wrap(result, data, &DisplayType::Terminal(filter)).replace("\n", "\\\n"),
+            no_output_wrap(result, data, &DisplayType::Terminal(filter)).replace('\n', "\\\n"),
         )),
         (Err(result), OnlyErr) | (Err(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\", false)",
             no_output_wrap(&result.to_string(), data, &DisplayType::Terminal(filter))
-                .replace("\n", "\\\n"),
+                .replace('\n', "\\\n"),
         )),
         _ => Ok(()),
     };
@@ -319,9 +313,9 @@ pub fn display_terminal_with_code(
                         cur_bloc + "> " + line_in_bloc + "\n"
                     })
             )
-            .replace("\n", "\\\n"),
+            .replace('\n', "\\\n"),
             no_output_wrap(result, data, &DisplayType::TerminalWithCode(filter))
-                .replace("\n", "\\\n"),
+                .replace('\n', "\\\n"),
         )),
         (Err(result), OnlyErr) | (Err(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".write_to_term(\"{}\\n{}\", false)",
@@ -333,13 +327,13 @@ pub fn display_terminal_with_code(
                         cur_bloc + "> " + line_in_bloc + "\n"
                     })
             )
-            .replace("\n", "\\\n"),
+            .replace('\n', "\\\n"),
             no_output_wrap(
                 &result.to_string(),
                 data,
                 &DisplayType::TerminalWithCode(filter)
             )
-            .replace("\n", "\\\n"),
+            .replace('\n', "\\\n"),
         )),
         _ => Ok(()),
     };
@@ -386,7 +380,7 @@ pub fn display_floating_window(
                 data,
                 &DisplayType::TempFloatingWindow(filter)
             )
-            .replace("\n", "\\\n"),
+            .replace('\n', "\\\n"),
         )),
         (Err(result), OnlyErr) | (Err(result), Both) => nvim.lock().unwrap().command(&format!(
             "lua require\"sniprun.display\".fw_open({},{},\"{}\", false)",
@@ -397,7 +391,7 @@ pub fn display_floating_window(
                 data,
                 &DisplayType::TempFloatingWindow(filter)
             )
-            .replace("\n", "\\\n"),
+            .replace('\n', "\\\n"),
         )),
         _ => Ok(()),
     };

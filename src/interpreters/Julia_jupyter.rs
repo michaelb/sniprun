@@ -23,7 +23,7 @@ impl Interpreter for Julia_jupyter {
         let mfp = pwd.clone() + "/main.jl";
         let lp = pwd.clone() + "/main.sh";
 
-        let kp = pwd.clone() + "/kernel_sniprun.json";
+        let kp = pwd + "/kernel_sniprun.json";
         Box::new(Julia_jupyter {
             data,
             support_level: level,
@@ -74,7 +74,7 @@ impl Interpreter for Julia_jupyter {
             && self.get_current_level() >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -102,22 +102,19 @@ impl Interpreter for Julia_jupyter {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
+        } else if Julia_jupyter::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr.clone())
+                    .unwrap()
+                    .lines()
+                    .last()
+                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                    .to_owned(),
+            ))
         } else {
-            if Julia_jupyter::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone())
-                        .unwrap()
-                        .lines()
-                        .last()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                        .to_owned(),
-                ));
-            } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
-            }
-
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr).unwrap(),
+            ))
         }
     }
 }
@@ -126,7 +123,9 @@ impl ReplLikeInterpreter for Julia_jupyter {
         self.fetch_code()?;
         if !std::path::Path::new(&self.kernel_file).exists() {
             info!("no kernel file found");
-            return Err(SniprunError::RuntimeError("No running kernel found".to_string()));
+            return Err(SniprunError::RuntimeError(
+                "No running kernel found".to_string(),
+            ));
         }
         Ok(())
     }
@@ -169,7 +168,7 @@ impl ReplLikeInterpreter for Julia_jupyter {
     }
 
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
-        info!("starting executing repl: bash {}",&self.launcher_path);
+        info!("starting executing repl: bash {}", &self.launcher_path);
         let output = Command::new("bash")
             .arg(&self.launcher_path)
             .output()
@@ -198,10 +197,8 @@ impl ReplLikeInterpreter for Julia_jupyter {
                     .lines()
                     .last()
                     .unwrap_or(
-                        &String::from_utf8(
-                            strip_ansi_escapes::strip(output.stderr).unwrap(),
-                        )
-                        .unwrap(),
+                        &String::from_utf8(strip_ansi_escapes::strip(output.stderr).unwrap())
+                            .unwrap(),
                     )
                     .to_owned(),
             ));
@@ -213,7 +210,7 @@ impl ReplLikeInterpreter for Julia_jupyter {
 mod test_julia {
     use super::*;
 
-    #[test] 
+    #[test]
     fn simple_print() {
         let mut data = DataHolder::new();
         data.current_bloc = String::from("print(\"lol\");");
@@ -225,4 +222,3 @@ mod test_julia {
         assert_eq!(string_result.trim(), "lol");
     }
 }
-

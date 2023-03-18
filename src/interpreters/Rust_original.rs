@@ -16,7 +16,9 @@ impl Rust_original {
     fn fetch_config(&mut self) {
         let default_compiler = String::from("rustc");
         self.compiler = default_compiler;
-        if let Some(used_compiler) = Rust_original::get_interpreter_option(&self.get_data(), "compiler") {
+        if let Some(used_compiler) =
+            Rust_original::get_interpreter_option(&self.get_data(), "compiler")
+        {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
                 self.compiler = compiler_string.to_string();
@@ -96,7 +98,7 @@ impl Interpreter for Rust_original {
             && self.support_level >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -107,7 +109,6 @@ impl Interpreter for Rust_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        
         if !Rust_original::contains_main("fn main", &self.code, "//") {
             self.code = String::from("fn main() {") + &self.code + "}";
         }
@@ -154,21 +155,19 @@ impl Interpreter for Rust_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
+        } else if Rust_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr.clone())
+                    .unwrap()
+                    .lines()
+                    .next()
+                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                    .to_owned(),
+            ))
         } else {
-            if Rust_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone())
-                        .unwrap()
-                        .lines()
-                        .next()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                        .to_owned(),
-                ));
-            } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
-            }
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr).unwrap(),
+            ))
         }
     }
 }
@@ -218,7 +217,10 @@ mod test_rust_original {
                 SniprunError::RuntimeError(full_message) => {
                     assert!(full_message.contains(&expected))
                 }
-                _ => panic!("Not the right error message, wanted {:?} and got {:?} instead", expected, e),
+                _ => panic!(
+                    "Not the right error message, wanted {:?} and got {:?} instead",
+                    expected, e
+                ),
             }
         }
     }

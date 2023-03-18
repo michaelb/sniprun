@@ -113,7 +113,7 @@ impl Interpreter for JS_TS_deno {
         //pre-create string pointing to main file's and binary's path
         let mfp = lwd.clone() + "/main.ts";
         Box::new(JS_TS_deno {
-            cache_dir: lwd.clone() + "/" + &JS_TS_deno::get_nvim_pid(&data),
+            cache_dir: lwd + "/" + &JS_TS_deno::get_nvim_pid(&data),
             data,
             support_level,
             code: String::new(),
@@ -182,7 +182,7 @@ impl Interpreter for JS_TS_deno {
             && self.support_level >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -218,7 +218,7 @@ impl Interpreter for JS_TS_deno {
             .arg("-A")
             .arg("--unstable")
             .arg(&self.main_file_path)
-            .env("NO_COLOR","1")
+            .env("NO_COLOR", "1")
             .output()
             .expect("Unable to start process");
 
@@ -228,19 +228,18 @@ impl Interpreter for JS_TS_deno {
         } else {
             // return stderr
             if JS_TS_deno::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
+                Err(SniprunError::RuntimeError(
                     String::from_utf8(output.stderr.clone())
                         .unwrap()
                         .lines()
                         .filter(|l| l.contains("Error:"))
                         .last()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                        .to_owned(),
-                ));
+                        .unwrap_or(&String::from_utf8(output.stderr).unwrap()).to_string(),
+                ))
             } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
+                Err(SniprunError::RuntimeError(
+                    String::from_utf8(output.stderr).unwrap(),
+                ))
             }
         }
     }
@@ -286,13 +285,11 @@ impl ReplLikeInterpreter for JS_TS_deno {
                             JS_TS_deno::get_nvim_pid(&self.data),
                             String::from("deno"),
                         ])
-                        .env("NO_COLOR","1")
+                        .env("NO_COLOR", "1")
                         .output()
                         .unwrap();
 
-                    return Err(SniprunError::CustomError(
-                        "deno REPL exited".to_owned(),
-                    ));
+                    return Err(SniprunError::CustomError("deno REPL exited".to_owned()));
                 }
                 Ok(Fork::Parent(_)) => {}
                 Err(_) => {

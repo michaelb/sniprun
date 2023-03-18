@@ -74,7 +74,7 @@ impl Interpreter for C_original {
         builder
             .create(&rwd)
             .expect("Could not create directory for c-original");
-        let mfp = rwd.clone() + "/main.c";
+        let mfp = rwd + "/main.c";
         let bp = String::from(&mfp[..mfp.len() - 2]);
         Box::new(C_original {
             data,
@@ -129,7 +129,7 @@ impl Interpreter for C_original {
             .is_empty()
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty() {
+        } else if !self.data.current_line.replace(' ', "").is_empty() {
             self.code = self.data.current_line.clone();
         } else {
             self.code = String::from("");
@@ -187,7 +187,10 @@ impl Interpreter for C_original {
             .arg("-v")
             .args(&build_args);
 
-        info!("full gcc command emitted:\n{}\n", format!("{:?}",cmd).replace("\"", ""));
+        info!(
+            "full gcc command emitted:\n{}\n",
+            format!("{:?}", cmd).replace('\"', "")
+        );
 
         let output = cmd.output().expect("Unable to start process");
 
@@ -217,7 +220,6 @@ impl Interpreter for C_original {
 
             Err(SniprunError::CompilationError(relevant_error))
         } else {
-
             let compiler_output = String::from_utf8(output.stdout).unwrap();
             info!("compiler output:\n{}\n", compiler_output);
             Ok(())
@@ -231,22 +233,19 @@ impl Interpreter for C_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
+        } else if C_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            return Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr.clone())
+                    .unwrap()
+                    .lines()
+                    .last()
+                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                    .to_owned(),
+            ));
         } else {
-            if C_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone())
-                        .unwrap()
-                        .lines()
-                        .last()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                        .to_owned(),
-                ));
-            } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
-            }
-
+            return Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr).unwrap(),
+            ));
         }
     }
 }

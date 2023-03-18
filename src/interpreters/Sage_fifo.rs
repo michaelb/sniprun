@@ -199,7 +199,7 @@ impl Sage_fifo {
             }
         }
         for name in line
-            .replace(",", " ")
+            .replace(',', " ")
             .replace("from", " ")
             .replace("import ", " ")
             .split(' ')
@@ -310,7 +310,7 @@ impl Interpreter for Sage_fifo {
             && self.get_current_level() >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();

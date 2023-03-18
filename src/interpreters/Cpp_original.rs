@@ -67,7 +67,7 @@ impl Interpreter for Cpp_original {
         builder
             .create(&rwd)
             .expect("Could not create directory for cpp-original");
-        let mfp = rwd.clone() + "/main.cpp";
+        let mfp = rwd + "/main.cpp";
         let bp = String::from(&mfp[..mfp.len() - 2]);
         Box::new(Cpp_original {
             data,
@@ -126,7 +126,7 @@ impl Interpreter for Cpp_original {
             .is_empty()
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty() {
+        } else if !self.data.current_line.replace(' ', "").is_empty() {
             self.code = self.data.current_line.clone();
         } else {
             self.code = String::from("");

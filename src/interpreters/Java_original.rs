@@ -71,7 +71,7 @@ impl Interpreter for Java_original {
             && self.support_level >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -82,7 +82,6 @@ impl Interpreter for Java_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-
         if !Java_original::contains_main("public static void main(", &self.code, "//") {
             self.code = String::from(
                 "public class Main {
@@ -127,21 +126,19 @@ impl Interpreter for Java_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
+        } else if Java_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr.clone())
+                    .unwrap()
+                    .lines()
+                    .next()
+                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                    .to_owned(),
+            ))
         } else {
-            if Java_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone())
-                        .unwrap()
-                        .lines()
-                        .next()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                        .to_owned(),
-                ));
-            } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
-            }
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr).unwrap(),
+            ))
         }
     }
 }

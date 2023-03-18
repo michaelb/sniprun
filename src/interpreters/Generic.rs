@@ -59,7 +59,7 @@ impl Interpreter for Generic {
             .is_empty()
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty() {
+        } else if !self.data.current_line.replace(' ', "").is_empty() {
             self.code = self.data.current_line.clone();
         } else {
             self.code = String::from("");
@@ -72,7 +72,7 @@ impl Interpreter for Generic {
             + "\"language\":\""
             + &self.data.filetype
             + "\",\"files\":[{\"name\": \"name.any\",\"content\":\""
-            + &self.code.replace("\\\"", "\"").replace("\"", "\\\"")
+            + &self.code.replace("\\\"", "\"").replace('\"', "\\\"")
             + "\"}]}";
         Ok(())
     }
