@@ -2,6 +2,11 @@ sudo add-apt-repository ppa:neovim-ppa/stable -y
 sudo apt-get update
 sudo apt-get install neovim # install neovim 0.5+
 
+if ! command -v ocaml &> /dev/null
+then
+    sudo apt-get install ocaml
+fi
+
 if ! command -v ghc &> /dev/null
 then
     sudo apt-get install haskell-platform -y
@@ -69,13 +74,6 @@ then
     sudo apt-get install clojure
 fi
 
-if ! command -v ocaml &> /dev/null
-then
-    sudo add-apt-repository ppa:avsm/ppa
-    sudo apt-get install opam
-    opam init
-    eval $(opam env)
-fi
 
 
 if ! command -v go &> /dev/null
