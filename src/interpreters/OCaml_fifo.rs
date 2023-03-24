@@ -1,6 +1,6 @@
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
-pub struct Clojure_fifo {
+pub struct OCaml_fifo {
     support_level: SupportLevel,
     data: DataHolder,
     code: String,
@@ -12,18 +12,15 @@ pub struct Clojure_fifo {
     current_output_id: u32,
 }
 
-impl Clojure_fifo {
+impl OCaml_fifo {
     fn wait_out_file(
         &self,
         out_path: String,
-        err_path: String,
         id: u32,
     ) -> Result<String, SniprunError> {
         //extra nils come from the stdout & stderr mark prints themselves
-        let end_mark_ok = String::from("nil\nsniprun_finished_id=") + &id.to_string() + "\nnil";
-        let start_mark_ok = String::from("nil\nsniprun_started_id=") + &id.to_string() + "\nnil";
-        let end_mark_err = String::from("sniprun_finished_id=") + &id.to_string();
-        let start_mark_err = String::from("sniprun_started_id=") + &id.to_string();
+        let end_mark_ok = String::from("sniprun_finished_id=") + &id.to_string();
+        let start_mark_ok = String::from("sniprun_started_id=") + &id.to_string();
 
         info!(
             "searching for things between {:?} and {:?}",
@@ -31,7 +28,6 @@ impl Clojure_fifo {
         );
 
         let mut out_contents = String::new();
-        let mut err_contents = String::new();
 
         let mut pause = std::time::Duration::from_millis(50);
         let start = std::time::Instant::now();
@@ -46,35 +42,9 @@ impl Clojure_fifo {
                 )));
             }
 
-            //check for stderr first
-            if let Ok(mut file) = std::fs::File::open(&err_path) {
-                info!("errfile exists");
-                out_contents.clear();
-                let res = file.read_to_string(&mut err_contents);
-                if res.is_ok() {
-                    info!("errfile could be read : {:?}", err_contents);
-                    // info!("file : {:?}", contents);
-                    if err_contents.contains(&end_mark_err) {
-                        if let Some(index) = err_contents.rfind(&start_mark_err) {
-                            let mut err_to_display = err_contents[index + start_mark_err.len()
-                                ..err_contents.len() - end_mark_err.len() - 1]
-                                .to_owned();
-                            info!("err to display : {:?}", err_to_display);
-                            if !err_to_display.trim().is_empty() {
-                                info!("err found");
-                                let mut err_to_display_vec =
-                                    err_to_display.lines().collect::<Vec<&str>>();
-                                err_to_display_vec.dedup();
-                                err_to_display = err_to_display_vec.join("\n");
+            // ocaml REPL never prints to stderr or so it seems
 
-                                return Err(SniprunError::RuntimeError(err_to_display));
-                            }
-                        }
-                    }
-                }
-            }
-
-            //check for stdout
+            //check for stdout (if output starts with "Error: ", return as erros instead
             if let Ok(mut file) = std::fs::File::open(&out_path) {
                 info!("file exists");
                 out_contents.clear();
@@ -82,12 +52,18 @@ impl Clojure_fifo {
                 if res.is_ok() {
                     info!("file could be read : {:?}", out_contents);
                     // info!("file : {:?}", contents);
+                    out_contents = out_contents.replace("- : unit = ()\n","");
                     if out_contents.contains(&end_mark_ok) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark_ok).unwrap();
-                        return Ok(out_contents[index + start_mark_ok.len()
+                        let output = out_contents[index + start_mark_ok.len()
                             ..out_contents.len() - end_mark_ok.len() - 1]
-                            .to_owned());
+                            .to_owned();
+                        if output.trim().contains("Error: ") {
+                            return Err(SniprunError::RuntimeError(output));
+                        } else {
+                            return Ok(output);
+                        }
                     }
                 }
             }
@@ -98,12 +74,12 @@ impl Clojure_fifo {
 
     fn fetch_config(&mut self) {
         let default_interpreter_repl =
-            String::from("clojure -e \"(clojure.main/repl :prompt (defn f[] (\"\")) )\"");
-        let default_interpreter = String::from("clojure");
+            String::from("ocaml -noprompt");
+        let default_interpreter = String::from("ocaml");
         self.interpreter = default_interpreter;
         self.interpreter_repl = default_interpreter_repl;
         if let Some(used_interpreter) =
-            Clojure_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            OCaml_fifo::get_interpreter_option(&self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -111,7 +87,7 @@ impl Clojure_fifo {
             }
         }
         if let Some(used_interpreter_repl) =
-            Clojure_fifo::get_interpreter_option(&self.get_data(), "interpreter_repl")
+            OCaml_fifo::get_interpreter_option(&self.get_data(), "interpreter_repl")
         {
             if let Some(interpreter_string_repl) = used_interpreter_repl.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string_repl);
@@ -121,21 +97,21 @@ impl Clojure_fifo {
     }
 }
 
-impl Interpreter for Clojure_fifo {
-    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<Clojure_fifo> {
+impl Interpreter for OCaml_fifo {
+    fn new_with_level(data: DataHolder, level: SupportLevel) -> Box<OCaml_fifo> {
         //create a subfolder in the cache folder
-        let rwd = data.work_dir.clone() + "/clojure_fifo";
+        let rwd = data.work_dir.clone() + "/ocaml_fifo";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
             .create(&rwd)
-            .expect("Could not create directory for clojure-fifo");
+            .expect("Could not create directory for ocaml-fifo");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = rwd.clone() + "/main.clj";
+        let mfp = rwd.clone() + "/main.ml";
 
-        Box::new(Clojure_fifo {
-            cache_dir: rwd + "/" + &Clojure_fifo::get_nvim_pid(&data),
+        Box::new(OCaml_fifo {
+            cache_dir: rwd + "/" + &OCaml_fifo::get_nvim_pid(&data),
             data,
             support_level: level,
             code: String::from(""),
@@ -147,7 +123,7 @@ impl Interpreter for Clojure_fifo {
     }
 
     fn get_name() -> String {
-        String::from("Clojure_fifo")
+        String::from("OCaml_fifo")
     }
 
     fn default_for_filetype() -> bool {
@@ -164,9 +140,9 @@ impl Interpreter for Clojure_fifo {
 
     fn get_supported_languages() -> Vec<String> {
         vec![
-            String::from("Clojure"),
-            String::from("clojure"),
-            String::from("clj"),
+            String::from("OCaml"),
+            String::from("ml"),
+            String::from("mli"),
         ]
     }
 
@@ -209,7 +185,7 @@ impl Interpreter for Clojure_fifo {
         Ok(())
     }
     fn build(&mut self) -> Result<(), SniprunError> {
-        write(&self.main_file_path, &self.code).expect("Unable to write to file for clojure_fifo");
+        write(&self.main_file_path, &self.code).expect("Unable to write to file for ocaml_fifo");
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
@@ -220,12 +196,12 @@ impl Interpreter for Clojure_fifo {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if Clojure_fifo::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if OCaml_fifo::error_truncate(&self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr)
                     .unwrap()
                     .lines()
-                    .filter(|l| !l.to_lowercase().contains("warning"))
+                    .filter(|l| !l.to_lowercase().contains("error"))
                     .take(2)
                     .collect::<Vec<&str>>()
                     .join("\n"),
@@ -238,11 +214,11 @@ impl Interpreter for Clojure_fifo {
     }
 }
 
-impl ReplLikeInterpreter for Clojure_fifo {
+impl ReplLikeInterpreter for OCaml_fifo {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
         if !self.read_previous_code().is_empty() {
             // nothing to do, kernel already running
-            info!("clojure kernel already running");
+            info!("ocaml kernel already running");
 
             if let Some(id) = self.get_pid() {
                 // there is a race condition here but honestly you'd have to
@@ -266,8 +242,8 @@ impl ReplLikeInterpreter for Clojure_fifo {
 
             let init_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/init_repl.sh";
             info!(
-                "launching kernel : {:?} on {:?}",
-                init_repl_cmd, &self.cache_dir
+                "launching kernel : {:?} on {:?} (interpreter is {}",
+                init_repl_cmd, &self.cache_dir, self.interpreter_repl
             );
 
             match daemon() {
@@ -276,17 +252,17 @@ impl ReplLikeInterpreter for Clojure_fifo {
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
-                            Clojure_fifo::get_nvim_pid(&self.data),
+                            Sage_fifo::get_nvim_pid(&self.data),
                             self.interpreter_repl.clone(),
                         ])
                         .output()
                         .unwrap();
 
-                    return Err(SniprunError::CustomError("clojure REPL exited".to_owned()));
+                    return Err(SniprunError::CustomError("ocaml REPL exited".to_owned()));
                 }
                 Ok(Fork::Parent(_)) => {}
                 Err(_) => info!(
-                    "Clojure_fifo could not fork itself to the background to launch the kernel"
+                    "OCaml_fifo could not fork itself to the background to launch the kernel"
                 ),
             };
 
@@ -296,25 +272,25 @@ impl ReplLikeInterpreter for Clojure_fifo {
             std::thread::sleep(pause);
 
             Err(SniprunError::CustomError(
-                "Clojure interactive kernel launched, re-run your snippet".to_owned(),
+                "OCaml interactive kernel launched, re-run your snippet".to_owned(),
             ))
         }
     }
 
     fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
         self.add_boilerplate()?;
-        let start_mark = String::from("\n(println \"sniprun_started_id=")
+        let start_mark = String::from("\nprint_string \"sniprun_started_id=")
             + &self.current_output_id.to_string()
-            + "\")\n";
-        let end_mark = String::from("\n(println \"sniprun_finished_id=")
+            + "\\n\" ;;\n";
+        let end_mark = String::from("\nprint_string \"sniprun_finished_id=")
             + &self.current_output_id.to_string()
-            + "\")\n";
-        let start_mark_err = String::from("\n(.println *err* \"sniprun_started_id=")
+            + "\\n\" ;;\n";
+        let start_mark_err = String::from("\nPrintf.eprintf  \"sniprun_started_id=")
             + &self.current_output_id.to_string()
-            + "\")\n";
-        let end_mark_err = String::from("\n(.println *err* \"sniprun_finished_id=")
+            + "\\n\" ;;\n";
+        let end_mark_err = String::from("\nPrintf.eprintf \"sniprun_finished_id=")
             + &self.current_output_id.to_string()
-            + "\")\n";
+            + "\\n\" ;;\n";
 
         let all_code = String::from("\n") + &self.code + "\n\n";
         self.code = start_mark_err + &start_mark + &all_code + &end_mark_err + &end_mark;
@@ -337,21 +313,20 @@ impl ReplLikeInterpreter for Clojure_fifo {
         // info!("launcher launched : {:?}", res);
 
         let outfile = self.cache_dir.clone() + "/fifo_repl/out_file";
-        let errfile = self.cache_dir.clone() + "/fifo_repl/err_file";
         info!("outfile : {:?}", outfile);
-        self.wait_out_file(outfile, errfile, self.current_output_id)
+        self.wait_out_file(outfile, self.current_output_id)
     }
 }
 
 #[cfg(test)]
-mod test_clojure_fifo {
+mod test_ocaml_fifo {
     use super::*;
 
     #[test]
     fn simple_print() {
         let mut data = DataHolder::new();
-        data.current_bloc = String::from("(println \"lol\")");
-        let mut interpreter = Clojure_fifo::new(data);
+        data.current_bloc = String::from("print_string \"lol\\n\"");
+        let mut interpreter = OCaml_fifo::new(data);
         let res = interpreter.run_at_level(SupportLevel::Bloc);
         // should panic if not an Ok()
         let string_result = res.unwrap();
