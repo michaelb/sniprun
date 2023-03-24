@@ -1,3 +1,7 @@
+## v1.2.14
+- OCaml support (bloc-level, REPL)
+- Misc coding style improvements
+
 ## v1.2.13
 - Fix broken snipinfo on NixOS
 - Document install on NixOS
