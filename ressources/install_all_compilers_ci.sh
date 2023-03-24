@@ -69,6 +69,14 @@ then
     sudo apt-get install clojure
 fi
 
+if ! command -v ocaml &> /dev/null
+then
+    sudo add-apt-repository ppa:avsm/ppa
+    sudo apt-get install opam
+    opam init
+    eval $(opam env)
+fi
+
 
 if ! command -v go &> /dev/null
 then
