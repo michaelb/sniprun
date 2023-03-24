@@ -408,6 +408,7 @@ println!("-> {}", alphabet);
 | Markdown     | Bloc          | Yes\*\*\*        |
 | Mathematica  | Bloc          | Yes\*\*          |
 | Neorg        | Bloc          | Yes\*\*\*        |
+| OCaml        | Bloc          | Yes\*\*          |
 | OrgMode      | Bloc          | Yes\*\*\*        |
 | Perl/Perl6   | Line          | No               | 
 | Python3      | Import        | Yes\*\*          |
