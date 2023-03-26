@@ -141,6 +141,7 @@ impl Interpreter for OCaml_fifo {
     fn get_supported_languages() -> Vec<String> {
         vec![
             String::from("OCaml"),
+            String::from("ocaml"),
             String::from("ml"),
             String::from("mli"),
         ]

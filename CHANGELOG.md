@@ -1,5 +1,6 @@
-## v1.2.14
-- OCaml support (bloc-level, REPL)
+## v1.3.0
+- Compatibility with virtually **any** language through a revamped generic interpreter
+- OCaml official support (bloc-level, REPL)
 - Misc coding style improvements
 
 ## v1.2.13

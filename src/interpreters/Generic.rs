@@ -236,7 +236,7 @@ impl Interpreter for Generic {
         }
         if self.interpreter.is_empty() && self.compiler.is_empty() {
             return Err(SniprunError::CustomError(
-                "Neither interpreter nor compiler defined for this language".to_string(),
+                "Filetype not officially supported, nor configured for the Generic interpreter".to_string(),
             ));
         }
         Ok(())
