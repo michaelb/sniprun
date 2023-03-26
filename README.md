@@ -19,8 +19,6 @@
 
 
 
-
-
 # Introduction
 Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to provide stupidly fast partial code testing for interpreted **and compiled** [languages](https://michaelb.github.io/sniprun/sources/README.html#support-levels-and-languages). Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, and REPL/interpreters.
 
@@ -53,7 +51,7 @@ A very simple example (in C), play the .gif and look in the command area:
 
 ##### REPL-like behavior is available for some languages
 
-Python, Julia, Lua, JavaScript & Typescript (via deno), Clojure, R, Mathematica, Sage, coming soon for many other interpreted (and compiled languages).
+Python, Julia, Lua, JavaScript & Typescript (via deno), Clojure, R, Mathematica, Sage, coming soon for many other interpreted (and compiled) languages.
 With [REPL-like behavior](https://michaelb.github.io/sniprun/sources/README.html#repl-like-behavior), you can run code dependent on previously executed code, just like in a REPL, from within your favorite editor.
 
 ![](ressources/visual_assets/760091.png)
@@ -79,15 +77,12 @@ As a matter of proof, Sniprun :
 
 ## Known limitations
 
-**Sniprun isn't** a way to run a whole 50k lines, 3 languages projects. A one-liner `:!make run` is better suited to do this most of the time.
-
 Due to its nature, Sniprun may have trouble with programs that :
 
 - Mess with standard output / stderr
 - Need to read from stdin
-- Print incorrect UTF8 characters, or just too many lines
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache/sniprun, and relative imports may miss.
-- No support for Windows, and MacOS users have to compile sniprun manually 
+- No support for Windows, and NixOS or MacOS users have to compile sniprun locally.
 
 ## Changelog
 

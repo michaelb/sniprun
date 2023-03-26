@@ -166,13 +166,6 @@ You can do basically two things: **run** your code selection and **stop** it (in
 ```vim
 :SnipRun
 ```
-OR
-
-```
-:lua require'sniprun'.run()
-```
-("the first command is only a shorthand, you should
-configure the <Plug>SnipRun {ref}`mappings <mapping>`),
 
 **Running 'live'** (aka running the current line as you're typing is possible, but it's very important to read the warnings about this, so I'm keeping the instructions in {ref}`another chapter <livemode>`.
 
@@ -192,18 +185,14 @@ Configure a mapping to `<Plug>SnipRunOperator` and combine it with movements to 
 _ARGHHH_ I Sniprun'd an infinite loop (or anything that takes too long, or will crash, or anything)!
 No worries, the second and last command will kill everything Sniprun ran so far:
 
-```vim
- :SnipReset
-```
+`:SnipReset`
+
 Alternatively, exit & re-enter Neovim.
 
 ## Clearing
 You may want to clear virtual text, close a terminal or a floating window created by Sniprun: for this, one command to rule them all:
 
 `:SnipClose`
-
-(plug mapping : `<Plug>SnipClose`)
-
 
 
 ## REPL-like behavior
@@ -359,8 +348,6 @@ While both shorthands and \<Plug> are here to stay, **it's better practice to us
 Sniprun synergises exceptionnally well with plugins that help you creating print/debug statements, such as [vim-printer](https://github.com/meain/vim-printer).
 
 
-
-
 (support-levels-and-languages)=
 # Support levels and languages
 
@@ -419,7 +406,9 @@ println!("-> {}", alphabet);
 | Scala        | Bloc          | No               | 
 | TypeScript   | Bloc          | Yes\*\*   (Deno) |  
 
-Want support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=), or even better, contribute (see CONTRIBUTING.md), it's easy!
+Your language is not officially supported ? The [Generic interpreter](https://michaelb.github.io/sniprun/sources/Generic.html#Generic.html#community-examples-for-non-officially-supported_languages) can probably work with it !
+
+Want (official) support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=),or even better, contribute (see CONTRIBUTING.md), it's easy!
 
 \* (fake) REPL-like functionality, with potential unwanted side effects
 
