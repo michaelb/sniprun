@@ -47,7 +47,7 @@ impl Generic {
                 }
                 // if key was multiple filetypes as array
                 if let Some(supported_filetype_ar) = supported_filetypes_string_or_map.as_array() {
-                    for v in supported_filetype_ar.iter(){
+                    for v in supported_filetype_ar.iter() {
                         if ft == v.as_str().unwrap_or("") {
                             info!("key {} found", ft);
                             return true;
@@ -190,7 +190,7 @@ impl Interpreter for Generic {
             interpreted_lang,
             interpreter,
             compiler,
-            workdir : rwd,
+            workdir: rwd,
             main_file_path,
             boilerplate_pre,
             boilerplate_post,
@@ -236,14 +236,16 @@ impl Interpreter for Generic {
         }
         if self.interpreter.is_empty() && self.compiler.is_empty() {
             return Err(SniprunError::CustomError(
-                "Filetype not officially supported, nor configured for the Generic interpreter".to_string(),
+                "Filetype not officially supported, nor configured for the Generic interpreter"
+                    .to_string(),
             ));
         }
         Ok(())
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = self.boilerplate_pre.clone() + "\n" + &self.code + "\n" + &self.boilerplate_post;
+        self.code =
+            self.boilerplate_pre.clone() + "\n" + &self.code + "\n" + &self.boilerplate_post;
         Ok(())
     }
 
@@ -265,10 +267,10 @@ impl Interpreter for Generic {
                 .output()
                 .expect("Unable to execute compiler");
 
-        info!(
-            "generic compiled, status.success?:{}",
-            output.status.success()
-        );
+            info!(
+                "generic compiled, status.success?:{}",
+                output.status.success()
+            );
             if output.status.success() {
                 return Ok(());
             } else if Generic::error_truncate(&self.get_data()) == ErrTruncate::Short {
@@ -290,27 +292,26 @@ impl Interpreter for Generic {
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output;
-        if self.interpreted_lang {
-            output = Command::new(self.interpreter.split_whitespace().next().unwrap())
+        let output = if self.interpreted_lang {
+            Command::new(self.interpreter.split_whitespace().next().unwrap())
                 .args(self.interpreter.split_whitespace().skip(1))
                 .arg(&self.main_file_path)
                 .args(&self.get_data().cli_args)
                 .current_dir(&self.workdir)
                 .output()
-                .expect("Unable to start process");
+                .expect("Unable to start process")
         } else {
-            output = Command::new(self.exe_path.clone())
+            Command::new(self.exe_path.clone())
                 .args(&self.get_data().cli_args)
                 .current_dir(&self.workdir)
                 .output()
-                .expect("Unable to start process");
-        }
+                .expect("Unable to start process")
+        };
         info!(
             "generic executed, status.success?:{}",
             output.status.success()
         );
-    if output.status.success() {
+        if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
         } else if Generic::error_truncate(&self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
@@ -326,7 +327,5 @@ impl Interpreter for Generic {
                 String::from_utf8(output.stderr).unwrap(),
             ))
         }
-
-
     }
 }
