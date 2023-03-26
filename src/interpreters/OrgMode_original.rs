@@ -99,7 +99,6 @@ impl OrgMode_original {
             let flavor = self
                 .data
                 .current_line
-                .trim_start()
                 .split_whitespace()
                 .nth(1)
                 .unwrap_or("")
@@ -148,7 +147,6 @@ impl OrgMode_original {
                 if line_i.trim_start().to_lowercase().starts_with("#+begin_src")
                 {
                     let flavor = line_i
-                        .trim_start()
                         .split_whitespace()
                         .nth(1)
                         .unwrap_or("")
@@ -195,7 +193,7 @@ impl Interpreter for OrgMode_original {
             .create(&lwd)
             .expect("Could not create directory for example");
         let mut data_clone = data;
-        data_clone.work_dir = lwd.clone(); //trick other interpreter at creating their files here
+        data_clone.work_dir = lwd; //trick other interpreter at creating their files here
 
         let ddf = String::from("python"); //default default
 
@@ -269,7 +267,7 @@ impl Interpreter for OrgMode_original {
                 info!("checking named tag {} in line {}", tag_name, i);
                 if l.trim_start().to_lowercase().starts_with("#name:")
                     && tag_name.to_lowercase()
-                        == (l.to_lowercase().replace("#name:", "").trim().to_string())
+                        == (*l.to_lowercase().replace("#name:", "").trim())
                 {
                     found = true;
                     info!("found named tag {} in line: {}", tag_name, l);
@@ -282,7 +280,7 @@ impl Interpreter for OrgMode_original {
             }
         }
 
-        return Ok(());
+        Ok(())
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -308,7 +306,7 @@ impl Interpreter for OrgMode_original {
                 .current_bloc
                 .lines()
                 .next()
-                .unwrap_or(&String::new())
+                .unwrap_or("")
                 .to_string();
         } else {
             // no code was retrieved

@@ -149,8 +149,8 @@ impl Python3_fifo {
                 let already_imported: String = self.read_previous_code();
                 if !already_imported.contains(line.trim()) {
                     let line = line.trim_start();
-                    self.imports = self.imports.clone() + "\n" + &line;
-                    self.save_code(already_imported + "\n" + &line);
+                    self.imports = self.imports.clone() + "\n" + line;
+                    self.save_code(already_imported + "\n" + line);
                 }
             }
         }
@@ -171,7 +171,7 @@ impl Python3_fifo {
             }
         }
         for name in line
-            .replace(",", " ")
+            .replace(',', " ")
             .replace("from", " ")
             .replace("import ", " ")
             .split(' ')
@@ -314,7 +314,7 @@ impl Interpreter for Python3_fifo {
             && self.get_current_level() >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -454,8 +454,8 @@ impl ReplLikeInterpreter for Python3_fifo {
         // unless it's a "except" or "finally" clause from a try-catch bloc
         let mut lines = vec![];
         for i in 0..(self.code.lines().count() - 1) {
-            let l1 = self.code.lines().skip(i).next().unwrap();
-            let l2 = self.code.lines().skip(i+1).next().unwrap();
+            let l1 = self.code.lines().nth(i).unwrap();
+            let l2 = self.code.lines().nth(i+1).unwrap();
             let nw1 = l1.len() - l1.trim_start().len();
             let nw2 = l2.len() - l2.trim_start().len();
             lines.push(l1);

@@ -1,6 +1,6 @@
 [package]
 name = "sniprun"
-version = "1.2.13"
+version = "1.3.0-beta"
 authors = ["michaelb <michael.bleuez2@gmail.com>"]
 rust-version="1.55"
 edition = "2018"
@@ -20,7 +20,6 @@ close_fds="*"
 thiserror="*"
 dirs="*"
 regex="*"
-serde_json="*"
 strip-ansi-escapes="*"
 libc="0.2.79"
 serial_test = "*"

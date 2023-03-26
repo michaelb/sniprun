@@ -79,7 +79,7 @@ impl Interpreter for Scala_original {
             self.code = self.data.current_bloc.clone();
 
         // if there is only data on current line / or Line is the max support level
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -95,8 +95,9 @@ impl Interpreter for Scala_original {
         // an example following Rust's syntax
 
         if !Scala_original::contains_main("int main (", &self.code, "//") {
-            self.code =
-                String::from("object Main {\ndef main(arg: Array[String]) = {") + &self.code + "}\n}";
+            self.code = String::from("object Main {\ndef main(arg: Array[String]) = {")
+                + &self.code
+                + "}\n}";
         }
         Ok(())
     }
@@ -139,21 +140,19 @@ impl Interpreter for Scala_original {
         if output.status.success() {
             //return stdout
             Ok(String::from_utf8(output.stdout).unwrap())
+        } else if Scala_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr.clone())
+                    .unwrap()
+                    .lines()
+                    .next()
+                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                    .to_owned(),
+            ))
         } else {
-            if Scala_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone())
-                        .unwrap()
-                        .lines()
-                        .next()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                        .to_owned(),
-                ));
-            } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
-            }
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr).unwrap(),
+            ))
         }
     }
 }

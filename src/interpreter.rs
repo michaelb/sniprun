@@ -147,7 +147,7 @@ pub trait Interpreter: ReplLikeInterpreter {
             }
         }
 
-        return res;
+        res
     }
 
     fn run_at_level_repl(&mut self, level: SupportLevel) -> Result<String, SniprunError> {
@@ -283,7 +283,7 @@ impl<T: Interpreter> InterpreterUtils for T {
             config: &[(neovim_lib::Value, neovim_lib::Value)],
         ) -> Option<usize> {
             for (i, kv) in config.iter().enumerate() {
-                if name == kv.0.as_str().unwrap() {
+                if name == kv.0.as_str().unwrap_or("") {
                     return Some(i);
                 }
             }
@@ -311,7 +311,7 @@ impl<T: Interpreter> InterpreterUtils for T {
     }
 
     fn error_truncate(data: &DataHolder) -> ErrTruncate {
-        if let Some(error_truncate) = T::get_interpreter_option(&data, "error_truncate") {
+        if let Some(error_truncate) = T::get_interpreter_option(data, "error_truncate") {
             if let Some(error_truncate) = error_truncate.as_str() {
                 info!("Setting truncate to: {}", error_truncate);
                 match error_truncate {

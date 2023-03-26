@@ -96,5 +96,5 @@ fn main() -> Result<(), std::io::Error> {
         );
     }
 
-    fs::write(&dest_path, string_to_write)
+    fs::write(dest_path, string_to_write)
 }

@@ -109,7 +109,8 @@ impl Clojure_fifo {
                 info!("Using custom interpreter: {}", interpreter_string);
                 self.interpreter = interpreter_string.to_string();
             }
-        } if let Some(used_interpreter_repl) =
+        }
+        if let Some(used_interpreter_repl) =
             Clojure_fifo::get_interpreter_option(&self.get_data(), "interpreter_repl")
         {
             if let Some(interpreter_string_repl) = used_interpreter_repl.as_str() {
@@ -117,7 +118,6 @@ impl Clojure_fifo {
                 self.interpreter_repl = interpreter_string_repl.to_string();
             }
         }
-
     }
 }
 
@@ -195,7 +195,7 @@ impl Interpreter for Clojure_fifo {
             && self.get_current_level() >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -220,23 +220,20 @@ impl Interpreter for Clojure_fifo {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
+        } else if Clojure_fifo::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr)
+                    .unwrap()
+                    .lines()
+                    .filter(|l| !l.to_lowercase().contains("warning"))
+                    .take(2)
+                    .collect::<Vec<&str>>()
+                    .join("\n"),
+            ))
         } else {
-            if Clojure_fifo::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone())
-                        .unwrap()
-                        .lines()
-                        .filter(|l| !l.to_lowercase().contains("warning"))
-                        .take(2)
-                        .collect::<Vec<&str>>()
-                        .join("\n")
-                        .to_owned(),
-                ));
-            } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
-            }
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr).unwrap(),
+            ))
         }
     }
 }
@@ -279,14 +276,13 @@ impl ReplLikeInterpreter for Clojure_fifo {
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
+                            Clojure_fifo::get_nvim_pid(&self.data),
                             self.interpreter_repl.clone(),
                         ])
                         .output()
                         .unwrap();
 
-                    return Err(SniprunError::CustomError(
-                        "clojure REPL exited".to_owned(),
-                    ));
+                    return Err(SniprunError::CustomError("clojure REPL exited".to_owned()));
                 }
                 Ok(Fork::Parent(_)) => {}
                 Err(_) => info!(

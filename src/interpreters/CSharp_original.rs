@@ -38,7 +38,7 @@ impl Interpreter for CSharp_original {
             .expect("Could not create directory for csharp-original");
 
         //pre-create string pointing to main file's and binary's path
-        let mfp = rwd.clone() + "/main.cs";
+        let mfp = rwd + "/main.cs";
         let bp = String::from(&mfp[..mfp.len() - 3]); // remove extension so binary is named 'main'
         Box::new(CSharp_original {
             data,
@@ -96,7 +96,7 @@ impl Interpreter for CSharp_original {
             && self.support_level >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -159,21 +159,19 @@ impl Interpreter for CSharp_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
+        } else if CSharp_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            return Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr.clone())
+                    .unwrap()
+                    .lines()
+                    .next()
+                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                    .to_owned(),
+            ));
         } else {
-            if CSharp_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone())
-                        .unwrap()
-                        .lines()
-                        .next()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                        .to_owned(),
-                ));
-            } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
-            }
+            return Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr).unwrap(),
+            ));
         }
     }
 }

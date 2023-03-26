@@ -73,7 +73,7 @@ impl Python3_jupyter {
             }
         }
         for name in line
-            .replace(",", " ")
+            .replace(',', " ")
             .replace("from", " ")
             .replace("import ", " ")
             .split(' ')
@@ -119,7 +119,7 @@ impl Interpreter for Python3_jupyter {
         let mfp = pwd.clone() + "/main.py";
         let lp = pwd.clone() + "/main.sh";
 
-        let kp = pwd.clone() + "/kernel_sniprun.json";
+        let kp = pwd + "/kernel_sniprun.json";
         Box::new(Python3_jupyter {
             data,
             support_level: level,
@@ -177,7 +177,7 @@ impl Interpreter for Python3_jupyter {
             && self.get_current_level() >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -215,21 +215,19 @@ impl Interpreter for Python3_jupyter {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
+        } else if Python3_jupyter::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr.clone())
+                    .unwrap()
+                    .lines()
+                    .last()
+                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                    .to_owned(),
+            ))
         } else {
-            if Python3_jupyter::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone())
-                        .unwrap()
-                        .lines()
-                        .last()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                        .to_owned(),
-                ));
-            } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
-            }
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr).unwrap(),
+            ))
         }
     }
 }

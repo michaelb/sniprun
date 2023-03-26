@@ -13,6 +13,8 @@ branch_name="$(git symbolic-ref HEAD 2>/dev/null)"
 echo -n "Version : " $local_version
 if [ $local_version == $remote_version ]; then
   echo -n " (up-to-date)"
+elif [[ "$local_version" == *"beta"* ]];then
+  echo -n  " (latest stable is $remote_version)"
 else
   echo -n  " (update to " $remote_version "is available)"
 fi

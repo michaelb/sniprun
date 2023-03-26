@@ -33,6 +33,7 @@ Welcome to Sniprun's documentation!
    sources/interpreters/CS_original.md
    sources/interpreters/D_original.md
    sources/interpreters/FSharp_fifo.md
+   sources/interpreters/Generic.md
    sources/interpreters/GFM_original.md
    sources/interpreters/Go_original.md
    sources/interpreters/Haskell.md

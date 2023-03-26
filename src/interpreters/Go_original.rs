@@ -54,11 +54,11 @@ impl Go_original {
         let used_imports: Vec<(&str, &str)> = all_imports
             .iter()
             .map(|(a, p)| (a.as_str(), p.as_str()))
-            .filter(|s| self.import_used(&s.0))
+            .filter(|s| self.import_used(s.0))
             .collect();
         info!("used imports are {:?}", used_imports);
 
-        if used_imports.len() == 0 {
+        if used_imports.is_empty() {
             return Ok(());
         }
 
@@ -66,9 +66,9 @@ impl Go_original {
         for import in used_imports.iter() {
             let (alias, path) = import;
             import_code.push_str(alias);
-            import_code.push_str(" ");
+            import_code.push(' ');
             import_code.push_str(path);
-            import_code.push_str("\n");
+            import_code.push('\n');
         }
         import_code.push_str(")\n");
 
@@ -77,7 +77,7 @@ impl Go_original {
         Ok(())
     }
     fn import_used(&self, import: &str) -> bool {
-        let r =Regex::new(&format!("[^a-zA-Z\\d_]{}\\.", import)).unwrap();
+        let r = Regex::new(&format!("[^a-zA-Z\\d_]{}\\.", import)).unwrap();
         r.is_match(&self.code)
     }
 
@@ -87,29 +87,29 @@ impl Go_original {
         let mut in_import_bracket = false;
         for l in s {
             if l.trim().starts_with("import") {
-                if l.contains("(") {
+                if l.contains('(') {
                     in_import_bracket = true;
                     continue;
                 } else {
                     // lone import
-                    let chunks: Vec<&str> = l.trim().split_whitespace().skip(1).collect();
+                    let chunks: Vec<&str> = l.split_whitespace().skip(1).collect();
                     if let Some(alias_path) = Go_original::import_pathname(chunks) {
                         vec_imports.push(alias_path);
                     }
                 }
             }
-            if l.contains(")") && in_import_bracket {
+            if l.contains(')') && in_import_bracket {
                 in_import_bracket = false;
             }
 
             if in_import_bracket {
-                let chunks: Vec<&str> = l.trim().split_whitespace().collect();
+                let chunks: Vec<&str> = l.split_whitespace().collect();
                 if let Some(alias_path) = Go_original::import_pathname(chunks) {
                     vec_imports.push(alias_path);
                 }
             }
         }
-        return vec_imports;
+        vec_imports
     }
 
     fn import_pathname(vec: Vec<&str>) -> Option<(String, String)> {
@@ -122,7 +122,7 @@ impl Go_original {
     }
 
     fn parse_import_path(p: &str) -> String {
-        p.replace("\"", "").split("/").last().unwrap().to_string()
+        p.replace('\"', "").split('/').last().unwrap().to_string()
     }
 }
 
@@ -199,7 +199,7 @@ impl Interpreter for Go_original {
             && self.support_level >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -223,7 +223,7 @@ impl Interpreter for Go_original {
         if Go_original::contains_main("package main", &self.code, "//") {
             warn!("\"package main\" detected in code: don't include that; sniprun adds it itself");
         }
-        self.code = self.code.replace("package main",""); //remove possibly and put it another at the right place
+        self.code = self.code.replace("package main", ""); //remove possibly and put it another at the right place
         self.code = String::from("package main\n") + &self.code;
 
         Ok(())
@@ -247,18 +247,18 @@ impl Interpreter for Go_original {
         //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
             if Go_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::CompilationError(
+                Err(SniprunError::CompilationError(
                     String::from_utf8(output.stderr.clone())
                         .unwrap()
                         .lines()
                         .last()
                         .unwrap_or(&String::from_utf8(output.stderr).unwrap())
                         .to_owned(),
-                ));
+                ))
             } else {
-                return Err(SniprunError::CompilationError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
+                Err(SniprunError::CompilationError(
+                    String::from_utf8(output.stderr).unwrap(),
+                ))
             }
         } else {
             Ok(())
@@ -273,21 +273,19 @@ impl Interpreter for Go_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
+        } else if Go_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr.clone())
+                    .unwrap()
+                    .lines()
+                    .last()
+                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                    .to_owned(),
+            ))
         } else {
-            if Go_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone())
-                        .unwrap()
-                        .lines()
-                        .last()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                        .to_owned(),
-                ));
-            } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
-            }
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr).unwrap(),
+            ))
         }
     }
 }

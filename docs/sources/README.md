@@ -114,7 +114,7 @@ Plug 'michaelb/sniprun', {'do': 'bash ./install.sh'}
 
 
 
-### Or install from the AUR
+### or install from the AUR
 
 ![](https://img.shields.io/aur/maintainer/sniprun)
 <a href="https://aur.archlinux.org/packages/neovim-sniprun/">
@@ -166,13 +166,6 @@ You can do basically two things: **run** your code selection and **stop** it (in
 ```vim
 :SnipRun
 ```
-OR
-
-```
-:lua require'sniprun'.run()
-```
-("the first command is only a shorthand, you should
-configure the <Plug>SnipRun {ref}`mappings <mapping>`),
 
 **Running 'live'** (aka running the current line as you're typing is possible, but it's very important to read the warnings about this, so I'm keeping the instructions in {ref}`another chapter <livemode>`.
 
@@ -192,18 +185,14 @@ Configure a mapping to `<Plug>SnipRunOperator` and combine it with movements to 
 _ARGHHH_ I Sniprun'd an infinite loop (or anything that takes too long, or will crash, or anything)!
 No worries, the second and last command will kill everything Sniprun ran so far:
 
-```vim
- :SnipReset
-```
+`:SnipReset`
+
 Alternatively, exit & re-enter Neovim.
 
 ## Clearing
 You may want to clear virtual text, close a terminal or a floating window created by Sniprun: for this, one command to rule them all:
 
 `:SnipClose`
-
-(plug mapping : `<Plug>SnipClose`)
-
 
 
 ## REPL-like behavior
@@ -285,7 +274,7 @@ require'sniprun'.setup({
   live_mode_toggle='off'      --# live mode toggle, see Usage - Running for more info   
 
   --# miscellaneous compatibility/adjustement settings
-  inline_messages = 0,        --# inline_message (0/1) is a one-line way to display messages
+  inline_messages = false,    --# boolean toggle for a one-line way to display messages
                               --# to workaround sniprun not being able to display anything
 
   borders = 'single',         --# display borders around floating windows
@@ -359,14 +348,12 @@ While both shorthands and \<Plug> are here to stay, **it's better practice to us
 Sniprun synergises exceptionnally well with plugins that help you creating print/debug statements, such as [vim-printer](https://github.com/meain/vim-printer).
 
 
-
-
 (support-levels-and-languages)=
 # Support levels and languages
 
 As of writing, languages can be supported up to different extents:
 
-- **Unsupported**/**Untested** : You should not expect anything to work, except if the generic interpreter works correctly with it (at most Line level support).
+- **Unsupported**/**Untested** : [Community configs](https://michaelb.github.io/sniprun/sources/Generic.html#Generic.html#community-examples-for-non-officially-supported_languages) for the generic interpreter may support any language up to bloc level
 - **Line** : Code contained in a single line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
 - **Bloc** : You can select any piece of code that is semantically correct (minus the eventual entry point) on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:
 
@@ -408,6 +395,7 @@ println!("-> {}", alphabet);
 | Markdown     | Bloc          | Yes\*\*\*        |
 | Mathematica  | Bloc          | Yes\*\*          |
 | Neorg        | Bloc          | Yes\*\*\*        |
+| OCaml        | Bloc          | Yes\*\*          |
 | OrgMode      | Bloc          | Yes\*\*\*        |
 | Perl/Perl6   | Line          | No               | 
 | Python3      | Import        | Yes\*\*          |
@@ -418,7 +406,9 @@ println!("-> {}", alphabet);
 | Scala        | Bloc          | No               | 
 | TypeScript   | Bloc          | Yes\*\*   (Deno) |  
 
-Want support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=), or even better, contribute (see CONTRIBUTING.md), it's easy!
+Your language is not officially supported ? The [Generic interpreter](https://michaelb.github.io/sniprun/sources/Generic.html#Generic.html#community-examples-for-non-officially-supported_languages) can probably work with it !
+
+Want (official) support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=),or even better, contribute (see CONTRIBUTING.md), it's easy!
 
 \* (fake) REPL-like functionality, with potential unwanted side effects
 

@@ -65,7 +65,7 @@ impl Mathematica_original {
                         info!("found");
                         break;
                     }
-                    if contents.contains(&error) {
+                    if contents.contains(error) {
                         return Err(
                             "No valid password found. Check :SnipInfo Mathematica_original"
                                 .to_owned(),
@@ -151,7 +151,7 @@ impl Interpreter for Mathematica_original {
             && self.support_level >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();

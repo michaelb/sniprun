@@ -15,7 +15,7 @@ impl Interpreter for JS_original {
         builder
             .create(&bwd)
             .expect("Could not create directory for js-original");
-        let mfp = bwd.clone() + "/main.js";
+        let mfp = bwd + "/main.js";
         Box::new(JS_original {
             data,
             support_level: level,
@@ -70,7 +70,7 @@ impl Interpreter for JS_original {
             && self.get_current_level() >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();

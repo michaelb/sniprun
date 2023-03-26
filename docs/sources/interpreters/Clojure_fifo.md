@@ -18,7 +18,7 @@ require'sniprun'.setup({
     }
 })
 ```
-You can change those value, (to use `clj` for example ?) but it could break sniprun anytime
+You can change those values, (to use `clj` for example ?) but it could break sniprun anytime
 
 
 

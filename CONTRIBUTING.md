@@ -2,7 +2,13 @@
 
 Just in case: to compile `cargo build --release`, to create and show the documentation, `cargo doc --open` ( open target/doc/sniprun/index.html from your browser if not automatic).
 
-## Add support for your language
+## Add support for a new language language
+
+First, you should try out to configure the [Generic interpreter](https://michaelb.github.io/sniprun/sources/Generic.html#Generic.html#community-examples-for-non-officially-supported_languages). Someone may have figured it out already!
+
+If you succeed in doing so yourself, please contribute to that page so other may benefit from it!
+
+Otherwise, carry on:
 
 ### How hard it is?
 

@@ -36,7 +36,7 @@ impl Interpreter for TypeScript_original {
             String::from("typescript"),
             String::from("typescriptreact"),
             String::from("ts"), //should not be necessary, but just in case
-                                       // another similar name (like python and python3)?
+                                // another similar name (like python and python3)?
         ]
     }
 
@@ -64,7 +64,6 @@ impl Interpreter for TypeScript_original {
         SupportLevel::Bloc
     }
 
-
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
         //note: you probably don't have to modify, or even understand this function
 
@@ -81,7 +80,7 @@ impl Interpreter for TypeScript_original {
             && self.support_level >= SupportLevel::Bloc
         {
             self.code = self.data.current_bloc.clone();
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -101,7 +100,8 @@ impl Interpreter for TypeScript_original {
 
     fn build(&mut self) -> Result<(), SniprunError> {
         //write code to file
-        let mut _file = File::create(&self.main_file_path).expect("failed to create file for typescript_original");
+        let mut _file = File::create(&self.main_file_path)
+            .expect("failed to create file for typescript_original");
         // io errors can be ignored, or handled into a proper sniprunerror
         // if you panic, it should not be too dangerous for anyone
         write(&self.main_file_path, &self.code)
@@ -120,22 +120,20 @@ impl Interpreter for TypeScript_original {
         if output.status.success() {
             //return stdout
             Ok(String::from_utf8(output.stdout).unwrap())
+        } else if TypeScript_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr.clone())
+                    .unwrap()
+                    .lines()
+                    .filter(|l| l.contains("Error:"))
+                    .last()
+                    .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                    .to_owned(),
+            ))
         } else {
-            if TypeScript_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone())
-                        .unwrap()
-                        .lines()
-                        .filter(|l| l.contains("Error:"))
-                        .last()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
-                        .to_owned(),
-                ));
-            } else {
-                return Err(SniprunError::RuntimeError(
-                    String::from_utf8(output.stderr.clone()).unwrap().to_owned(),
-                ));
-            }
+            Err(SniprunError::RuntimeError(
+                String::from_utf8(output.stderr).unwrap(),
+            ))
         }
     }
 }
@@ -145,7 +143,7 @@ impl Interpreter for TypeScript_original {
 mod test_typescript_original {
     use super::*;
     #[test]
-     fn simple_print() {
+    fn simple_print() {
         let mut data = DataHolder::new();
 
         //inspired from Rust syntax

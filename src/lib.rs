@@ -361,10 +361,9 @@ impl EventHandler {
                     .unwrap()
                     .iter()
                     .map(|v| v.as_str().unwrap())
-                    .map(|v| DisplayType::from_str(v))
+                    .map(DisplayType::from_str)
                     .inspect(|x| info!("[FILLDATA] display type found : {:?}", x))
-                    .filter(|x| x.is_ok())
-                    .map(|x| x.unwrap())
+                    .filter_map(|x| x.ok())
                     .collect();
                 info!("[FILLDATA] got display types");
             }
@@ -377,12 +376,11 @@ impl EventHandler {
                     .unwrap()
                     .iter()
                     .map(|v| v.as_str().unwrap())
-                    .map(|v| DisplayType::from_str(v))
+                    .map(DisplayType::from_str)
                     .inspect(|x| {
                         info!("[FILLDATA] display type with 'no output'on found : {:?}", x)
                     })
-                    .filter(|x| x.is_ok())
-                    .map(|x| x.unwrap())
+                    .filter_map(|x| x.ok())
                     .collect();
                 info!("[FILLDATA] got show_no_output");
             }
@@ -519,7 +517,7 @@ pub fn start() {
                             info!("[RUN] created launcher");
                             let result = launcher.select_and_run();
                             info!("[RUN] Interpreter return a result");
-                            data.range[1] = data.range[1] + 1; // display on end of code bloc
+                            data.range[1] += 1; // display on end of code bloc
                             display(result, nvim, &data);
                         }
                     } else {

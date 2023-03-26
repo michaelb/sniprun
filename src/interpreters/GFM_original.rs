@@ -81,7 +81,7 @@ impl GFM_original {
                 if line_i.trim_start().starts_with("```") {
                     //found end of bloc
                     self.data.current_bloc = code_bloc.join("\n");
-                    return Ok(self.filetype_from_str(flavor.trim())?);
+                    return self.filetype_from_str(flavor.trim());
                 } else {
                     info!("adding line {} to current bloc", i);
                     code_bloc.push(line_i.to_string());
@@ -105,7 +105,7 @@ impl GFM_original {
                         .unwrap()
                         .trim()
                         .to_owned();
-                    return Ok(self.filetype_from_str(&ft)?);
+                    return self.filetype_from_str(&ft);
                 }
             }
         }
@@ -149,7 +149,7 @@ impl Interpreter for GFM_original {
             .create(&lwd)
             .expect("Could not create directory for example");
         let mut data_clone = data;
-        data_clone.work_dir = lwd.clone(); //trick other interpreter at creating their files here
+        data_clone.work_dir = lwd; //trick other interpreter at creating their files here
 
         let ddf = String::from("python"); //default default
 
@@ -220,7 +220,7 @@ impl Interpreter for GFM_original {
                 .current_bloc
                 .lines()
                 .next()
-                .unwrap_or(&String::new())
+                .unwrap_or("")
                 .to_string();
         } else {
             // no code was retrieved
