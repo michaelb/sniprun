@@ -353,7 +353,7 @@ Sniprun synergises exceptionnally well with plugins that help you creating print
 
 As of writing, languages can be supported up to different extents:
 
-- **Unsupported**/**Untested** : [Community configs](https://michaelb.github.io/sniprun/sources/Generic.html#Generic.html#community-examples-for-non-officially-supported_languages) for the generic interpreter may support any language up to bloc level
+- **Unsupported**/**Untested** : [Community configs](https://michaelb.github.io/sniprun/sources/Generic.html#community-examples-for-non-officially-supported_languages) for the generic interpreter may support any language up to bloc level
 - **Line** : Code contained in a single line works, for example: `print([x**2 for x in range(10)])` . Won't work if you use a variable defined elsewhere.
 - **Bloc** : You can select any piece of code that is semantically correct (minus the eventual entry point) on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:
 
@@ -406,7 +406,7 @@ println!("-> {}", alphabet);
 | Scala        | Bloc          | No               | 
 | TypeScript   | Bloc          | Yes\*\*   (Deno) |  
 
-Your language is not officially supported ? The [Generic interpreter](https://michaelb.github.io/sniprun/sources/Generic.html#Generic.html#community-examples-for-non-officially-supported_languages) can probably work with it !
+Your language is not officially supported ? The [Generic interpreter](https://michaelb.github.io/sniprun/sources/Generic.html#community-examples-for-non-officially-supported_languages) can probably work with it !
 
 Want (official) support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=),or even better, contribute (see CONTRIBUTING.md), it's easy!
 
