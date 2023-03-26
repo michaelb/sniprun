@@ -283,7 +283,7 @@ impl<T: Interpreter> InterpreterUtils for T {
             config: &[(neovim_lib::Value, neovim_lib::Value)],
         ) -> Option<usize> {
             for (i, kv) in config.iter().enumerate() {
-                if name == kv.0.as_str().unwrap() {
+                if name == kv.0.as_str().unwrap_or("") {
                     return Some(i);
                 }
             }

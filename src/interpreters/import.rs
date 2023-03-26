@@ -2,7 +2,6 @@ use crate::error::SniprunError;
 use crate::interpreter::{Interpreter, InterpreterUtils, ReplLikeInterpreter, SupportLevel, ErrTruncate};
 use crate::DataHolder;
 use log::{info,warn};
-use serde_json;
 
 use crate::interpreters;
 use crate::iter_types;
