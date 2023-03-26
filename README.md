@@ -65,7 +65,7 @@ With [REPL-like behavior](https://michaelb.github.io/sniprun/sources/README.html
 
 As a matter of proof, Sniprun :
 
- - supports [all these languages (compiled & interpreted)](https://michaelb.github.io/sniprun/sources/README.html#support-levels-and-languages)
+ - Officially supports [all these languages (compiled & interpreted)](https://michaelb.github.io/sniprun/sources/README.html#support-levels-and-languages), and virtually [any language](https://michaelb.github.io/sniprun/sources/Generic.html#Generic.html#community-examples-for-non-officially-supported_languages)
  - can create and connect to REPLs in order to present an interactive and playful interface
  - can run things like GUI plots, networks requests or even Ansible playbooks
  - doesn't require even one line of configuration by default (but can be customized up to the tiniest things)

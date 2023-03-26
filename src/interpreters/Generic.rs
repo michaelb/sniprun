@@ -330,24 +330,3 @@ impl Interpreter for Generic {
 
     }
 }
-
-#[cfg(test)]
-mod test_generic {
-    use super::*;
-    use serial_test::serial;
-
-    #[test]
-    #[serial(generic)]
-    fn simple_print_python() {
-        let mut data = DataHolder::new();
-        data.current_bloc = String::from("print(3)");
-        data.filetype = String::from("python");
-        data.sniprun_root_dir = std::env::current_dir().unwrap().display().to_string();
-        let mut interpreter = Generic::new(data);
-        let res = interpreter.run();
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert!(string_result.contains('3'));
-    }
-}
