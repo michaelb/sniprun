@@ -10,7 +10,7 @@ To use it, configure sniprun with:
 ```
 lua << EOF
 require'sniprun'.setup({
-    display = {"NvimNotify"],
+    display = {"NvimNotify"},
 })
 EOF
 ```
