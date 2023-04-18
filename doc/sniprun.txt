@@ -1,6 +1,6 @@
 *sniprun*
 
-Minimum version of neovim: 0.43, recommended >= 0.5
+Minimum version of neovim: 0.5 (0.4.3 compatibility up to sniprun v0.4.9)
 
 Authors: Michael bleuez <michael.bleuez2@gmail.com>
          Vigouroux Thomas <tomvig38@gmail.com>
@@ -20,7 +20,6 @@ QUICK START                                       *sniprun-quickstart*
 
 
 
-
 :'<'>Sniprun        Send current visual selection (line-wise) to Sniprun
 :SnipRun            Send the current line to Sniprun
 
@@ -35,17 +34,17 @@ ALL COMMANDS                                       *sniprun-commands*
 :SnipRun                 Send the current line  to Sniprun
 :'<'>Sniprun             Send current visual selection (line-wise) to Sniprun
 
-:SnipReset               Restart sniprun (that will also clear the cache that may help Sniprun compile faster)
+:SnipReset               Restart sniprun / reset from a clean slate
 
 :SnipReplMemoryClean     If you sent incorrect code to a interpreter with enabled REPL mode, you can clear the 
                          REPL 'memory' with that. It will forget all variables you have defined previously etc..
 
-:SnipInfo               Get Sniprun version info and info about the available interpreters
+:SnipInfo                Get Sniprun version info and info about the available interpreters
 
-:SnipClose              Clear virtual text and close splits and floating windows created by sniprun
+:SnipClose               Clear virtual text and close splits and floating windows created by sniprun
 
-:SnipLive               Toggle live mode (read the docs on github.com/michaelb/sniprun first !)
-                        This command is not available by default given how much important knowledge about that is
+:SnipLive                Toggle live mode (read the docs on github.com/michaelb/sniprun first !)
+                         This command is not available by default given how much important knowledge about that is
 
 
 ==============================================================================
@@ -55,68 +54,88 @@ Add the setup() call somewhere in your config files and modify the fields as nee
 
 Note: the 'lua << EOF .... EOF' part is only needed if you configure sniprun in a vimscript (.vim) file. If you configure sniprun in a lua file (.lua), directly 'require' sniprun.
 
-You can omit configuration fields to let them follow the defaults; so the most basic sniprun config is just:
+You can omit any configuration fields, the defaults will be used instead; so the most basic sniprun config is just:
 
 lua  <<EOF
 require'sniprun'.setup()
 EOF
+
+(which isn't even required actually, empty configs can be omitted)
 
 
 This is an example of all the available fields:
 
 lua << EOF
 require'sniprun'.setup({
-  selected_interpreters = {'Python3_fifo'},        --" use those instead of the default for the current filetype
-  repl_enable = {'Python3_fifo', 'R_original'},    --" enable REPL-like behavior for the given interpreters
-  repl_disable = {},                               --" disable REPL-like behavior for the given interpreters
+  selected_interpreters = {"Rust_original"},     --# use those instead of the default for the current filetype
+  repl_enable = {},               --# enable REPL-like behavior for the given interpreters
+  repl_disable = {},              --# disable REPL-like behavior for the given interpreters
 
-  interpreter_options = {
-      C_original = { compiler = "clang" },
-      GFM_original = {
-         default_filetype = 'bash'
-      }
-   },
+  interpreter_options = {         --# interpreter-specific options, see docs / :SnipInfo <name>
 
+    --# use the interpreter name as key
+    GFM_original = {
+      use_on_filetypes = {"markdown.pandoc"}    --# the 'use_on_filetypes' configuration key is
+                                                --# available for every interpreter
+    },
+    Python3_original = {
+        error_truncate = "auto"         --# Truncate runtime errors 'long', 'short' or 'auto'
+                                        --# the hint is available for every interpreter
+                                        --# but may not be always respected
+    }
+  },      
 
-  inline_messages = 0,             --" inline_message (0/1) is a one-line way to display messages
-                                   --" to workaround sniprun not being able to display anything
+  --# you can combo different display modes as desired and with the 'Ok' or 'Err' suffix
+  --# to filter only sucessful runs (or errored-out runs respectively)
+  display = {
+    "Classic",                    --# display results in the command-line  area
+    "VirtualTextOk",              --# display ok results as virtual text (multiline is shortened)
 
-  borders = 'single',              --" type display borders around floating windows, if used
-                                   --" possible values are 'none', 'single', 'double', or 'shadow'
+    -- "VirtualText",             --# display results as virtual text
+    -- "TempFloatingWindow",      --# display results in a floating window
+    -- "LongTempFloatingWindow",  --# same as above, but only long results. To use with VirtualText[Ok/Err]
+    -- "Terminal",                --# display results in a vertical split
+    -- "TerminalWithCode",        --# display results and code history in a vertical split
+    -- "NvimNotify",              --# display with the nvim-notify plugin
+    -- "Api"                      --# return output to a programming interface
+  },
 
-  -- customize highlight groups (setting this field in configuration overrides colorscheme)
- snipruncolors = {
+  live_display = { "VirtualTextOk" }, --# display mode used in live_mode
+
+  display_options = {
+    terminal_width = 45,       --# change the terminal display option width
+    notification_timeout = 5   --# timeout for nvim_notify output
+  },
+
+  --# You can use the same keys to customize whether a sniprun producing
+  --# no output should display nothing or '(no output)'
+  show_no_output = {
+    "Classic",
+    "TempFloatingWindow",      --# implies LongTempFloatingWindow, which has no effect on its own
+  },
+
+  --# customize highlight groups (setting this overrides colorscheme)
+  snipruncolors = {
     SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
     SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
     SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
     SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
   },
-  show_no_output = {
-    "Classic",
-    "TempFloatingWindow",      --# implies LongTempFloatingWindow, which has no effect on its own
-    -- ....etc
-  },
 
-  --" you can combo different display modes as desired
-  display = {
-    "Classic",                    -- "display results in the command-line  area
-    "VirtualTextOk",              -- "display ok results as virtual text (multiline is shortened)
-    -- "VirtualTextErr",          -- "display error results as virtual text
-    -- "TempFloatingWindow",      -- "display results in a floating window
-    -- "LongTempFloatingWindow",  -- "same as above, but only long results. To use with VirtualText__
-    -- "Terminal"                 -- "display results in a vertical split
-    -- "TerminalWithCode",        --# display results and code history in a vertical split
-    -- "NvimNotify",              --# display with the nvim-notify plugin
-    -- "Api"                      --# return output to a programming interface
-  },
+  live_mode_toggle='off'      --# live mode toggle, either 'off' or 'enable'
+
+  --# miscellaneous compatibility/adjustement settings
+  inline_messages = false,    --# boolean toggle for a one-line way to display messages
+                              --# to workaround sniprun not being able to display anything
+
+  borders = 'single',         --# display borders around floating windows
+                              --# possible values are 'none', 'single', 'double', or 'shadow'
 })
 EOF
-
-
 
 
 ==============================================================================
 TROUBLESHOOTING                                  *sniprun-troubleshooting*
 
-If anything is not working; you should consult the README at github.com/michaelb/sniprun, as well as the
-documentation for every interpreter through :SnipInfo <name>, as well as the :checkhealth sniprun
+If anything is not working; you should consult the README at https://michaelb.github.io/sniprun/index.html,
+as well as the documentation for every interpreter through :SnipInfo <name>, and the :checkhealth sniprun
