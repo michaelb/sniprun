@@ -7,7 +7,8 @@
  - update the changelog
  - remove the 'beta' from the version field in Cargo.toml
 
-## merge dev -> master
+## merge
+ - dev -> master
 
 ## on master branch
  - create a new SIGNED tag vX.Y.Z on master: `git tag -s v8.9.5` (tag message should be equal to tag number, eg: v8.9.5)
