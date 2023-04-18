@@ -1,3 +1,7 @@
+## v1.3.1
+- Fix SnipInfo on some Mac
+- Fix :help sniprun
+
 ## v1.3.0
 - Compatibility with virtually **any** language through a revamped generic interpreter
 - OCaml official support (bloc-level, REPL)

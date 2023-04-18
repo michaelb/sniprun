@@ -292,6 +292,16 @@ function M.display_lines_in_floating_win(lines)
 	-- vim.api.nvim_buf_add_highlight(M.info_floatwin.buf, namespace_id, hl, h,0,-1) -- highlight lines in floating window
 end
 
+function dir_exists(path)
+   local ok, err, code = os.rename(path, path)
+   if not ok then
+      if code == 13 then
+         -- Permission denied, but it exists
+         return true
+      end
+   end
+   return ok, err
+end
 
 function M.info(arg)
   if arg == nil or arg == "" then
@@ -300,7 +310,13 @@ function M.info(arg)
 
     vim.wait(500) -- let enough time for the sniprun binary to generate the file
     print(" ")
-    local cache_dir = os.getenv("XDG_CACHE_HOME") or os.getenv("HOME").."/.cache"
+    -- default cache dir is different on Linux and MacOS
+    local default_cache_dir = os.getenv("HOME").."/.cache"
+    if dir_exists(os.getenv("HOME").."/Library/Cache") then -- we're (probably) on MacOS
+        default_cache_dir = os.getenv("HOME").."/Library/Cache"
+    end
+
+    local cache_dir = os.getenv("XDG_CACHE_HOME") or default_cache_dir
     local sniprun_cache_dir = cache_dir.."/sniprun"
     local lines = lines_from(sniprun_cache_dir.."/infofile.txt")
     -- print all lines content

@@ -53,7 +53,7 @@ For example:
 lua <<EOF
 require('sniprun').setup({
 
-    interpreter_options = {         --# interpreter-specific options, see docs / :SnipInfo <name>
+    interpreter_options = {         --# interpreter-specific options, see doc / :SnipInfo <name>
 
         --# use the interpreter name as key
         GFM_original = {

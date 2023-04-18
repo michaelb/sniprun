@@ -6,4 +6,4 @@ ressources/infofile.txt
 Cargo.lock
 test_sniprun.log
 default.profraw
-docs/_build
+doc/_build
