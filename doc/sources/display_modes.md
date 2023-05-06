@@ -125,6 +125,9 @@ lua << EOF
 require'sniprun'.setup({
     display = { "Terminal" },
     display_options = {
+        terminal_scrollback = vim.o.scrollback, -- change terminal display scrollback lines
+        terminal_line_number = false, -- whether show line number in terminal window
+        terminal_signcolumn = false, -- whether show signcolumn in terminal window
         terminal_width = 45,
     },
 })

@@ -35,6 +35,9 @@ M.config_values = {
   live_display = { "VirtualTextOk" }, -- displayed only for live mode
 
   display_options = {
+    terminal_scrollback = vim.o.scrollback, -- change terminal display scrollback lines
+    terminal_line_number = false, -- whether show line number in terminal window
+    terminal_signcolumn = false, -- whether show signcolumn in terminal window
     terminal_width = 45,       -- change the terminal display option width
     notification_timeout = 5   -- timeout for nvim_notify output
   },
@@ -80,6 +83,8 @@ end
 
 function M.setup(opts)
   opts = opts or {}
+
+  -- pre-process config keys
   for key,value in pairs(opts) do
     if M.config_values[key] == nil then
       error(string.format('[Sniprun] Key %s does not exist in config values',key))
@@ -91,8 +96,11 @@ function M.setup(opts)
     if key == 'live_mode_toggle' and opts[key] == 'enable' then
       require('sniprun.live_mode')
     end
-    M.config_values[key] = value
   end
+
+  -- merge user config into default config values
+  M.config_values = vim.tbl_deep_extend("force", M.config_values, opts)
+
   M.configure_keymaps()
   M.setup_highlights()
   M.setup_autocommands()

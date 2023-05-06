@@ -45,12 +45,22 @@ function M.term_set_window_handle()
 end
 
 function M.term_set_buffer_chan(winid)
-  if M.term.buffer ~= -1 then return end
+  if M.term.buffer ~= -1 then
+    vim.api.nvim_win_set_buf(winid, M.term.buffer)
+    return
+  end
 
   local buf = vim.api.nvim_create_buf(false, true)
-  vim.fn.win_execute(winid, "set scrollback=1")
-  vim.fn.win_execute(winid, "setlocal nonu")
-  vim.fn.win_execute(winid, "setlocal signcolumn=no")
+
+  vim.api.nvim_win_set_buf(winid, buf)
+  local display_options = require("sniprun").config_values.display_options
+  vim.fn.win_execute(winid, "setlocal scrollback=" .. display_options.terminal_scrollback)
+
+  local lnumber = display_options.terminal_line_number and "number" or "nonumber"
+  vim.fn.win_execute(winid, "setlocal " .. lnumber)
+
+  local scl = display_options.terminal_signcolumn and vim.o.signcolumn or "no"
+  vim.fn.win_execute(winid, "setlocal signcolumn=" .. scl)
 
   M.term.buffer = buf
   M.term.chan = vim.api.nvim_open_term(buf, {})
@@ -59,8 +69,6 @@ end
 function M.term_open()
   M.term_set_window_handle()
   M.term_set_buffer_chan(M.term.window_handle)
-
-  vim.api.nvim_win_set_buf(M.term.window_handle, M.term.buffer)
 end
 
 function M.write_to_term(message, ok)
@@ -84,9 +92,12 @@ function M.write_to_term(message, ok)
     vim.api.nvim_chan_send(M.term.chan, line)
     vim.api.nvim_chan_send(M.term.chan, "\n\r");
   end
-  vim.api.nvim_chan_send(M.term.chan, "\n\r");
+
   M.term.current_line = h
 
+  if M.term.current_line > vim.fn.line("w$") then
+    vim.fn.win_execute(M.term.window_handle, "normal " .. M.term.current_line .. "gg")
+  end
 end
 
 
