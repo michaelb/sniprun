@@ -312,8 +312,8 @@ function M.info(arg)
     print(" ")
     -- default cache dir is different on Linux and MacOS
     local default_cache_dir = os.getenv("HOME").."/.cache"
-    if dir_exists(os.getenv("HOME").."/Library/Cache") then -- we're (probably) on MacOS
-        default_cache_dir = os.getenv("HOME").."/Library/Cache"
+    if dir_exists(os.getenv("HOME").."/Library/Caches") then -- we're (probably) on MacOS
+        default_cache_dir = os.getenv("HOME").."/Library/Caches"
     end
 
     local cache_dir = os.getenv("XDG_CACHE_HOME") or default_cache_dir
