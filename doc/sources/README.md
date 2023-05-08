@@ -114,16 +114,6 @@ Plug 'michaelb/sniprun', {'do': 'bash ./install.sh'}
 
 
 
-### or install from the AUR
-
-![](https://img.shields.io/aur/maintainer/sniprun)
-<a href="https://aur.archlinux.org/packages/neovim-sniprun/">
-  <img alt="AUR last modified" src="https://img.shields.io/aur/last-modified/sniprun?label=AUR%20package%20updated"/>
-</a>
-
-An independently maintained [AUR package](https://aur.archlinux.org/packages/neovim-sniprun/) is available for Arch users.
-
-
 ### or install sniprun manually
 
 
