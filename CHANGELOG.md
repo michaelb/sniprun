@@ -1,3 +1,7 @@
+## v1.3.2
+- Quality-of-life fixes courtesy of @zhengpd
+- Keep terminal display open by default
+
 ## v1.3.1
 - Fix SnipInfo on some Mac
 - Fix :help sniprun

@@ -121,6 +121,12 @@ function M.clear_virtual_text()
   vim.cmd("let sniprun_namespace_id = nvim_create_namespace('sniprun')\n call nvim_buf_clear_namespace(0,sniprun_namespace_id, 0 ,-1)")
 end
 
+function M.term_autoclose()
+    if not require('sniprun').config_values.display_options.terminal_persistence then
+        M.term_close()
+    end
+end
+
 function M.term_close()
   if M.term.window_handle == 0 then return end
   vim.api.nvim_win_close(M.term.window_handle, true)

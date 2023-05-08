@@ -114,16 +114,6 @@ Plug 'michaelb/sniprun', {'do': 'bash ./install.sh'}
 
 
 
-### or install from the AUR
-
-![](https://img.shields.io/aur/maintainer/sniprun)
-<a href="https://aur.archlinux.org/packages/neovim-sniprun/">
-  <img alt="AUR last modified" src="https://img.shields.io/aur/last-modified/sniprun?label=AUR%20package%20updated"/>
-</a>
-
-An independently maintained [AUR package](https://aur.archlinux.org/packages/neovim-sniprun/) is available for Arch users.
-
-
 ### or install sniprun manually
 
 
@@ -251,11 +241,12 @@ require'sniprun'.setup({
   live_display = { "VirtualTextOk" }, --# display mode used in live_mode
 
   display_options = {
-    terminal_scrollback = vim.o.scrollback, -- change terminal display scrollback lines
-    terminal_line_number = false, -- whether show line number in terminal window
-    terminal_signcolumn = false, -- whether show signcolumn in terminal window
-    terminal_width = 45,       --# change the terminal display option width
-    notification_timeout = 5   --# timeout for nvim_notify output
+    terminal_scrollback = vim.o.scrollback, --# change terminal display scrollback lines
+    terminal_line_number = false, --# whether show line number in terminal window
+    terminal_signcolumn = false,  --# whether show signcolumn in terminal window
+    terminal_persistence = true,  --# always keep the terminal open (true) or close it at every occasion (false)
+    terminal_width = 45,          --# change the terminal display option width
+    notification_timeout = 5      --# timeout for nvim_notify output
   },
 
   --# You can use the same keys to customize whether a sniprun producing
