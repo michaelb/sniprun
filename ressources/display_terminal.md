@@ -26,6 +26,9 @@ EOF
 You can change the width of the terminal by using the display option in the configuration:
 ```
   display_options = {
+    terminal_scrollback = vim.o.scrollback, -- change terminal display scrollback lines
+    terminal_line_number = false, -- whether show line number in terminal window
+    terminal_signcolumn = false, -- whether show signcolumn in terminal window
     terminal_width = 45,       -- change the terminal display option width
   },
 ```

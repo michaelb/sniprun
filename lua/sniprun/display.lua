@@ -1,7 +1,6 @@
 local M={}
 M.term={}
 M.fw_handle=0
-M.term.opened = 0
 M.term.buffer = -1
 M.term.window_handle = 0
 M.term.current_line = -1
@@ -33,23 +32,43 @@ function M.fw_open(row, column, message, ok, temp)
   M.fw_handle = vim.api.nvim_open_win(bufnr, false, {relative='win', width=w+1, height=h, bufpos=bp, focusable=false, style='minimal',border=M.borders})
 end
 
-function M.term_open()
-  if M.term.opened ~= 0 then return end
-  local open_term_cmd = ':rightb'.. require('sniprun').config_values.display_options.terminal_width .. 'vsplit'
-  vim.cmd(open_term_cmd)
-  local buf = vim.api.nvim_create_buf(false,true)
-  local win = vim.api.nvim_get_current_win()
-  vim.api.nvim_win_set_buf(win,buf)
-  local chan = vim.api.nvim_open_term(buf, {})
-  vim.cmd("set scrollback=1")
-  vim.cmd('setlocal nonu')
-  vim.cmd('setlocal signcolumn=no')
+function M.term_set_window_handle()
+  local winid = vim.fn.bufwinid(M.term.buffer)
+  if winid ~= -1 then return end
 
+  local width = require("sniprun").config_values.display_options.terminal_width
+  vim.cmd(":rightb " .. width .. "vsplit")
+  M.term.window_handle = vim.api.nvim_get_current_win()
+
+  -- return to doc buffer
   vim.cmd("wincmd p")
-  M.term.opened = 1
-  M.term.window_handle = win
+end
+
+function M.term_set_buffer_chan(winid)
+  if M.term.buffer ~= -1 then
+    vim.api.nvim_win_set_buf(winid, M.term.buffer)
+    return
+  end
+
+  local buf = vim.api.nvim_create_buf(false, true)
+
+  vim.api.nvim_win_set_buf(winid, buf)
+  local display_options = require("sniprun").config_values.display_options
+  vim.fn.win_execute(winid, "setlocal scrollback=" .. display_options.terminal_scrollback)
+
+  local lnumber = display_options.terminal_line_number and "number" or "nonumber"
+  vim.fn.win_execute(winid, "setlocal " .. lnumber)
+
+  local scl = display_options.terminal_signcolumn and vim.o.signcolumn or "no"
+  vim.fn.win_execute(winid, "setlocal signcolumn=" .. scl)
+
   M.term.buffer = buf
-  M.term.chan = chan
+  M.term.chan = vim.api.nvim_open_term(buf, {})
+end
+
+function M.term_open()
+  M.term_set_window_handle()
+  M.term_set_buffer_chan(M.term.window_handle)
 end
 
 function M.write_to_term(message, ok)
@@ -73,9 +92,12 @@ function M.write_to_term(message, ok)
     vim.api.nvim_chan_send(M.term.chan, line)
     vim.api.nvim_chan_send(M.term.chan, "\n\r");
   end
-  vim.api.nvim_chan_send(M.term.chan, "\n\r");
+
   M.term.current_line = h
 
+  if M.term.current_line > vim.fn.line("w$") then
+    vim.fn.win_execute(M.term.window_handle, "normal " .. M.term.current_line .. "gg")
+  end
 end
 
 
@@ -102,7 +124,6 @@ end
 function M.term_close()
   if M.term.window_handle == 0 then return end
   vim.api.nvim_win_close(M.term.window_handle, true)
-  M.term.opened = 0
   M.term.window_handle = 0
   M.term.buffer = -1
   M.term.current_line = 0
