@@ -25,7 +25,7 @@ Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to p
 
 </br>
 
-TLDR: `Plug 'michaelb/sniprun', {'do': 'bash install.sh'}`, `:SnipRun`, `:'<,'>SnipRun`, `:SnipInfo`
+TLDR: `Plug 'michaelb/sniprun', {'do': 'sh install.sh'}`, `:SnipRun`, `:'<,'>SnipRun`, `:SnipInfo`
 
 # Installation, configuration, ...
 
@@ -82,7 +82,8 @@ Due to its nature, Sniprun may have trouble with programs that :
 - Mess with standard output / stderr
 - Need to read from stdin
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache/sniprun, and relative imports may miss.
-- No support for Windows, and NixOS or MacOS users have to compile sniprun locally.
+- No support for Windows
+- Users of other Unixes have to compile sniprun locally.
 
 ## Changelog
 
