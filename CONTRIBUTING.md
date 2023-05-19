@@ -1,5 +1,9 @@
 # Welcome to the contributing page
 
+Every contribution is welcome, though please mind that Pull Requests should point to the `dev` branch, **not** the `master` branch, which ought to be as stable and synchronized with the released binary as possible.
+
+## Getting started
+
 Just in case: to compile `cargo build --release`, to create and show the documentation, `cargo doc --open` ( open target/doc/sniprun/index.html from your browser if not automatic).
 
 ## Add support for a new language language

@@ -1,3 +1,7 @@
+## v1.3.3
+- POSIX-compliant install script
+- Install script does not hide stdout/err anymore
+
 ## v1.3.2
 - Quality-of-life fixes courtesy of @zhengpd
 - Keep terminal display open by default

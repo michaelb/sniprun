@@ -27,4 +27,4 @@ jobs:
         file: sniprun
         tag: ${{github.ref}}
         overwrite: false
-        body: "Automated publish by Github Action"
+        body: "This release and associated artifacts were created by Github Action. See the changelog [here](https://github.com/michaelb/sniprun/blob/master/CHANGELOG.md)."

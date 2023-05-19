@@ -91,7 +91,7 @@ Sniprun will then:
 <p>
 
 ```vim
-Plug 'michaelb/sniprun', {'do': 'bash ./install.sh'}
+Plug 'michaelb/sniprun', {'do': 'sh ./install.sh'}
 " 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary,
 "  but you'll compile sniprun at every update & will need the rust toolchain
 ```
@@ -104,10 +104,10 @@ Plug 'michaelb/sniprun', {'do': 'bash ./install.sh'}
 <p>
 
 ```
-  use { 'michaelb/sniprun', run = 'bash ./install.sh'}
+  use { 'michaelb/sniprun', run = 'sh ./install.sh'}
 ```
 
-(or likewise, `'bash ./install.sh 1'` to get the bleeding edge aka compile yourself the latest commit of sniprun)
+(or likewise, `'sh ./install.sh 1'` to get the bleeding edge aka compile yourself the latest commit of sniprun)
 
 </details>
 </p>
@@ -129,7 +129,7 @@ Sniprun is packaged for NixOS, so install ['as usual'](https://nix-community.git
 
 The normal installation way will work, as long as you compile locally the sniprun binary; example with packer
 
- `use { 'michaelb/sniprun', run = 'bash ./install.sh 1'}`
+ `use { 'michaelb/sniprun', run = 'sh ./install.sh 1'}`
 
 #### you do nothing like everyone else
 
@@ -479,7 +479,7 @@ Due to its nature, Sniprun may have trouble with programs that :
 
 Begin by updating the plugin and running `:SnipReset` and then `:checkhealth sniprun`
 
-- **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `bash ./install.sh 1` as post-install to compile locally.
+- **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `sh ./install.sh 1` as post-install to compile locally.
 
 # Contribute
 
