@@ -13,7 +13,7 @@ ignore_in_ci = []
 
 [dependencies]
 neovim-lib="0.6.1"
-log="0.4"
+log="0.4.18"
 log-panics = { version = "2", features = ["with-backtrace"]}
 simple-logging="2.0"
 close_fds="0.3"
