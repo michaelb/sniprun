@@ -200,7 +200,7 @@ function M.configure_keymaps()
   vim.cmd("function! SnipRunOperator(...) \n lua require'sniprun'.run('n') \n endfunction")
   vim.cmd("command! SnipClose :lua require'sniprun.display'.close_all()")
 
-  vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('".. M.config_values.sniprun_path .."/docs/sources/interpreters', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
+  vim.cmd("function! ListInterpreters(A,L,P) \n let l = split(globpath('".. M.config_values.sniprun_path .."/doc/sources/interpreters', '*.md'),'\\n') \n let rl = [] \n for e in l \n let rl += [split(e,'/')[-1][:-4]] \n endfor \n return rl \n endfunction")
   vim.cmd("command! -nargs=* -complete=customlist,ListInterpreters SnipInfo :lua require'sniprun'.info(<q-args>)")
 
   vim.cmd("function! SnipRunLauncher(...) range \nif a:firstline == a:lastline \n lua require'sniprun'.run() \n elseif a:firstline == 1 && a:lastline == line(\"$\")\nlet g:sniprun_cli_args_list = a:000\n let g:sniprun_cli_args = join(g:sniprun_cli_args_list,\" \") \n lua require'sniprun'.run('w') \n else \n lua require'sniprun'.run('v') \n endif \n endfunction")
@@ -307,17 +307,6 @@ function M.display_lines_in_floating_win(lines)
 	-- vim.api.nvim_buf_add_highlight(M.info_floatwin.buf, namespace_id, hl, h,0,-1) -- highlight lines in floating window
 end
 
-function dir_exists(path)
-   local ok, err, code = os.rename(path, path)
-   if not ok then
-      if code == 13 then
-         -- Permission denied, but it exists
-         return true
-      end
-   end
-   return ok, err
-end
-
 function M.info(arg)
   if arg == nil or arg == "" then
     M.config_values["sniprun_root_dir"] = M.config_values.sniprun_path
@@ -327,7 +316,7 @@ function M.info(arg)
     print(" ")
     -- default cache dir is different on Linux and MacOS
     local default_cache_dir = os.getenv("HOME").."/.cache"
-    if dir_exists(os.getenv("HOME").."/Library/Caches") then -- we're (probably) on MacOS
+    if vim.fn.isdirectory(os.getenv("HOME").."/Library/Caches") then -- we're (probably) on MacOS
         default_cache_dir = os.getenv("HOME").."/Library/Caches"
     end
 
@@ -337,7 +326,7 @@ function M.info(arg)
     -- print all lines content
     M.display_lines_in_floating_win(lines)
     else --help about a particular interpreter
-      local lines = lines_from(M.config_values.sniprun_path.."/docs/sources/interpreters/"..string.gsub(arg,"%s+","")..".md")
+      local lines = lines_from(M.config_values.sniprun_path.."/doc/sources/interpreters/"..string.gsub(arg,"%s+","")..".md")
       M.display_lines_in_floating_win(lines)
   end
 end
