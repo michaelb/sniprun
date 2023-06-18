@@ -1,3 +1,6 @@
+## v1.3.4
+- SnipInfo fixes
+
 ## v1.3.3
 - POSIX-compliant install script
 - Install script does not hide stdout/err anymore
