@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: Install Rust 1.59 toolchain
+      - name: Install Rust 1.60 toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: 1.59
+          toolchain: 1.60
           override: true
       - name: build
         run: cargo build --release

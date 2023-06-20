@@ -1,3 +1,6 @@
+## v1.3.5
+- MSRV increase to 1.60
+
 ## v1.3.4
 - SnipInfo fixes
 
