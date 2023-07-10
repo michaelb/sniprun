@@ -316,7 +316,7 @@ function M.info(arg)
     print(" ")
     -- default cache dir is different on Linux and MacOS
     local default_cache_dir = os.getenv("HOME").."/.cache"
-    if vim.fn.isdirectory(os.getenv("HOME").."/Library/Caches") then -- we're (probably) on MacOS
+    if (vim.fn.isdirectory(os.getenv("HOME").."/Library/Caches")~=0) then -- we're (probably) on MacOS
         default_cache_dir = os.getenv("HOME").."/Library/Caches"
     end
 
