@@ -50,6 +50,7 @@ Welcome to Sniprun's documentation!
    sources/interpreters/Python3_jupyter.md
    sources/interpreters/Python3_original.md
    sources/interpreters/R_original.md
+   sources/interpreters/Ruby_original.md
    sources/interpreters/Rust_original.md
    sources/interpreters/Sage_fifo.md
    sources/interpreters/Scala_original.md

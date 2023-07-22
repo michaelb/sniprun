@@ -1,3 +1,7 @@
+## v1.3.5
+- MSRV increase to 1.60
+- Improve MacOS detection
+
 ## v1.3.4
 - SnipInfo fixes
 
