@@ -13,6 +13,11 @@ export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
 ##############
 # BUILD DOCS #
 ##############
+#
+
+# Adds .nojekyll file to the root to signal to GitHub that  
+# directories that start with an underscore (_) can remain
+touch .nojekyll
  
 # Python Sphinx, configured with source/conf.py
 # See https://www.sphinx-doc.org/
@@ -36,9 +41,6 @@ git init
 git remote add deploy "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 git checkout -b gh-pages
  
-# Adds .nojekyll file to the root to signal to GitHub that  
-# directories that start with an underscore (_) can remain
-touch .nojekyll
  
 # Add README
 cat > README.md <<EOF
