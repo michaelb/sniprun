@@ -2,9 +2,9 @@
 set -x
 
 apt-get update
-apt-get -y install git rsync python3-sphinx python3-pip
+apt-get -y install git rsync python3-pip
 
-python3 -m pip install myst-parser sphinx-rtd-theme
+python3 -m pip install myst-parser sphinx-rtd-theme sphinx
 
 pwd ls -lah
 git config --global --add safe.directory /__w/sniprun/sniprun
@@ -15,9 +15,6 @@ export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
 ##############
 #
 
-# Adds .nojekyll file to the root to signal to GitHub that  
-# directories that start with an underscore (_) can remain
-touch .nojekyll
  
 # Python Sphinx, configured with source/conf.py
 # See https://www.sphinx-doc.org/
@@ -40,6 +37,10 @@ pushd "${docroot}"
 git init
 git remote add deploy "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 git checkout -b gh-pages
+
+# Adds .nojekyll file to the root to signal to GitHub that  
+# directories that start with an underscore (_) can remain
+touch .nojekyll
  
  
 # Add README
