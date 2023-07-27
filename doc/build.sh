@@ -5,7 +5,9 @@ set -e
 apt-get update
 apt-get -y install git rsync python3-pip
 
-python3 -m pip install myst-parser==1.0.0 docutils==0.18 sphinx-rtd-theme==1.2.0 sphinx==5.0
+python3 -m venv venv
+source venv/bin/activate
+pip install myst-parser==1.0.0 docutils==0.18 sphinx-rtd-theme==1.2.0 sphinx==5.0
 
 pwd ls -lah
 git config --global --add safe.directory /__w/sniprun/sniprun
@@ -22,6 +24,8 @@ export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
 cd doc
 make clean
 make html
+
+deactivate
 
 #######################
 # Update GitHub Pages #
@@ -66,6 +70,7 @@ git commit -am "${msg}"
 git push deploy gh-pages --force
  
 popd # return to main repo sandbox root
+
  
 # exit cleanly
 exit 0
