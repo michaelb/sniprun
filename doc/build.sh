@@ -3,7 +3,7 @@ set -x
 set -e
 
 apt-get update
-apt-get -y install git rsync python3-pip
+apt-get -y install git rsync python3-pip python3-venv
 
 python3 -m venv venv
 source venv/bin/activate
