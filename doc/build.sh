@@ -4,7 +4,7 @@ set -x
 apt-get update
 apt-get -y install git rsync python3-pip
 
-python3 -m pip install myst-parser sphinx-rtd-theme sphinx==5.3 PyYAML==6.0.1
+python3 -m pip install myst-parser==1.0.0 sphinx-rtd-theme sphinx==5.3
 
 pwd ls -lah
 git config --global --add safe.directory /__w/sniprun/sniprun
