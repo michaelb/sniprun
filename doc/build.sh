@@ -2,7 +2,7 @@
 set -x
 
 apt-get update
-apt-get -y install git rsync python3-pip
+apt-get -y install git rsync python3-pip python-yaml
 
 python3 -m pip install myst-parser==1.0.0 sphinx-rtd-theme sphinx==5.3
 
