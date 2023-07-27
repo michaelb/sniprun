@@ -1,10 +1,13 @@
 #!/bin/bash
 set -x
+set -e
 
 apt-get update
-apt-get -y install git rsync python3-sphinx python3-pip
+apt-get -y install git rsync python3-pip python3-venv
 
-python3 -m pip install myst-parser sphinx-rtd-theme
+python3 -m venv venv
+source venv/bin/activate
+pip install myst-parser==1.0.0 docutils==0.18.1 sphinx-rtd-theme==1.2.0 sphinx==5.0
 
 pwd ls -lah
 git config --global --add safe.directory /__w/sniprun/sniprun
@@ -13,12 +16,16 @@ export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
 ##############
 # BUILD DOCS #
 ##############
+#
+
  
 # Python Sphinx, configured with source/conf.py
 # See https://www.sphinx-doc.org/
 cd doc
 make clean
 make html
+
+deactivate
 
 #######################
 # Update GitHub Pages #
@@ -35,10 +42,11 @@ pushd "${docroot}"
 git init
 git remote add deploy "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 git checkout -b gh-pages
- 
+
 # Adds .nojekyll file to the root to signal to GitHub that  
 # directories that start with an underscore (_) can remain
 touch .nojekyll
+ 
  
 # Add README
 cat > README.md <<EOF
@@ -62,6 +70,7 @@ git commit -am "${msg}"
 git push deploy gh-pages --force
  
 popd # return to main repo sandbox root
+
  
 # exit cleanly
 exit 0
