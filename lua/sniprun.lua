@@ -332,10 +332,10 @@ function M.info(arg)
 end
 
 function M.health()
-  local health_start = vim.fn["health#report_start"]
-  local health_ok = vim.fn['health#report_ok']
-  local health_error = vim.fn['health#report_error']
-  local health_warn = vim.fn['health#report_warn']
+  local health_start = vim.health.start
+  local health_ok = vim.health.ok
+  local health_error = vim.health.error
+  local health_warn = vim.health.warn
   health_start('Installation')
 
   if vim.fn.executable('cargo') == 0 then health_warn("Rust toolchain not available", {"[optionnal] Install the rust toolchain https://www.rust-lang.org/tools/install"})
