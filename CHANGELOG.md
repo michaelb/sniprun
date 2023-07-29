@@ -1,3 +1,8 @@
+## v1.3.6
+- Ruby documentation
+- Fix deprecating checkhealth
+- Fix install script breaking under certain conditions
+
 ## v1.3.5
 - MSRV increase to 1.60
 - Improve MacOS detection
