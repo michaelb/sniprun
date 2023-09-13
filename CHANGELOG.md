@@ -1,3 +1,6 @@
+## v1.3.7
+- Fix issue in multiple languages when last line is a comment
+
 ## v1.3.6
 - Ruby documentation
 - Fix deprecating checkhealth
