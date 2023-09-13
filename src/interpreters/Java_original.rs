@@ -88,7 +88,7 @@ impl Interpreter for Java_original {
                 public static void main(String[] args) {
                     ",
             ) + &self.code
-                + "}
+                + "\n}
             }";
         }
         Ok(())
