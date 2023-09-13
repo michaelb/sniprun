@@ -21,10 +21,11 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: Install Rust 1.64 toolchain
+      - run: "rm Cargo.lock"
+      - name: Install Rust 1.65 toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: 1.64
+          toolchain: 1.65
           override: true
       - name: build
         run: cargo build --release

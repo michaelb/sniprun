@@ -4,7 +4,7 @@
 # Prepare the release
 
 ## on dev branch
- - update Cargo.lock: `cargo update`
+ - update Cargo.lock: `cargo update` (but do not break MSRV, so do it package by package and check with MSRV toolchain)
  - check compilation success
  - cargo fmt --all / cargo check / cargo clippy
  - update the changelog
