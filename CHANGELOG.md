@@ -1,5 +1,7 @@
 ## v1.3.7
 - Fix issue in multiple languages when last line is a comment
+- Install instructions for lazy.nvim/Lunarvim
+- MSRV increase to 1.65
 
 ## v1.3.6
 - Ruby documentation
