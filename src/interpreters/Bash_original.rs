@@ -90,7 +90,7 @@ impl Interpreter for Bash_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         //add shebang just in case
-        self.code = String::from("#!/usr/bin/env bash \n") + &self.code;
+        self.code = String::from("#!/usr/bin/env bash \n") + "sniprun_main123456789(){\n" + &self.code + "\n}\n" + "sniprun_main123456789\n";
         Ok(())
     }
 
