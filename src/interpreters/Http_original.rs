@@ -27,6 +27,17 @@ impl Interpreter for Http_original {
         String::from("Http_original")
     }
 
+    fn behave_repl_like_default() -> bool {
+        false
+    }
+    fn has_repl_capability() -> bool {
+        false
+    }
+
+    fn default_for_filetype() -> bool {
+        true
+    }
+
     fn get_current_level(&self) -> SupportLevel{
         self.support_level
     }
