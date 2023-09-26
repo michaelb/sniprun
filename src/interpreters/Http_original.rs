@@ -102,13 +102,13 @@ impl Interpreter for Http_original {
                 _ => return Err(SniprunError::CustomError(format!("Invalid url"))),
             };
 
-            let foo = match line.method {
-                WithDefault::Some(HttpMethod::GET) => ureq::get(&url),
-                WithDefault::Some(HttpMethod::POST) => ureq::post(&url),
+            let resp = match line.method {
+                WithDefault::Some(HttpMethod::GET) => ureq::get(&url).call(),
+                WithDefault::Some(HttpMethod::POST) => ureq::post(&url).send_string(&req.body.to_string()),
                 _ => return Err(SniprunError::CustomError(format!("Invalid method"))),
             };
 
-            match foo.call() {
+            match resp {
                 Ok(resp) => match resp.into_string() {
                     Ok(text) => {
                         return Ok(text);
@@ -146,7 +146,7 @@ mod test_http_original {
         let data = res.ok().unwrap();
 
         let v: serde_json::Value = serde_json::from_str(&data).unwrap();
-        println!("{}", serde_json::to_string_pretty(&v).unwrap());
+        // println!("{}", serde_json::to_string_pretty(&v).unwrap());
         assert_eq!(v["url"], "https://httpbin.org/get".to_owned());
     }
 
@@ -155,7 +155,12 @@ mod test_http_original {
     fn simple_http_post() {
         let mut data = DataHolder::new();
 
-        data.current_bloc = String::from("POST https://httpbin.org/post");
+        data.current_bloc = String::from(r#"POST https://httpbin.org/post
+
+{
+    "foo": "bar"
+}
+"#);
         let mut interpreter = Http_original::new(data);
         let res = interpreter.run();
 
@@ -163,7 +168,12 @@ mod test_http_original {
         let data = res.ok().unwrap();
 
         let v: serde_json::Value = serde_json::from_str(&data).unwrap();
-        println!("{}", serde_json::to_string_pretty(&v).unwrap());
+        // println!("{}", serde_json::to_string_pretty(&v).unwrap());
+
+        let j: serde_json::Value = serde_json::from_str(&v["json"].to_string()).unwrap();
+        // println!("{}", serde_json::to_string_pretty(&foo).unwrap());
+
         assert_eq!(v["url"], "https://httpbin.org/post".to_owned());
+        assert_eq!(j["foo"], "bar".to_owned());
     }
 }
