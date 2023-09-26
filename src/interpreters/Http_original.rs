@@ -51,10 +51,11 @@ impl Interpreter for Http_original {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        // TODO:
+        // TODO: idk what this is
         SupportLevel::Bloc
     }
 
+    // copy-pasted from example
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
         if !self
             .data
@@ -98,13 +99,13 @@ impl Interpreter for Http_original {
             let url = match line.target {
                 RequestTarget::Absolute { uri } => uri,
                 RequestTarget::RelativeOrigin { uri } => uri,
-                _ => return Err(SniprunError::CustomError(format!("Invalid file"))),
+                _ => return Err(SniprunError::CustomError(format!("Invalid url"))),
             };
 
             let foo = match line.method {
                 WithDefault::Some(HttpMethod::GET) => ureq::get(&url),
                 WithDefault::Some(HttpMethod::POST) => ureq::post(&url),
-                _ => return Err(SniprunError::CustomError(format!("Invalid file"))),
+                _ => return Err(SniprunError::CustomError(format!("Invalid method"))),
             };
 
             match foo.call() {
@@ -122,7 +123,7 @@ impl Interpreter for Http_original {
             }
         }
 
-        return Err(SniprunError::CustomError(format!("Invalid file")))
+        return Err(SniprunError::CustomError(format!("No requests")))
     }
 }
 
