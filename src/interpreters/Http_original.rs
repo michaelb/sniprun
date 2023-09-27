@@ -103,11 +103,12 @@ impl Interpreter for Http_original {
                 _ => return Err(SniprunError::CustomError(format!("Invalid url"))),
             };
 
-            let (mut r, payload) = match line.method {
-                WithDefault::Some(HttpMethod::GET) => (ureq::get(&url), String::new()),
-                WithDefault::Some(HttpMethod::POST) => {
-                    (ureq::post(&url), req.body.to_string())
-                },
+            let mut r = match line.method {
+                WithDefault::Some(HttpMethod::DELETE) => ureq::delete(&url),
+                WithDefault::Some(HttpMethod::GET) => ureq::get(&url),
+                WithDefault::Some(HttpMethod::PATCH) => ureq::patch(&url),
+                WithDefault::Some(HttpMethod::POST) => ureq::post(&url),
+                WithDefault::Some(HttpMethod::PUT) => ureq::put(&url),
                  _ => return Err(SniprunError::CustomError(format!("Invalid method"))),
             };
 
@@ -115,7 +116,7 @@ impl Interpreter for Http_original {
                 r = r.set(&header.key, &header.value);
             }
 
-            match r.send(Cursor::new(payload)) {
+            match r.send(Cursor::new(req.body.to_string())) {
                 Ok(resp) => match resp.into_string() {
                     Ok(text) => {
                         return Ok(text);
