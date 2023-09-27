@@ -1,4 +1,5 @@
 use http_rest_file::model::{WithDefault, RequestTarget, HttpMethod };
+use std::io::Cursor;
 
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
@@ -102,13 +103,19 @@ impl Interpreter for Http_original {
                 _ => return Err(SniprunError::CustomError(format!("Invalid url"))),
             };
 
-            let resp = match line.method {
-                WithDefault::Some(HttpMethod::GET) => ureq::get(&url).call(),
-                WithDefault::Some(HttpMethod::POST) => ureq::post(&url).send_string(&req.body.to_string()),
-                _ => return Err(SniprunError::CustomError(format!("Invalid method"))),
+            let (mut r, payload) = match line.method {
+                WithDefault::Some(HttpMethod::GET) => (ureq::get(&url), String::new()),
+                WithDefault::Some(HttpMethod::POST) => {
+                    (ureq::post(&url), req.body.to_string())
+                },
+                 _ => return Err(SniprunError::CustomError(format!("Invalid method"))),
             };
 
-            match resp {
+            for header in req.headers.into_iter() {
+                r = r.set(&header.key, &header.value);
+            }
+
+            match r.send(Cursor::new(payload)) {
                 Ok(resp) => match resp.into_string() {
                     Ok(text) => {
                         return Ok(text);
@@ -155,7 +162,8 @@ mod test_http_original {
     fn simple_http_post() {
         let mut data = DataHolder::new();
 
-        data.current_bloc = String::from(r#"POST https://httpbin.org/post
+        data.current_bloc = String::from(r#"
+POST https://httpbin.org/post
 
 {
     "foo": "bar"
