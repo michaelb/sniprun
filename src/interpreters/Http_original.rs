@@ -1,4 +1,4 @@
-use http_rest_file::model::{WithDefault, RequestTarget, HttpMethod };
+use http_rest_file::model::{HttpMethod, RequestTarget, WithDefault};
 use std::io::Cursor;
 
 #[derive(Clone)]
@@ -12,8 +12,8 @@ pub struct Http_original {
 impl ReplLikeInterpreter for Http_original {}
 
 impl Interpreter for Http_original {
-    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Http_original>{
-        Box::new(Http_original{
+    fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Http_original> {
+        Box::new(Http_original {
             data,
             support_level,
             code: String::new(),
@@ -39,7 +39,7 @@ impl Interpreter for Http_original {
         true
     }
 
-    fn get_current_level(&self) -> SupportLevel{
+    fn get_current_level(&self) -> SupportLevel {
         self.support_level
     }
 
@@ -52,7 +52,6 @@ impl Interpreter for Http_original {
     }
 
     fn get_max_support_level() -> SupportLevel {
-        // TODO: idk what this is
         SupportLevel::Bloc
     }
 
@@ -80,7 +79,7 @@ impl Interpreter for Http_original {
         }
 
         // now self.code contains the line or bloc of code wanted :-)
-        Ok(())    
+        Ok(())
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
@@ -109,7 +108,7 @@ impl Interpreter for Http_original {
                 WithDefault::Some(HttpMethod::PATCH) => ureq::patch(&url),
                 WithDefault::Some(HttpMethod::POST) => ureq::post(&url),
                 WithDefault::Some(HttpMethod::PUT) => ureq::put(&url),
-                 _ => return Err(SniprunError::CustomError(format!("Invalid method"))),
+                _ => return Err(SniprunError::CustomError(format!("Unsupported method"))),
             };
 
             for header in req.headers.into_iter() {
@@ -117,29 +116,40 @@ impl Interpreter for Http_original {
             }
 
             match r.send(Cursor::new(req.body.to_string())) {
-                Ok(resp) => match resp.into_string() {
-                    Ok(text) => {
-                        return Ok(text);
+                Ok(resp) => {
+                    if Http_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+                        return Ok(resp.status().to_string());
+                    } else {
+                        match resp.into_string() {
+                            Ok(text) => {
+                                return Ok(text);
+                            }
+                            Err(why) => {
+                                return Err(SniprunError::CustomError(format!(
+                                    "Could not convert http response to string: {why}"
+                                )));
+                            }
+                        }
                     }
-                    Err(why) => {
-                        return Err(SniprunError::CustomError(format!("Error getting text: {why}")));
-                    }
-                },
+                }
                 Err(why) => {
-                    return Err(SniprunError::CustomError(format!("Error getting text: {why}")));
+                    return Err(SniprunError::CustomError(format!(
+                        "Error sending request: {why}"
+                    )));
                 }
             }
         }
 
-        return Err(SniprunError::CustomError(format!("No requests")))
+        return Err(SniprunError::CustomError(format!("No requests")));
     }
 }
 
 #[cfg(test)]
 mod test_http_original {
     use super::*;
-    use ureq::serde_json;
+    use neovim_lib::Value;
     use serial_test::serial;
+    use ureq::serde_json;
 
     #[test]
     #[serial]
@@ -147,6 +157,32 @@ mod test_http_original {
         let mut data = DataHolder::new();
 
         data.current_bloc = String::from("GET https://httpbin.org/get");
+
+        let mut interpreter = Http_original::new(data);
+        let res = interpreter.run();
+
+        assert!(!res.is_err(), "Could not run http interpreter");
+        assert_eq!(res.ok().unwrap(), "200".to_owned());
+    }
+
+    #[test]
+    #[serial]
+    fn simple_http_get_long() {
+        let data = DataHolder {
+            current_bloc: String::from("GET https://httpbin.org/get"),
+            interpreter_options: Some(Value::Map(vec![(
+                "interpreter_options".into(),
+                Value::Map(vec![(
+                    "Http_original".into(),
+                    Value::Map(vec![("error_truncate".into(), "long".into())]),
+                )]),
+            )])),
+            ..Default::default()
+        };
+
+        println!("{:?}", data.interpreter_options);
+        println!("{:?}", Http_original::error_truncate(&data));
+
         let mut interpreter = Http_original::new(data);
         let res = interpreter.run();
 
@@ -154,7 +190,7 @@ mod test_http_original {
         let data = res.ok().unwrap();
 
         let v: serde_json::Value = serde_json::from_str(&data).unwrap();
-        // println!("{}", serde_json::to_string_pretty(&v).unwrap());
+        println!("{}", serde_json::to_string_pretty(&v).unwrap());
         assert_eq!(v["url"], "https://httpbin.org/get".to_owned());
     }
 
@@ -163,13 +199,15 @@ mod test_http_original {
     fn simple_http_post() {
         let mut data = DataHolder::new();
 
-        data.current_bloc = String::from(r#"
+        data.current_bloc = String::from(
+            r#"
 POST https://httpbin.org/post
 
 {
     "foo": "bar"
 }
-"#);
+"#,
+        );
         let mut interpreter = Http_original::new(data);
         let res = interpreter.run();
 
