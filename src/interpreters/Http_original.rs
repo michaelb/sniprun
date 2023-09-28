@@ -133,12 +133,10 @@ impl Interpreter for Http_original {
                 Ok(resp) => {
                     if Http_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
                         responses.push(resp.status().to_string());
-                        // return Ok(resp.status().to_string());
                     } else {
                         match resp.into_string() {
                             Ok(text) => {
                                 responses.push(text);
-                                // return Ok(text);
                             }
                             Err(why) => {
                                 return Err(SniprunError::CustomError(format!(
@@ -156,9 +154,7 @@ impl Interpreter for Http_original {
             }
         }
 
-        println!("rep: {responses:?}");
-
-        return Ok(responses.join("\n---\n"));
+        return Ok(responses.join("\n---\n\n"));
     }
 }
 
