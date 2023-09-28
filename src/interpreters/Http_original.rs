@@ -21,7 +21,11 @@ impl Interpreter for Http_original {
     }
 
     fn get_supported_languages() -> Vec<String> {
-        vec![String::from("http")]
+        vec![
+            String::from("HTTP"),
+            String::from("http"),
+            String::from("rest"),
+        ]
     }
 
     fn get_name() -> String {
