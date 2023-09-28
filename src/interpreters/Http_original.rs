@@ -1,4 +1,4 @@
-use http_rest_file::model::{HttpMethod, RequestTarget, WithDefault};
+use http_rest_file::model::{FileParseResult, HttpMethod, RequestTarget, WithDefault};
 use std::io::Cursor;
 
 #[derive(Clone)]
@@ -95,9 +95,19 @@ impl Interpreter for Http_original {
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let model = http_rest_file::Parser::parse(&self.code, false);
+        let FileParseResult { requests, errs } = http_rest_file::Parser::parse(&self.code, false);
 
-        for req in model.requests.into_iter() {
+        if requests.len() == 0 {
+            return Err(SniprunError::CustomError(format!("No requests")));
+        }
+
+        if errs.len() != 0 {
+            return Err(SniprunError::RuntimeError(format!("{errs:?}")));
+        }
+
+        let mut responses = Vec::new();
+
+        for req in requests.into_iter() {
             let line = req.request_line;
 
             let url = match line.target {
@@ -122,11 +132,13 @@ impl Interpreter for Http_original {
             match r.send(Cursor::new(req.body.to_string())) {
                 Ok(resp) => {
                     if Http_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                        return Ok(resp.status().to_string());
+                        responses.push(resp.status().to_string());
+                        // return Ok(resp.status().to_string());
                     } else {
                         match resp.into_string() {
                             Ok(text) => {
-                                return Ok(text);
+                                responses.push(text);
+                                // return Ok(text);
                             }
                             Err(why) => {
                                 return Err(SniprunError::CustomError(format!(
@@ -144,7 +156,9 @@ impl Interpreter for Http_original {
             }
         }
 
-        return Err(SniprunError::CustomError(format!("No requests")));
+        println!("rep: {responses:?}");
+
+        return Ok(responses.join("\n---\n"));
     }
 }
 
@@ -196,6 +210,34 @@ mod test_http_original {
         let v: serde_json::Value = serde_json::from_str(&data).unwrap();
         println!("{}", serde_json::to_string_pretty(&v).unwrap());
         assert_eq!(v["url"], "https://httpbin.org/get".to_owned());
+    }
+
+    #[test]
+    #[serial]
+    fn simple_http_get_multiple() {
+        let data = DataHolder {
+            current_bloc: String::from(
+                r####"
+GET https://httpbin.org/get
+###
+GET https://httpbin.org/anything
+"####,
+            ),
+            interpreter_options: Some(Value::Map(vec![(
+                "interpreter_options".into(),
+                Value::Map(vec![(
+                    "Http_original".into(),
+                    Value::Map(vec![("error_truncate".into(), "short".into())]),
+                )]),
+            )])),
+            ..Default::default()
+        };
+
+        let mut interpreter = Http_original::new(data);
+        let res = interpreter.run();
+
+        assert!(!res.is_err(), "Could not run http interpreter");
+        assert_eq!(res.ok().unwrap(), "200\n---\n200".to_owned());
     }
 
     #[test]
