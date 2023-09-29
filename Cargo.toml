@@ -31,5 +31,5 @@ serial_test = "2.0"
 unindent = "0.2"
 
 # Http interpreter
-ureq = { version = "2", features = ["json"] }
+ureq = { version = "2", features = ["json", "native-certs"] }
 http-rest-file = "0.5.1"
