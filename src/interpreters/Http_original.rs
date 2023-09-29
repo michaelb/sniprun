@@ -131,20 +131,8 @@ impl Interpreter for Http_original {
 
             match r.send(Cursor::new(req.body.to_string())) {
                 Ok(resp) => {
-                    if Http_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-                        responses.push(resp.status().to_string());
-                    } else {
-                        match resp.into_string() {
-                            Ok(text) => {
-                                responses.push(text);
-                            }
-                            Err(why) => {
-                                return Err(SniprunError::CustomError(format!(
-                                    "Could not convert http response to string: {why}"
-                                )));
-                            }
-                        }
-                    }
+                    let status = resp.status();
+                    responses.push(resp.into_string().unwrap_or("".to_string()) + "--- status : " + &status.to_string() + " ---");
                 }
                 Err(why) => {
                     return Err(SniprunError::CustomError(format!(
