@@ -158,7 +158,6 @@ impl Interpreter for Http_original {
 #[cfg(test)]
 mod test_http_original {
     use super::*;
-    use neovim_lib::Value;
     use serial_test::serial;
     use ureq::serde_json;
 
@@ -173,7 +172,14 @@ mod test_http_original {
         let res = interpreter.run();
 
         assert!(res.is_ok(), "Could not run http interpreter");
-        assert_eq!(res.ok().unwrap(), "200".to_owned());
+        let data = res.ok().unwrap();
+        let (body, status) = data.split_once("---").unwrap();
+
+        let v: serde_json::Value = serde_json::from_str(&body).unwrap();
+        println!("{}", serde_json::to_string_pretty(&v).unwrap());
+        assert_eq!(v["url"], "https://httpbin.org/get".to_owned());
+
+        assert!(status.contains("200"));
     }
 
     #[test]
@@ -181,13 +187,6 @@ mod test_http_original {
     fn simple_http_get_long() {
         let data = DataHolder {
             current_bloc: String::from("GET https://httpbin.org/get"),
-            interpreter_options: Some(Value::Map(vec![(
-                "interpreter_options".into(),
-                Value::Map(vec![(
-                    "Http_original".into(),
-                    Value::Map(vec![("error_truncate".into(), "long".into())]),
-                )]),
-            )])),
             ..Default::default()
         };
 
@@ -199,10 +198,13 @@ mod test_http_original {
 
         assert!(res.is_ok(), "Could not run http interpreter");
         let data = res.ok().unwrap();
+        let (body, status) = data.split_once("---").unwrap();
 
-        let v: serde_json::Value = serde_json::from_str(&data).unwrap();
+        let v: serde_json::Value = serde_json::from_str(&body).unwrap();
         println!("{}", serde_json::to_string_pretty(&v).unwrap());
         assert_eq!(v["url"], "https://httpbin.org/get".to_owned());
+
+        assert!(status.contains("200"));
     }
 
     #[test]
@@ -216,13 +218,6 @@ GET https://httpbin.org/get
 GET https://httpbin.org/anything
 "####,
             ),
-            interpreter_options: Some(Value::Map(vec![(
-                "interpreter_options".into(),
-                Value::Map(vec![(
-                    "Http_original".into(),
-                    Value::Map(vec![("error_truncate".into(), "short".into())]),
-                )]),
-            )])),
             ..Default::default()
         };
 
@@ -230,7 +225,15 @@ GET https://httpbin.org/anything
         let res = interpreter.run();
 
         assert!(res.is_ok(), "Could not run http interpreter");
-        assert_eq!(res.ok().unwrap(), "200\n---\n200".to_owned());
+
+        let data = res.ok().unwrap();
+
+        let v: Vec<&str> = data.split("---").collect();
+
+        println!("{v:?}");
+
+        // Body + Status + newline per request
+        assert_eq!(v.len(), 6);
     }
 
     #[test]
@@ -252,8 +255,9 @@ POST https://httpbin.org/post
 
         assert!(res.is_ok(), "Could not run http interpreter");
         let data = res.ok().unwrap();
+        let (body, status) = data.split_once("---").unwrap();
 
-        let v: serde_json::Value = serde_json::from_str(&data).unwrap();
+        let v: serde_json::Value = serde_json::from_str(&body).unwrap();
         // println!("{}", serde_json::to_string_pretty(&v).unwrap());
 
         let j: serde_json::Value = serde_json::from_str(&v["json"].to_string()).unwrap();
@@ -261,5 +265,7 @@ POST https://httpbin.org/post
 
         assert_eq!(v["url"], "https://httpbin.org/post".to_owned());
         assert_eq!(j["foo"], "bar".to_owned());
+
+        assert!(status.contains("200"));
     }
 }
