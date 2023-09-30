@@ -73,7 +73,7 @@ impl Interpreter for Http_original {
             self.code = self.data.current_bloc.clone();
 
         // if there is only data on current line / or Line is the max support level
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -97,12 +97,12 @@ impl Interpreter for Http_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         let FileParseResult { requests, errs } = http_rest_file::Parser::parse(&self.code, false);
 
-        if requests.len() == 0 {
-            return Err(SniprunError::CustomError(format!("No requests")));
+        if !errs.is_empty() {
+            return Err(SniprunError::RuntimeError(format!("{errs:?}")));
         }
 
-        if errs.len() != 0 {
-            return Err(SniprunError::RuntimeError(format!("{errs:?}")));
+        if requests.is_empty() {
+            return Err(SniprunError::CustomError("No requests".to_string()));
         }
 
         let mut responses = Vec::new();
@@ -113,7 +113,7 @@ impl Interpreter for Http_original {
             let url = match line.target {
                 RequestTarget::Absolute { uri } => uri,
                 RequestTarget::RelativeOrigin { uri } => uri,
-                _ => return Err(SniprunError::CustomError(format!("Invalid url"))),
+                _ => return Err(SniprunError::CustomError("Invalid url".to_string())),
             };
 
             let mut r = match line.method {
@@ -122,7 +122,7 @@ impl Interpreter for Http_original {
                 WithDefault::Some(HttpMethod::PATCH) => ureq::patch(&url),
                 WithDefault::Some(HttpMethod::POST) => ureq::post(&url),
                 WithDefault::Some(HttpMethod::PUT) => ureq::put(&url),
-                _ => return Err(SniprunError::CustomError(format!("Unsupported method"))),
+                _ => return Err(SniprunError::CustomError("Unsupported method".to_string())),
             };
 
             for header in req.headers.into_iter() {
@@ -132,7 +132,12 @@ impl Interpreter for Http_original {
             match r.send(Cursor::new(req.body.to_string())) {
                 Ok(resp) => {
                     let status = resp.status();
-                    responses.push(resp.into_string().unwrap_or("".to_string()) + "--- status : " + &status.to_string() + " ---");
+                    responses.push(
+                        resp.into_string().unwrap_or("".to_string())
+                            + "--- status : "
+                            + &status.to_string()
+                            + " ---",
+                    );
                 }
                 Err(why) => {
                     return Err(SniprunError::CustomError(format!(
@@ -142,7 +147,7 @@ impl Interpreter for Http_original {
             }
         }
 
-        return Ok(responses.join("\n---\n\n"));
+        Ok(responses.join("\n---\n\n"))
     }
 }
 
@@ -163,7 +168,7 @@ mod test_http_original {
         let mut interpreter = Http_original::new(data);
         let res = interpreter.run();
 
-        assert!(!res.is_err(), "Could not run http interpreter");
+        assert!(res.is_ok(), "Could not run http interpreter");
         assert_eq!(res.ok().unwrap(), "200".to_owned());
     }
 
@@ -188,7 +193,7 @@ mod test_http_original {
         let mut interpreter = Http_original::new(data);
         let res = interpreter.run();
 
-        assert!(!res.is_err(), "Could not run http interpreter");
+        assert!(res.is_ok(), "Could not run http interpreter");
         let data = res.ok().unwrap();
 
         let v: serde_json::Value = serde_json::from_str(&data).unwrap();
@@ -220,7 +225,7 @@ GET https://httpbin.org/anything
         let mut interpreter = Http_original::new(data);
         let res = interpreter.run();
 
-        assert!(!res.is_err(), "Could not run http interpreter");
+        assert!(res.is_ok(), "Could not run http interpreter");
         assert_eq!(res.ok().unwrap(), "200\n---\n200".to_owned());
     }
 
@@ -241,7 +246,7 @@ POST https://httpbin.org/post
         let mut interpreter = Http_original::new(data);
         let res = interpreter.run();
 
-        assert!(!res.is_err(), "Could not run http interpreter");
+        assert!(res.is_ok(), "Could not run http interpreter");
         let data = res.ok().unwrap();
 
         let v: serde_json::Value = serde_json::from_str(&data).unwrap();
