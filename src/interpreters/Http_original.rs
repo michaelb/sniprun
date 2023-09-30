@@ -102,7 +102,7 @@ impl Interpreter for Http_original {
         }
 
         if requests.is_empty() {
-            return Err(SniprunError::RumtimeError("No requests".to_string()));
+            return Err(SniprunError::RuntimeError("No requests".to_string()));
         }
 
         let mut responses = Vec::new();
@@ -113,7 +113,7 @@ impl Interpreter for Http_original {
             let url = match line.target {
                 RequestTarget::Absolute { uri } => uri,
                 RequestTarget::RelativeOrigin { uri } => uri,
-                _ => return Err(SniprunError::RumtimeError("Invalid url".to_string())),
+                _ => return Err(SniprunError::RuntimeError("Invalid url".to_string())),
             };
 
             let mut r = match line.method {
