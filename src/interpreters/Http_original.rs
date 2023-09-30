@@ -102,7 +102,7 @@ impl Interpreter for Http_original {
         }
 
         if requests.is_empty() {
-            return Err(SniprunError::CustomError("No requests".to_string()));
+            return Err(SniprunError::RumtimeError("No requests".to_string()));
         }
 
         let mut responses = Vec::new();
@@ -113,7 +113,7 @@ impl Interpreter for Http_original {
             let url = match line.target {
                 RequestTarget::Absolute { uri } => uri,
                 RequestTarget::RelativeOrigin { uri } => uri,
-                _ => return Err(SniprunError::CustomError("Invalid url".to_string())),
+                _ => return Err(SniprunError::RumtimeError("Invalid url".to_string())),
             };
 
             let mut r = match line.method {
@@ -122,7 +122,11 @@ impl Interpreter for Http_original {
                 WithDefault::Some(HttpMethod::PATCH) => ureq::patch(&url),
                 WithDefault::Some(HttpMethod::POST) => ureq::post(&url),
                 WithDefault::Some(HttpMethod::PUT) => ureq::put(&url),
-                _ => return Err(SniprunError::CustomError("Unsupported method".to_string())),
+                _ => {
+                    return Err(SniprunError::InterpreterLimitationError(
+                        "Unsupported method".to_string(),
+                    ))
+                }
             };
 
             for header in req.headers.into_iter() {
