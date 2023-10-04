@@ -1,4 +1,4 @@
-# Introduction
+# Introductionreadme
 
 Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to provide stupidly fast partial code testing for interpreted **and compiled** {ref}`languages <support-levels-and-languages>`. Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, and REPL/interpreters.
 
@@ -71,13 +71,13 @@ Sniprun will then:
 
 ## Prerequisites && dependencies
 
-- Sniprun is compatible with **Linux** and **MacOS**. (NixOS and Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install) version >= 1.64 ). Standard POSIX utilities (grep, cut, sed ...) may be needed too, depending on the languages you want support for.
+- Sniprun is compatible with **Linux** and **MacOS**. (NixOS and Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install) version >= 1.65 ). Standard POSIX utilities (grep, cut, sed ...) may be needed too, depending on the languages you want support for.
 
 - **Neovim** version >= 0.5
 
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the navigation pane of the [wiki](https://michaelb.github.io/sniprun/), as well as in the [doc/sources/interpreters](https://github.com/michaelb/sniprun/tree/master/doc/sources/interpreters) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
-- [optional] **cargo and the rust toolchain** version >= 1.64 (you can find those [here](https://www.rust-lang.org/tools/install)).
+- [optional] **cargo and the rust toolchain** version >= 1.65 (you can find those [here](https://www.rust-lang.org/tools/install)).
 
 - [optional] the plugin [nvim-notify](https://github.com/rcarriga/nvim-notify) for the notification display style
 
@@ -86,18 +86,6 @@ Sniprun will then:
 ### Use your favorite plugin manager (recommended) ...
 
 (Run `install.sh` as a post-installation script, it will download or compile the sniprun binary)
-
-<details><summary>vim-plug</summary>
-<p>
-
-```vim
-Plug 'michaelb/sniprun', {'do': 'sh ./install.sh'}
-" 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary,
-"  but you'll compile sniprun at every update & will need the rust toolchain
-```
-
-</details>
-</p>
 
 
 <details open><summary>packer</summary>
@@ -109,8 +97,50 @@ Plug 'michaelb/sniprun', {'do': 'sh ./install.sh'}
 
 (or likewise, `'sh ./install.sh 1'` to get the bleeding edge aka compile yourself the latest commit of sniprun)
 
-</details>
 </p>
+</details>
+
+
+<details><summary>lazy.nvim/lunarvim</summary>
+<p>
+
+Lunarvim embeds a Lazy.nvim [plugin spec](https://github.com/folke/lazy.nvim#-plugin-spec)
+
+```
+lvim.plugins = { -- only for lunarvim
+
+  {
+    "michaelb/sniprun",
+    branch = "master",
+
+    build = "sh install.sh",
+    -- do 'sh install.sh 1' if you want to force compile locally
+    -- (instead of fetching a binary from the github release). Requires Rust >= 1.65
+
+    config = function()
+      require("sniprun").setup({
+      -- your options
+      })
+    end,
+  },
+
+} -- only for lunar vim
+```
+</p>
+</details>
+
+<details><summary>vim-plug</summary>
+<p>
+
+```vim
+Plug 'michaelb/sniprun', {'do': 'sh ./install.sh'}
+" 'bash install.sh 1' to get the bleeding edge or if you have trouble with the precompiled binary,
+"  but you'll compile sniprun at every update & will need the rust toolchain
+```
+
+</p>
+</details>
+
 
 
 

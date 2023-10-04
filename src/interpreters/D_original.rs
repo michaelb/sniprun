@@ -76,7 +76,7 @@ impl Interpreter for D_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from("import std.stdio;\nvoid main() {") + &self.code + "}";
+        self.code = String::from("import std.stdio;\nvoid main() {") + &self.code + "\n}";
         Ok(())
     }
 

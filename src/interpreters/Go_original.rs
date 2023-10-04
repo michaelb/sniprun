@@ -211,7 +211,7 @@ impl Interpreter for Go_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         if !Go_original::contains_main("func main (", &self.code, "//") {
-            self.code = String::from("func main() {") + &self.code + "}";
+            self.code = String::from("func main() {") + &self.code + "\n}";
         }
 
         if !Go_original::contains_main("import", &self.code, "//") {

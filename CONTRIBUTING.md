@@ -18,7 +18,7 @@ Otherwise, carry on:
 
 Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 30min ( 13min is my best time, for C\_original to 1h30. You can then submit your proposed changes as a PR to the master branch.
 
-Higher support levels gets exponentially harder (depends on the languages though), so you should start out with Bloc.
+Higher support levels gets exponentially harder (depends on the languages though), so you should start out with Bloc. You don't need to mind to support levels, actually.
 
 ### Understanding the framework
 
@@ -35,7 +35,7 @@ Yeah cool but what _code_ goes inside?
 ---
 I just finished some changes, how do I test my code quickly?
 
--> compile `cargo build --release` and run `nvim --cmd "set rtp+=. -u NONE <testfile>` from the sniprun project root. You may want to remove the 'release' sniprun with your plugin manager in case your runtimepath (rtp) still loads up the release version instead of your development version.
+-> compile `cargo build --release` and run  `nvim --noplugin -c 'setlocal rtp+=.' <filename>`, then inside neovim `:lua require("sniprun").setup()` from the sniprun project root. You may want to remove the 'release' sniprun from your plugin manager in case your runtimepath (rtp) still loads up the release version instead of your development version. Alternatively, point your plugin manager to your dev directory.
 
 ---
 
@@ -60,7 +60,7 @@ Failing user code compilation or incorrect user code panicking should be handled
 
 My interpreter does not produce any output..?!
 
--> It's because your code is panicking. (unwrapping a `None` or these kind of things). Check the logs at ~/.cache/sniprun/sniprun.log for any interrpution, and see where your code can panic! .
+-> It's probably because your code is panicking. (unwrapping a `None` or these kind of things). Check the logs at ~/.cache/sniprun/sniprun.log for any interruption, and see where your code can panic! .
 
 ---
 
@@ -72,7 +72,7 @@ I need to import some external dependencies.
 
 I need more than one file to write complicated code...
 
--> You can have a subfolder alongside your file (same name to prevent confusion and conflicts) and put some other code inside as you see fit. See the example.rs file: inside your work\_dir, you are free to do whatever you want
+-> You can have a subfolder alongside your file (same name to prevent confusion and conflicts) and put some other code inside as you see fit. As runtime/temporary files stands, see the example.rs file: inside your work\_dir, you are free to do whatever you want\*. (\* don't be evil)
 
 ---
 
@@ -129,7 +129,7 @@ A program (struct with methods) that can fetch code, execute it and return the r
 - The interpreter main file contains a struct has the **exact same name** as the file (minus the .rs extension).
 - Names for interpreters should be unique. Include filenames, and also the name returned by `get_name()` that should be identical (case difference is tolerated).
 - Extra files for the same interpreter go into a subdfolder alongside the interpreter's main file. The subfolder has the same name as the file, minus the extension.
-- The interpreter try to follow (and create by itself) SupportLevel hints when possible; for example, will not try to parse an entire project into when it has been determined SupportLevel::Line is enough to run the submitted code. Don't worry if you don't get this yet for your first bloc-level contribution.
+- The interpreter tries to follow (and create by itself) SupportLevel hints when possible; for example, will not try to parse an entire project into when it has been determined SupportLevel::Line is enough to run the submitted code. Don't worry if you don't get this yet for your first bloc-level contribution.
 - The interpreter should try not to panic, it'll be nicer if the various errors can be converted and returned as SniprunError as defined in src/error.rs and suggested by the Interpreter trait
 
 ## Contribute to Sniprun itself

@@ -427,7 +427,7 @@ impl ReplLikeInterpreter for Sage_fifo {
             .collect::<Vec<&str>>()
             .join("\n");
 
-        let all_code = self.imports.clone() + "\n" + &self.code;
+        let all_code = self.imports.clone() + "\n" + &self.code + "\n";
         self.code = String::from("\nimport sys\n\n")
             + &start_mark
             + &start_mark_err

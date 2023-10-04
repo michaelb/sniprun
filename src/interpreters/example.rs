@@ -111,7 +111,7 @@ impl Interpreter for Language_subname {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         // an example following Rust's syntax
-        self.code = String::from("fn main() {") + &self.code + "}";
+        self.code = String::from("fn main() {") + &self.code + "\n}";
         Ok(())
     }
 

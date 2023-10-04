@@ -20,7 +20,8 @@ function M.run_string(codestring, filetype, config)
   override.filetype = filetype or ""
   local lconfig = config or sniprun.config_values
   lconfig["sniprun_root_dir"] = sniprun.config_values.sniprun_path
-  sniprun.notify('run', 0, 0, lconfig, "", override)
+  local _, col = unpack(vim.api.nvim_win_get_cursor(0))
+  sniprun.notify('run', col, col, lconfig, "", override)
 end
 
 

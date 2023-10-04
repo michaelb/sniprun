@@ -97,7 +97,7 @@ impl Interpreter for Scala_original {
         if !Scala_original::contains_main("int main (", &self.code, "//") {
             self.code = String::from("object Main {\ndef main(arg: Array[String]) = {")
                 + &self.code
-                + "}\n}";
+                + "\n}\n}";
         }
         Ok(())
     }
