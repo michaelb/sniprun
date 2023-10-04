@@ -4,6 +4,7 @@
 - MSRV increase to 1.65
 - Bash interpreter fix + REPL feature removal
 - API's run_string function can display virtual text at current cursor position
+- HTTP support (using ureq)
 
 ## v1.3.6
 - Ruby documentation

@@ -164,7 +164,10 @@ impl Launcher {
         }
 
         v.push(separator);
-        v.push("More help, quickstart etc. can be found on https://michaelb.github.io/sniprun/\n".to_owned());
+        v.push(
+            "More help, quickstart etc. can be found on https://michaelb.github.io/sniprun/\n"
+                .to_owned(),
+        );
 
         info!("[INFO] Writing info to file");
         let filename = self.data.work_dir.clone() + "/infofile.txt";
