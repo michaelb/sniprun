@@ -85,7 +85,7 @@ interpreter_options = {
 
 ### The "error_truncate" key
 
-Also available for every interpreter if you don't like how sniprun truncate some outputs by default (auto), but ill not have an effect on all interpreters.
+Also available for every interpreter if you don't like how sniprun truncate some outputs by default (auto), but it will not have an effect on all interpreters.
 
 ```
 interpreter_options = {
