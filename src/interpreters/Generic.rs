@@ -181,7 +181,7 @@ impl Interpreter for Generic {
             .create(&rwd)
             .expect("Could not create directory for generic/<config_name>");
         let exe_path = rwd.clone() + "/" + &exe_name;
-        let main_file_path = exe_path.clone() + "_src123456789src" + &extension; // this way, virtually impossible for the user for have exe & main file with same name by accident
+        let main_file_path = exe_path.clone() + "_src" + &extension; // this way, impossible for the user for have exe & main file with same name by accident
         Box::new(Generic {
             data,
             support_level,

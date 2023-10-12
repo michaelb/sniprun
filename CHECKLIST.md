@@ -4,11 +4,11 @@
 # Prepare the release
 
 ## on dev branch
- - update Cargo.lock: `cargo update` (but do not break MSRV, so do it package by package and check with MSRV toolchain)
  - check compilation success
  - cargo fmt --all / cargo check / cargo clippy
  - update the changelog
  - remove the 'beta' from the version field in Cargo.toml
+ - `cargo update --offline` # update sniprun's versino in committed Cargo.lock
 
 ## Merge process
  - create a PR dev -> master
