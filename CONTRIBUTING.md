@@ -8,7 +8,7 @@ Just in case: to compile `cargo build --release`, to create and show the documen
 
 ## Add support for a new language language
 
-First, you should try out to configure the [Generic interpreter](https://michaelb.github.io/sniprun/sources/Generic.html#Generic.html#community-examples-for-non-officially-supported_languages). Someone may have figured it out already!
+First, you should try out to configure the [Generic interpreter](https://michaelb.github.io/sniprun/sources/interpreters/Generic.html#community-examples-for-non-officially-supported-languages). Someone may have figured it out already!
 
 If you succeed in doing so yourself, please contribute to that page so other may benefit from it!
 
