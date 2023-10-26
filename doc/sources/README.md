@@ -275,7 +275,9 @@ require'sniprun'.setup({
     terminal_line_number = false, --# whether show line number in terminal window
     terminal_signcolumn = false,  --# whether show signcolumn in terminal window
     terminal_persistence = true,  --# always keep the terminal open (true) or close it at every occasion (false)
-    terminal_width = 45,          --# change the terminal display option width
+    terminal_position = "vertical", --# or "horizontal", to open as horizontal split instead of vertical split
+    terminal_width = 45,          --# change the terminal display option width (if vertical)
+    terminal_height = 20,         --# change the terminal display option height (if horizontal)
     notification_timeout = 5      --# timeout for nvim_notify output
   },
 
