@@ -95,7 +95,7 @@ Sniprun will then:
   use { 'michaelb/sniprun', run = 'sh ./install.sh'}
 ```
 
-(or likewise, `'sh ./install.sh 1'` to get the bleeding edge aka compile yourself the latest commit of sniprun)
+(if you target the 'dev' branch, the installer will try to compile manually sniprun on your computer, which will require the rust toolchain)
 
 </p>
 </details>

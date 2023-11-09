@@ -2,7 +2,18 @@
 
 echo "Runnning Sniprun Installer"
 local_version="v$(grep ^version Cargo.toml | cut -d "\"" -f 2)"
+
 force_build=$1
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$current_branch" == "dev" ]; then
+  force_build=1
+fi
+
+arch=$(uname)
+if [ "$arch" != "Linux" ] && [ "$force_build" != 1 ]; then
+  echo "Looks you are not running Linux: Mac users have to compile sniprun themselves and thus need the Rust toolchain"
+  force_build=1
+fi
 
 cargo_build() {
   if command -v cargo >/dev/null; then
@@ -39,11 +50,6 @@ fetch_prebuilt_binary() {
   fi
 }
 
-arch=$(uname)
-if [ "$arch" != "Linux" ] && [ "$force_build" != 1 ]; then
-  echo "Looks you are not running Linux: Mac users have to compile sniprun themselves and thus need the Rust toolchain"
-  force_build=1
-fi
 
 remote_version=$(get_latest_release)
 
