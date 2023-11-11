@@ -46,7 +46,8 @@ require'sniprun'.setup({
                 compiler = "",                  
 
                 exe_name = "",
-                boilerplate = ""
+                boilerplate_pre = ""
+                boilerplate_post = ""
                 },
 
             my_super_c_config = {                
@@ -68,6 +69,22 @@ require'sniprun'.setup({
 })
 ```
 
+### How the generic interpreter works
+
+#### For interpreted languages ("interpreter" is set)
+
+1. Sniprun receive a snippet of code to run
+2. The snippet gets surrounded by boilerplate_pre and boilerplate_post
+3. The whole thing is written to a file with the given extension, named `<exe_name>_src.<extension>`
+4. Sniprun runs `<interpreter> <file>.<extension>` and displays the stdout/stderr
+
+#### For compiled languages ("compiler" is set)
+
+1. Sniprun receive a snippet of code to run
+2. The snippet gets surrounded by boilerplate_pre and boilerplate_post
+3. The whole thing is written to a temporary file with the given extension, named `<exe_name>_src.<extension>`
+4. Sniprun runs `<compiler>  <exe_name>_src.<extension>` , and if this has a non-success status, displays the stderr
+5. Sniprun runs `./<exe_name>` and displays the stdout/stderr
 
 
 ### Community examples for non-officially supported languages

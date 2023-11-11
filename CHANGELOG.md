@@ -1,3 +1,8 @@
+## v1.3.8
+- Fix Python3_jupyter
+- Allow opening terminal in horizontal split
+- Compiles locally by default (when on dev branch)
+
 ## v1.3.7
 - Fix issue in multiple languages when last line is a comment
 - Install instructions for lazy.nvim/Lunarvim

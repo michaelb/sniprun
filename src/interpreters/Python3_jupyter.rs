@@ -85,24 +85,24 @@ impl Python3_jupyter {
         }
         false
     }
-    // /// In theory, is a good idea, but somehow doesn't work
-    // fn wait_on_kernel(&self) -> Result<(), SniprunError> {
-    //     let step = std::time::Duration::from_millis(100);
-    //     let mut timeout = std::time::Duration::from_millis(15000);
-    //     loop {
-    //         if let Ok(content) = std::fs::read_to_string(&self.kernel_file) {
-    //             if !content.is_empty() {
-    //                 return Ok(());
-    //             }
-    //         }
-    //         std::thread::sleep(step);
-    //         if let Some(remaining) = timeout.checked_sub(step) {
-    //             timeout = remaining;
-    //         } else {
-    //             return Err(SniprunError::CustomError(String::from("Timeout on jupyter kernel start expired")));
-    //         }
-    //     }
-    // }
+    /// In theory, is a good idea, but somehow doesn't work
+    fn wait_on_kernel(&self) -> Result<(), SniprunError> {
+        let step = std::time::Duration::from_millis(100);
+        let mut timeout = std::time::Duration::from_millis(15000);
+        loop {
+            if let Ok(content) = std::fs::read_to_string(&self.kernel_file) {
+                if !content.is_empty() {
+                    return Ok(());
+                }
+            }
+            std::thread::sleep(step);
+            if let Some(remaining) = timeout.checked_sub(step) {
+                timeout = remaining;
+            } else {
+                return Err(SniprunError::CustomError(String::from("Timeout on jupyter kernel start expired")));
+            }
+        }
+    }
 }
 
 impl Interpreter for Python3_jupyter {
@@ -313,8 +313,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
             + " --no-confirm"
             + " "
             + "--ZMQTerminalInteractiveShell.banner=\"\""
-            + " "
-            + "--Application.log_level=0";
+            + "\n";
 
         write(&self.launcher_path, &actual_command)
             .expect("Unable to write file for python3_jupyter");
@@ -329,7 +328,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
             "json kernel file exists yet? {}",
             std::path::Path::new(&self.kernel_file).exists()
         );
-        // self.wait_on_kernel()?;
+        self.wait_on_kernel()?;
 
         let output = Command::new("sh")
             .arg(&self.launcher_path)
@@ -340,10 +339,12 @@ impl ReplLikeInterpreter for Python3_jupyter {
 
         info!("result: {:?}", cleaned_result);
 
-        // first and last lines are the [In] x: prompts from jupyter-console
-        cleaned_result.remove(cleaned_result.len() - 1);
-        cleaned_result.remove(1);
-        cleaned_result.remove(0);
+        if cleaned_result.len() >= 3 {
+            // first and last lines are the [In] x: prompts from jupyter-console
+            cleaned_result.remove(cleaned_result.len() - 1);
+            cleaned_result.remove(1);
+            cleaned_result.remove(0);
+        }
 
         info!("cleaned result: {:?}", cleaned_result);
         if String::from_utf8(output.stderr.clone()).unwrap().is_empty() {

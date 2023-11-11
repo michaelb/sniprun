@@ -36,8 +36,14 @@ function M.term_set_window_handle()
   local winid = vim.fn.bufwinid(M.term.buffer)
   if winid ~= -1 then return end
 
-  local width = require("sniprun").config_values.display_options.terminal_width
-  vim.cmd(":rightb " .. width .. "vsplit")
+  local location = require("sniprun").config_values.display_options.terminal_position
+  if location == "horizontal"  then
+    local height = require("sniprun").config_values.display_options.terminal_height or 20
+    vim.cmd(":rightb " .. height .. "split")
+  else
+    local width = require("sniprun").config_values.display_options.terminal_width or 45
+    vim.cmd(":rightb " .. width .. "vsplit")
+  end
   M.term.window_handle = vim.api.nvim_get_current_win()
 
   -- return to doc buffer

@@ -38,7 +38,9 @@ M.config_values = {
     terminal_scrollback = vim.o.scrollback, -- change terminal display scrollback lines
     terminal_line_number = false, -- whether show line number in terminal window
     terminal_signcolumn = false,  -- whether show signcolumn in terminal window
-    terminal_width = 45,          -- change the terminal display option width
+    terminal_position = "vertical", -- or "horizontal"
+    terminal_width = 45,          -- change the terminal display option width (if vertical)
+    terminal_height = 20,         -- change the terminal display option heigth (if horizontal)
     terminal_persistence = true,  -- always keep the terminal open (true) or close it at every occasion (false)
     notification_timeout = 5      -- timeout for nvim_notify output
   },

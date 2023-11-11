@@ -1,5 +1,8 @@
 ## Python3 jupyter
 
+Unless you really really need this (for Ipython), I would strongly advise for the Python3_fifo interpreter which has 
+way less potential issues
+
 ### Dependencies
 - jupyter
 
