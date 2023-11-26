@@ -134,7 +134,7 @@ impl Interpreter for Language_subname {
 
         let mut configurable_option = String::from("--optimize"); // no debug info by default, for example
 
-        if let Some(config_value) = self.get_interpreter_option("example_option") {
+        if let Some(config_value) = Language_subname::get_interpreter_option("example_option") {
             if let Some(config_value_valid_string) = config_value.as_str() {
                 configurable_option = config_value_valid_string.to_string();
             }
