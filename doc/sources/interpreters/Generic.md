@@ -18,6 +18,7 @@ to add support for, let's say, python2
 require'sniprun'.setup({
     interpreter_options = {
         Generic = {
+            error_truncate="long",                 -- strongly recommended to figure out what's going on
             MyPython2Config = {                    -- any key name is ok
                 supported_filetypes = {"python2"}, -- mandatory
                 extension = ".py",                 -- recommended, but not mandatory. Sniprun use this to create temporary files
@@ -38,6 +39,7 @@ to also add support for, let's suppose it wasn't officially supported, C
 require'sniprun'.setup({
     interpreter_options = {
         Generic = {
+            error_truncate="long",
             MyPython2Config = {
                 supported_filetypes = {"python2"}, 
                 extension = ".py",                

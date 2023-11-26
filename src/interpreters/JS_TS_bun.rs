@@ -133,7 +133,7 @@ impl Interpreter for JS_TS_bun {
     }
 
     fn behave_repl_like_default() -> bool {
-        true
+        false
     }
 
     fn has_repl_capability() -> bool {

@@ -169,10 +169,12 @@ impl Interpreter for Generic {
             Generic::generic_get_interpreter_option(&data, "compiler")
         {
             if let Some(compiler_string) = used_compiler.as_str() {
-                info!("Using compiler: {}", compiler_string);
-                compiler = compiler_string.to_string();
-                config_name = fetched_config_name;
-                interpreted_lang = false;
+                if ! compiler_string.is_empty() {
+                    info!("Using compiler: {}", compiler_string);
+                    compiler = compiler_string.to_string();
+                    config_name = fetched_config_name;
+                    interpreted_lang = false;
+                }
             }
         }
 
@@ -180,10 +182,12 @@ impl Interpreter for Generic {
             Generic::generic_get_interpreter_option(&data, "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
-                info!("Using interpreter: {}", interpreter_string);
-                interpreter = interpreter_string.to_string();
-                config_name = fetched_config_name;
-                interpreted_lang = true;
+                if ! interpreter_string.is_empty() {
+                    info!("Using interpreter: {}", interpreter_string);
+                    interpreter = interpreter_string.to_string();
+                    config_name = fetched_config_name;
+                    interpreted_lang = true;
+                }
             }
         }
 
