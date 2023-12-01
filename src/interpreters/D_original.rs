@@ -90,7 +90,8 @@ impl Interpreter for D_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let output = Command::new("dmd")
+        let interpreter = D_original::get_interpreter_or(&self.data, "dmd");
+        let output = Command::new(interpreter)
             .arg("-run")
             .arg(&self.main_file_path)
             .output()

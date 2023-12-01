@@ -1,3 +1,7 @@
+## v1.3.9
+- Support of "interpreter" and "compiler" key for every interpreter
+- Bun-based JS/TS intepreter (with REPL)
+
 ## v1.3.8
 - Fix Python3_jupyter
 - Allow opening terminal in horizontal split

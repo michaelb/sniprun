@@ -194,7 +194,8 @@ impl Interpreter for JS_TS_bun {
                 bun_opts = bun_opt_str.to_string();
             }
         }
-        let output = Command::new("bun")
+        let interpreter = JS_TS_bun::get_interpreter_or(&self.data, "bun");
+        let output = Command::new(interpreter)
             .arg("run")
             .arg("--silent")
             .args(bun_opts.split_whitespace())

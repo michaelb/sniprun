@@ -142,8 +142,9 @@ impl Interpreter for Language_subname {
 
 
 
-        //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new("compiler")
+        let compiler = Language_subname::get_compiler_or(&self.data, "compiler");
+        //compile it (to the bin_path that already points to the rigth path)
+        let output = Command::new(compiler)
             .arg(&configurable_option) // for short snippets, that may contain a long loop
             .arg("--out-dir")
             .arg(&self.language_work_dir)

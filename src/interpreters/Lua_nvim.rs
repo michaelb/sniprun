@@ -107,7 +107,8 @@ impl Interpreter for Lua_nvim {
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("nvim")
+        let interpreter = Lua_nvim::get_interpreter_or(&self.data, "nvim");
+        let output = Command::new(interpreter)
             .arg("--headless")
             .arg("-c")
             .arg(format!("luafile {}", &self.main_file_path))

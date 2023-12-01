@@ -94,3 +94,29 @@ interpreter_options = {
     }
 }, 
 ```
+
+## The interpreter/compiler keys
+
+Almost every interpreter support either the "interpreter" or "compiler" key even if not explicitely documented, depending on whether they're about an interpreter or compiled language.
+
+example:
+
+```
+interpreter_options = {
+    Python3_original = {
+        interpreter = "python3.9"
+    }
+    Rust_original = {
+        compiler = "/home/user/bin/rustc-patched"
+    }
+}, 
+```
+
+You can see what interpreters/compilers are being used at any time by watching sniprun's log for the line
+"using compiler XXXX" or "using interpreter XXXX" when you run a snippet.
+
+Exceptions:
+ - Scala_original has both interpreter and compiler keys that should be set consistently with each other
+ - *_jupyter, Generic, GFM_original, Orgmode_original, and Neorg_original do not support any of these keys
+
+

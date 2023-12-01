@@ -213,7 +213,8 @@ impl Interpreter for JS_TS_deno {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run the binary and get the std output (or stderr)
-        let output = Command::new("deno")
+        let interpreter = JS_TS_deno::get_interpreter_or(&self.data, "deno");
+        let output = Command::new(interpreter)
             .arg("run")
             .arg("-A")
             .arg("--unstable")

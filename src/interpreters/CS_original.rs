@@ -93,7 +93,8 @@ impl Interpreter for CS_original {
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("coffee")
+        let interpreter = CS_original::get_interpreter_or(&self.data, "coffee");
+        let output = Command::new(interpreter)
             .arg(&self.main_file_path)
             .args(&self.get_data().cli_args)
             .output()

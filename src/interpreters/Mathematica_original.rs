@@ -237,7 +237,8 @@ impl Interpreter for Mathematica_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let output = Command::new("WolframKernel")
+        let interpreter = Mathematica_original::get_interpreter_or(&self.data, "WolframKernel");
+        let output = Command::new(interpreter)
             .arg("-noprompt")
             .arg("-script")
             .arg(&self.main_file_path)
