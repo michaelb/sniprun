@@ -51,6 +51,7 @@ then
     sudo apt-get install unzip
     curl -fsSL https://bun.sh/install | bash
     source ~/.bashrc
+    bun --help
 fi
 
 if ! command -v scalac &> /dev/null
