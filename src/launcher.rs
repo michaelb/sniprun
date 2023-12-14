@@ -2,11 +2,11 @@ use crate::interpreter::InterpreterUtils;
 use crate::*;
 use error::SniprunError;
 use interpreter::{Interpreter, SupportLevel};
+use interpreters::Generic;
 use std::any::TypeId;
 use std::io::prelude::*;
 use std::process::Command;
 use std::{fs::File, io::Read};
-use interpreters::Generic;
 
 pub struct Launcher {
     pub data: DataHolder,
@@ -21,9 +21,8 @@ impl Launcher {
     where
         T: Interpreter + 'static,
     {
-
         let supported_languages = if TypeId::of::<T>() == TypeId::of::<Generic>() {
-            Generic::get_configured_filetypes(&data)
+            Generic::get_configured_filetypes(data)
         } else {
             T::get_supported_languages()
         };

@@ -285,7 +285,7 @@ impl ReplLikeInterpreter for JS_TS_bun {
             std::thread::sleep(pause);
 
             let v = vec![(self.data.range[0] as usize, self.data.range[1] as usize)];
-            return Err(SniprunError::ReRunRanges(v));
+            Err(SniprunError::ReRunRanges(v))
         }
     }
 

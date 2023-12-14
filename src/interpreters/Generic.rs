@@ -149,7 +149,7 @@ impl Generic {
             }
         }
         info!("supported filetypes for generic are {:?}", filetypes);
-        return filetypes;
+        filetypes
     }
 }
 

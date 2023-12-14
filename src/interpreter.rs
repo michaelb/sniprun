@@ -197,9 +197,8 @@ pub trait InterpreterUtils {
     fn contains_main(entry: &str, snippet: &str, comment: &str) -> bool;
     fn error_truncate(data: &DataHolder) -> ErrTruncate;
 
-    fn get_compiler_or(data: &DataHolder, or:&str)-> String;
-    fn get_interpreter_or(data: &DataHolder, or:&str)-> String;
-
+    fn get_compiler_or(data: &DataHolder, or: &str) -> String;
+    fn get_interpreter_or(data: &DataHolder, or: &str) -> String;
 }
 
 impl<T: Interpreter> InterpreterUtils for T {
@@ -314,7 +313,7 @@ impl<T: Interpreter> InterpreterUtils for T {
         None
     }
 
-    fn get_compiler_or(data: &DataHolder, or:&str)-> String {
+    fn get_compiler_or(data: &DataHolder, or: &str) -> String {
         if let Some(compiler) = T::get_interpreter_option(data, "compiler") {
             if let Some(compiler_valid_str) = compiler.as_str() {
                 info!("using compiler '{}'", compiler_valid_str);
@@ -322,10 +321,9 @@ impl<T: Interpreter> InterpreterUtils for T {
             }
         }
         info!("using compiler '{}'", or);
-        return or.to_string();
-
+        or.to_string()
     }
-    fn get_interpreter_or(data: &DataHolder, or:&str)-> String {
+    fn get_interpreter_or(data: &DataHolder, or: &str) -> String {
         if let Some(interpreter) = T::get_interpreter_option(data, "interpreter") {
             if let Some(interpreter_valid_str) = interpreter.as_str() {
                 info!("using interpreter '{}'", interpreter_valid_str);
@@ -333,8 +331,7 @@ impl<T: Interpreter> InterpreterUtils for T {
             }
         }
         info!("using interpreter '{}'", or);
-        return or.to_string();
-
+        or.to_string()
     }
 
     fn error_truncate(data: &DataHolder) -> ErrTruncate {
