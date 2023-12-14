@@ -806,7 +806,7 @@ checksum = "942b4a808e05215192e39f4ab80813e599068285906cc91aa64f923db842bd5a"
 
 [[package]]
 name = "sniprun"
-version = "1.3.9-beta"
+version = "1.3.9"
 dependencies = [
  "close_fds",
  "dirs",
