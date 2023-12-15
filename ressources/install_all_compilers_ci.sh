@@ -50,7 +50,7 @@ if ! command -v bun &> /dev/null
 then
     sudo apt-get install unzip
     curl -fsSL https://bun.sh/install | bash
-    source ~/.bashrc
+    export PATH=${PATH}:~/.bun/bin
     bun --help
 fi
 
