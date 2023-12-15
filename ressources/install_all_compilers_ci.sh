@@ -46,14 +46,6 @@ then
     sudo apt-get install gnat 
 fi
 
-if ! command -v bun &> /dev/null
-then
-    sudo apt-get install unzip
-    curl -fsSL https://bun.sh/install | bash
-    export PATH=${PATH}:~/.bun/bin
-    bun --help
-fi
-
 if ! command -v scalac &> /dev/null
 then
     sudo apt-get install scala
