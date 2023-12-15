@@ -100,8 +100,9 @@ impl Interpreter for Java_original {
             File::create(&self.main_file_path).expect("Failed to create file for java-original");
         write(&self.main_file_path, &self.code).expect("Unable to write to file for java-original");
 
+        let compiler = Java_original::get_compiler_or(&self.data, "javac");
         //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new("javac")
+        let output = Command::new(compiler)
             .arg("-d")
             .arg(&self.java_work_dir)
             .arg(&self.main_file_path)

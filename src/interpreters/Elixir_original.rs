@@ -164,7 +164,8 @@ impl Interpreter for Elixir_original {
         Ok(())
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
-        let output = Command::new("elixir")
+        let interpreter = Elixir_original::get_interpreter_or(&self.data, "elixir");
+        let output = Command::new(interpreter)
             .arg(&self.main_file_path)
             .args(&self.get_data().cli_args)
             .output()

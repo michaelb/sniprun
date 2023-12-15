@@ -134,7 +134,7 @@ impl Interpreter for Language_subname {
 
         let mut configurable_option = String::from("--optimize"); // no debug info by default, for example
 
-        if let Some(config_value) = self.get_interpreter_option("example_option") {
+        if let Some(config_value) = Language_subname::get_interpreter_option("example_option") {
             if let Some(config_value_valid_string) = config_value.as_str() {
                 configurable_option = config_value_valid_string.to_string();
             }
@@ -142,8 +142,9 @@ impl Interpreter for Language_subname {
 
 
 
-        //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new("compiler")
+        let compiler = Language_subname::get_compiler_or(&self.data, "compiler");
+        //compile it (to the bin_path that already points to the rigth path)
+        let output = Command::new(compiler)
             .arg(&configurable_option) // for short snippets, that may contain a long loop
             .arg("--out-dir")
             .arg(&self.language_work_dir)

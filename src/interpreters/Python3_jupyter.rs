@@ -351,13 +351,11 @@ impl ReplLikeInterpreter for Python3_jupyter {
             Ok(cleaned_result.join("\n") + "\n")
         } else {
             return Err(SniprunError::RuntimeError(
-                String::from_utf8(strip_ansi_escapes::strip(output.stderr.clone()).unwrap())
-                    .unwrap()
+                strip_ansi_escapes::strip_str(String::from_utf8_lossy(&output.stderr.clone()))
                     .lines()
                     .last()
                     .unwrap_or(
-                        &String::from_utf8(strip_ansi_escapes::strip(output.stderr).unwrap())
-                            .unwrap(),
+                        &strip_ansi_escapes::strip_str(String::from_utf8_lossy(&output.stderr))
                     )
                     .to_owned(),
             ));

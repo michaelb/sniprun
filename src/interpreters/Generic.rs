@@ -13,26 +13,23 @@ pub struct Generic {
     boilerplate_pre: String,
     boilerplate_post: String,
 }
+fn index_from_name(name: &str, config: &[(neovim_lib::Value, neovim_lib::Value)]) -> Option<usize> {
+    for (i, kv) in config.iter().enumerate() {
+        if name == kv.0.as_str().unwrap_or("") {
+            info!("key {} found", name);
+            return Some(i);
+        }
+    }
+    info!("key '{}' not found in interpreter option", name);
+    None
+}
+
 impl Generic {
     // Custom fetch function for the generic interpreter
     fn generic_get_interpreter_option(
         data: &DataHolder,
         option: &str,
     ) -> Option<(String, neovim_lib::Value)> {
-        fn index_from_name(
-            name: &str,
-            config: &[(neovim_lib::Value, neovim_lib::Value)],
-        ) -> Option<usize> {
-            for (i, kv) in config.iter().enumerate() {
-                if name == kv.0.as_str().unwrap_or("") {
-                    info!("key {} found", name);
-                    return Some(i);
-                }
-            }
-            info!("key '{}' not found in interpreter option", name);
-            None
-        }
-
         fn config_supports_filetype(
             ft: &str,
             config: &[(neovim_lib::Value, neovim_lib::Value)],
@@ -100,6 +97,60 @@ impl Generic {
 
         None
     }
+
+    pub fn get_configured_filetypes(data: &DataHolder) -> Vec<String> {
+        let mut filetypes = vec![];
+        if let Some(config) = &data.interpreter_options {
+            if let Some(ar) = config.as_map() {
+                if let Some(i) = index_from_name("interpreter_options", ar) {
+                    if let Some(ar2) = ar[i].1.as_map() {
+                        if let Some(i) = index_from_name(&Generic::get_name(), ar2) {
+                            if let Some(ar3) = ar2[i].1.as_map() {
+                                for kv in ar3.iter() {
+                                    info!(
+                                        "checking if generic config {} matches filetypes",
+                                        kv.0.as_str().unwrap_or("toostrangeconfigname")
+                                    );
+                                    // iter on all config in Generic
+                                    if let Some(ar_config) = kv.1.as_map() {
+                                        if let Some(i) =
+                                            index_from_name("supported_filetypes", ar_config)
+                                        {
+                                            let supported_filetypes_string_or_map = &ar_config[i].1; // let's accept strings for convenience' sake
+                                                                                                     // if key was unique filetype as string
+                                            if let Some(supported_filetype_str) =
+                                                supported_filetypes_string_or_map.as_str()
+                                            {
+                                                filetypes.push(supported_filetype_str.to_string());
+                                            }
+                                            // if key was multiple filetypes as array
+                                            if let Some(supported_filetype_ar) =
+                                                supported_filetypes_string_or_map.as_array()
+                                            {
+                                                for v in supported_filetype_ar.iter() {
+                                                    if let Some(v_str) = v.as_str() {
+                                                        filetypes.push(v_str.to_string());
+                                                    }
+                                                }
+                                            }
+                                            info!(
+                                                            "supported filetypes neither array or string ? {:?}",
+                                                            supported_filetypes_string_or_map
+                                                        );
+                                        } else {
+                                            info!("Generic configs should always specify 'supported_filetypes'");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        info!("supported filetypes for generic are {:?}", filetypes);
+        filetypes
+    }
 }
 
 impl ReplLikeInterpreter for Generic {}
@@ -118,10 +169,12 @@ impl Interpreter for Generic {
             Generic::generic_get_interpreter_option(&data, "compiler")
         {
             if let Some(compiler_string) = used_compiler.as_str() {
-                info!("Using compiler: {}", compiler_string);
-                compiler = compiler_string.to_string();
-                config_name = fetched_config_name;
-                interpreted_lang = false;
+                if ! compiler_string.is_empty() {
+                    info!("Using compiler: {}", compiler_string);
+                    compiler = compiler_string.to_string();
+                    config_name = fetched_config_name;
+                    interpreted_lang = false;
+                }
             }
         }
 
@@ -129,10 +182,12 @@ impl Interpreter for Generic {
             Generic::generic_get_interpreter_option(&data, "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
-                info!("Using interpreter: {}", interpreter_string);
-                interpreter = interpreter_string.to_string();
-                config_name = fetched_config_name;
-                interpreted_lang = true;
+                if ! interpreter_string.is_empty() {
+                    info!("Using interpreter: {}", interpreter_string);
+                    interpreter = interpreter_string.to_string();
+                    config_name = fetched_config_name;
+                    interpreted_lang = true;
+                }
             }
         }
 
@@ -265,7 +320,7 @@ impl Interpreter for Generic {
                 .arg(&self.main_file_path)
                 .current_dir(&self.workdir)
                 .output()
-                .expect("Unable to execute compiler");
+                .expect("Unable to execute compiler specified in Generic's config");
 
             info!(
                 "generic compiled, status.success?:{}",
@@ -299,13 +354,13 @@ impl Interpreter for Generic {
                 .args(&self.get_data().cli_args)
                 .current_dir(&self.workdir)
                 .output()
-                .expect("Unable to start process")
+                .expect("Unable to start process specified in Generic's config")
         } else {
             Command::new(self.exe_path.clone())
                 .args(&self.get_data().cli_args)
                 .current_dir(&self.workdir)
                 .output()
-                .expect("Unable to start process")
+                .expect("Unable to start process (running the produced binary/executable)")
         };
         info!(
             "generic executed, status.success?:{}",

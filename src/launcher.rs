@@ -2,6 +2,8 @@ use crate::interpreter::InterpreterUtils;
 use crate::*;
 use error::SniprunError;
 use interpreter::{Interpreter, SupportLevel};
+use interpreters::Generic;
+use std::any::TypeId;
 use std::io::prelude::*;
 use std::process::Command;
 use std::{fs::File, io::Read};
@@ -17,9 +19,14 @@ impl Launcher {
 
     fn match_filetype<T>(filetype: String, data: &DataHolder) -> bool
     where
-        T: Interpreter,
+        T: Interpreter + 'static,
     {
-        if T::get_supported_languages().contains(&filetype) {
+        let supported_languages = if TypeId::of::<T>() == TypeId::of::<Generic>() {
+            Generic::get_configured_filetypes(data)
+        } else {
+            T::get_supported_languages()
+        };
+        if supported_languages.contains(&filetype) {
             return true;
         }
 
@@ -68,12 +75,7 @@ impl Launcher {
         let mut skip_all = false;
         iter_types! {
             if Launcher::match_filetype::<Current>(self.data.filetype.clone(), &self.data){
-                if !skip_all && Current::get_max_support_level() > max_level_support {
-                    max_level_support = Current::get_max_support_level();
-                    name_best_interpreter = Current::get_name();
-                }
-
-                if self.data.selected_interpreters.contains(&Current::get_name()){
+                if !skip_all && self.data.selected_interpreters.contains(&Current::get_name()){
                     max_level_support = SupportLevel::Selected;
                     name_best_interpreter = Current::get_name();
                     skip_all = true;
@@ -82,7 +84,6 @@ impl Launcher {
                 if !skip_all && Current::default_for_filetype() {
                     max_level_support = Current::get_max_support_level();
                     name_best_interpreter = Current::get_name();
-                    skip_all = true;
                 }
             }
         }

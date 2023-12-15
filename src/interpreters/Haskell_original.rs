@@ -105,7 +105,8 @@ impl Interpreter for Haskell_original {
             "haskell interpreter : main & bin paths are {}, {}",
             &self.main_file_path, &self.bin_path
         );
-        let output = Command::new("ghc")
+        let compiler = Haskell_original::get_compiler_or(&self.data, "ghc");
+        let output = Command::new(compiler)
             .arg("-dynamic")
             .arg("-o")
             .arg(self.bin_path.clone())

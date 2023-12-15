@@ -110,8 +110,9 @@ impl Interpreter for Scala_original {
         write(&self.main_file_path, &self.code)
             .expect("Unable to write to file for language_subname");
 
+        let compiler = Scala_original::get_compiler_or(&self.data, "scalac");
         //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new("scalac")
+        let output = Command::new(compiler)
             .arg("-d")
             .arg(&self.language_work_dir)
             .arg(&self.main_file_path)
@@ -131,7 +132,8 @@ impl Interpreter for Scala_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let output = Command::new("scala")
+        let interpreter = Scala_original::get_interpreter_or(&self.data, "scala");
+        let output = Command::new(interpreter)
             .arg("Main")
             .current_dir(&self.language_work_dir)
             .output()

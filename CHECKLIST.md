@@ -8,7 +8,7 @@
  - cargo fmt --all / cargo check / cargo clippy
  - update the changelog
  - remove the 'beta' from the version field in Cargo.toml
- - `cargo update --offline` # update sniprun's versino in committed Cargo.lock
+ - `cargo update --offline` # update sniprun's version in committed Cargo.lock
 
 ## Merge process
  - create a PR dev -> master
