@@ -1,3 +1,7 @@
+## v1.3.10
+- Fix missing documentation in the online wiki
+- Fix interpreters broken when they were not explicitely the default for their filetype
+
 ## v1.3.9
 - Support of "interpreter" and "compiler" key for every interpreter
 - Bun-based JS/TS intepreter (with REPL)
