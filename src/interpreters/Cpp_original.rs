@@ -61,7 +61,7 @@ impl Cpp_original {
 impl ReplLikeInterpreter for Cpp_original {}
 impl Interpreter for Cpp_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Cpp_original> {
-        let rwd = data.work_dir.clone() + "/c_original";
+        let rwd = data.work_dir.clone() + "/cpp_original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
