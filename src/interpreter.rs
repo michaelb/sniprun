@@ -350,9 +350,9 @@ impl<T: Interpreter> InterpreterUtils for T {
         }
         // auto select
         if data.current_bloc.lines().count() > 4 {
-            ErrTruncate::Short
+            ErrTruncate::Long
         } else {
-            ErrTruncate::Long // no need for potentially truncating important things off
+            ErrTruncate::Short
         }
     }
 
