@@ -41,7 +41,6 @@ M.config_values = {
     terminal_position = "vertical", -- or "horizontal"
     terminal_width = 45,          -- change the terminal display option width (if vertical)
     terminal_height = 20,         -- change the terminal display option heigth (if horizontal)
-    terminal_persistence = true,  -- always keep the terminal open (true) or close it at every occasion (false)
     notification_timeout = 5      -- timeout for nvim_notify output
   },
 
@@ -179,11 +178,6 @@ function M.setup_autocommands()
   vim.cmd("autocmd VimLeave,QuitPre ?* call Sniprun_close_term_on_leave()")
   vim.cmd("augroup END")
 
-  vim.cmd("function! Sniprun_close_term_on_bufleave()\n lua require'sniprun.display'.term_autoclose()\n endfunction")
-  vim.cmd("augroup sniprun_close_term")
-  vim.cmd("autocmd!")
-  vim.cmd("autocmd BufWinLeave ?* call Sniprun_close_term_on_bufleave()")
-  vim.cmd("augroup END")
 end
 
 
