@@ -25,4 +25,39 @@ Welcome to Sniprun's documentation!
 
 
    sources/common_options.md
-   sources/interpreters/*.md
+   sources/interpreters/Ada_original.md
+   sources/interpreters/Bash_original.md
+   sources/interpreters/Clojure_fifo.md
+   sources/interpreters/C_original.md
+   sources/interpreters/Cpp_original.md
+   sources/interpreters/CSharp_original.md
+   sources/interpreters/CS_original.md
+   sources/interpreters/D_original.md
+   sources/interpreters/Elixir_original.md
+   sources/interpreters/FSharp_fifo.md
+   sources/interpreters/Generic.md
+   sources/interpreters/GFM_original.md
+   sources/interpreters/Go_original.md
+   sources/interpreters/Haskell.md
+   sources/interpreters/Http_original.md
+   sources/interpreters/Java_original.md
+   sources/interpreters/JS_TS_bun.md
+   sources/interpreters/JS_TS_deno.md
+   sources/interpreters/Julia_jupyter.md
+   sources/interpreters/Julia_original.md
+   sources/interpreters/Lua_nvim.md
+   sources/interpreters/Lua_original.md
+   sources/interpreters/Mathematica_original.md
+   sources/interpreters/Neorg_original.md
+   sources/interpreters/OCaml_fifo.md
+   sources/interpreters/OrgMode_original.md
+   sources/interpreters/Prolog_original.md
+   sources/interpreters/Python3_fifo.md
+   sources/interpreters/Python3_jupyter.md
+   sources/interpreters/Python3_original.md
+   sources/interpreters/R_original.md
+   sources/interpreters/Ruby_original.md
+   sources/interpreters/Rust_original.md
+   sources/interpreters/Sage_fifo.md
+   sources/interpreters/Scala_original.md
+   sources/interpreters/TypeScript_original.md
