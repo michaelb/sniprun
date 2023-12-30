@@ -290,7 +290,7 @@ impl<T: Interpreter> InterpreterUtils for T {
                     return Some(i);
                 }
             }
-            info!("key '{}' not found in interpreter option", name);
+            // info!("key '{}' not found in interpreter option", name);
             None
         }
         // this is the ugliness required to fetch something from the interpreter options
