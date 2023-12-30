@@ -68,6 +68,10 @@ impl Launcher {
         if self.data.filetype.is_empty() {
             return None;
         }
+        info!(
+            "selecting an interpreter for filetype {}",
+            self.data.filetype.clone()
+        );
 
         let mut max_level_support = SupportLevel::Unsupported;
         let mut name_best_interpreter = String::from("Generic");
@@ -75,13 +79,15 @@ impl Launcher {
         let mut skip_all = false;
         iter_types! {
             if Launcher::match_filetype::<Current>(self.data.filetype.clone(), &self.data){
+                info!("considering interpreter {} ...", Current::get_name());
                 if !skip_all && self.data.selected_interpreters.contains(&Current::get_name()){
                     max_level_support = SupportLevel::Selected;
                     name_best_interpreter = Current::get_name();
                     skip_all = true;
                 }
 
-                if !skip_all && Current::default_for_filetype() {
+                // set to default, or set to the found interpreter if was previously the Generic one
+                if !skip_all && (Current::default_for_filetype() || max_level_support == SupportLevel::Unsupported ){
                     max_level_support = Current::get_max_support_level();
                     name_best_interpreter = Current::get_name();
                 }

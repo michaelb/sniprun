@@ -18,7 +18,7 @@ impl Cpp_original {
         let mut v = vec![];
         let mut errored = true;
         if let Some(real_nvim_instance) = self.data.nvim_instance.clone() {
-            info!("got real nvim isntance");
+            info!("got real nvim instance");
             let mut rvi = real_nvim_instance.lock().unwrap();
             if let Ok(buffer) = rvi.get_current_buf() {
                 info!("got buffer");
@@ -48,20 +48,21 @@ impl Cpp_original {
     fn fetch_config(&mut self) {
         let default_compiler = String::from("g++");
         self.compiler = default_compiler;
-        if let Some(used_compiler) = Cpp_original::get_interpreter_option(&self.get_data(), "compiler") {
+        if let Some(used_compiler) =
+            Cpp_original::get_interpreter_option(&self.get_data(), "compiler")
+        {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
                 self.compiler = compiler_string.to_string();
             }
         }
     }
-
 }
 
 impl ReplLikeInterpreter for Cpp_original {}
 impl Interpreter for Cpp_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Cpp_original> {
-        let rwd = data.work_dir.clone() + "/c_original";
+        let rwd = data.work_dir.clone() + "/cpp_original";
         let mut builder = DirBuilder::new();
         builder.recursive(true);
         builder
@@ -159,9 +160,25 @@ impl Interpreter for Cpp_original {
             .output()
             .expect("Unable to start process");
 
-        //TODO if relevant, return the error number (parse it from stderr)
         if !output.status.success() {
-            Err(SniprunError::CompilationError("".to_string()))
+            if Cpp_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+                let error_pos = String::from_utf8(output.stderr.clone())
+                    .unwrap()
+                    .find("error:");
+                if let Some(index) = error_pos {
+                    let err = output.stderr.split_at(index + 6).1;
+                    Err(SniprunError::CompilationError(
+                        err.lines().next().unwrap().unwrap_or("".to_string()),
+                    ))
+                } else {
+                    Err(SniprunError::CompilationError(
+                        String::from_utf8(output.stderr.clone()).unwrap().lines().take(5).collect::<Vec<&str>>().join("\n")
+                    ))
+                }
+            } else {
+                Err(SniprunError::CompilationError(String::from_utf8(output.stderr.clone()).unwrap()))
+
+            }
         } else {
             Ok(())
         }
@@ -210,10 +227,7 @@ mod test_cpp_original {
 
         match res {
             Err(SniprunError::CompilationError(_)) => (),
-            _ => panic!("Compilation should have failed")
+            _ => panic!("Compilation should have failed"),
         };
     }
-
-
-
-   }
+}

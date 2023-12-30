@@ -21,6 +21,7 @@
  - verify the signed tag: `git tag -v v8.9.5`
  - git push origin vX.Y.Z
 
+ - merge master in dev
  - Bump Cargo.toml to next version on dev, suffixed by 'beta'
 
 # When the tag gets pushed, the 'release' github action will automatically add the new tag to GitHub's 'Releases'
