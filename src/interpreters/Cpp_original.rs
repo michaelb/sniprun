@@ -153,7 +153,8 @@ impl Interpreter for Cpp_original {
         let mut _file =
             File::create(&self.main_file_path).expect("Failed to create file for rust-original");
         write(&self.main_file_path, &self.code).expect("Unable to write to file for rust-original");
-        let output = Command::new(&self.compiler)
+        let output = Command::new(self.compiler.split_whitespace().next().unwrap())
+            .args(self.compiler.split_whitespace().skip(1))
             .arg(&self.main_file_path)
             .arg("-o")
             .arg(&self.bin_path)
