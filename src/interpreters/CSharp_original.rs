@@ -128,7 +128,8 @@ impl Interpreter for CSharp_original {
             .expect("Unable to write to file for csharp-original");
 
         //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new(&self.compiler)
+        let output = Command::new(self.compiler.split_whitespace().next().unwrap())
+            .args(self.compiler.split_whitespace().skip(1))
             .arg(String::from("-out:") + &self.bin_path)
             .arg(&self.main_file_path)
             .output()

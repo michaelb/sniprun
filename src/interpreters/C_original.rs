@@ -179,8 +179,9 @@ impl Interpreter for C_original {
         let mut _file =
             File::create(&self.main_file_path).expect("Failed to create file for c-original");
         write(&self.main_file_path, &self.code).expect("Unable to write to file for c-original");
-        let mut cmd = Command::new(&self.compiler);
+        let mut cmd = Command::new(self.compiler.split_whitespace().next().unwrap());
         let cmd = cmd
+            .args(self.compiler.split_whitespace().skip(1))
             .arg(&self.main_file_path)
             .arg("-o")
             .arg(&self.bin_path)
