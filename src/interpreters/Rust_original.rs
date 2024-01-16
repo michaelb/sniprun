@@ -122,8 +122,8 @@ impl Interpreter for Rust_original {
         write(&self.main_file_path, &self.code).expect("Unable to write to file for rust-original");
 
         //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new(&self.compiler)
-            .arg("-O")
+        let output = Command::new(self.compiler.split_whitespace().next().unwrap())
+            .args(self.compiler.split_whitespace().skip(1))
             .arg("--out-dir")
             .arg(&self.rust_work_dir)
             .arg(&self.main_file_path)

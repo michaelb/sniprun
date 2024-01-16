@@ -35,7 +35,7 @@ There is a lot of thing in that script but to replicate, you just have to:
 
 ```bash
 #!/bin/bash
-/bin/cat pipe_in | dotnet fsi 
+cat pipe_in | dotnet fsi 
 
 # or replace 'dotnet fsi' by whatever you cant to try
 ```

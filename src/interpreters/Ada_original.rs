@@ -105,7 +105,8 @@ impl Interpreter for Ada_original {
             .expect("Unable to write to file for language_subname");
 
         let compiler = Ada_original::get_compiler_or(&self.data, "gnatmake");
-        let output = Command::new(compiler)
+        let output = Command::new(compiler.split_whitespace().next().unwrap())
+            .args(compiler.split_whitespace().skip(1))
             .arg("main")
             .arg(&self.main_file_path)
             .current_dir(&self.ada_work_dir)

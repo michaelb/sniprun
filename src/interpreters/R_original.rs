@@ -97,7 +97,8 @@ impl Interpreter for R_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         let interpreter = R_original::get_interpreter_or(&self.data, "Rscript");
-        let output = Command::new(interpreter)
+        let output = Command::new(interpreter.split_whitespace().next().unwrap())
+            .args(interpreter.split_whitespace().skip(1))
             .arg(&self.main_file_path)
             .args(&self.get_data().cli_args)
             .output()

@@ -236,7 +236,8 @@ impl Interpreter for Go_original {
         write(&self.main_file_path, &self.code).expect("Unable to write to file for go-original");
 
         //compile it (to the bin_path that arleady points to the rigth path)
-        let output = Command::new(&self.compiler)
+        let output = Command::new(self.compiler.split_whitespace().next().unwrap())
+            .args(self.compiler.split_whitespace().skip(1))
             .arg("build")
             .arg("-o")
             .arg(&self.go_work_dir)

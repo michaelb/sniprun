@@ -1,3 +1,7 @@
+## v1.3.11
+- Support compiler flags for C++ (courtesy of @jonathanffon) and all other languages
+- Scripts use \cat instead of /bin/cat (courtesy of @GaetanLepage)
+
 ## v1.3.10
 - Fix missing documentation in the online wiki
 - Fix interpreters broken when they were not explicitely the default for their filetype
