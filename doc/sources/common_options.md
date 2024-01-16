@@ -107,13 +107,16 @@ interpreter_options = {
         interpreter = "python3.9"
     }
     Rust_original = {
-        compiler = "/home/user/bin/rustc-patched"
+        compiler = "/home/user/bin/rustc-patched -Zlocation-detail=none"
     }
 }, 
 ```
 
 You can see what interpreters/compilers are being used at any time by watching sniprun's log for the line
 "using compiler XXXX" or "using interpreter XXXX" when you run a snippet.
+While options can (generally) be added to these interpreters/compilers strings, mind that some options are often already passed, and
+sometimes mandatory (ex: "-o main_file_name", "--nologo") and whatever is added can mess up the format
+sniprun internally expect, or be straight out incompatible with the formers. Be careful!
 
 Exceptions:
  - Scala_original has both interpreter and compiler keys that should be set consistently with each other
