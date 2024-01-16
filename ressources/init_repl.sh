@@ -35,7 +35,7 @@ mkfifo $working_dir/$pipe
 touch $working_dir/$out
 sleep 36000 > $working_dir/$pipe &
 
-echo "/bin/cat " $working_dir/$pipe " | " $repl  > $working_dir/real_launcher.sh
+echo "\cat " $working_dir/$pipe " | " $repl  > $working_dir/real_launcher.sh
 chmod +x $working_dir/real_launcher.sh
 
 echo $repl " process started at $(date +"%F %T")." >> $log
