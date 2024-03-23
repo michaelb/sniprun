@@ -1,6 +1,5 @@
 local M = {}
 M.ping_anwsered=0
-M.custom_highlight=false
 M.info_floatwin = {}
 
 -- See https://github.com/tjdevries/rofl.nvim/blob/632c10f2ec7c56882a3f7eda8849904bcac6e8af/lua/rofl.lua
@@ -54,10 +53,10 @@ M.config_values = {
 
   -- default highlight stuff goes here
   snipruncolors = {
-    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",ctermfg="Black"},
-    SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
-    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",ctermfg="Black"},
-    SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
+    SniprunVirtualTextOk  = { default = true, bg="#66eeff", fg="#000000", ctermbg="Cyan", ctermfg="Black" },
+    SniprunFloatingWinOk  = { default = true, fg="#66eeff", ctermfg="Cyan" },
+    SniprunVirtualTextErr = { default = true, bg="#881515", fg="#000000", ctermbg="DarkRed", ctermfg="Black" },
+    SniprunFloatingWinErr = { default = true, fg="#881515", ctermfg="DarkRed" },
   },
 
   -- whether the user can toggle the live_mode. It's kept as an option so it's not activated by chance
@@ -92,13 +91,13 @@ function M.setup(opts)
       error(string.format('[Sniprun] Key %s does not exist in config values',key))
       return
     end
-    if key == 'snipruncolors' then
-      M.custom_highlight = true
-    end
     if key == 'live_mode_toggle' and opts[key] == 'enable' then
       require('sniprun.live_mode')
     end
   end
+
+  -- Replace default highlights with custom ones rather than merging them together.
+  M.config_values.snipruncolors = vim.tbl_extend("force", M.config_values.snipruncolors, opts.snipruncolors or {})
 
   -- merge user config into default config values
   M.config_values = vim.tbl_deep_extend("force", M.config_values, opts)
@@ -115,16 +114,15 @@ end
 
 
 local highlight = function(group, styles)
-  local gui = styles.gui and 'gui='..styles.gui or 'gui=NONE'
-  local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
-  local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
-  local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
-  local ctermbg = styles.ctermbg and 'ctermbg='..styles.ctermbg or 'ctermbg=NONE'
-  local ctermfg = styles.ctermfg and 'ctermfg='..styles.ctermfg or 'ctermfg=NONE'
-  -- This somehow works for default highlighting. with or even without cterm colors
-  -- hacky way tho.Still I think better than !hlexists
-  vim.cmd('highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
-  vim.api.nvim_command('autocmd ColorScheme * highlight '..group..' '..gui..' '..sp..' '..fg..' '..bg..' '..ctermbg..' '..ctermfg)
+  -- Maintain compatibility with the previous way of setting highlights.
+  local attrs = {}
+  if styles.gui then
+    for val in vim.gsplit(styles.gui, ",", { plain = true }) do
+      attrs[val] = true
+    end
+  end
+
+  vim.api.nvim_set_hl(0, group, vim.tbl_extend("force", attrs, styles))
 end
 
 
@@ -135,26 +133,9 @@ end
 
 
 function M.setup_highlights()
-  local colors_table = M.config_values["snipruncolors"]
-  if M.custom_highlight then
-    vim.cmd('augroup snip_highlights')
-    vim.cmd('autocmd!')
-    for group, styles in pairs(colors_table) do
-      -- print('setting up for '..group,'with style :','bg :',styles.bg,'fg :',styles.fg)
-      highlight(group, styles)
-    end
-    vim.cmd('augroup END')
-  else 
-    for group, styles in pairs(colors_table) do
-      local gui = styles.gui and 'gui='..styles.gui or 'gui=NONE'
-      local sp = styles.sp and 'guisp='..styles.sp or 'guisp=NONE'
-      local fg = styles.fg and 'guifg='..styles.fg or 'guifg=NONE'
-      local bg = styles.bg and 'guibg='..styles.bg or 'guibg=NONE'
-      local ctermbg = styles.ctermbg and 'ctermbg='..styles.ctermbg or 'ctermbg=NONE'
-      local ctermfg = styles.ctermfg and 'ctermfg='..styles.ctermfg or 'ctermfg=NONE'
-
-      vim.cmd("if !hlexists('"..group.."') \n hi "..group.." "..gui.." "..sp.." "..fg.." "..bg.." "..ctermbg.." "..ctermfg)
-    end
+  local snipruncolors = M.config_values.snipruncolors
+  for group, styles in pairs(snipruncolors) do
+    highlight(group, styles)
   end
 end
 
