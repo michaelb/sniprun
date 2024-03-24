@@ -7,24 +7,12 @@ use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 use unindent::Unindent;
 
-#[derive(Clone, Copy, Debug, Ord, PartialOrd)]
+#[derive(Clone, Copy, Debug, Ord, PartialOrd, Eq, PartialEq)]
 pub enum DisplayFilter {
     OnlyOk,
     OnlyErr,
     Both,
 }
-
-// abusing a little the system
-impl PartialEq for DisplayFilter {
-    fn eq(&self, other: &Self) -> bool {
-        match self {
-            Both => true,
-            OnlyOk => !matches!(other, OnlyErr),
-            OnlyErr => !matches!(other, OnlyOk),
-        }
-    }
-}
-impl Eq for DisplayFilter {}
 
 use DisplayFilter::*;
 
@@ -85,16 +73,16 @@ impl fmt::Display for DisplayFilter {
 impl fmt::Display for DisplayType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match &self {
-            DisplayType::Classic(f) => "Classic".to_string() + &f.to_string(),
-            DisplayType::VirtualText(f) => "VirtualText".to_string() + &f.to_string(),
-            DisplayType::Terminal(f) => "Terminal".to_string() + &f.to_string(),
-            DisplayType::TerminalWithCode(f) => "TerminalWithCode".to_string() + &f.to_string(),
-            DisplayType::LongTempFloatingWindow(f) => {
-                "LongTempFloatingWindow".to_string() + &f.to_string()
+            DisplayType::Classic(filter) => "Classic".to_string() + &filter.to_string(),
+            DisplayType::VirtualText(filter) => "VirtualText".to_string() + &filter.to_string(),
+            DisplayType::Terminal(filter) => "Terminal".to_string() + &filter.to_string(),
+            DisplayType::TerminalWithCode(filter) => "TerminalWithCode".to_string() + &filter.to_string(),
+            DisplayType::LongTempFloatingWindow(filter) => {
+                "LongTempFloatingWindow".to_string() + &filter.to_string()
             }
-            DisplayType::TempFloatingWindow(f) => "TempFloatingWindow".to_string() + &f.to_string(),
-            DisplayType::Api(f) => "Api".to_string() + &f.to_string(),
-            DisplayType::NvimNotify(f) => "NvimNotify".to_string() + &f.to_string(),
+            DisplayType::TempFloatingWindow(filter) => "TempFloatingWindow".to_string() + &filter.to_string(),
+            DisplayType::Api(filter) => "Api".to_string() + &filter.to_string(),
+            DisplayType::NvimNotify(filter) => "NvimNotify".to_string() + &filter.to_string(),
         };
         write!(f, "{}", name)
     }

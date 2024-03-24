@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this script takes 3 (or more) args.
 # $1 is a path to a working directory

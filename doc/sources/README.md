@@ -288,11 +288,12 @@ require'sniprun'.setup({
   },
 
   --# customize highlight groups (setting this overrides colorscheme)
+  --# any parameters of nvim_set_hl() can be passed as-is
   snipruncolors = {
-    SniprunVirtualTextOk   =  {bg="#66eeff",fg="#000000",ctermbg="Cyan",cterfg="Black"},
-    SniprunFloatingWinOk   =  {fg="#66eeff",ctermfg="Cyan"},
-    SniprunVirtualTextErr  =  {bg="#881515",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
-    SniprunFloatingWinErr  =  {fg="#881515",ctermfg="DarkRed"},
+    SniprunVirtualTextOk   =  {bg="#66eeff", fg="#000000", ctermbg="Cyan", ctermfg="Black"},
+    SniprunFloatingWinOk   =  {fg="#66eeff", ctermfg="Cyan"},
+    SniprunVirtualTextErr  =  {bg="#881515", fg="#000000", ctermbg="DarkRed", ctermfg="Black"},
+    SniprunFloatingWinErr  =  {fg="#881515", ctermfg="DarkRed", bold=true},
   },
 
   live_mode_toggle='off'      --# live mode toggle, see Usage - Running for more info   
