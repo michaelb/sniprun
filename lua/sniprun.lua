@@ -189,7 +189,7 @@ end
 function M.start()
   if M.job_id ~= nil then return end
   M.job_id = vim.fn.jobstart({ M.config_values.binary_path }, { rpc = true })
-  -- M.setup_highlights() -- some configurations break highlights (lunarvim/lazy for example)
+  M.setup_highlights() -- some configurations break highlights (lunarvim/lazy for example)
 end
 
 function M.notify(method, ...)

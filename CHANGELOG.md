@@ -1,6 +1,6 @@
 ## v1.3.12
 - More universally-working shebang in scripts
-- Use Lua api to set highlights in a more extensible way
+- Use Lua api to set highlights in a more extensible way (courtesy of @pwnalone)
 
 ## v1.3.11
 - Support compiler flags for C++ (courtesy of @jonathanffon) and all other languages
