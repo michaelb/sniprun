@@ -1,3 +1,7 @@
+## v1.3.12
+- More universally-working shebang in scripts
+- Use Lua api to set highlights in a more extensible way
+
 ## v1.3.11
 - Support compiler flags for C++ (courtesy of @jonathanffon) and all other languages
 - Scripts use \cat instead of /bin/cat (courtesy of @GaetanLepage)
