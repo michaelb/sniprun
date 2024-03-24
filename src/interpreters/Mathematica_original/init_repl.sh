@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 working_dir=$1
 if [ -z "$working_dir" ]; then
     exit 1
