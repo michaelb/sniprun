@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction &mdash; Welcome to sniprun documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Interpreter configuration" href="common_options.html" />
+    <link rel="prev" title="Introduction" href="README.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Sniprun
+              <img src="../_static/logo-only.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sniprun:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#what-does-it-do">What does it do ?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#what-it-is-isn-t">What it is &amp;&amp; isn’t</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#configuration">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#support-levels-and-languages">Support levels and languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#live-mode">Live mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#api">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#known-limitations">Known limitations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#contribute">Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#related-projects">Related projects</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Display modes:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#available-display-modes">Available display modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#classic">Classic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#virtual-text">Virtual Text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#temporary-floating-windows">Temporary floating windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#terminal">Terminal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notification">Notification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-display">API display</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interpreters:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common_options.html">Interpreter configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common_options.html#common-options">Common options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common_options.html#the-interpreter-compiler-keys">The interpreter/compiler keys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Ada_original.html">Ada original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Bash_original.html">Bash original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Clojure_fifo.html">Clojure fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/C_original.html">C original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Cpp_original.html">Cpp original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/CSharp_original.html">C# original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/CS_original.html">CS original (coffeescript)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/D_original.html">D original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Elixir_original.html">Elixir original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/FSharp_fifo.html">F# fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Generic.html">Generic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/GFM_original.html">GFM original (Markdown)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Go_original.html">Go original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Haskell.html">Haskell original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Http_original.html">Http original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Java_original.html">Java original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/JS_TS_bun.html">JS_TS_bun</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/JS_TS_deno.html">JS_TS_Deno</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Julia_jupyter.html">Julia jupyter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Julia_original.html">Julia original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Lua_nvim.html">Lua_nvim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Lua_original.html">Lua original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Mathematica_original.html">Mathematica original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Neorg_original.html">Neorg original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/OCaml_fifo.html">OCaml fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/OrgMode_original.html">Orgmode original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Prolog_original.html">Prolog original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Python3_fifo.html">Python3 fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Python3_jupyter.html">Python3 jupyter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Python3_original.html">Python3 original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/R_original.html">R original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Ruby_original.html">Ruby original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Rust_original.html">Rust original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Sage_fifo.html">Sage fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Scala_original.html">Scala original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/TypeScript_original.html">TypeScript original</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Sniprun</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/sources/display_modes.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h1>
+<p>Sniprun has many different display modes, which you can combine and filter:</p>
+<p>Display modes:</p>
+<ul class="simple">
+<li><p>“Classic”</p></li>
+<li><p>“VirtualText”</p></li>
+<li><p>“Terminal”</p></li>
+<li><p>“TerminalWithCode”</p></li>
+<li><p>“TempFloatingWindow”</p></li>
+<li><p>“LongTempFloatingWindow”</p></li>
+<li><p>“NvimNotify”</p></li>
+<li><p>“Api”</p></li>
+</ul>
+<p>Suffixes:</p>
+<ul class="simple">
+<li><p>“Ok” (only display sucessfull results)</p></li>
+<li><p>“Err” (only display errors - compilation or runtime)</p></li>
+</ul>
+<p>To configure which display mode(s) you want, just include their names (+suffix if wanted) in the <code class="docutils literal notranslate"><span class="pre">display</span></code> configuration key:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">&lt;&lt;</span> <span class="n">EOF</span>
+
+<span class="n">require</span><span class="p">(</span><span class="s1">&#39;sniprun&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+    <span class="n">display</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Classic&quot;</span><span class="p">,</span>         <span class="o">--</span> <span class="n">will</span> <span class="n">display</span> <span class="n">both</span> <span class="s1">&#39;ok&#39;</span> <span class="o">&amp;</span> <span class="s1">&#39;err&#39;</span> <span class="n">results</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">command</span> <span class="n">area</span>
+        <span class="s2">&quot;VirtualTextOk&quot;</span><span class="p">,</span>   <span class="o">--</span> <span class="n">will</span> <span class="n">display</span> <span class="n">only</span> <span class="s1">&#39;ok&#39;</span> <span class="n">results</span> <span class="k">as</span> <span class="n">virtual</span> <span class="n">text</span> <span class="n">on</span> <span class="n">the</span> <span class="n">line</span> <span class="n">sent</span> <span class="n">to</span> <span class="n">sniprun</span>
+    <span class="p">},</span>
+<span class="p">})</span>
+
+<span class="n">EOF</span>
+</pre></div>
+</div>
+</section>
+<section id="available-display-modes">
+<h1>Available display modes<a class="headerlink" href="#available-display-modes" title="Permalink to this heading"></a></h1>
+<section id="classic">
+<span id="classic-display"></span><h2>Classic<a class="headerlink" href="#classic" title="Permalink to this heading"></a></h2>
+<p>Results are displayed on the command area.</p>
+<p><strong>Pro/cons:</strong></p>
+<ul class="simple">
+<li><p>Supports multi-lines results</p></li>
+<li><p>Can (maybe) be copied</p></li>
+<li><p>Ok/Err highlighting</p></li>
+<li><p>Disappear on the next keypress</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">&lt;&lt;</span> <span class="n">EOF</span>
+<span class="n">require</span><span class="s1">&#39;sniprun&#39;</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+  <span class="n">display</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;Classic&quot;</span> <span class="p">},</span>
+<span class="p">})</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p><img alt="" src="../_images/classic.png" /></p>
+</section>
+<section id="virtual-text">
+<span id="virtualtext-display"></span><h2>Virtual Text<a class="headerlink" href="#virtual-text" title="Permalink to this heading"></a></h2>
+<p>Results are displayed as virtual text after the end of the line you sent to sniprun. (In case it’s a block, it goes at the end of the last line)</p>
+<p><strong>Pro/cons:</strong></p>
+<ul class="simple">
+<li><p>Does not disappear (except after a SnipClose)</p></li>
+<li><p>Ok/Err highlighting (outputs for ok and error results are highlighted with the groups <code class="docutils literal notranslate"><span class="pre">SniprunVirtualTextOk</span></code> and <code class="docutils literal notranslate"><span class="pre">SniprunVirtualTextErr</span></code> respectively)</p></li>
+<li><p>Visually close to the code</p></li>
+<li><p>No multiline possible. Results are shortened on a best-effort basis</p></li>
+<li><p>Cannot be copied</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">&lt;&lt;</span><span class="n">EOF</span>
+<span class="n">require</span><span class="s1">&#39;sniprun&#39;</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+  <span class="n">display</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;VirtualText&quot;</span><span class="p">,</span>
+  <span class="p">},</span>
+<span class="p">})</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p><img alt="" src="../_images/virtual_text.png" /></p>
+</section>
+<section id="temporary-floating-windows">
+<span id="floatingwindow-display"></span><h2>Temporary floating windows<a class="headerlink" href="#temporary-floating-windows" title="Permalink to this heading"></a></h2>
+<p>Result are displayed in (temporary) floating windows. “LongTempFloatingWindow” will only display multiline messages, which allow for nice combinations with “VirtualText”</p>
+<p><strong>Pro/cons:</strong></p>
+<ul class="simple">
+<li><p>Visually close to the code</p></li>
+<li><p>Ok/Err highlighting (the highlight groups used are “SniprunFloatingWinOk” and “SniprunFloatingWinErr”)</p></li>
+<li><p>Supports multiline results</p></li>
+<li><p>Disappears on the next keypress</p></li>
+<li><p>Cannot be copied</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">require</span><span class="s1">&#39;sniprun&#39;</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+  <span class="n">display</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;TempFloatingWindow&quot;</span> <span class="p">},</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p><img alt="" src="../_images/floating_window.png" /></p>
+</section>
+<section id="terminal">
+<span id="terminal-display"></span><h2>Terminal<a class="headerlink" href="#terminal" title="Permalink to this heading"></a></h2>
+<p>Results are displayed in a side panel</p>
+<p><strong>Pro/cons:</strong></p>
+<ul class="simple">
+<li><p>Support multiline, and auto-scrolls when full</p></li>
+<li><p>Results can be copied and do not disappear (except after a SnipClose)</p></li>
+<li><p>Customizable width</p></li>
+<li><p>No highlighting (only a ‘ok’ or ‘err’ message)</p></li>
+<li><p>Can display the code that ran along with the result (with the “TerminalWithCode” variant)</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">&lt;&lt;</span> <span class="n">EOF</span>
+<span class="n">require</span><span class="s1">&#39;sniprun&#39;</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+    <span class="n">display</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;Terminal&quot;</span> <span class="p">},</span>
+    <span class="n">display_options</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">terminal_scrollback</span> <span class="o">=</span> <span class="n">vim</span><span class="o">.</span><span class="n">o</span><span class="o">.</span><span class="n">scrollback</span><span class="p">,</span> <span class="o">--</span> <span class="n">change</span> <span class="n">terminal</span> <span class="n">display</span> <span class="n">scrollback</span> <span class="n">lines</span>
+        <span class="n">terminal_line_number</span> <span class="o">=</span> <span class="n">false</span><span class="p">,</span> <span class="o">--</span> <span class="n">whether</span> <span class="n">show</span> <span class="n">line</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">terminal</span> <span class="n">window</span>
+        <span class="n">terminal_signcolumn</span> <span class="o">=</span> <span class="n">false</span><span class="p">,</span> <span class="o">--</span> <span class="n">whether</span> <span class="n">show</span> <span class="n">signcolumn</span> <span class="ow">in</span> <span class="n">terminal</span> <span class="n">window</span>
+        <span class="n">terminal_position</span> <span class="o">=</span> <span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="o">--</span><span class="c1"># or &quot;horizontal&quot;, to open as horizontal split instead of vertical split</span>
+        <span class="n">terminal_width</span> <span class="o">=</span> <span class="mi">45</span><span class="p">,</span>          <span class="o">--</span><span class="c1"># change the terminal display option width (if vertical)</span>
+        <span class="n">terminal_height</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>         <span class="o">--</span><span class="c1"># change the terminal display option height (if horizontal)</span>
+    <span class="p">},</span>
+<span class="p">})</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p>if you experience wrapping of the header line ‘—- OK —’ due to the presence of a number column, you can (and should anyway) set</p>
+<div class="highlight-vim notranslate"><div class="highlight"><pre><span></span>autocmd TermOpen * <span class="k">setlocal</span> <span class="nb">nonu</span>
+</pre></div>
+</div>
+<p><img alt="" src="../_images/terminal.png" />
+<img alt="" src="../_images/terminalWithCode.png" /></p>
+</section>
+<section id="notification">
+<span id="notification-display"></span><h2>Notification<a class="headerlink" href="#notification" title="Permalink to this heading"></a></h2>
+<p>Results are displayed through the <a class="reference external" href="https://github.com/rcarriga/nvim-notify">nvim-notify</a> plugin (which must be installed).</p>
+<p><strong>Pro/cons</strong>:</p>
+<ul class="simple">
+<li><p>Supports multiline</p></li>
+<li><p>Ok/Err highlighting</p></li>
+<li><p>Disappears after 5s (timeout is customisable)</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">&lt;&lt;</span> <span class="n">EOF</span>
+<span class="n">require</span><span class="s1">&#39;sniprun&#39;</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+   <span class="n">display</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;NvimNotify&quot;</span><span class="p">},</span>
+   <span class="n">display_options</span> <span class="o">=</span> <span class="p">{</span>
+       <span class="n">notification_timeout</span> <span class="o">=</span> <span class="mi">5</span>   <span class="o">--</span> <span class="ow">in</span> <span class="n">seconds</span>
+   <span class="p">},</span>
+<span class="p">})</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p><img alt="" src="../_images/nvimnotify.png" /></p>
+</section>
+<section id="api-display">
+<span id="id1"></span><h2>API display<a class="headerlink" href="#api-display" title="Permalink to this heading"></a></h2>
+<p>Results are displayed through an user-provided function</p>
+<p>You can register listeners that will be called upon (async) sniprun output:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">sa</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s1">&#39;sniprun.api&#39;</span><span class="p">)</span>
+
+<span class="n">sa</span><span class="p">.</span><span class="n">register_listener</span><span class="p">(</span><span class="n">custom_function</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where custom function is a function that take one unique argument: a table which contains at least two entries:</p>
+<ul class="simple">
+<li><p>‘status’ (a string that’s either ‘ok’ or ‘error’ for now, but your function should accept &amp; manage other values)</p></li>
+<li><p>‘message’ (also a string, maybe be multiline)</p></li>
+</ul>
+<p>(Simply put, registered functions are callbacks)</p>
+<p>Thus, an example of such a function (imitating the ‘Classic’ display with ‘uwu’ tendencies) would be</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">api_listener</span> <span class="o">=</span> <span class="kr">function</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="kr">if</span> <span class="n">d</span><span class="p">.</span><span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;ok&#39;</span> <span class="kr">then</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nice uwu: &quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">.</span><span class="n">message</span><span class="p">)</span>
+    <span class="kr">elseif</span> <span class="n">d</span><span class="p">.</span><span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;error&#39;</span> <span class="kr">then</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Oh nyow! Somethuwuing went wyong: &quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">.</span><span class="n">message</span><span class="p">)</span>
+    <span class="kr">else</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Whut is this myeow? I don&#39;t knyow this status type nyah&quot;</span><span class="p">)</span>
+    <span class="kr">end</span>
+<span class="kr">end</span>
+
+<span class="n">sa</span><span class="p">.</span><span class="n">register_listener</span><span class="p">(</span><span class="n">api_listener</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(You must also enable the ‘Api’ display option, and in this particular case where things are printed to the command line area, disabling ‘Classic’ is recommended)</p>
+<p>If your function requires to be manually closed (on <code class="docutils literal notranslate"><span class="pre">SnipClose</span></code>), you can register a closer the same way:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="n">sa</span><span class="p">.</span><span class="n">register_closer</span><span class="p">(</span><span class="n">custom_function</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="README.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="common_options.html" class="btn btn-neutral float-right" title="Interpreter configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Michael B.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
