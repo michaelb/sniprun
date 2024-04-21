@@ -138,19 +138,32 @@ impl Python3_fifo {
         {
             self.code = self.data.current_bloc.clone();
         }
-        for line in v.iter() {
+        let mut in_import_list = false;
+        for line in v.iter().filter(|line| !line.trim().starts_with('#')) {
             // info!("lines are : {}", line);
-            if (line.trim().starts_with("import ") || line.trim().starts_with("from"))  //basic selection
-                && !line.trim().starts_with('#')
-                    && self.module_used(line, &self.code)
+            if in_import_list {
+                self.imports = self.imports.clone() + "\n" + line;
+                if line.contains(')'){
+                    in_import_list = false;
+                }
+                continue;
+            }
+            if line.trim().starts_with("import ") || line.trim().starts_with("from")  //basic selection
             {
+                if line.contains('('){
+                    self.imports = self.imports.clone() + "\n" + line;
+                    in_import_list = true;
+                    continue;
+                }
                 // embed in try catch blocs in case uneeded module is unavailable
 
-                let already_imported: String = self.read_previous_code();
-                if !already_imported.contains(line.trim()) {
-                    let line = line.trim_start();
-                    self.imports = self.imports.clone() + "\n" + line;
-                    self.save_code(already_imported + "\n" + line);
+                if self.module_used(line, &self.code){
+                    let already_imported: String = self.read_previous_code();
+                    if !already_imported.contains(line.trim()) {
+                        let line = line.trim_start();
+                        self.imports = self.imports.clone() + "\n" + line;
+                        self.save_code(already_imported + "\n" + line);
+                    }
                 }
             }
         }
@@ -166,7 +179,7 @@ impl Python3_fifo {
             return true;
         }
         if line.contains(" as ") {
-            if let Some(name) = line.split(' ').last() {
+            if let Some(name) = line.replace(',', " ").split(' ').last() {
                 return code.contains(name);
             }
         }

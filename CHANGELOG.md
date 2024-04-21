@@ -1,3 +1,6 @@
+## v1.3.13
+- Support Python import list syntax
+
 ## v1.3.12
 - More universally-working shebang in scripts
 - Use Lua api to set highlights in a more extensible way (courtesy of @pwnalone)
