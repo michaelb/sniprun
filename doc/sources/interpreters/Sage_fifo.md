@@ -8,7 +8,7 @@ This interpreter only works in REPL-mode (and behaves REPL-like by default)
 
 two configurations keys are available:
 
-```
+```lua
 require'sniprun'.setup({
     interpreter_options = {
 	Sage_fifo = {

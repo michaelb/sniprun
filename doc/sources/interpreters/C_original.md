@@ -3,7 +3,7 @@
 gcc is recommended, for that it's able to detect, compile and run nested functions, however you can change the default compiler with:
 
 
-```
+```lua
 require'sniprun'.setup({
     interpreter_options = {
         C_original = {

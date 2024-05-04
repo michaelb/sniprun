@@ -6,7 +6,7 @@ Check that `WolframKernel` and `pkill` are installed and on your path.
 
 Then, the setup 99% of people want:
 
-```
+```lua
 lua require'sniprun'.setup({
     repl_enable = {'Mathematica_original'},
     interpreter_options = {
@@ -26,7 +26,7 @@ lua require'sniprun'.setup({
 You can specify whether the ``<<JavaGraphics` `` command ought to be issued before running a snippet that contains some patterns, like 'Plot'. Enabling this may create a significant delay when the graphics are switched to that mode.
 
 
-```
+```lua
 lua require'sniprun'.setup({
     interpreter_options = {
         Mathematica_original = {
@@ -58,7 +58,7 @@ They will wrap any/the last line, if they dont contain alread a Print, Plot or e
 !! WARNING !! This can lead to dangerous side-effects, mathematica contains very little documentation about this.
 To feel safe, you wouldn't use these unless you only execute code line-by-line. It may or may not work with blocs.
 
-```
+```lua
 lua require'sniprun'.setup({
     interpreter_options = {
         Mathematica_original = {

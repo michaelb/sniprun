@@ -11,7 +11,7 @@ A python REPL is launched in the background and won't quit till you exit neovim.
 This interpreter only works in REPL-mode, and is not the default for Python files, so to use it you should configure it as following:
 
 
-```
+```lua
 require'sniprun'.setup({
     selected_interpreters = { 'Python3_fifo' },
     repl_enable = {'Python3_fifo'},
@@ -24,7 +24,7 @@ if a snippet produce an error important enough to crash the interpreter, you may
 setting a custom python interpreter and venv is also supported
 
 
-```
+```lua
 require'sniprun'.setup({
     interpreter_options = {
         Python3_fifo = {

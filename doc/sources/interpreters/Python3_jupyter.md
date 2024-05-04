@@ -12,7 +12,7 @@ way less potential issues
 
 
 (As there is a different interpreter for Python, you may want to force the selection of Python3_jupyter with:)
-```
+```lua
 require'sniprun'.setup({
     selected_interpreters={'Python3_jupyter'}
 })

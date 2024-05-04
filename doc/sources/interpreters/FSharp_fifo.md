@@ -6,7 +6,7 @@
 The default interpreter command is `dotnet fsi --nologo` but it can be changed via the configuration key
 
 
-```
+```lua
 require'sniprun'.setup({
     interpreter_options = {
         FSharp_fifo = {

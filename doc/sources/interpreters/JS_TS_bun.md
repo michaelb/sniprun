@@ -11,7 +11,7 @@ But the REPL is VERY quirky (and even has a greeting saying it's unstable)
 It doesn't play well at all with sniprun's stdin-stdout mechanism, so while basic examples are working,
 I can't consider this a 'daily driver'... so REPL is disabled by default
 
-```
+```lua
 require('sniprun').setup({
     selected_interpreters={"JS_TS_bun"},
     repl_enable={"JS_TS_bun"}
@@ -27,7 +27,7 @@ sniprun runs your code snippets with
 
 more arguments for `bun run` can be added with the interpreter option:
 
-```
+```lua
 require'sniprun'.setup({
     interpreter_options = {
         JS_TS_bun = {

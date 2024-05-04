@@ -25,7 +25,7 @@ done
 ### example 2
 
 
-\``rust  << running on this line will run the entire bloc
+\````rust  << running on this line will run the entire bloc
 
 println!("test");
 
@@ -36,7 +36,7 @@ println!("test");
 
 \* python, but you can ofc configure that: 
 
-```
+```lua
 require'sniprun'.setup({
     interpreter_options = {
         GFM_original = { 
