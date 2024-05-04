@@ -45,15 +45,28 @@ impl Python3_original {
         {
             self.code = self.data.current_bloc.clone();
         }
-        for line in v.iter() {
+        let mut in_import_list = false;
+        for line in v.iter().filter(|line| !line.trim().starts_with('#')) {
             // info!("lines are : {}", line);
-            if (line.trim().starts_with("import ") || line.trim().starts_with("from "))  //basic selection
-                && !line.trim().starts_with('#')
-            && self.module_used(line, &self.code)
-            {
-                // embed in try catch blocs in case uneeded module is unavailable
-                let line = unindent(line);
-                self.imports = self.imports.clone() + "\n" + &line;
+            if in_import_list {
+                self.imports = self.imports.clone() + "\n" + line;
+                if line.contains(')'){
+                    in_import_list = false;
+                }
+                continue;
+            }
+            if line.trim().starts_with("import ") || line.trim().starts_with("from ") {  //basic selection
+                if line.contains('('){
+                    self.imports = self.imports.clone() + "\n" + line;
+                    in_import_list = true;
+                    continue;
+                }
+                if self.module_used(line, &self.code)
+                {
+                    // embed in try catch blocs in case uneeded module is unavailable
+                    let line = unindent(line);
+                    self.imports = self.imports.clone() + "\n" + &line;
+                }
             }
         }
         info!("import founds : {:?}", self.imports);

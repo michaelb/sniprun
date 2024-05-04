@@ -76,11 +76,15 @@ impl fmt::Display for DisplayType {
             DisplayType::Classic(filter) => "Classic".to_string() + &filter.to_string(),
             DisplayType::VirtualText(filter) => "VirtualText".to_string() + &filter.to_string(),
             DisplayType::Terminal(filter) => "Terminal".to_string() + &filter.to_string(),
-            DisplayType::TerminalWithCode(filter) => "TerminalWithCode".to_string() + &filter.to_string(),
+            DisplayType::TerminalWithCode(filter) => {
+                "TerminalWithCode".to_string() + &filter.to_string()
+            }
             DisplayType::LongTempFloatingWindow(filter) => {
                 "LongTempFloatingWindow".to_string() + &filter.to_string()
             }
-            DisplayType::TempFloatingWindow(filter) => "TempFloatingWindow".to_string() + &filter.to_string(),
+            DisplayType::TempFloatingWindow(filter) => {
+                "TempFloatingWindow".to_string() + &filter.to_string()
+            }
             DisplayType::Api(filter) => "Api".to_string() + &filter.to_string(),
             DisplayType::NvimNotify(filter) => "NvimNotify".to_string() + &filter.to_string(),
         };
