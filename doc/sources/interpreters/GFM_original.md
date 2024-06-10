@@ -25,7 +25,7 @@ done
 ### example 2
 
 
-\````rust  << running on this line will run the entire bloc
+\```rust  << running on this line will run the entire bloc
 
 println!("test");
 
@@ -40,7 +40,7 @@ println!("test");
 require'sniprun'.setup({
     interpreter_options = {
         GFM_original = { 
-            default_filetype = 'bash' -- default filetype (not github flavored markdown name)
+            default_filetype = 'bash' -- default filetype (not 'github flavored markdown 'name' of the language, as they are sometimes different)
         }
     }
 })

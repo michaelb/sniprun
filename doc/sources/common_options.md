@@ -120,6 +120,6 @@ sniprun internally expect, or be straight out incompatible with the formers. Be 
 
 Exceptions:
  - Scala_original has both interpreter and compiler keys that should be set consistently with each other
- - *_jupyter, Generic, GFM_original, Orgmode_original, and Neorg_original do not support any of these keys
+ - *_jupyter, Generic, GFM_original, Orgmode_original, and Neorg_original do not support any of these keys, as they rely on the interpreter for the code's block language.
 
 
