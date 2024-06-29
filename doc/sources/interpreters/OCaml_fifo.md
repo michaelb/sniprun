@@ -5,7 +5,7 @@ This interpreter relies on `ocaml` by default, but has been confirmed to work wi
 
 
 The default interpreter can be changed relatively safely for normal (non-REPL) mode:
-```
+```lua
 require'sniprun'.setup({
     interpreter_options = {
         OCaml_fifo = {
@@ -18,7 +18,7 @@ require'sniprun'.setup({
 
 ### REPL-like behavior
 
-```
+```lua
 require'sniprun'.setup({
     repl_enable = { "OCaml_fifo" }
 })

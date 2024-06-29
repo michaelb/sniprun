@@ -71,15 +71,17 @@ Sniprun will then:
 
 ## Prerequisites && dependencies
 
-- Sniprun is compatible with **Linux** and **MacOS**. (NixOS and Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install) version >= 1.65 ). Standard POSIX utilities (grep, cut, sed ...) may be needed too, depending on the languages you want support for.
+- Sniprun is compatible with **Linux** and **MacOS**. (NixOS and Mac users _need_ the Rust [toolchain](https://www.rust-lang.org/tools/install) version >= 1.65, in order to compile sniprun locally). Standard POSIX utilities (grep, cut, sed ...) may be needed too, depending on the languages you want support for.
 
 - **Neovim** version >= 0.5
 
-- **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case specific build tools or softwares are required, those are documented in the navigation pane of the [wiki](https://michaelb.github.io/sniprun/), as well as in the [doc/sources/interpreters](https://github.com/michaelb/sniprun/tree/master/doc/sources/interpreters) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
+- **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case non-standard build tools or softwares are required, those are documented in the navigation pane of the [wiki](https://michaelb.github.io/sniprun/), as well as in the [doc/sources/interpreters](https://github.com/michaelb/sniprun/tree/master/doc/sources/interpreters) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
-- [optional] **cargo and the rust toolchain** version >= 1.65 (you can find those [here](https://www.rust-lang.org/tools/install)).
+- [optional] **cargo and the rust toolchain** version >= 1.65 (you can find those [here](https://www.rust-lang.org/tools/install)), if you want/need to compile sniprun locally.
 
 - [optional] the plugin [nvim-notify](https://github.com/rcarriga/nvim-notify) for the notification display style
+
+Note: Since sniprun is written in Rust and many users may not have/want a Rust toolchain, a binary compiled from a Github Action gets downloaded from Releases. If you don't want that, just install a Rust toolchain and replace the install.sh invocation in your config by `cargo build --release`.
 
 ## Install Sniprun
 
@@ -339,7 +341,7 @@ All of sniprun functionalities:
 
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
 
-<details><summary> recommended mappings in lua</summary>
+<details open><summary> recommended mappings in lua</summary>
 <p>
 
 ```
@@ -350,7 +352,7 @@ vim.api.nvim_set_keymap('n', '<leader>ff', '<Plug>SnipRun', {silent = true})
 </details>
 </p>
 
-<details open><summary> recommended mappings in vimscript</summary>
+<details><summary> recommended mappings in vimscript</summary>
 <p>
 
 ```
@@ -361,7 +363,7 @@ vmap f <Plug>SnipRun
 </details>
 </p>
 
-- For interpreted languages with simple output, `:%SnipRun` (or a shortcut, wrapping it with `let b:caret=winsaveview()` and `call winrestview(b:caret)` in order to keep the cursor at the current position) may be a more convenient way to run your entire file. Example mapping `:%SnipRun` to F5: `vim.keymap.set('n', '<F5>', ":let b:caret=winsaveview() <CR> | :%SnipRun <CR>| :call winrestview(b:caret) <CR>", {})`, with my apologies for poor vimscript.
+- For interpreted languages with simple output, `:%SnipRun` (or a shortcut, wrapping it with `let b:caret=winsaveview()` and `call winrestview(b:caret)` in order to keep the cursor at the current position) may be a more convenient way to run your entire file. Example mapping `:%SnipRun` to F5: `vim.keymap.set('n', '<F5>', ":let b:caret=winsaveview() <CR> | :%SnipRun <CR>| :call winrestview(b:caret) <CR>", {})`, with my apologies for poor vimscript-fu.
 
 When running the whole file, SnipRun supports taking arguments on the command line: `:%SnipRun 5 "yay"` frictionlessly for interpreted languages, and compiled languages with entry point detection implemented (most of them).
 
@@ -439,21 +441,22 @@ Want (official) support for your language? Submit an [issue](https://github.com/
 
 \*\* True REPL under the hood
 
-\*\*\* if underlying language supports it
+\*\*\* REPL-like functionality if language in code block supports it
 
 (livemode)=
 # Live mode
 
 The live mode hooks the SnipRun command to the TextChanged event, meaning that at every change to make to the buffer, the current line will be sent to sniprun for evaluation. This can mean a lot of times, especially if you type fast.
 
-The result is a virtual text, displaying at the end of the current line that print the result (stdout) of the line. Nothing is displayed when the line is incomplete / incorrect, a bit like codi.
+The result is a virtual text, displaying at the end of the current line that print the result (stdout) of the line. Nothing is displayed when the line is incomplete / incorrect, a bit like [codi.vim](https://github.com/metakirby5/codi.vim).
 
 ## Warnings
 
-The live mode **will execute code you didn't think really about** (and by that I mean even less than usual)
+The live mode **will execute code you didn't think really about** (and by that I mean even less than usual).
+
 Thus:
- - Your code will get executed **lots** of times; check that your CPU can keep up. Even a slow 60wpm typing can make a Rust program recompile 3x per second, which is also different from sending 3 string/s to a running REPL.
- - Sniprun will try to execute even incomplete lines. You hadn't finished typing that `rm /path/to/arghhh` ? sniprun' not aware and removed the parent directory. Whoops. For these reasons, I strongly suggest to:
+ - Your code will get executed **lots** of times; check that your CPU can keep up. Even a 'slow' 30wpm typing can trigger constant program recompiles.
+ - Sniprun will try to execute even incomplete lines, example: you hadn't finished typing that `rm /path/to/arghhh` ? Sniprun saw you submitting `rm /path` and removed the parent directory. For these reasons, I strongly suggest to:
     - never run bash/shell with live mode
     - disable the live mode whenever your code modifies files or invoke system commands.
 
@@ -512,6 +515,7 @@ Due to its nature, Sniprun may have trouble with programs that :
 Begin by updating the plugin and running `:SnipReset` and then `:checkhealth sniprun`
 
 - **Silent fail**: the sniprun binary may be incompatible with your distro/OS/arch. Use `sh ./install.sh 1` as post-install to compile locally.
+- Any other kind of bug: a log file is produced in $XDG\_CACHE\_DIR/sniprun (~/.cache/sniprun on Linux or ~/Library/Caches/sniprun on MacOS), usually with all kinds of information of what happened during your last command.
 
 # Contribute
 
@@ -534,7 +538,7 @@ And many more projects, somewhat similar, but never quite, that I didn't like, n
 
 **Why should you use sniprun instead of these alternatives?**
 
-- **All-language support**. Sniprun can work with virtually any language, including compiled ones. If the language is not supported yet, anyone can create a sniprun interpreter for it!
+- **All-language support**. Sniprun can work with virtually any language, including compiled ones. If the language is not supported yet, anyone can create a sniprun interpreter for it! (or more simply, configure the generic interpreter)
 - **Better output/display**. Sniprun doesn't use precious screen space (like [codi](https://github.com/metakirby5/codi.vim) or [vim-slime](https://github.com/jpalardy/vim-slime)) by default (but it can).
 - **Fast, extendable and maintainable**: this is not a 2k-lines vim script, nor an inherently limited one-liner. It's a Rust project designed to be as clear and "contribuable" as possible.
 

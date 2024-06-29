@@ -7,7 +7,8 @@ The default interpreter command is `clojure` (or `clojure -e "(clojure.main/repl
 
 
  The defaults are equivalent to specifying:
-```
+
+```lua
 require'sniprun'.setup({
     interpreter_options = {
         Clojure_fifo = {

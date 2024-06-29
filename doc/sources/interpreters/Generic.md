@@ -1,11 +1,11 @@
 ## Generic
 
-This interpreter allows you to support virtually any language, provided it's not to strange, at up to bloc-level
+This interpreter allows you to support virtually any language, provided it's not too strange, at up to bloc-level
 
 If you're trying to override an already-supported language, add Generic to the list of selected interpreters:
 
 
-```
+```lua
 require'sniprun'.setup({
     selected_interpreters = { 'Generic' },
 })
@@ -14,7 +14,7 @@ require'sniprun'.setup({
 to add support for, let's say, python2
 
 
-```
+```lua
 require'sniprun'.setup({
     interpreter_options = {
         Generic = {
@@ -24,7 +24,7 @@ require'sniprun'.setup({
                 extension = ".py",                 -- recommended, but not mandatory. Sniprun use this to create temporary files
 
                 interpreter = "python2",           -- interpreter or compiler (+ options if any)
-                compiler = "",                     -- one of those MUST be non-empty
+                compiler = "",                     -- exactly one of those MUST be non-empty
                 }
             }
         }
@@ -35,7 +35,7 @@ require'sniprun'.setup({
 to also add support for, let's suppose it wasn't officially supported, C
 
 
-```
+```lua
 require'sniprun'.setup({
     interpreter_options = {
         Generic = {
@@ -57,7 +57,7 @@ require'sniprun'.setup({
                 extension = ".c",                
 
                 interpreter = "",         
-                compiler = "gcc -o my_main -O3",                     -- compiler (+ options if necessary) (current working directory is sniprun's work directory)
+                compiler = "gcc -o my_main -O3",                     -- compiler (+ options if necessary) (current working directory is sniprun's work directory - next to sniprun's log in $XDG_CACHE_DIR)
 
                 exe_name = "my_main",                                -- executable name, by default a.out (always in sniprun's work directory)
                 boilerplate_pre = "#include <stdio.h>\nint main () {"  -- include this before code snippets
@@ -66,8 +66,8 @@ require'sniprun'.setup({
             }
         },
 
-    -- other sniprun options, for example:
     selected_interpreters = {"Generic"}
+    -- other sniprun options ...
 })
 ```
 
@@ -91,4 +91,4 @@ require'sniprun'.setup({
 
 ### Community examples for non-officially supported languages
 
-(contribute here)
+(contribute here: doc/sources/interpreters/Generic.md)

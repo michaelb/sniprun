@@ -4,7 +4,7 @@ To get the REPL behaviour (inactive by default) working, you need to install the
 
 Then, to enable the REPL behavior for python in your config file
 
-```
+```lua
 require'sniprun'.setup({
     repl_enable = {'Python3_original'}
 })
@@ -21,10 +21,10 @@ With or without REPL, the star imports may also not be automatically fetched, ev
 
 
 
-To use a custom python interpreter ( maybe python2, or a particular version?) you can provide the following interpreter options:, using a venv is also supported (provide one or several relative paths "../venv" etc.. may be necessary if you didn't open neovim at the root of the project)
+To use a custom python interpreter ( maybe python2, or a particular version?) you can provide the following interpreter options:, using a venv is also supported (provide one or several relative paths "../venv" etc.. may be necessary if Neovim didn't set the current working directory at the root of the project (presumably next to the venv).
 
 
-```
+```lua
 require'sniprun'.setup({
     interpreter_options = {
         Python3_original = {

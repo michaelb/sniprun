@@ -1,3 +1,6 @@
+## v1.3.14
+- Improve Lua\_nvim's handling of 'local' requires in REPL mode
+
 ## v1.3.13
 - Support Python import list syntax
 

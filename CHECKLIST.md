@@ -1,5 +1,6 @@
 # External contributions
  - only accept contributions to 'dev' branch OR release immediately after
+ (doc contribution can be exempted)
 
 # Prepare the release
 

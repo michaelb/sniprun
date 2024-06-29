@@ -95,6 +95,13 @@ impl Interpreter for Lua_nvim {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
+        let code = self
+            .code
+            .lines()
+            .map(|line| line.strip_prefix("local ").unwrap_or(line))
+            .collect::<Vec<&str>>()
+            .join("\n");
+        self.code = code;
         Ok(())
     }
 
