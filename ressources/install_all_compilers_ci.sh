@@ -74,6 +74,10 @@ then
     sudo apt-get install clojure
 fi
 
+if ! command -v plantuml &> /dev/null
+then
+    sudo apt-get install plantuml
+fi
 
 
 if ! command -v go &> /dev/null

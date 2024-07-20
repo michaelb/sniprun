@@ -29,7 +29,9 @@ function M.fw_open(row, column, message, ok, temp)
     vim.api.nvim_buf_set_lines(bufnr,h,h+1,false,{line})
     vim.api.nvim_buf_add_highlight(bufnr, namespace_id, hl, h,0,-1) -- highlight lines in floating window
   end
-  M.fw_handle = vim.api.nvim_open_win(bufnr, false, {relative='win', width=w+1, height=h, bufpos=bp, focusable=false, style='minimal',border=M.borders})
+  if h ~= 0 then
+    M.fw_handle = vim.api.nvim_open_win(bufnr, false, {relative='win', width=w+1, height=h, bufpos=bp, focusable=false, style='minimal',border=M.borders})
+  end
 end
 
 function M.term_set_window_handle()
