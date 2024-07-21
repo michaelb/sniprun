@@ -1,27 +1,27 @@
-use crate::error::SniprunError;
-use crate::interpreter::{Interpreter, InterpreterUtils, ReplLikeInterpreter, SupportLevel, ErrTruncate};
-use crate::DataHolder;
-use log::{info,warn};
+pub use crate::error::SniprunError;
+pub use crate::interpreter::{Interpreter, InterpreterUtils, ReplLikeInterpreter, SupportLevel, ErrTruncate};
+pub use crate::DataHolder;
+pub use log::{info,warn,error, debug};
 
-use crate::interpreters;
-use crate::iter_types;
+pub use crate::interpreters;
+pub use crate::iter_types;
 
-use std::fs::{write, DirBuilder, File};
-use std::process::Command;
+pub use std::fs::{write, DirBuilder, File};
+pub use std::process::Command;
 
 
-use neovim_lib::NeovimApi;
+pub use neovim_lib::NeovimApi;
 
-use std::env;
+pub use std::env;
 
-use crate::daemonizer::{daemon,Fork};
+pub use crate::daemonizer::{daemon,Fork};
 
 //indentation
-use unindent::unindent;
+pub use unindent::unindent;
 
-use std::io::prelude::*;
+pub use std::io::prelude::*;
 
-// use jupyter_client::Client;
-// use std::collections::HashMap;
+// pub use jupyter_client::Client;
+// pub use std::collections::HashMap;
 
-use regex::Regex;
+pub use regex::Regex;

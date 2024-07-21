@@ -1,3 +1,5 @@
+use crate::interpreters::import::*;
+
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Rust_original {

@@ -2,7 +2,7 @@ use crate::interpreter::InterpreterUtils;
 use crate::*;
 use error::SniprunError;
 use interpreter::{Interpreter, SupportLevel};
-use interpreters::Generic;
+use interpreters::Generic::Generic;
 use std::any::TypeId;
 use std::io::prelude::*;
 use std::process::Command;
