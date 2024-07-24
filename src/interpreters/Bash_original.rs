@@ -1,4 +1,5 @@
-#[derive(Clone)]
+use crate::interpreters::import::*;
+
 #[allow(non_camel_case_types)]
 pub struct Bash_original {
     support_level: SupportLevel,

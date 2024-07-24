@@ -1,3 +1,5 @@
+use crate::interpreters::import::*;
+
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct OCaml_fifo {
@@ -13,6 +15,12 @@ pub struct OCaml_fifo {
 }
 
 impl OCaml_fifo {
+
+    fn get_nvim_pid(data: &DataHolder) -> String {
+        // associated utility function
+        data.nvim_pid.to_string()
+    }
+
     fn wait_out_file(
         &self,
         out_path: String,
@@ -253,7 +261,7 @@ impl ReplLikeInterpreter for OCaml_fifo {
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
-                            Sage_fifo::get_nvim_pid(&self.data),
+                            OCaml_fifo::get_nvim_pid(&self.data),
                             self.interpreter_repl.clone(),
                         ])
                         .output()

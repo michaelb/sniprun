@@ -1,3 +1,5 @@
+use crate::interpreters::import::*;
+
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Lua_original {
@@ -66,7 +68,7 @@ impl Interpreter for Lua_original {
         self.fetch_code().expect("could not fetch code");
         if self.code.contains("nvim") || self.code.contains("vim") {
             //then this is not pure lua code but  lua-nvim one
-            let mut good_interpreter = crate::interpreters::Lua_nvim::new_with_level(
+            let mut good_interpreter = crate::interpreters::Lua_nvim::Lua_nvim::new_with_level(
                 self.data.clone(),
                 SupportLevel::Selected, //prevent fallbacking from fallback
             );

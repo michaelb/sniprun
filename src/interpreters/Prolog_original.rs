@@ -1,3 +1,5 @@
+use crate::interpreters::import::*;
+
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Prolog_original {
@@ -54,7 +56,7 @@ impl Interpreter for Prolog_original {
         let default_interpreter = String::from("gprolog");
         self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
-            Python3_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            Prolog_original::get_interpreter_option(&self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);

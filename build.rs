@@ -20,9 +20,12 @@ fn main() -> Result<(), std::io::Error> {
 
     let mut string_to_write = "".to_string();
 
+    string_to_write.push_str("#![allow(non_snake_case)]\n");
+    string_to_write.push_str("pub mod import;\n");
+
     for path in fs::read_dir(out_dir).unwrap() {
         let plugin = path.unwrap().file_name().into_string().unwrap();
-        if plugin == "mod.rs" || plugin == "example.rs" {
+        if plugin == "mod.rs" || plugin == "example.rs" || plugin == "import.rs" {
             continue;
         }
         if !plugin.ends_with(".rs") {
@@ -30,10 +33,15 @@ fn main() -> Result<(), std::io::Error> {
             continue;
         }
 
+        let plugin = plugin[..plugin.len() - 3].to_string();
         string_to_write.push_str(&format!(
-            "include!(\"{}\");
+            "pub mod {};
+pub use {}::{} as {};
 ",
-            plugin
+            plugin.clone(),
+            plugin.clone(),
+            plugin.clone(),
+            plugin + "_type",
         ));
     }
 
@@ -58,7 +66,7 @@ fn main() -> Result<(), std::io::Error> {
         string_to_write.push('{');
         string_to_write.push_str(&format!(
             "
-            type Current = interpreters::{};
+            type Current = interpreters::{}_type;
                 $(
                     $code
                  )*

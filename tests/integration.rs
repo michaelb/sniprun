@@ -1,5 +1,5 @@
 use sniprun::interpreter::{Interpreter, InterpreterUtils, ReplLikeInterpreter, SupportLevel};
-use sniprun::interpreters::JS_original;
+use sniprun::interpreters::JS_original::JS_original;
 use sniprun::*;
 use std::sync::{Arc, Mutex};
 
