@@ -2,8 +2,6 @@
 
 This interpreter relies on `plantuml`, which needs to be available on the $PATH
 
-
-
 This interpreter supports the following options:
 
 ```lua
@@ -17,6 +15,6 @@ require'sniprun'.setup({
     }
 })
 ```
-You can add options to the 'compiler' key, but do not set "-pipe" (or it'll break output), and "-failfast2", "-nbthread auto" are already set.
-
-
+You can add options to the 'compiler' key, but do not
+set "-pipe" (or it'll break output), and "-failfast2",
+"-nbthread auto" are already set.

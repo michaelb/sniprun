@@ -21,8 +21,7 @@ pub enum SupportLevel {
     ///selected: don't use this support level, it is meant to communicate user's config choices
     Selected = 255,
 }
-
-impl Display for SupportLevel {
+impl Display for SupportLevel{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::result::Result<(), std::fmt::Error> {
         match *self {
             SupportLevel::Unsupported => f.write_str("None"),
