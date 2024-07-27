@@ -177,7 +177,7 @@ mod test_http_original {
         let data = res.ok().unwrap();
         let (body, status) = data.split_once("---").unwrap();
 
-        let v: serde_json::Value = serde_json::from_str(&body).unwrap();
+        let v: serde_json::Value = serde_json::from_str(body).unwrap();
         println!("{}", serde_json::to_string_pretty(&v).unwrap());
         assert_eq!(v["url"], "https://httpbin.org/get".to_owned());
 
@@ -202,7 +202,7 @@ mod test_http_original {
         let data = res.ok().unwrap();
         let (body, status) = data.split_once("---").unwrap();
 
-        let v: serde_json::Value = serde_json::from_str(&body).unwrap();
+        let v: serde_json::Value = serde_json::from_str(body).unwrap();
         println!("{}", serde_json::to_string_pretty(&v).unwrap());
         assert_eq!(v["url"], "https://httpbin.org/get".to_owned());
 
@@ -259,7 +259,7 @@ POST https://httpbin.org/post
         let data = res.ok().unwrap();
         let (body, status) = data.split_once("---").unwrap();
 
-        let v: serde_json::Value = serde_json::from_str(&body).unwrap();
+        let v: serde_json::Value = serde_json::from_str(body).unwrap();
         // println!("{}", serde_json::to_string_pretty(&v).unwrap());
 
         let j: serde_json::Value = serde_json::from_str(&v["json"].to_string()).unwrap();

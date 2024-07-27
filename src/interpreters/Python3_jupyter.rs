@@ -380,7 +380,7 @@ mod test_python3_jupyter {
 
         // should panic if not an Ok()
         let string_result = res.unwrap();
-        assert!(string_result.contains(&"a 1"));
+        assert!(string_result.contains("a 1"));
     }
 
     #[allow(dead_code)]

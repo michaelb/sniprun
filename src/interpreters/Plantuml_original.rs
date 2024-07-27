@@ -140,7 +140,7 @@ impl Interpreter for Plantuml_original {
             self.code = self.data.current_bloc.clone();
 
         // if there is only data on current line / or Line is the max support level
-        } else if !self.data.current_line.replace(" ", "").is_empty()
+        } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
             self.code = self.data.current_line.clone();
@@ -214,25 +214,25 @@ impl Interpreter for Plantuml_original {
             .expect("Unable to start process");
         if output.status.success() {
             //return stdout
-            return Ok(());
+            Ok(())
         } else {
             // return stderr
-            return Err(SniprunError::CompilationError(
+            Err(SniprunError::CompilationError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         let extension = String::from(".") + &self.output_mode[2..];
-        let content = std::fs::read_to_string(&self.main_file_path.replace(".uml", &extension));
+        let content = std::fs::read_to_string(self.main_file_path.replace(".uml", &extension));
         if let Ok(content) = content {
             Ok(content)
         } else {
-            return Err(SniprunError::RuntimeError(format!(
+            Err(SniprunError::RuntimeError(format!(
                 "could not read output file {}",
                 &self.main_file_path.replace(".uml", &extension)
-            )));
+            )))
         }
     }
 }
