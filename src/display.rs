@@ -440,7 +440,7 @@ fn shorten_ok(message: &str) -> String {
 
     let mut marker = String::from("<- ");
     if message.lines().count() > 1 {
-        marker += &".".repeat(std::cmp::max(2, std::cmp::min(6, message.lines().count())));
+        marker += &".".repeat(message.lines().count().clamp(2, 6));
     }
 
     marker.to_string()
@@ -457,7 +457,7 @@ fn shorten_err(message: &str) -> String {
     }
     let mut marker = String::from("<- ") + message.lines().next().unwrap_or("");
     if message.lines().count() > 1 {
-        marker += &".".repeat(std::cmp::max(3, std::cmp::min(10, message.lines().count())));
+        marker += &".".repeat(message.lines().count().clamp(3, 10));
     }
     marker
 }

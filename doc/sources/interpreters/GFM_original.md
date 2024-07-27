@@ -4,12 +4,9 @@ the GFM_original (Github flavored markdown) can help run code blocs embedded in 
 
 ### example 1
 
-
 \```bash
 
 echo "lol"  # << you can run sniprun on this line
-
-
 
 \# or the whole visual selection following:
 
@@ -31,10 +28,11 @@ println!("test");
 
 \``` 
 
+**the language name must be there (otherwise the default * will be used) at the
+bloc start** and has to match the github flavor syntax, and the underlying
+interpreter must be callable (no missing compiler etc...)
 
-**the language name must be there (otherwise the default * will be used) at the bloc start** and has to match the github flavor syntax, and the underlying interpreter must be callable (no missing compiler etc...)
-
-\* python, but you can ofc configure that: 
+\* python, but you can ofc configure that:
 
 ```lua
 require'sniprun'.setup({
@@ -46,9 +44,6 @@ require'sniprun'.setup({
 })
 ```
 
-
-if GFM doesn't include a flavor that matches the language you want, well it's not really GFM anymore but you can but the filetype of the language you want, such as julia or lua
-
-
-
-
+if GFM doesn't include a flavor that matches the language you want, well it's
+not really GFM anymore but you can but the filetype of the language you want,
+such as julia or lua

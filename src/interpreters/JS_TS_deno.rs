@@ -1,3 +1,5 @@
+use crate::interpreters::import::*;
+
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct JS_TS_deno {
@@ -181,11 +183,11 @@ impl Interpreter for JS_TS_deno {
             .is_empty()
             && self.support_level >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             // no code was retrieved
             self.code = String::from("");
@@ -236,7 +238,8 @@ impl Interpreter for JS_TS_deno {
                         .lines()
                         .filter(|l| l.contains("Error:"))
                         .last()
-                        .unwrap_or(&String::from_utf8(output.stderr).unwrap()).to_string(),
+                        .unwrap_or(&String::from_utf8(output.stderr).unwrap())
+                        .to_string(),
                 ))
             } else {
                 Err(SniprunError::RuntimeError(

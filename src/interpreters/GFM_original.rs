@@ -1,3 +1,5 @@
+use crate::interpreters::import::*;
+
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct GFM_original {
@@ -27,8 +29,8 @@ impl GFM_original {
         let mut counter = 0;
         let selection_line = self.data.range[0] as usize;
         let mut v = vec![];
-        for (i,l) in lines.iter().enumerate() {
-        if (l.trim_start().starts_with("```") && !l.trim_start()[3..].trim().is_empty())
+        for (i, l) in lines.iter().enumerate() {
+            if (l.trim_start().starts_with("```") && !l.trim_start()[3..].trim().is_empty())
                 && counter % 2 == 1
             {
                 return Err(SniprunError::CustomError(String::from(
@@ -44,7 +46,7 @@ impl GFM_original {
                     v[((counter - 1) / 2) as usize].1 = selection_line + i - 1;
                 }
             }
-                   }
+        }
         if counter >= 2 {
             info!("counting {} code blocs delimiters", counter);
             if counter % 2 == 1 {
@@ -52,7 +54,7 @@ impl GFM_original {
                     "Selection contains an odd number of code bloc delimiters",
                 )));
             }
-            info!("running separately ranges : {:?}",v);
+            info!("running separately ranges : {:?}", v);
             return Err(SniprunError::ReRunRanges(v));
         }
         info!("no muliple bloc was found");
@@ -205,7 +207,7 @@ impl Interpreter for GFM_original {
             .is_empty()
             && self.support_level >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self
             .data
             .current_line

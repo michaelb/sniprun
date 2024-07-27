@@ -14,6 +14,7 @@ use std::thread;
 pub mod daemonizer;
 pub mod display;
 pub mod error;
+pub mod input;
 pub mod interpreter;
 pub mod interpreters;
 pub mod launcher;
@@ -448,7 +449,7 @@ enum HandleAction {
 pub fn start() {
     let mut event_handler = EventHandler::new();
     let _ = log_to_file(
-        &format!("{}/{}", event_handler.data.work_dir, "sniprun.log"),
+        format!("{}/{}", event_handler.data.work_dir, "sniprun.log"),
         LevelFilter::Info,
     );
     log_panics::init();
@@ -579,7 +580,7 @@ mod test_main {
     #[test]
     fn test_main() {
         let mut event_handler = fake_event();
-        let _ = log_to_file(&"test_sniprun.log".to_string(), LevelFilter::Info);
+        let _ = log_to_file("test_sniprun.log", LevelFilter::Info);
 
         event_handler.fill_data(&fake_msgpack());
         event_handler.data.filetype = String::from("javascript");

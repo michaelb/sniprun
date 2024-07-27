@@ -1,3 +1,5 @@
+use crate::interpreters::import::*;
+
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Ada_original {
@@ -78,11 +80,11 @@ impl Interpreter for Ada_original {
             .is_empty()
             && self.support_level >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }
@@ -90,10 +92,10 @@ impl Interpreter for Ada_original {
     }
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
-        self.code = String::from(
-            "with Ada.Text_IO;\nuse Ada.Text_IO;\nprocedure main is\n\nbegin\n",
-        ) + &self.code
-            + "\nend main;";
+        self.code =
+            String::from("with Ada.Text_IO;\nuse Ada.Text_IO;\nprocedure main is\n\nbegin\n")
+                + &self.code
+                + "\nend main;";
         Ok(())
     }
 

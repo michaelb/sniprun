@@ -9,7 +9,10 @@ require'sniprun'.setup({
     repl_enable = {'Julia_original'},
 })
 ```
-Julia_original supports several interpreter options, such as the interpreter executable (absolute path or command in PATH, by default "julia"), and the 'project' (will be passed as --project=... to the executed command)
+
+Julia_original supports several interpreter options, such as the interpreter
+executable (absolute path or command in PATH, by default "julia"), and the
+'project' (will be passed as --project=... to the executed command)
 
 ```lua
 require('sniprun').setup({

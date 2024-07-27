@@ -1,3 +1,5 @@
+use crate::interpreters::import::*;
+
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Generic {
@@ -169,7 +171,7 @@ impl Interpreter for Generic {
             Generic::generic_get_interpreter_option(&data, "compiler")
         {
             if let Some(compiler_string) = used_compiler.as_str() {
-                if ! compiler_string.is_empty() {
+                if !compiler_string.is_empty() {
                     info!("Using compiler: {}", compiler_string);
                     compiler = compiler_string.to_string();
                     config_name = fetched_config_name;
@@ -182,7 +184,7 @@ impl Interpreter for Generic {
             Generic::generic_get_interpreter_option(&data, "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
-                if ! interpreter_string.is_empty() {
+                if !interpreter_string.is_empty() {
                     info!("Using interpreter: {}", interpreter_string);
                     interpreter = interpreter_string.to_string();
                     config_name = fetched_config_name;
@@ -283,9 +285,9 @@ impl Interpreter for Generic {
             .replace(&[' ', '\t', '\n', '\r'][..], "")
             .is_empty()
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty() {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }

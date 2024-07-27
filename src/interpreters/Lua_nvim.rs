@@ -1,3 +1,5 @@
+use crate::interpreters::import::*;
+
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Lua_nvim {
@@ -66,10 +68,11 @@ impl Interpreter for Lua_nvim {
             //that doesn't work in nvim context for some reason
             // note that since Lua_original is the default and if lua_nvim is selected, we should
             // never take this code path
-            let mut good_interpreter = crate::interpreters::Lua_original::new_with_level(
-                self.data.clone(),
-                SupportLevel::Selected, //prevent fallback infinite loop
-            );
+            let mut good_interpreter =
+                crate::interpreters::Lua_original::Lua_original::new_with_level(
+                    self.data.clone(),
+                    SupportLevel::Selected, //prevent fallback infinite loop
+                );
             return Some(good_interpreter.run());
         }
         None
@@ -83,11 +86,11 @@ impl Interpreter for Lua_nvim {
             .is_empty()
             && self.get_current_level() >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }

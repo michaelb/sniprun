@@ -1,10 +1,13 @@
 # Introduction
 
-Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to provide stupidly fast partial code testing for interpreted **and compiled** {ref}`languages <support-levels-and-languages>`. Sniprun blurs the line between standard save/run workflow, jupyter-like notebook, and REPL/interpreters.
+Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to
+provide stupidly fast partial code testing for interpreted **and compiled**
+{ref}`languages <support-levels-and-languages>`. Sniprun blurs the line
+between standard save/run workflow, jupyter-like notebooks,
+and REPL/interpreters.
 
-
-
-I know that this README is exhaustively long, but Sniprun itself is and will remain rather simple: don't be afraid, questions are welcome too.
+I know that this README is exhaustively long, but Sniprun itself is and will
+remain rather simple: don't be afraid, questions are welcome too.
 
 ## Demos
 
@@ -13,7 +16,7 @@ A few lines of code are now within a print statement's reach :-) ([this may be c
 
 An example in C, look in the command area:
 
-![](../../ressources/visual_assets/demo_c.gif)
+![demo_c](../../ressources/visual_assets/demo_c.gif)
 
 **The result can be returned in multiple (even at the same time) ways:**
 
@@ -28,10 +31,11 @@ An example in C, look in the command area:
 
 **send-to-REPL-like behavior is available for some languages**
 
-Python, R, D, Mathematica, Sage, Julia, Javascript & Typescript (via deno), Clojure and Lua, coming soon for many other interpreted and compiled languages. Very versatile, you can even run things like GUI plots on the fly!
+Python, R, D, Mathematica, Sage, Julia, Javascript & Typescript (via deno),
+Clojure and Lua, coming soon for many other interpreted and compiled languages.
+Very versatile, you can even run things like GUI plots on the fly!
 
 ![](../../ressources/visual_assets/demo_repl.png)
-
 
 # What does it do ?
 
@@ -48,7 +52,6 @@ Do either of:
 
 and ... that's it!
 
-
 Sniprun will then:
 
 - **Get the code** you selected (selections are rounded line-wise)
@@ -57,9 +60,6 @@ Sniprun will then:
 - **Build** (write to a script file, or compile) the code
 - **Execute** the code, or send it to an active REPL for evaluation
 - Display stdout, or stderr using the chosen method
-
-
-
 
 # What it is && isn't
 
@@ -399,43 +399,49 @@ println!("-> {}", alphabet);
 </ul>
 </span>
 
-
-| Language     | Support level | REPL Capabilities|    
+| Language     | Support level | REPL Capabilities|
 | ------------ | ------------- | ---------------- |
 | Ada          | Line          | No               |
 | Bash/Shell   | Bloc          | Yes\*            |
 | C            | Import        | No               |
-| C++          | Import        | No               | 
-| C#           | Bloc          | No               | 
-| Clojure      | Bloc          | Yes \*\*         | 
-| Coffeescript | Bloc          | No               |   
-| D            | Bloc          | No               | 
+| C++          | Import        | No               |
+| C#           | Bloc          | No               |
+| Clojure      | Bloc          | Yes \*\*         |
+| CoffeeScript | Bloc          | No               |
+| D            | Bloc          | No               |
 | Elixir       | Bloc          | Yes \*\*         |
 | F#           | Bloc          | No, but _could_ \*\* |
-| Go           | Import        | No               | 
-| Haskell      | Line          | No               | 
-| Java         | Bloc          | No               | 
-| JavaScript   | Bloc          | Yes\*\*   (Deno) | 
-| Julia        | Bloc          | Yes\*\*          | 
-| Lua          | Bloc          | No               | 
+| Go           | Import        | No               |
+| Haskell      | Line          | No               |
+| Http         | Bloc          | No               |
+| Java         | Bloc          | No               |
+| JavaScript   | Bloc          | Yes\*\*   (Deno) |
+| Julia        | Bloc          | Yes\*\*          |
+| Lua          | Bloc          | No               |
 | Lua-nvim     | Bloc          | Yes\*\*          |
 | Markdown     | Bloc          | Yes\*\*\*        |
 | Mathematica  | Bloc          | Yes\*\*          |
 | Neorg        | Bloc          | Yes\*\*\*        |
 | OCaml        | Bloc          | Yes\*\*          |
 | OrgMode      | Bloc          | Yes\*\*\*        |
-| Perl/Perl6   | Line          | No               | 
+| Perl/Perl6   | Line          | No               |
+| Plantuml     | Bloc          | No               |
 | Python3      | Import        | Yes\*\*          |
 | R            | Bloc          | Yes\*\*          |
-| Ruby         | Bloc          | No               | 
-| Rust         | Bloc          | No               | 
+| Ruby         | Bloc          | No               |
+| Rust         | Bloc          | No               |
 | SageMath     | Import        | Yes\*\*          |
-| Scala        | Bloc          | No               | 
-| TypeScript   | Bloc          | Yes\*\*   (Deno) |  
+| Scala        | Bloc          | No               |
+| SQL          | Bloc          | No               |
+| TypeScript   | Bloc          | Yes\*\*   (Deno) |
 
-Your language is not officially supported ? The [Generic interpreter](https://michaelb.github.io/sniprun/sources/Generic.html#community-examples-for-non-officially-supported-languages) can probably work with it !
+Your language is not officially supported ? The
+[Generic interpreter](https://michaelb.github.io/sniprun/sources/Generic.html#community-examples-for-non-officially-supported-languages)
+can probably work with it !
 
-Want (official) support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=),or even better, contribute (see CONTRIBUTING.md), it's easy!
+Want (official) support for your language? Submit an
+[issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=),
+or even better, contribute (see CONTRIBUTING.md), it's easy!
 
 \* (fake) REPL-like functionality, with potential unwanted side effects
 

@@ -1,3 +1,5 @@
+use crate::interpreters::import::*;
+
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Python3_original {
@@ -43,26 +45,26 @@ impl Python3_original {
             .replace(&[' ', '\t', '\n', '\r'][..], "")
             .is_empty()
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         }
         let mut in_import_list = false;
         for line in v.iter().filter(|line| !line.trim().starts_with('#')) {
             // info!("lines are : {}", line);
             if in_import_list {
                 self.imports = self.imports.clone() + "\n" + line;
-                if line.contains(')'){
+                if line.contains(')') {
                     in_import_list = false;
                 }
                 continue;
             }
-            if line.trim().starts_with("import ") || line.trim().starts_with("from ") {  //basic selection
-                if line.contains('('){
+            if line.trim().starts_with("import ") || line.trim().starts_with("from ") {
+                //basic selection
+                if line.contains('(') {
                     self.imports = self.imports.clone() + "\n" + line;
                     in_import_list = true;
                     continue;
                 }
-                if self.module_used(line, &self.code)
-                {
+                if self.module_used(line, &self.code) {
                     // embed in try catch blocs in case uneeded module is unavailable
                     let line = unindent(line);
                     self.imports = self.imports.clone() + "\n" + &line;
@@ -215,11 +217,11 @@ impl Interpreter for Python3_original {
             .is_empty()
             && self.get_current_level() >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }
@@ -324,7 +326,7 @@ impl ReplLikeInterpreter for Python3_original {
             final_code.push(')');
         }
 
-        self.code = final_code.clone();
+        self.code.clone_from(&final_code);
         // info!("---{}---", &final_code);
 
         Ok(())

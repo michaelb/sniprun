@@ -1,3 +1,8 @@
+## v1.3.15
+- Add PlantUML support (ascii output)
+- Basic user input support
+- SQL support
+
 ## v1.3.14
 - Improve Lua\_nvim's handling of 'local' requires in REPL mode
 

@@ -1,3 +1,5 @@
+use crate::interpreters::import::*;
+
 #[derive(Clone)]
 #[allow(non_camel_case_types)]
 pub struct Julia_jupyter {
@@ -73,11 +75,11 @@ impl Interpreter for Julia_jupyter {
             .is_empty()
             && self.get_current_level() >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }
@@ -195,9 +197,9 @@ impl ReplLikeInterpreter for Julia_jupyter {
                 strip_ansi_escapes::strip_str(String::from_utf8_lossy(&output.stderr.clone()))
                     .lines()
                     .last()
-                    .unwrap_or(
-                        &strip_ansi_escapes::strip_str(String::from_utf8_lossy(&output.stderr))
-                    )
+                    .unwrap_or(&strip_ansi_escapes::strip_str(String::from_utf8_lossy(
+                        &output.stderr,
+                    )))
                     .to_owned(),
             ));
         }

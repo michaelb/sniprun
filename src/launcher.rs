@@ -2,7 +2,7 @@ use crate::interpreter::InterpreterUtils;
 use crate::*;
 use error::SniprunError;
 use interpreter::{Interpreter, SupportLevel};
-use interpreters::Generic;
+use interpreters::Generic::Generic;
 use std::any::TypeId;
 use std::io::prelude::*;
 use std::process::Command;
@@ -151,7 +151,7 @@ impl Launcher {
         iter_types! {
             let line = format!("| {:<21}| {:<13}| {:<8}|{:^13}|{:^12}|{:^14}|",
                     Current::get_name(),
-                    Current::get_supported_languages().get(0).unwrap_or(&"".to_string()),
+                    Current::get_supported_languages().first().unwrap_or(&"".to_string()),
                     Current::get_max_support_level().to_string(),
                     match Current::default_for_filetype() {true => "yes" ,false => "no"},
                     match Current::has_repl_capability() { true => "yes" ,false => "no"},
