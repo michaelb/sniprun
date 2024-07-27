@@ -132,23 +132,3 @@ impl Interpreter for SQL_original {
         }
     }
 }
-
-#[cfg(test)]
-mod test_d_original {
-    use super::*;
-    use serial_test::serial;
-
-    #[test]
-    #[serial(d_original)]
-    fn simple_print() {
-        let mut data = DataHolder::new();
-        data.current_bloc =
-            String::from("string yourName = \"a\";\nwritefln(\"Hi %s!\", yourName);");
-        let mut interpreter = SQL_original::new(data);
-        let res = interpreter.run();
-
-        // should panic if not an Ok()
-        let string_result = res.unwrap();
-        assert_eq!(string_result, "Hi a!\n");
-    }
-}
