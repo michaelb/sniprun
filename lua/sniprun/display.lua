@@ -21,7 +21,6 @@ function M.fw_open(row, column, message, ok, temp)
   local w = 0
   local h = -1
   local bp = {row , column}
-  local message_map = {}
   local bufnr = vim.api.nvim_create_buf(false, true)
   for line in message:gmatch("([^\n]*)\n?") do
     h = h + 1
