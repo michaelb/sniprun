@@ -81,7 +81,9 @@ impl Neorg_original {
             }
 
             if v.is_empty() {
-                return Err(SniprunError::CustomError("No matching tag #name was found".to_string()));
+                return Err(SniprunError::CustomError(
+                    "No matching tag #name was found".to_string(),
+                ));
             }
 
             info!("running separately ranges : {:?}", v);
@@ -164,11 +166,7 @@ impl Neorg_original {
                     .unwrap()
                     .join("");
                 if line_i.trim_start().to_lowercase().starts_with("@code") {
-                    let flavor = line_i
-                        .split_whitespace()
-                        .nth(1)
-                        .unwrap_or("")
-                        .to_owned();
+                    let flavor = line_i.split_whitespace().nth(1).unwrap_or("").to_owned();
                     return Ok(self.filetype_from_str(&flavor));
                 }
             }
@@ -280,8 +278,7 @@ impl Interpreter for Neorg_original {
             for (i, l) in lines.iter().enumerate() {
                 info!("checking named tag {} in line {}", tag_name, i);
                 if l.trim_start().to_lowercase().starts_with("#name")
-                    && tag_name.to_lowercase()
-                        == (*l.to_lowercase().replace("#name", "").trim())
+                    && tag_name.to_lowercase() == (*l.to_lowercase().replace("#name", "").trim())
                 {
                     found = true;
                     info!("found named tag {} in line: {}", tag_name, l);
@@ -305,7 +302,7 @@ impl Interpreter for Neorg_original {
             .is_empty()
             && self.support_level >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self
             .data
             .current_line

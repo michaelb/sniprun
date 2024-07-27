@@ -42,14 +42,18 @@ impl OrgMode_original {
                 run_next_code_bloc = 2;
             }
 
-            info!("checking code bloc delimiter in : {}",l);
+            info!("checking code bloc delimiter in : {}", l);
 
             if l.trim_start().to_lowercase().starts_with("#+begin_src") {
                 if run_next_code_bloc == 0 {
                     continue;
                 }
                 run_next_code_bloc -= 1;
-                if counter % 2 == 1 { return Err(SniprunError::CustomError(String::from("Incomplete or nested code blocs")))} 
+                if counter % 2 == 1 {
+                    return Err(SniprunError::CustomError(String::from(
+                        "Incomplete or nested code blocs",
+                    )));
+                }
                 counter += 1;
                 v.push((selection_line + i + 1, 0));
             }
@@ -58,7 +62,11 @@ impl OrgMode_original {
                     continue;
                 }
                 run_next_code_bloc -= 1;
-                if counter % 2 == 0 { return Err(SniprunError::CustomError(String::from("Incomplete or nested code blocs")))} 
+                if counter % 2 == 0 {
+                    return Err(SniprunError::CustomError(String::from(
+                        "Incomplete or nested code blocs",
+                    )));
+                }
                 counter += 1;
                 v[((counter - 1) / 2) as usize].1 = selection_line + i - 1;
             }
@@ -71,7 +79,9 @@ impl OrgMode_original {
                 )));
             }
             if v.is_empty() {
-                return Err(SniprunError::CustomError("No matching tag #+NAME: was found".to_string()));
+                return Err(SniprunError::CustomError(
+                    "No matching tag #+NAME: was found".to_string(),
+                ));
             }
             info!("running separately ranges : {:?}", v);
             return Err(SniprunError::ReRunRanges(v));
@@ -81,7 +91,12 @@ impl OrgMode_original {
         let mut line_n = self.data.range[0]; // no matter which one
 
         //first check if we not on boundary of block
-        if self.data.current_line.trim_start().to_lowercase().starts_with("#+name")
+        if self
+            .data
+            .current_line
+            .trim_start()
+            .to_lowercase()
+            .starts_with("#+name")
         {
             let next_line = real_nvim_instance
                 .get_current_buf()
@@ -95,9 +110,10 @@ impl OrgMode_original {
         if self
             .data
             .current_line
-            .trim_start().to_lowercase()
+            .trim_start()
+            .to_lowercase()
             .starts_with("#+begin_src")
-                {
+        {
             let flavor = self
                 .data
                 .current_line
@@ -121,8 +137,7 @@ impl OrgMode_original {
                     .get_lines(&mut real_nvim_instance, i - 1, i, false)
                     .unwrap()
                     .join("");
-                if line_i.trim_start().to_lowercase().starts_with("#+end_src")
-                {
+                if line_i.trim_start().to_lowercase().starts_with("#+end_src") {
                     //found end of bloc
                     self.data.current_bloc = code_bloc.join("\n");
                     info!(
@@ -146,13 +161,12 @@ impl OrgMode_original {
                     .get_lines(&mut real_nvim_instance, i - 1, i, false)
                     .unwrap()
                     .join("");
-                if line_i.trim_start().to_lowercase().starts_with("#+begin_src")
+                if line_i
+                    .trim_start()
+                    .to_lowercase()
+                    .starts_with("#+begin_src")
                 {
-                    let flavor = line_i
-                        .split_whitespace()
-                        .nth(1)
-                        .unwrap_or("")
-                        .to_owned();
+                    let flavor = line_i.split_whitespace().nth(1).unwrap_or("").to_owned();
                     return Ok(self.filetype_from_str(&flavor));
                 }
             }
@@ -268,8 +282,7 @@ impl Interpreter for OrgMode_original {
             for (i, l) in lines.iter().enumerate() {
                 info!("checking named tag {} in line {}", tag_name, i);
                 if l.trim_start().to_lowercase().starts_with("#name:")
-                    && tag_name.to_lowercase()
-                        == (*l.to_lowercase().replace("#name:", "").trim())
+                    && tag_name.to_lowercase() == (*l.to_lowercase().replace("#name:", "").trim())
                 {
                     found = true;
                     info!("found named tag {} in line: {}", tag_name, l);
@@ -293,7 +306,7 @@ impl Interpreter for OrgMode_original {
             .is_empty()
             && self.support_level >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self
             .data
             .current_line

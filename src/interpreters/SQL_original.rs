@@ -71,11 +71,11 @@ impl Interpreter for SQL_original {
             .is_empty()
             && self.support_level >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }
@@ -110,7 +110,7 @@ impl Interpreter for SQL_original {
             .arg("-w")
             .arg("--file")
             .arg(&self.main_file_path)
-            .arg(&self.read_previous_code().replace('\n',"")) // contains database address
+            .arg(&self.read_previous_code().replace('\n', "")) // contains database address
             .current_dir(&self.data.projectroot)
             .output()
             .expect("Unable to start process");

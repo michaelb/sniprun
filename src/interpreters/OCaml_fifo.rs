@@ -15,17 +15,12 @@ pub struct OCaml_fifo {
 }
 
 impl OCaml_fifo {
-
     fn get_nvim_pid(data: &DataHolder) -> String {
         // associated utility function
         data.nvim_pid.to_string()
     }
 
-    fn wait_out_file(
-        &self,
-        out_path: String,
-        id: u32,
-    ) -> Result<String, SniprunError> {
+    fn wait_out_file(&self, out_path: String, id: u32) -> Result<String, SniprunError> {
         //extra nils come from the stdout & stderr mark prints themselves
         let end_mark_ok = String::from("sniprun_finished_id=") + &id.to_string();
         let start_mark_ok = String::from("sniprun_started_id=") + &id.to_string();
@@ -60,7 +55,7 @@ impl OCaml_fifo {
                 if res.is_ok() {
                     info!("file could be read : {:?}", out_contents);
                     // info!("file : {:?}", contents);
-                    out_contents = out_contents.replace("- : unit = ()\n","");
+                    out_contents = out_contents.replace("- : unit = ()\n", "");
                     if out_contents.contains(&end_mark_ok) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark_ok).unwrap();
@@ -81,8 +76,7 @@ impl OCaml_fifo {
     }
 
     fn fetch_config(&mut self) {
-        let default_interpreter_repl =
-            String::from("ocaml -noprompt");
+        let default_interpreter_repl = String::from("ocaml -noprompt");
         let default_interpreter = String::from("ocaml");
         self.interpreter = default_interpreter;
         self.interpreter_repl = default_interpreter_repl;
@@ -179,11 +173,11 @@ impl Interpreter for OCaml_fifo {
             .is_empty()
             && self.get_current_level() >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }
@@ -270,9 +264,9 @@ impl ReplLikeInterpreter for OCaml_fifo {
                     return Err(SniprunError::CustomError("ocaml REPL exited".to_owned()));
                 }
                 Ok(Fork::Parent(_)) => {}
-                Err(_) => info!(
-                    "OCaml_fifo could not fork itself to the background to launch the kernel"
-                ),
+                Err(_) => {
+                    info!("OCaml_fifo could not fork itself to the background to launch the kernel")
+                }
             };
 
             self.save_code("kernel_launched\n".to_owned());

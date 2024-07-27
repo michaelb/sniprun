@@ -13,8 +13,8 @@ use std::thread;
 
 pub mod daemonizer;
 pub mod display;
-pub mod input;
 pub mod error;
+pub mod input;
 pub mod interpreter;
 pub mod interpreters;
 pub mod launcher;

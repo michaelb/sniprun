@@ -79,11 +79,11 @@ impl Interpreter for Bash_original {
             .is_empty()
             && self.get_current_level() >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }
@@ -92,7 +92,11 @@ impl Interpreter for Bash_original {
 
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         //add shebang just in case
-        self.code = String::from("#!/usr/bin/env bash \n") + "sniprun_main123456789(){\n" + &self.code + "\n}\n" + "sniprun_main123456789\n";
+        self.code = String::from("#!/usr/bin/env bash \n")
+            + "sniprun_main123456789(){\n"
+            + &self.code
+            + "\n}\n"
+            + "sniprun_main123456789\n";
         Ok(())
     }
 

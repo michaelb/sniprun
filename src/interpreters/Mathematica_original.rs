@@ -77,13 +77,10 @@ impl Mathematica_original {
                 }
             }
             info!("not found yet");
-
         }
 
         let index = contents.rfind(&start_mark).unwrap();
-        Ok(
-            contents[index + start_mark.len()..contents.len() - end_mark.len() - 1].to_owned(),
-        )
+        Ok(contents[index + start_mark.len()..contents.len() - end_mark.len() - 1].to_owned())
     }
 }
 
@@ -152,11 +149,11 @@ impl Interpreter for Mathematica_original {
             .is_empty()
             && self.support_level >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }
@@ -166,9 +163,10 @@ impl Interpreter for Mathematica_original {
     fn add_boilerplate(&mut self) -> Result<(), SniprunError> {
         let mut preload_graphics = String::from("");
         let mut wait_for_graphics = String::from("");
-        if let Some(use_javagraphics_msgpack) =
-            Mathematica_original::get_interpreter_option(&self.get_data(), "use_javagraphics_if_contains")
-        {
+        if let Some(use_javagraphics_msgpack) = Mathematica_original::get_interpreter_option(
+            &self.get_data(),
+            "use_javagraphics_if_contains",
+        ) {
             if let Some(use_javagraphics) = use_javagraphics_msgpack.as_array() {
                 for test_contains_msgpack in use_javagraphics.iter() {
                     if let Some(test_contains) = test_contains_msgpack.as_str() {
@@ -177,12 +175,14 @@ impl Interpreter for Mathematica_original {
                             preload_graphics = String::from("<<JavaGraphics`\n");
                             wait_for_graphics = String::from("Pause[3600];\n");
 
-                            if let Some(time_mgspack) =
-                                Mathematica_original::get_interpreter_option(&self.get_data(), "keep_plot_open_for")
-                            {
+                            if let Some(time_mgspack) = Mathematica_original::get_interpreter_option(
+                                &self.get_data(),
+                                "keep_plot_open_for",
+                            ) {
                                 if let Some(time) = time_mgspack.as_i64() {
                                     if time >= 0 {
-                                        wait_for_graphics = "Pause[".to_owned() + &time.to_string() + "];";
+                                        wait_for_graphics =
+                                            "Pause[".to_owned() + &time.to_string() + "];";
                                     }
                                 }
                             }
@@ -194,7 +194,10 @@ impl Interpreter for Mathematica_original {
         }
 
         if let Some(wrap_all_lines_with_print_msgpack) =
-            Mathematica_original::get_interpreter_option(&self.get_data(), "wrap_all_lines_with_print")
+            Mathematica_original::get_interpreter_option(
+                &self.get_data(),
+                "wrap_all_lines_with_print",
+            )
         {
             if let Some(wrap_all_lines_with_print) = wrap_all_lines_with_print_msgpack.as_bool() {
                 if wrap_all_lines_with_print {
@@ -207,7 +210,10 @@ impl Interpreter for Mathematica_original {
             }
         }
         if let Some(wrap_last_line_with_print_msgpack) =
-            Mathematica_original::get_interpreter_option(&self.get_data(), "wrap_last_line_with_print")
+            Mathematica_original::get_interpreter_option(
+                &self.get_data(),
+                "wrap_last_line_with_print",
+            )
         {
             if let Some(wrap_last_line_with_print) = wrap_last_line_with_print_msgpack.as_bool() {
                 if wrap_last_line_with_print {
@@ -318,9 +324,10 @@ impl ReplLikeInterpreter for Mathematica_original {
     fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
         info!("adding boilerplate");
         let mut preload_graphics = "";
-        if let Some(use_javagraphics_msgpack) =
-            Mathematica_original::get_interpreter_option(&self.get_data(), "use_javagraphics_if_contains")
-        {
+        if let Some(use_javagraphics_msgpack) = Mathematica_original::get_interpreter_option(
+            &self.get_data(),
+            "use_javagraphics_if_contains",
+        ) {
             if !self.read_previous_code().contains("JavaGraphics loaded") {
                 if let Some(use_javagraphics) = use_javagraphics_msgpack.as_array() {
                     for test_contains_msgpack in use_javagraphics.iter() {

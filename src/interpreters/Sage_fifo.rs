@@ -106,7 +106,7 @@ impl Sage_fifo {
                         for try_error_indicator in error_indicators.iter() {
                             if out_contents_current.contains(try_error_indicator) {
                                 info!("stdout contains error indicator");
-                                err_contents = out_contents.clone();
+                                err_contents.clone_from(&out_contents);
                                 // info!("file : {:?}", contents);
                                 err_contents = err_contents.replace("sage: ", "");
                                 err_contents = err_contents.replace("---------------------------------------------------------------------------\n","");
@@ -167,7 +167,7 @@ impl Sage_fifo {
             .replace(&[' ', '\t', '\n', '\r'][..], "")
             .is_empty()
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         }
         for line in v.iter() {
             // info!("lines are : {}", line);
@@ -311,11 +311,11 @@ impl Interpreter for Sage_fifo {
             .is_empty()
             && self.get_current_level() >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }
@@ -386,9 +386,7 @@ impl ReplLikeInterpreter for Sage_fifo {
                         .output()
                         .unwrap();
 
-                    return Err(SniprunError::CustomError(
-                        "sage REPL exited".to_owned(),
-                    ));
+                    return Err(SniprunError::CustomError("sage REPL exited".to_owned()));
                 }
                 Ok(Fork::Parent(_)) => {}
                 Err(_) => {

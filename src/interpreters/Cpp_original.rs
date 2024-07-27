@@ -128,9 +128,9 @@ impl Interpreter for Cpp_original {
             .replace(&[' ', '\t', '\n', '\r'][..], "")
             .is_empty()
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty() {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }
@@ -175,12 +175,18 @@ impl Interpreter for Cpp_original {
                     ))
                 } else {
                     Err(SniprunError::CompilationError(
-                        String::from_utf8(output.stderr.clone()).unwrap().lines().take(5).collect::<Vec<&str>>().join("\n")
+                        String::from_utf8(output.stderr.clone())
+                            .unwrap()
+                            .lines()
+                            .take(5)
+                            .collect::<Vec<&str>>()
+                            .join("\n"),
                     ))
                 }
             } else {
-                Err(SniprunError::CompilationError(String::from_utf8(output.stderr.clone()).unwrap()))
-
+                Err(SniprunError::CompilationError(
+                    String::from_utf8(output.stderr.clone()).unwrap(),
+                ))
             }
         } else {
             Ok(())

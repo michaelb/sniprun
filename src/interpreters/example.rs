@@ -94,13 +94,13 @@ impl Interpreter for Language_subname {
         {
             // if bloc is not pseudo empty and has Bloc current support level,
             // add fetched code to self
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
 
         // if there is only data on current line / or Line is the max support level
         } else if !self.data.current_line.replace(" ", "").is_empty()
             && self.support_level >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             // no code was retrieved
             self.code = String::from("");

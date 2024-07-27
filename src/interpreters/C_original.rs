@@ -130,9 +130,9 @@ impl Interpreter for C_original {
             .replace(&[' ', '\t', '\n', '\r'][..], "")
             .is_empty()
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty() {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }

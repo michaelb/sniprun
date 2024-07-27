@@ -44,7 +44,7 @@ impl Python3_jupyter {
             .replace(&[' ', '\t', '\n', '\r'][..], "")
             .is_empty()
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         }
         for line in v.iter() {
             // info!("lines are : {}", line);
@@ -101,7 +101,9 @@ impl Python3_jupyter {
             if let Some(remaining) = timeout.checked_sub(step) {
                 timeout = remaining;
             } else {
-                return Err(SniprunError::CustomError(String::from("Timeout on jupyter kernel start expired")));
+                return Err(SniprunError::CustomError(String::from(
+                    "Timeout on jupyter kernel start expired",
+                )));
             }
         }
     }
@@ -178,11 +180,11 @@ impl Interpreter for Python3_jupyter {
             .is_empty()
             && self.get_current_level() >= SupportLevel::Bloc
         {
-            self.code = self.data.current_bloc.clone();
+            self.code.clone_from(&self.data.current_bloc);
         } else if !self.data.current_line.replace(' ', "").is_empty()
             && self.get_current_level() >= SupportLevel::Line
         {
-            self.code = self.data.current_line.clone();
+            self.code.clone_from(&self.data.current_line);
         } else {
             self.code = String::from("");
         }
@@ -356,9 +358,9 @@ impl ReplLikeInterpreter for Python3_jupyter {
                 strip_ansi_escapes::strip_str(String::from_utf8_lossy(&output.stderr.clone()))
                     .lines()
                     .last()
-                    .unwrap_or(
-                        &strip_ansi_escapes::strip_str(String::from_utf8_lossy(&output.stderr))
-                    )
+                    .unwrap_or(&strip_ansi_escapes::strip_str(String::from_utf8_lossy(
+                        &output.stderr,
+                    )))
                     .to_owned(),
             ));
         }
