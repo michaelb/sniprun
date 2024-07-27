@@ -15,6 +15,7 @@ require'sniprun'.setup({
     }
 })
 ```
+
 You can add options to the 'compiler' key, but do not
 set "-pipe" (or it'll break output), and "-failfast2",
 "-nbthread auto" are already set.

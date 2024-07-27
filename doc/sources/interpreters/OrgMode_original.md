@@ -1,13 +1,13 @@
 ## Orgmode original
 
-the Orgmode\_original interpreter helps you running code blocs defined in org code blocs delimiters
+the Orgmode\_original interpreter helps you running code blocs
+defined in org code blocs delimiters
 
 inline, switches and headers are not supported/ignored
 
 ### example 1
 
-
-```
+```orgmode
 #+NAME: demo
 #+BEGIN_SRC bash
 
@@ -30,14 +30,13 @@ done
 ### example 2
 
 
-```
+```orgmode
 #+NAME: demo_run_whole_bloc
 #+BEGIN_SRC rust                        << running on this line will run the entire bloc
 
 println!("test");
 println!("test2");
 #+END_SRC
-
 ``` 
 
 
@@ -45,7 +44,7 @@ println!("test2");
 
 \* python, but you can ofc configure that: 
 
-```
+```orgmode
 require'sniprun'.setup({
     interpreter_options = {
         OrgMode_original = { 
@@ -64,6 +63,7 @@ println!("test");
 #+END_SRC
 ```
 
-running `:%SnipRun mycodebloc` will run this code bloc (and any code bloc named similarly, case-insensitively)
+running `:%SnipRun mycodebloc` will run this code bloc
+(and any code bloc named similarly, case-insensitively)
 
 running `:%SnipRun` without any further arguments will run all the code blocs

@@ -12,5 +12,3 @@ require'sniprun'.setup({
     }
 })
 ```
-
-

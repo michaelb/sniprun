@@ -2,7 +2,8 @@
 
 A REPL-capable (not enabled by default) Typescript / Javascript interpreter.
 
-`deno` needs to be installed and on your path (and working). The precise command used by sniprun is `deno repl -q`
+`deno` needs to be installed and on your path (and working).
+The precise command used by sniprun is `deno repl -q`
 
 ```lua
 require('sniprun').setup({
