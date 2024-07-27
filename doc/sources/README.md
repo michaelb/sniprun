@@ -399,43 +399,49 @@ println!("-> {}", alphabet);
 </ul>
 </span>
 
-
-| Language     | Support level | REPL Capabilities|    
+| Language     | Support level | REPL Capabilities|
 | ------------ | ------------- | ---------------- |
 | Ada          | Line          | No               |
 | Bash/Shell   | Bloc          | Yes\*            |
 | C            | Import        | No               |
-| C++          | Import        | No               | 
-| C#           | Bloc          | No               | 
-| Clojure      | Bloc          | Yes \*\*         | 
-| Coffeescript | Bloc          | No               |   
-| D            | Bloc          | No               | 
+| C++          | Import        | No               |
+| C#           | Bloc          | No               |
+| Clojure      | Bloc          | Yes \*\*         |
+| CoffeeScript | Bloc          | No               |
+| D            | Bloc          | No               |
 | Elixir       | Bloc          | Yes \*\*         |
 | F#           | Bloc          | No, but _could_ \*\* |
-| Go           | Import        | No               | 
-| Haskell      | Line          | No               | 
-| Java         | Bloc          | No               | 
-| JavaScript   | Bloc          | Yes\*\*   (Deno) | 
-| Julia        | Bloc          | Yes\*\*          | 
-| Lua          | Bloc          | No               | 
+| Go           | Import        | No               |
+| Haskell      | Line          | No               |
+| Http         | Bloc          | No               |
+| Java         | Bloc          | No               |
+| JavaScript   | Bloc          | Yes\*\*   (Deno) |
+| Julia        | Bloc          | Yes\*\*          |
+| Lua          | Bloc          | No               |
 | Lua-nvim     | Bloc          | Yes\*\*          |
 | Markdown     | Bloc          | Yes\*\*\*        |
 | Mathematica  | Bloc          | Yes\*\*          |
 | Neorg        | Bloc          | Yes\*\*\*        |
 | OCaml        | Bloc          | Yes\*\*          |
 | OrgMode      | Bloc          | Yes\*\*\*        |
-| Perl/Perl6   | Line          | No               | 
+| Perl/Perl6   | Line          | No               |
+| Plantuml     | Bloc          | No               |
 | Python3      | Import        | Yes\*\*          |
 | R            | Bloc          | Yes\*\*          |
-| Ruby         | Bloc          | No               | 
-| Rust         | Bloc          | No               | 
+| Ruby         | Bloc          | No               |
+| Rust         | Bloc          | No               |
 | SageMath     | Import        | Yes\*\*          |
-| Scala        | Bloc          | No               | 
-| TypeScript   | Bloc          | Yes\*\*   (Deno) |  
+| Scala        | Bloc          | No               |
+| SQL          | Bloc          | No               |
+| TypeScript   | Bloc          | Yes\*\*   (Deno) |
 
-Your language is not officially supported ? The [Generic interpreter](https://michaelb.github.io/sniprun/sources/Generic.html#community-examples-for-non-officially-supported-languages) can probably work with it !
+Your language is not officially supported ? The
+[Generic interpreter](https://michaelb.github.io/sniprun/sources/Generic.html#community-examples-for-non-officially-supported-languages)
+can probably work with it !
 
-Want (official) support for your language? Submit an [issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=),or even better, contribute (see CONTRIBUTING.md), it's easy!
+Want (official) support for your language? Submit an
+[issue](https://github.com/michaelb/sniprun/issues/new?assignees=&labels=new-langage-support&template=support-for--language-.md&title=),
+or even better, contribute (see CONTRIBUTING.md), it's easy!
 
 \* (fake) REPL-like functionality, with potential unwanted side effects
 
