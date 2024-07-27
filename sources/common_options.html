@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interpreter configuration &mdash; Welcome to sniprun documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Ada original" href="interpreters/Ada_original.html" />
+    <link rel="prev" title="Introduction" href="display_modes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Sniprun
+              <img src="../_static/logo-only.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sniprun:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#what-does-it-do">What does it do ?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#what-it-is-isn-t">What it is &amp;&amp; isn’t</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#configuration">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#support-levels-and-languages">Support levels and languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#live-mode">Live mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#api">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#known-limitations">Known limitations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#contribute">Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#related-projects">Related projects</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Display modes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="display_modes.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="display_modes.html#available-display-modes">Available display modes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interpreters:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Interpreter configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#common-options">Common options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-use-on-filetypes-key">The “use_on_filetypes” key</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-error-truncate-key">The “error_truncate” key</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#the-interpreter-compiler-keys">The interpreter/compiler keys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Ada_original.html">Ada original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Bash_original.html">Bash original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Clojure_fifo.html">Clojure fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/C_original.html">C original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Cpp_original.html">Cpp original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/CSharp_original.html">C# original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/CS_original.html">CS original (coffeescript)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/D_original.html">D original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Elixir_original.html">Elixir original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/FSharp_fifo.html">F# fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Generic.html">Generic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/GFM_original.html">GFM original (Markdown)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Go_original.html">Go original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Haskell.html">Haskell original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Http_original.html">Http original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Java_original.html">Java original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/JS_TS_bun.html">JS_TS_bun</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/JS_TS_deno.html">JS_TS_Deno</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Julia_jupyter.html">Julia jupyter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Julia_original.html">Julia original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Lua_nvim.html">Lua_nvim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Lua_original.html">Lua original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Mathematica_original.html">Mathematica original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Neorg_original.html">Neorg original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/OCaml_fifo.html">OCaml fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/OrgMode_original.html">Orgmode original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Prolog_original.html">Prolog original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Python3_fifo.html">Python3 fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Python3_jupyter.html">Python3 jupyter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Python3_original.html">Python3 original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/R_original.html">R original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Ruby_original.html">Ruby original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Rust_original.html">Rust original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Sage_fifo.html">Sage fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Scala_original.html">Scala original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/TypeScript_original.html">TypeScript original</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Sniprun</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Interpreter configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/sources/common_options.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="interpreter-configuration">
+<h1>Interpreter configuration<a class="headerlink" href="#interpreter-configuration" title="Permalink to this heading"></a></h1>
+<p>You can select an interpreter (with its name from <code class="docutils literal notranslate"><span class="pre">:SnipInfo</span></code>) if several of them support the language/filetype
+(see <a class="reference internal" href="#use-on-filetype"><span class="std std-ref">use_on_filetype</span></a> if necessary) and you want a specific one</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">&lt;&lt;</span> <span class="n">EOF</span>
+<span class="n">require</span><span class="s1">&#39;sniprun&#39;</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+    <span class="n">selected_interpreters</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;Some_interpreter&quot;</span><span class="p">,</span> <span class="s2">&quot;Python3_fifo&quot;</span><span class="p">},</span>
+<span class="p">})</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p>Many interpreters have REPL capabilities that are <em>not</em> enabled by default. You can turn this behavior on (or off) with the <code class="docutils literal notranslate"><span class="pre">repl_enable</span></code> and <code class="docutils literal notranslate"><span class="pre">repl_disable</span></code> keys, that similarly take interpreters names as arguments:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">&lt;&lt;</span> <span class="n">EOF</span>
+<span class="n">require</span><span class="s1">&#39;sniprun&#39;</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+    <span class="n">repl_enable</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Python3_original&quot;</span><span class="p">,</span> <span class="s2">&quot;Julia_jupyter&quot;</span><span class="p">},</span>   <span class="o">--</span><span class="c1"># enable REPL-like behavior for the given interpreters</span>
+    <span class="n">repl_disable</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Lua_nvim&quot;</span><span class="p">},</span>          <span class="o">--</span><span class="c1"># disable REPL-like behavior for the given interpreters</span>
+<span class="p">})</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+</section>
+<section id="common-options">
+<h1>Common options<a class="headerlink" href="#common-options" title="Permalink to this heading"></a></h1>
+<p>Every interpreter supports getting documentation via <code class="docutils literal notranslate"><span class="pre">:SnipInfo</span> <span class="pre">&lt;interpreter_name&gt;</span></code></p>
+<p>To specify interpreter options, you have to add the following to your sniprun config:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">&lt;&lt;</span><span class="n">EOF</span>
+<span class="n">require</span><span class="p">(</span><span class="s1">&#39;sniprun&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+
+    <span class="n">interpreter_options</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="o">&lt;</span><span class="n">Interpreter_name</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">some_specific_option</span> <span class="o">=</span> <span class="n">value</span><span class="p">,</span>
+            <span class="n">some_other_option</span> <span class="o">=</span> <span class="n">other_value</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">},</span> 
+<span class="p">})</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lua</span> <span class="o">&lt;&lt;</span><span class="n">EOF</span>
+<span class="n">require</span><span class="p">(</span><span class="s1">&#39;sniprun&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+
+    <span class="n">interpreter_options</span> <span class="o">=</span> <span class="p">{</span>         <span class="o">--</span><span class="c1"># interpreter-specific options, see doc / :SnipInfo &lt;name&gt;</span>
+
+        <span class="o">--</span><span class="c1"># use the interpreter name as key</span>
+        <span class="n">GFM_original</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">use_on_filetypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;markdown.pandoc&quot;</span><span class="p">}</span>    <span class="o">--</span><span class="c1"># the &#39;use_on_filetypes&#39; configuration key is</span>
+                                                      <span class="o">--</span><span class="c1"># available for every interpreter</span>
+        <span class="p">},</span>
+        <span class="n">Python3_original</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">error_truncate</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span>         <span class="o">--</span><span class="c1"># Truncate runtime errors &#39;long&#39;, &#39;short&#39; or &#39;auto&#39;</span>
+                                            <span class="o">--</span><span class="c1"># the hint is available for every interpreter</span>
+                                            <span class="o">--</span><span class="c1"># but may not be always respected</span>
+        <span class="p">}</span>
+  <span class="p">},</span> 
+<span class="p">})</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+<section id="the-use-on-filetypes-key">
+<span id="use-on-filetype"></span><h2>The “use_on_filetypes” key<a class="headerlink" href="#the-use-on-filetypes-key" title="Permalink to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">use_on_filetypes</span></code> key is implicitely an option of every interpreter</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">interpreter_options</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">GFM_original</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">use_on_filetypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;markdown.pandoc&quot;</span><span class="p">,</span> <span class="s2">&quot;rstudio&quot;</span> <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="the-error-truncate-key">
+<h2>The “error_truncate” key<a class="headerlink" href="#the-error-truncate-key" title="Permalink to this heading"></a></h2>
+<p>Also available for every interpreter if you don’t like how sniprun truncate some outputs by default (auto), but it will not have an effect on all interpreters.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">interpreter_options</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">Python3_original</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">error_truncate</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span>     <span class="o">--</span><span class="c1"># Truncate runtime errors &#39;long&#39;, &#39;short&#39; or &#39;auto&#39;</span>
+    <span class="p">}</span>
+<span class="p">},</span> 
+</pre></div>
+</div>
+</section>
+</section>
+<section id="the-interpreter-compiler-keys">
+<h1>The interpreter/compiler keys<a class="headerlink" href="#the-interpreter-compiler-keys" title="Permalink to this heading"></a></h1>
+<p>Almost every interpreter support either the “interpreter” or “compiler” key even if not explicitely documented, depending on whether they’re about an interpreter or compiled language.</p>
+<p>example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">interpreter_options</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">Python3_original</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">interpreter</span> <span class="o">=</span> <span class="s2">&quot;python3.9&quot;</span>
+    <span class="p">}</span>
+    <span class="n">Rust_original</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">compiler</span> <span class="o">=</span> <span class="s2">&quot;/home/user/bin/rustc-patched -Zlocation-detail=none&quot;</span>
+    <span class="p">}</span>
+<span class="p">},</span> 
+</pre></div>
+</div>
+<p>You can see what interpreters/compilers are being used at any time by watching sniprun’s log for the line
+“using compiler XXXX” or “using interpreter XXXX” when you run a snippet.
+While options can (generally) be added to these interpreters/compilers strings, mind that some options are often already passed, and
+sometimes mandatory (ex: “-o main_file_name”, “–nologo”) and whatever is added can mess up the format
+sniprun internally expect, or be straight out incompatible with the formers. Be careful!</p>
+<p>Exceptions:</p>
+<ul class="simple">
+<li><p>Scala_original has both interpreter and compiler keys that should be set consistently with each other</p></li>
+<li><p>*_jupyter, Generic, GFM_original, Orgmode_original, and Neorg_original do not support any of these keys, as they rely on the interpreter for the code’s block language.</p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="display_modes.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="interpreters/Ada_original.html" class="btn btn-neutral float-right" title="Ada original" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Michael B.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

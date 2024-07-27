@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction &mdash; Welcome to sniprun documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Introduction" href="display_modes.html" />
+    <link rel="prev" title="Welcome to Sniprun’s documentation!" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Sniprun
+              <img src="../_static/logo-only.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Sniprun:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#demos">Demos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#what-does-it-do">What does it do ?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#what-it-is-isn-t">What it is &amp;&amp; isn’t</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites-dependencies">Prerequisites &amp;&amp; dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-sniprun">Install Sniprun</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#use-your-favorite-plugin-manager-recommended">Use your favorite plugin manager (recommended) …</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#or-install-sniprun-manually">or install sniprun manually</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#or-for-nixos-users">or for NixOS users</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#with-home-manager">with home-manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#with-a-standard-lua-config">with a standard Lua config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#you-do-nothing-like-everyone-else">you do nothing like everyone else</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running">Running</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#stopping">Stopping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clearing">Clearing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#repl-like-behavior">REPL-like behavior</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mappings-recommandations">Mappings &amp; recommandations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#support-levels-and-languages">Support levels and languages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#live-mode">Live mode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#warnings">Warnings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#enable-and-usage">Enable and usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#api">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#known-limitations">Known limitations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#contribute">Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#related-projects">Related projects</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Display modes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="display_modes.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="display_modes.html#available-display-modes">Available display modes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Interpreters:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common_options.html">Interpreter configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common_options.html#common-options">Common options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common_options.html#the-interpreter-compiler-keys">The interpreter/compiler keys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Ada_original.html">Ada original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Bash_original.html">Bash original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Clojure_fifo.html">Clojure fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/C_original.html">C original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Cpp_original.html">Cpp original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/CSharp_original.html">C# original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/CS_original.html">CS original (coffeescript)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/D_original.html">D original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Elixir_original.html">Elixir original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/FSharp_fifo.html">F# fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Generic.html">Generic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/GFM_original.html">GFM original (Markdown)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Go_original.html">Go original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Haskell.html">Haskell original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Http_original.html">Http original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Java_original.html">Java original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/JS_TS_bun.html">JS_TS_bun</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/JS_TS_deno.html">JS_TS_Deno</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Julia_jupyter.html">Julia jupyter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Julia_original.html">Julia original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Lua_nvim.html">Lua_nvim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Lua_original.html">Lua original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Mathematica_original.html">Mathematica original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Neorg_original.html">Neorg original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/OCaml_fifo.html">OCaml fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/OrgMode_original.html">Orgmode original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Prolog_original.html">Prolog original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Python3_fifo.html">Python3 fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Python3_jupyter.html">Python3 jupyter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Python3_original.html">Python3 original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/R_original.html">R original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Ruby_original.html">Ruby original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Rust_original.html">Rust original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Sage_fifo.html">Sage fifo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/Scala_original.html">Scala original</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interpreters/TypeScript_original.html">TypeScript original</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Sniprun</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/sources/README.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h1>
+<p>Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to
+provide stupidly fast partial code testing for interpreted <strong>and compiled</strong>
+<a class="reference internal" href="#support-levels-and-languages"><span class="std std-ref">languages</span></a>. Sniprun blurs the line
+between standard save/run workflow, jupyter-like notebooks,
+and REPL/interpreters.</p>
+<p>I know that this README is exhaustively long, but Sniprun itself is and will
+remain rather simple: don’t be afraid, questions are welcome too.</p>
+<section id="demos">
+<h2>Demos<a class="headerlink" href="#demos" title="Permalink to this heading"></a></h2>
+<p><strong>Send to Sniprun snippets of any language.</strong>
+A few lines of code are now within a print statement’s reach :-) (<a class="reference external" href="https://github.com/meain/vim-printer">this may be cool</a>)</p>
+<p>An example in C, look in the command area:</p>
+<p><img alt="demo_c" src="../_images/demo_c.gif" /></p>
+<p><strong>The result can be returned in multiple (even at the same time) ways:</strong></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p><a class="reference internal" href="display_modes.html#classic-display"><span class="std std-ref">Classic</span></a></p></th>
+<th class="head text-center"><p><a class="reference internal" href="display_modes.html#virtualtext-display"><span class="std std-ref">Virtual Text</span></a></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p><img alt="" src="../_images/classic.png" /></p></td>
+<td class="text-center"><p><img alt="" src="../_images/virtual_text.png" /></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><a class="reference internal" href="display_modes.html#floatingwindow-display"><span class="std std-ref">Floating window</span></a></p></td>
+<td class="text-center"><p><a class="reference internal" href="display_modes.html#terminal-display"><span class="std std-ref">Terminal</span></a></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><img alt="" src="../_images/floating_window.png" /></p></td>
+<td class="text-center"><p><img alt="" src="../_images/terminal.png" /></p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><a class="reference internal" href="display_modes.html#notification-display"><span class="std std-ref">Notification</span></a></p></td>
+<td class="text-center"><p><a class="reference internal" href="display_modes.html#api-display"><span class="std std-ref">Api display</span></a></p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><img alt="" src="../_images/nvimnotify.png" /></p></td>
+<td class="text-center"><p><img alt="" src="../_images/api.png" /></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>send-to-REPL-like behavior is available for some languages</strong></p>
+<p>Python, R, D, Mathematica, Sage, Julia, Javascript &amp; Typescript (via deno),
+Clojure and Lua, coming soon for many other interpreted and compiled languages.
+Very versatile, you can even run things like GUI plots on the fly!</p>
+<p><img alt="" src="../_images/demo_repl.png" /></p>
+</section>
+</section>
+<section id="what-does-it-do">
+<h1>What does it do ?<a class="headerlink" href="#what-does-it-do" title="Permalink to this heading"></a></h1>
+<p>Basically, it allows you to run a part of your code.</p>
+<p>Do either of:</p>
+<ul>
+<li><p>Position the cursor on a line and <code class="docutils literal notranslate"><span class="pre">:SnipRun</span></code></p></li>
+<li><p>Select some visual range, then <code class="docutils literal notranslate"><span class="pre">:'&lt;,'&gt;SnipRun</span></code></p></li>
+<li><p>Combine a motion with the operator</p></li>
+<li><p>Activate the live mode</p>
+<p>(through a shortcut!)</p>
+</li>
+</ul>
+<p>and … that’s it!</p>
+<p>Sniprun will then:</p>
+<ul class="simple">
+<li><p><strong>Get the code</strong> you selected (selections are rounded line-wise)</p></li>
+<li><p>Optionally, get additional information if necessary (auto retrieve import when supported for example)</p></li>
+<li><p><strong>Add boilerplate</strong> when it exists. In C, it surrounds your snip with “int main() {”, “}”. (disclaimer: oversimplifed)</p></li>
+<li><p><strong>Build</strong> (write to a script file, or compile) the code</p></li>
+<li><p><strong>Execute</strong> the code, or send it to an active REPL for evaluation</p></li>
+<li><p>Display stdout, or stderr using the chosen method</p></li>
+</ul>
+</section>
+<section id="what-it-is-isn-t">
+<h1>What it is &amp;&amp; isn’t<a class="headerlink" href="#what-it-is-isn-t" title="Permalink to this heading"></a></h1>
+<p><strong>It is</strong> a way to quickly run small snippets of code, on the fly, and iterate very quickly and conveniently. To quickly experiment with new features (not yet embedded in classes, a whole project etc…), or to develop simple code pipelines (like a machine learning exercise) that fit in a unique file, sniprun is probably <em>the</em> best plugin out there.</p>
+<p><strong>It isn’t</strong> a way to run a whole 50k lines, 3 languages projects. A one-liner <code class="docutils literal notranslate"><span class="pre">:!make</span> <span class="pre">run</span></code> is better suited to do this most of the time.</p>
+</section>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<section id="prerequisites-dependencies">
+<h2>Prerequisites &amp;&amp; dependencies<a class="headerlink" href="#prerequisites-dependencies" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Sniprun is compatible with <strong>Linux</strong> and <strong>MacOS</strong>. (NixOS and Mac users <em>need</em> the Rust <a class="reference external" href="https://www.rust-lang.org/tools/install">toolchain</a> version &gt;= 1.65, in order to compile sniprun locally). Standard POSIX utilities (grep, cut, sed …) may be needed too, depending on the languages you want support for.</p></li>
+<li><p><strong>Neovim</strong> version &gt;= 0.5</p></li>
+<li><p><strong>Compiler / interpreter</strong> for the languages you work with must be installed &amp; on your $PATH. In case non-standard build tools or softwares are required, those are documented in the navigation pane of the <a class="reference external" href="https://michaelb.github.io/sniprun/">wiki</a>, as well as in the <a class="reference external" href="https://github.com/michaelb/sniprun/tree/master/doc/sources/interpreters">doc/sources/interpreters</a> folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can be accessed through <code class="docutils literal notranslate"><span class="pre">:SnipInfo</span> <span class="pre">&lt;interpreter_name&gt;</span></code> (tab autocompletion supported).</p></li>
+<li><p>[optional] <strong>cargo and the rust toolchain</strong> version &gt;= 1.65 (you can find those <a class="reference external" href="https://www.rust-lang.org/tools/install">here</a>), if you want/need to compile sniprun locally.</p></li>
+<li><p>[optional] the plugin <a class="reference external" href="https://github.com/rcarriga/nvim-notify">nvim-notify</a> for the notification display style</p></li>
+</ul>
+<p>Note: Since sniprun is written in Rust and many users may not have/want a Rust toolchain, a binary compiled from a Github Action gets downloaded from Releases. If you don’t want that, just install a Rust toolchain and replace the install.sh invocation in your config by <code class="docutils literal notranslate"><span class="pre">cargo</span> <span class="pre">build</span> <span class="pre">--release</span></code>.</p>
+</section>
+<section id="install-sniprun">
+<h2>Install Sniprun<a class="headerlink" href="#install-sniprun" title="Permalink to this heading"></a></h2>
+<section id="use-your-favorite-plugin-manager-recommended">
+<h3>Use your favorite plugin manager (recommended) …<a class="headerlink" href="#use-your-favorite-plugin-manager-recommended" title="Permalink to this heading"></a></h3>
+<p>(Run <code class="docutils literal notranslate"><span class="pre">install.sh</span></code> as a post-installation script, it will download or compile the sniprun binary)</p>
+<details open><summary>packer</summary>
+<p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">use</span> <span class="p">{</span> <span class="s1">&#39;michaelb/sniprun&#39;</span><span class="p">,</span> <span class="n">run</span> <span class="o">=</span> <span class="s1">&#39;sh ./install.sh&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>(if you target the ‘dev’ branch, the installer will try to compile manually sniprun on your computer, which will require the rust toolchain)</p>
+</p>
+</details>
+<details><summary>lazy.nvim/lunarvim</summary>
+<p>
+<p>Lunarvim embeds a Lazy.nvim <a class="reference external" href="https://github.com/folke/lazy.nvim#-plugin-spec">plugin spec</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lvim</span><span class="o">.</span><span class="n">plugins</span> <span class="o">=</span> <span class="p">{</span> <span class="o">--</span> <span class="n">only</span> <span class="k">for</span> <span class="n">lunarvim</span>
+
+  <span class="p">{</span>
+    <span class="s2">&quot;michaelb/sniprun&quot;</span><span class="p">,</span>
+    <span class="n">branch</span> <span class="o">=</span> <span class="s2">&quot;master&quot;</span><span class="p">,</span>
+
+    <span class="n">build</span> <span class="o">=</span> <span class="s2">&quot;sh install.sh&quot;</span><span class="p">,</span>
+    <span class="o">--</span> <span class="n">do</span> <span class="s1">&#39;sh install.sh 1&#39;</span> <span class="k">if</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">force</span> <span class="nb">compile</span> <span class="n">locally</span>
+    <span class="o">--</span> <span class="p">(</span><span class="n">instead</span> <span class="n">of</span> <span class="n">fetching</span> <span class="n">a</span> <span class="n">binary</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">github</span> <span class="n">release</span><span class="p">)</span><span class="o">.</span> <span class="n">Requires</span> <span class="n">Rust</span> <span class="o">&gt;=</span> <span class="mf">1.65</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">function</span><span class="p">()</span>
+      <span class="n">require</span><span class="p">(</span><span class="s2">&quot;sniprun&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+      <span class="o">--</span> <span class="n">your</span> <span class="n">options</span>
+      <span class="p">})</span>
+    <span class="n">end</span><span class="p">,</span>
+  <span class="p">},</span>
+
+<span class="p">}</span> <span class="o">--</span> <span class="n">only</span> <span class="k">for</span> <span class="n">lunar</span> <span class="n">vim</span>
+</pre></div>
+</div>
+</p>
+</details>
+<details><summary>vim-plug</summary>
+<p>
+<div class="highlight-vim notranslate"><div class="highlight"><pre><span></span>Plug <span class="s1">&#39;michaelb/sniprun&#39;</span><span class="p">,</span> {<span class="s1">&#39;do&#39;</span>: <span class="s1">&#39;sh ./install.sh&#39;</span>}
+<span class="c">&quot; &#39;bash install.sh 1&#39; to get the bleeding edge or if you have trouble with the precompiled binary,</span>
+<span class="c">&quot;  but you&#39;ll compile sniprun at every update &amp; will need the rust toolchain</span>
+</pre></div>
+</div>
+</p>
+</details>
+</section>
+<section id="or-install-sniprun-manually">
+<h3>or install sniprun manually<a class="headerlink" href="#or-install-sniprun-manually" title="Permalink to this heading"></a></h3>
+<p>I trust you know how to add a plugin to the runtimepath, just don’t forget to run <code class="docutils literal notranslate"><span class="pre">./install.sh</span></code>, or alternatively, <code class="docutils literal notranslate"><span class="pre">cargo</span> <span class="pre">build</span> <span class="pre">--release</span></code> to fetch/build the binary.</p>
+</section>
+<section id="or-for-nixos-users">
+<h3>or for NixOS users<a class="headerlink" href="#or-for-nixos-users" title="Permalink to this heading"></a></h3>
+<section id="with-home-manager">
+<h4>with home-manager<a class="headerlink" href="#with-home-manager" title="Permalink to this heading"></a></h4>
+<p>Sniprun is packaged for NixOS, so install <a class="reference external" href="https://nix-community.github.io/home-manager/options.html#opt-programs.neovim.plugins">‘as usual’</a>, aka just add sniprun to your programs.neovim.plugins .</p>
+</section>
+<section id="with-a-standard-lua-config">
+<h4>with a standard Lua config<a class="headerlink" href="#with-a-standard-lua-config" title="Permalink to this heading"></a></h4>
+<p>The normal installation way will work, as long as you compile locally the sniprun binary; example with packer</p>
+<p><code class="docutils literal notranslate"><span class="pre">use</span> <span class="pre">{</span> <span class="pre">'michaelb/sniprun',</span> <span class="pre">run</span> <span class="pre">=</span> <span class="pre">'sh</span> <span class="pre">./install.sh</span> <span class="pre">1'}</span></code></p>
+</section>
+<section id="you-do-nothing-like-everyone-else">
+<h4>you do nothing like everyone else<a class="headerlink" href="#you-do-nothing-like-everyone-else" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p>Have a running sniprun binary somewhere (it should be runnable on the command-line, though it will just ‘hang’)</p></li>
+<li><p>Have the repo added to neovim’s runtimepath (for debugging: <code class="docutils literal notranslate"><span class="pre">nvim</span> <span class="pre">--cmd</span> <span class="pre">&quot;set</span> <span class="pre">rtp+=/path/to/sniprun/repo&quot;</span></code>)</p></li>
+<li><p>Configure sniprun to get the correct location (by default, <strong>from the repo</strong>: ./target/release/sniprun)</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;sniprun&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setup</span><span class="p">({</span>
+    <span class="n">binary_path</span><span class="o">=</span><span class="s2">&quot;/path/to/your/sniprun&quot;</span><span class="p">,</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+<section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
+<p>(you can of course see <code class="docutils literal notranslate"><span class="pre">:help</span> <span class="pre">sniprun</span></code> once installed for the complete list of commands, and <code class="docutils literal notranslate"><span class="pre">:SnipInfo</span></code> will have a decent share of useful information too)</p>
+<p>You can do basically two things: <strong>run</strong> your code selection and <strong>stop</strong> it (in the rare occasions it crashes, it takes too long or sniprun crashes). You’ll probably be using only the first one, but the second can come in handy.</p>
+<section id="running">
+<h2>Running<a class="headerlink" href="#running" title="Permalink to this heading"></a></h2>
+<p><strong>Line mode:</strong> Place your cursor on the line you want to run, and type (in command mode):</p>
+<div class="highlight-vim notranslate"><div class="highlight"><pre><span></span><span class="p">:</span>SnipRun
+</pre></div>
+</div>
+<p><strong>Running ‘live’</strong> (aka running the current line as you’re typing is possible, but it’s very important to read the warnings about this, so I’m keeping the instructions in <a class="reference internal" href="#livemode"><span class="std std-ref">another chapter</span></a>.</p>
+<p><strong>Bloc mode:</strong> Select the code you want to execute in visual mode and type in:</p>
+<p><code class="docutils literal notranslate"><span class="pre">:'&lt;,'&gt;SnipRun</span></code></p>
+<p>(the shorthand for <code class="docutils literal notranslate"><span class="pre">:lua</span> <span class="pre">require'sniprun'.run('v')</span></code>)</p>
+<p><strong>Operator mode</strong>:</p>
+<p>Configure a mapping to <code class="docutils literal notranslate"><span class="pre">&lt;Plug&gt;SnipRunOperator</span></code> and combine it with movements to sniprun ‘text objects’. Every text-object will be rounded line-wise.</p>
+</section>
+<section id="stopping">
+<h2>Stopping<a class="headerlink" href="#stopping" title="Permalink to this heading"></a></h2>
+<p><em>ARGHHH</em> I Sniprun’d an infinite loop (or anything that takes too long, or will crash, or anything)!
+No worries, the second and last command will kill everything Sniprun ran so far:</p>
+<p><code class="docutils literal notranslate"><span class="pre">:SnipReset</span></code></p>
+<p>Alternatively, exit &amp; re-enter Neovim.</p>
+</section>
+<section id="clearing">
+<h2>Clearing<a class="headerlink" href="#clearing" title="Permalink to this heading"></a></h2>
+<p>You may want to clear virtual text, close a terminal or a floating window created by Sniprun: for this, one command to rule them all:</p>
+<p><code class="docutils literal notranslate"><span class="pre">:SnipClose</span></code></p>
+</section>
+<section id="repl-like-behavior">
+<h2>REPL-like behavior<a class="headerlink" href="#repl-like-behavior" title="Permalink to this heading"></a></h2>
+<p>Some languages, see support <a class="reference internal" href="#support-levels-and-languages"><span class="std std-ref">table</span></a>, also have some kind of REPL behavior: you can expect your successive commands to behave like in a REPL interpreter, and to have ‘memory’ of lines you have previously sent to sniprun.</p>
+<p>This is easier/cleaner to implement on interpreted languages, but <strong>compiled languages can have a REPL-like behavior too</strong> using dirty tricks, or through an intrepreter such as <a class="reference external" href="https://github.com/google/evcxr">evcxr</a>, but no compiled language has REPL behavior for now.</p>
+<p>Many interpreted languages will have this behavior enabled or disabled by default, you can change this with the
+<code class="docutils literal notranslate"><span class="pre">repl_enable</span> <span class="pre">=</span> <span class="pre">{</span> <span class="pre">'Interpreter_name',</span> <span class="pre">'Another_one'</span> <span class="pre">}</span></code> and <code class="docutils literal notranslate"><span class="pre">repl_disable</span> <span class="pre">=</span> <span class="pre">{'Disabled_interpreter'}</span></code> keys in the configuration. Relevant info is available in <code class="docutils literal notranslate"><span class="pre">:SnipInfo</span></code> / <code class="docutils literal notranslate"><span class="pre">:SnipInfo</span> <span class="pre">&lt;name&gt;</span> </code></p>
+<p>If something does not work, or if the ‘memory’ is corrupted by bad code you can clear the REPL memory with <code class="docutils literal notranslate"><span class="pre">:SnipReplMemoryClean</span></code> that is a faster and less error-prone alternative to <code class="docutils literal notranslate"><span class="pre">:SnipReset</span></code> for this use case.</p>
+</section>
+</section>
+<section id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading"></a></h1>
+<p>Sniprun is a Lua plugin, but <strong>you don’t need</strong> the usual boilerplate: if you don’t need any special configuration, you don’t need to do anything <em>at all</em>.</p>
+<p>However, if you want to change some options, you can add this snippet (the default config) to your configuration file and modify if at will (you can remove keys without issue to shorten your config, as the default values are overwritten on a key-by-key basis):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lua<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
+<span class="s">require&#39;sniprun&#39;.setup({</span>
+<span class="s">  selected_interpreters = {},     --# use those instead of the default for the current filetype</span>
+<span class="s">  repl_enable = {},               --# enable REPL-like behavior for the given interpreters</span>
+<span class="s">  repl_disable = {},              --# disable REPL-like behavior for the given interpreters</span>
+
+<span class="s">  interpreter_options = {         --# interpreter-specific options, see doc / :SnipInfo &lt;name&gt;</span>
+
+<span class="s">    --# use the interpreter name as key</span>
+<span class="s">    GFM_original = {</span>
+<span class="s">      use_on_filetypes = {&quot;markdown.pandoc&quot;}    --# the &#39;use_on_filetypes&#39; configuration key is</span>
+<span class="s">                                                --# available for every interpreter</span>
+<span class="s">    },</span>
+<span class="s">    Python3_original = {</span>
+<span class="s">        error_truncate = &quot;auto&quot;         --# Truncate runtime errors &#39;long&#39;, &#39;short&#39; or &#39;auto&#39;</span>
+<span class="s">                                        --# the hint is available for every interpreter</span>
+<span class="s">                                        --# but may not be always respected</span>
+<span class="s">    }</span>
+<span class="s">  },      </span>
+
+<span class="s">  --# you can combo different display modes as desired and with the &#39;Ok&#39; or &#39;Err&#39; suffix</span>
+<span class="s">  --# to filter only sucessful runs (or errored-out runs respectively)</span>
+<span class="s">  display = {</span>
+<span class="s">    &quot;Classic&quot;,                    --# display results in the command-line  area</span>
+<span class="s">    &quot;VirtualTextOk&quot;,              --# display ok results as virtual text (multiline is shortened)</span>
+
+<span class="s">    -- &quot;VirtualText&quot;,             --# display results as virtual text</span>
+<span class="s">    -- &quot;TempFloatingWindow&quot;,      --# display results in a floating window</span>
+<span class="s">    -- &quot;LongTempFloatingWindow&quot;,  --# same as above, but only long results. To use with VirtualText[Ok/Err]</span>
+<span class="s">    -- &quot;Terminal&quot;,                --# display results in a vertical split</span>
+<span class="s">    -- &quot;TerminalWithCode&quot;,        --# display results and code history in a vertical split</span>
+<span class="s">    -- &quot;NvimNotify&quot;,              --# display with the nvim-notify plugin</span>
+<span class="s">    -- &quot;Api&quot;                      --# return output to a programming interface</span>
+<span class="s">  },</span>
+
+<span class="s">  live_display = { &quot;VirtualTextOk&quot; }, --# display mode used in live_mode</span>
+
+<span class="s">  display_options = {</span>
+<span class="s">    terminal_scrollback = vim.o.scrollback, --# change terminal display scrollback lines</span>
+<span class="s">    terminal_line_number = false, --# whether show line number in terminal window</span>
+<span class="s">    terminal_signcolumn = false,  --# whether show signcolumn in terminal window</span>
+<span class="s">    terminal_position = &quot;vertical&quot;, --# or &quot;horizontal&quot;, to open as horizontal split instead of vertical split</span>
+<span class="s">    terminal_width = 45,          --# change the terminal display option width (if vertical)</span>
+<span class="s">    terminal_height = 20,         --# change the terminal display option height (if horizontal)</span>
+<span class="s">    notification_timeout = 5      --# timeout for nvim_notify output</span>
+<span class="s">  },</span>
+
+<span class="s">  --# You can use the same keys to customize whether a sniprun producing</span>
+<span class="s">  --# no output should display nothing or &#39;(no output)&#39;</span>
+<span class="s">  show_no_output = {</span>
+<span class="s">    &quot;Classic&quot;,</span>
+<span class="s">    &quot;TempFloatingWindow&quot;,      --# implies LongTempFloatingWindow, which has no effect on its own</span>
+<span class="s">  },</span>
+
+<span class="s">  --# customize highlight groups (setting this overrides colorscheme)</span>
+<span class="s">  --# any parameters of nvim_set_hl() can be passed as-is</span>
+<span class="s">  snipruncolors = {</span>
+<span class="s">    SniprunVirtualTextOk   =  {bg=&quot;#66eeff&quot;, fg=&quot;#000000&quot;, ctermbg=&quot;Cyan&quot;, ctermfg=&quot;Black&quot;},</span>
+<span class="s">    SniprunFloatingWinOk   =  {fg=&quot;#66eeff&quot;, ctermfg=&quot;Cyan&quot;},</span>
+<span class="s">    SniprunVirtualTextErr  =  {bg=&quot;#881515&quot;, fg=&quot;#000000&quot;, ctermbg=&quot;DarkRed&quot;, ctermfg=&quot;Black&quot;},</span>
+<span class="s">    SniprunFloatingWinErr  =  {fg=&quot;#881515&quot;, ctermfg=&quot;DarkRed&quot;, bold=true},</span>
+<span class="s">  },</span>
+
+<span class="s">  live_mode_toggle=&#39;off&#39;      --# live mode toggle, see Usage - Running for more info   </span>
+
+<span class="s">  --# miscellaneous compatibility/adjustement settings</span>
+<span class="s">  inline_messages = false,    --# boolean toggle for a one-line way to display messages</span>
+<span class="s">                              --# to workaround sniprun not being able to display anything</span>
+
+<span class="s">  borders = &#39;single&#39;,         --# display borders around floating windows</span>
+<span class="s">                              --# possible values are &#39;none&#39;, &#39;single&#39;, &#39;double&#39;, or &#39;shadow&#39;</span>
+<span class="s">})</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+<p>Example, to use the interpreter ‘Python3_jupyter’ whenever possible [instead of the ‘Python3_original’ default],
+<code class="docutils literal notranslate"><span class="pre">lua</span> <span class="pre">require'sniprun'.setup({selected_interpreters</span> <span class="pre">=</span> <span class="pre">{'Python3_jupyter'}})</span></code></p>
+<p><strong>NOTE</strong>: Some interpreters have specific options and dependencies, such as what version / compiler to use: you cand find more about that with <code class="docutils literal notranslate"><span class="pre">:SnipInfo</span> <span class="pre">&lt;interpreter_name&gt;</span></code>. The <code class="docutils literal notranslate"><span class="pre">use_on_filetypes</span></code> key is available for every interpreter (as an <code class="docutils literal notranslate"><span class="pre">interpreter_option</span></code>) and allow sniprun to understand that your particular/custom filetypes are compatible with an interpreter.</p>
+<p>All of sniprun functionalities:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Shorthand</p></th>
+<th class="head"><p>Lua backend</p></th>
+<th class="head"><p>&lt;Plug&gt; mapping</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>:SnipRun</p></td>
+<td><p>lua require’sniprun’.run()</p></td>
+<td><p>&lt;Plug&gt;SnipRun</p></td>
+</tr>
+<tr class="row-odd"><td><p>(normal node)</p></td>
+<td><p>lua require’sniprun’.run(‘n’)</p></td>
+<td><p>&lt;Plug&gt;SnipRunOperator</p></td>
+</tr>
+<tr class="row-even"><td><p>:’&lt;,’&gt;SnipRun (visual mode)</p></td>
+<td><p>lua require’sniprun’.run(‘v’)</p></td>
+<td><p>&lt;Plug&gt;SnipRun</p></td>
+</tr>
+<tr class="row-odd"><td><p>:SnipInfo</p></td>
+<td><p>lua require’sniprun’.info()</p></td>
+<td><p>&lt;Plug&gt;SnipInfo</p></td>
+</tr>
+<tr class="row-even"><td><p>:SnipReset</p></td>
+<td><p>lua require’sniprun’.reset()</p></td>
+<td><p>&lt;Plug&gt;SnipReset</p></td>
+</tr>
+<tr class="row-odd"><td><p>:SnipReplMemoryClean</p></td>
+<td><p>lua require’sniprun’.clear_repl()</p></td>
+<td><p>&lt;Plug&gt;SnipReplMemoryClean</p></td>
+</tr>
+<tr class="row-even"><td><p>:SnipClose</p></td>
+<td><p>lua require’sniprun.display’.close_all()</p></td>
+<td><p>&lt;Plug&gt;SnipClose</p></td>
+</tr>
+<tr class="row-odd"><td><p>:SnipLive</p></td>
+<td><p>lua require’sniprun.live_mode’.toggle()</p></td>
+<td><p>&lt;Plug&gt;SnipLive</p></td>
+</tr>
+<tr class="row-even"><td><p>✖</p></td>
+<td><p>lua require’sniprun.api’.run_range(..)</p></td>
+<td><p>✖</p></td>
+</tr>
+<tr class="row-odd"><td><p>✖</p></td>
+<td><p>lua require’sniprun.api’.run_string(..)</p></td>
+<td><p>✖</p></td>
+</tr>
+</tbody>
+</table>
+<section id="mappings-recommandations">
+<span id="mapping"></span><h2>Mappings &amp; recommandations<a class="headerlink" href="#mappings-recommandations" title="Permalink to this heading"></a></h2>
+<ul>
+<li><p>Map the run command to a simple command such as <code class="docutils literal notranslate"><span class="pre">&lt;leader&gt;ff</span></code> (or just <code class="docutils literal notranslate"><span class="pre">f</span></code> in visual mode)</p></li>
+<li><p>Check <code class="docutils literal notranslate"><span class="pre">SnipInfo</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">:SnipInfo</span> <span class="pre">&lt;interpreter_name&gt;</span></code> to learn any quirk or tips about the language you’re interested in</p></li>
+<li><p>The operator mapping allows you to combine movements with sniprun: with the suggested mapping, “&lt;leader&gt;f + j” will run sniprun on the current line + the line below.</p>
+<p>(if you don’t know what is the leader key you can find a short explanation <a class="reference external" href="https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/">here</a>).</p>
+</li>
+</ul>
+<details open><summary> recommended mappings in lua</summary>
+<p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vim</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">nvim_set_keymap</span><span class="p">(</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Plug&gt;SnipRun&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">silent</span> <span class="o">=</span> <span class="n">true</span><span class="p">})</span>
+<span class="n">vim</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">nvim_set_keymap</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;leader&gt;f&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Plug&gt;SnipRunOperator&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">silent</span> <span class="o">=</span> <span class="n">true</span><span class="p">})</span>
+<span class="n">vim</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">nvim_set_keymap</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;leader&gt;ff&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Plug&gt;SnipRun&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">silent</span> <span class="o">=</span> <span class="n">true</span><span class="p">})</span>
+</pre></div>
+</div>
+</details>
+</p>
+<details><summary> recommended mappings in vimscript</summary>
+<p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nmap</span> <span class="o">&lt;</span><span class="n">leader</span><span class="o">&gt;</span><span class="n">ff</span> <span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="n">SnipRun</span>
+<span class="n">nmap</span> <span class="o">&lt;</span><span class="n">leader</span><span class="o">&gt;</span><span class="n">f</span> <span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="n">SnipRunOperator</span>
+<span class="n">vmap</span> <span class="n">f</span> <span class="o">&lt;</span><span class="n">Plug</span><span class="o">&gt;</span><span class="n">SnipRun</span>
+</pre></div>
+</div>
+</details>
+</p>
+<ul class="simple">
+<li><p>For interpreted languages with simple output, <code class="docutils literal notranslate"><span class="pre">:%SnipRun</span></code> (or a shortcut, wrapping it with <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">b:caret=winsaveview()</span></code> and <code class="docutils literal notranslate"><span class="pre">call</span> <span class="pre">winrestview(b:caret)</span></code> in order to keep the cursor at the current position) may be a more convenient way to run your entire file. Example mapping <code class="docutils literal notranslate"><span class="pre">:%SnipRun</span></code> to F5: <code class="docutils literal notranslate"><span class="pre">vim.keymap.set('n',</span> <span class="pre">'&lt;F5&gt;',</span> <span class="pre">&quot;:let</span> <span class="pre">b:caret=winsaveview()</span> <span class="pre">&lt;CR&gt;</span> <span class="pre">|</span> <span class="pre">:%SnipRun</span> <span class="pre">&lt;CR&gt;|</span> <span class="pre">:call</span> <span class="pre">winrestview(b:caret)</span> <span class="pre">&lt;CR&gt;&quot;,</span> <span class="pre">{})</span></code>, with my apologies for poor vimscript-fu.</p></li>
+</ul>
+<p>When running the whole file, SnipRun supports taking arguments on the command line: <code class="docutils literal notranslate"><span class="pre">:%SnipRun</span> <span class="pre">5</span> <span class="pre">&quot;yay&quot;</span></code> frictionlessly for interpreted languages, and compiled languages with entry point detection implemented (most of them).</p>
+<p>While both shorthands and &lt;Plug&gt; are here to stay, <strong>it’s better practice to use the <code class="docutils literal notranslate"><span class="pre">&lt;Plug&gt;</span></code> style ones in your mappings</strong> or if using from another plugin.</p>
+<p>Sniprun synergises exceptionnally well with plugins that help you creating print/debug statements, such as <a class="reference external" href="https://github.com/meain/vim-printer">vim-printer</a>.</p>
+</section>
+</section>
+<section id="support-levels-and-languages">
+<span id="id1"></span><h1>Support levels and languages<a class="headerlink" href="#support-levels-and-languages" title="Permalink to this heading"></a></h1>
+<p>As of writing, languages can be supported up to different extents:</p>
+<ul class="simple">
+<li><p><strong>Unsupported</strong>/<strong>Untested</strong> : <a class="reference external" href="https://michaelb.github.io/sniprun/sources/Generic.html#community-examples-for-non-officially-supported_languages">Community configs</a> for the generic interpreter may support any language up to bloc level</p></li>
+<li><p><strong>Line</strong> : Code contained in a single line works, for example: <code class="docutils literal notranslate"><span class="pre">print([x**2</span> <span class="pre">for</span> <span class="pre">x</span> <span class="pre">in</span> <span class="pre">range(10)])</span></code> . Won’t work if you use a variable defined elsewhere.</p></li>
+<li><p><strong>Bloc</strong> : You can select any piece of code that is semantically correct (minus the eventual entry point) on its own (independently of indentation) in visual mode, and run it. A sniprun-able example, in Rust:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>let alphabet = String::from\_utf8(
+    (b&#39;a&#39;..=b&#39;z&#39;).chain(b&#39;A&#39;..=b&#39;Z&#39;).collect()).unwrap();
+
+println!(&quot;-&gt; {}&quot;, alphabet);
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Import</strong> : Support external imports, so you can test blocs of code that also depends on that external library import.</p></li>
+</ul>
+<ul>
+<li><span style="color:grey"><b>File</b> : Sniprun will recursively find the missing variable and function definitions to run your line of code(you don't have to select a bloc anymore). (no interpreter supports this yet)</span>
+<li> <span style="color:grey"><b>Project</b> : Sniprun will detect the root of your project, and get the necessary code from files in your project, including relative imports. Basically everything you sniprun will 'work'. (no interpreter supports this yet) 
+</ul>
+</span>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Language</p></th>
+<th class="head"><p>Support level</p></th>
+<th class="head"><p>REPL Capabilities</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Ada</p></td>
+<td><p>Line</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bash/Shell</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes*</p></td>
+</tr>
+<tr class="row-even"><td><p>C</p></td>
+<td><p>Import</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>C++</p></td>
+<td><p>Import</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>C#</p></td>
+<td><p>Bloc</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Clojure</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes **</p></td>
+</tr>
+<tr class="row-even"><td><p>CoffeeScript</p></td>
+<td><p>Bloc</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>D</p></td>
+<td><p>Bloc</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Elixir</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes **</p></td>
+</tr>
+<tr class="row-odd"><td><p>F#</p></td>
+<td><p>Bloc</p></td>
+<td><p>No, but <em>could</em> **</p></td>
+</tr>
+<tr class="row-even"><td><p>Go</p></td>
+<td><p>Import</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Haskell</p></td>
+<td><p>Line</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Http</p></td>
+<td><p>Bloc</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Java</p></td>
+<td><p>Bloc</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>JavaScript</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes**   (Deno)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Julia</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes**</p></td>
+</tr>
+<tr class="row-even"><td><p>Lua</p></td>
+<td><p>Bloc</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Lua-nvim</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes**</p></td>
+</tr>
+<tr class="row-even"><td><p>Markdown</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes***</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mathematica</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes**</p></td>
+</tr>
+<tr class="row-even"><td><p>Neorg</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes***</p></td>
+</tr>
+<tr class="row-odd"><td><p>OCaml</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes**</p></td>
+</tr>
+<tr class="row-even"><td><p>OrgMode</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes***</p></td>
+</tr>
+<tr class="row-odd"><td><p>Perl/Perl6</p></td>
+<td><p>Line</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Plantuml</p></td>
+<td><p>Bloc</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Python3</p></td>
+<td><p>Import</p></td>
+<td><p>Yes**</p></td>
+</tr>
+<tr class="row-even"><td><p>R</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes**</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ruby</p></td>
+<td><p>Bloc</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Rust</p></td>
+<td><p>Bloc</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>SageMath</p></td>
+<td><p>Import</p></td>
+<td><p>Yes**</p></td>
+</tr>
+<tr class="row-even"><td><p>Scala</p></td>
+<td><p>Bloc</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>SQL</p></td>
+<td><p>Bloc</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>TypeScript</p></td>
+<td><p>Bloc</p></td>
+<td><p>Yes**   (Deno)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Your language is not officially supported ? The
+<a class="reference external" href="https://michaelb.github.io/sniprun/sources/Generic.html#community-examples-for-non-officially-supported-languages">Generic interpreter</a>
+can probably work with it !</p>
+<p>Want (official) support for your language? Submit an
+<a class="reference external" href="https://github.com/michaelb/sniprun/issues/new?assignees=&amp;amp;labels=new-langage-support&amp;amp;template=support-for--language-.md&amp;amp;title=">issue</a>,
+or even better, contribute (see CONTRIBUTING.md), it’s easy!</p>
+<p>* (fake) REPL-like functionality, with potential unwanted side effects</p>
+<p>** True REPL under the hood</p>
+<p>*** REPL-like functionality if language in code block supports it</p>
+</section>
+<section id="live-mode">
+<span id="livemode"></span><h1>Live mode<a class="headerlink" href="#live-mode" title="Permalink to this heading"></a></h1>
+<p>The live mode hooks the SnipRun command to the TextChanged event, meaning that at every change to make to the buffer, the current line will be sent to sniprun for evaluation. This can mean a lot of times, especially if you type fast.</p>
+<p>The result is a virtual text, displaying at the end of the current line that print the result (stdout) of the line. Nothing is displayed when the line is incomplete / incorrect, a bit like <a class="reference external" href="https://github.com/metakirby5/codi.vim">codi.vim</a>.</p>
+<section id="warnings">
+<h2>Warnings<a class="headerlink" href="#warnings" title="Permalink to this heading"></a></h2>
+<p>The live mode <strong>will execute code you didn’t think really about</strong> (and by that I mean even less than usual).</p>
+<p>Thus:</p>
+<ul class="simple">
+<li><p>Your code will get executed <strong>lots</strong> of times; check that your CPU can keep up. Even a ‘slow’ 30wpm typing can trigger constant program recompiles.</p></li>
+<li><p>Sniprun will try to execute even incomplete lines, example: you hadn’t finished typing that <code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">/path/to/arghhh</span></code> ? Sniprun saw you submitting <code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">/path</span></code> and removed the parent directory. For these reasons, I strongly suggest to:</p>
+<ul>
+<li><p>never run bash/shell with live mode</p></li>
+<li><p>disable the live mode whenever your code modifies files or invoke system commands.</p></li>
+</ul>
+</li>
+</ul>
+<p>If you’re running a REPL-capable interpreter, while it’ll probably work, mind that:</p>
+<ul class="simple">
+<li><p>the REPL will have to gulp a lot of incomplete code without crashing and stuff</p></li>
+<li><p>typing b = b  + 1 + 1 will increment b by more than 2 !! (since an intermediate b=b+1 is valid and thus changes b before b=b+1+1)</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>Configuration<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>You can set different display modes for live mode, with the config key
+```
+live_display = { &quot;VirtualText&quot;, &quot;TerminalOk&quot;} --..or anything you want
+```
+</pre></div>
+</div>
+</section>
+<section id="enable-and-usage">
+<h2>Enable and usage<a class="headerlink" href="#enable-and-usage" title="Permalink to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">live_mode_toggle='enable'</span></code> in the config, (set to either ‘enable’ or ‘off’ - the default -, the ‘uncoherency’ is only to force people to come here and read the warnings in case some smart kid want to skip and just set it to ‘on’)</p>
+<p>and then use the <code class="docutils literal notranslate"><span class="pre">:SnipLive</span></code> command and start coding.</p>
+</section>
+</section>
+<section id="api">
+<h1>API<a class="headerlink" href="#api" title="Permalink to this heading"></a></h1>
+<p>You can use an API to communicate programmatically from sniprun, even though some goodies (combining motions with operators) may get lost in the process, and some others effects (fetching context and imports from the current buffer) may be undesirable.</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="kd">local</span> <span class="n">sa</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="s1">&#39;sniprun.api&#39;</span><span class="p">)</span>
+
+<span class="n">sa</span><span class="p">.</span><span class="n">run_range</span><span class="p">(</span><span class="n">r_start</span><span class="p">,</span> <span class="n">r_end</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">filetype</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">config</span><span class="o">&gt;</span><span class="p">)</span>
+<span class="n">sa</span><span class="p">.</span><span class="n">run_string</span><span class="p">(</span><span class="n">codestring</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">filetype</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">config</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">run_range</span></code> is a function that run the specified range of code from the current buffer and takes the following arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">r_start</span></code>, <code class="docutils literal notranslate"><span class="pre">r_end</span></code> (integers): (inclusive) line numbers of the range to run</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filetype</span></code> (string, optional): run the range as this language (<code class="docutils literal notranslate"><span class="pre">:set</span> <span class="pre">ft?</span></code> gives the filetype of the current buffer, which is used as the default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config</span></code> (dict, optional): override the default user config with this. (It may be interesting to provide only the <a class="reference internal" href="display_modes.html#api-display"><span class="std std-ref">display type ‘Api’</span></a> to retrieve the results without interference on the user’s UI)</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">run_string</span></code> runs directly the provided string as code (but has still context from the current buffer etc…):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">codestring</span></code> (string): the code to run</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filetype</span></code> (string, optional): run the codestring as ‘this language’</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config</span></code> (dict, optional): overrides the default user config</p></li>
+</ul>
+</section>
+<section id="known-limitations">
+<h1>Known limitations<a class="headerlink" href="#known-limitations" title="Permalink to this heading"></a></h1>
+<p>Due to its nature, Sniprun may have trouble with programs that :</p>
+<ul class="simple">
+<li><p>Mess with standart output / stderr</p></li>
+<li><p>Need to read from stdin</p></li>
+<li><p>Print incorrect UTF8 characters, or just too many lines</p></li>
+<li><p>Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. <strong>Relative paths may cause issues</strong>, as the current working directory for sniprun will be somewhere in ~/.cache/sniprun, and relative imports may miss.</p></li>
+</ul>
+</section>
+<section id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this heading"></a></h1>
+<p>Begin by updating the plugin and running <code class="docutils literal notranslate"><span class="pre">:SnipReset</span></code> and then <code class="docutils literal notranslate"><span class="pre">:checkhealth</span> <span class="pre">sniprun</span></code></p>
+<ul class="simple">
+<li><p><strong>Silent fail</strong>: the sniprun binary may be incompatible with your distro/OS/arch. Use <code class="docutils literal notranslate"><span class="pre">sh</span> <span class="pre">./install.sh</span> <span class="pre">1</span></code> as post-install to compile locally.</p></li>
+<li><p>Any other kind of bug: a log file is produced in $XDG_CACHE_DIR/sniprun (~/.cache/sniprun on Linux or ~/Library/Caches/sniprun on MacOS), usually with all kinds of information of what happened during your last command.</p></li>
+</ul>
+</section>
+<section id="contribute">
+<h1>Contribute<a class="headerlink" href="#contribute" title="Permalink to this heading"></a></h1>
+<p>It’s super easy: see the exhaustive (but simple I hope)(see CONTRIBUTING.md for starters).
+I actually thought out the project structure so you only have to worry about one file (yours), when creating an interpreter. All you have to do is copy the example.rs interpreter and modify some parts to suit the language you wish to support.</p>
+</section>
+<section id="related-projects">
+<h1>Related projects<a class="headerlink" href="#related-projects" title="Permalink to this heading"></a></h1>
+<p>This: <a class="reference external" href="https://github.com/formulahendry/vscode-code-runner">vscode-code-runner</a> but sniprun is an attempt to make the same kind of plugin for Neovim, and more feature-complete. Actually, it already is (more complete, more extendable).</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/thinca/vim-quickrun">quickrun</a> derivatives, but they are all different in the way they always all execute your entire file. The limitation to a single bash/vimscript command to compile and execute looks suboptimal to me.</p></li>
+<li><p><a class="reference external" href="https://gitlab.com/HiPhish/repl.nvim">replvim</a> project, <a class="reference external" href="https://github.com/hanschen/vim-ipython-cell">vim-ipython-cell</a> <a class="reference external" href="https://github.com/metakirby5/codi.vim">codi</a> as well as <a class="reference external" href="https://github.com/kassio/neoterm">neoterm</a> and <a class="reference external" href="https://github.com/jpalardy/vim-slime">vim-slime</a> can also be used in such a way, though they are only working with languages that have a REPL.</p></li>
+<li><p><a class="reference external" href="https://github.com/jalvesaq/vimcmdline">vimcmdline</a> is a close contender and so is / will be <a class="reference external" href="https://github.com/Olical/conjure">conjure</a>, and more recently <a class="reference external" href="https://github.com/jbyuki/dash.nvim">dash</a> but they do things differently enough I made sniprun instead.</p></li>
+</ul>
+<p>And many more projects, somewhat similar, but never quite, that I didn’t like, notice, and I’m apologizing for not including yours if you want so but it’s very long already.</p>
+<p><strong>Why should you use sniprun instead of these alternatives?</strong></p>
+<ul class="simple">
+<li><p><strong>All-language support</strong>. Sniprun can work with virtually any language, including compiled ones. If the language is not supported yet, anyone can create a sniprun interpreter for it! (or more simply, configure the generic interpreter)</p></li>
+<li><p><strong>Better output/display</strong>. Sniprun doesn’t use precious screen space (like <a class="reference external" href="https://github.com/metakirby5/codi.vim">codi</a> or <a class="reference external" href="https://github.com/jpalardy/vim-slime">vim-slime</a>) by default (but it can).</p></li>
+<li><p><strong>Fast, extendable and maintainable</strong>: this is not a 2k-lines vim script, nor an inherently limited one-liner. It’s a Rust project designed to be as clear and “contribuable” as possible.</p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to Sniprun’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="display_modes.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Michael B.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
