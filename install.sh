@@ -5,7 +5,7 @@ local_version="v$(grep ^version Cargo.toml | cut -d "\"" -f 2)"
 
 force_build=$1
 current_branch=$(git rev-parse --abbrev-ref HEAD)
-if [ "$current_branch" == "dev" ]; then
+if [ "$current_branch" = "dev" ]; then
   force_build=1
 fi
 
