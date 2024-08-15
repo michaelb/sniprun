@@ -335,8 +335,9 @@ All of sniprun functionalities:
 (mapping)=
 ## Mappings & recommandations
 
-- Map the run command to a simple command such as `<leader>ff` (or just `f` in visual mode)
-- Check `SnipInfo` & `:SnipInfo <interpreter_name>` to learn any quirk or tips about the language you're interested in
+- Map the run command to a simple command such as `<leader>r` 
+- Check `SnipInfo` & `:SnipInfo <interpreter_name>` to learn any quirk or
+  tips about the language you're interested in (completion is available)
 - The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "\<leader\>f + j" will run sniprun on the current line + the line below.
 
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
@@ -345,9 +346,9 @@ All of sniprun functionalities:
 <p>
 
 ```
-vim.api.nvim_set_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
+vim.api.nvim_set_keymap('v', '<leader>r', '<Plug>SnipRun', {silent = true})
+vim.api.nvim_set_keymap('n', '<leader>r', '<Plug>SnipRun', {silent = true})
 vim.api.nvim_set_keymap('n', '<leader>f', '<Plug>SnipRunOperator', {silent = true})
-vim.api.nvim_set_keymap('n', '<leader>ff', '<Plug>SnipRun', {silent = true})
 ```
 </details>
 </p>
