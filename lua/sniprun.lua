@@ -40,7 +40,8 @@ M.config_values = {
     terminal_position = "vertical", -- or "horizontal"
     terminal_width = 45,          -- change the terminal display option width (if vertical)
     terminal_height = 20,         -- change the terminal display option heigth (if horizontal)
-    notification_timeout = 5      -- timeout for nvim_notify output
+    notification_timeout = 5,        -- timeout for nvim_notify output
+    notification_render = "default"  -- nvim_notify style
   },
 
   show_no_output = {
