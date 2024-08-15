@@ -1,3 +1,6 @@
+## v1.3.16
+- Fix nvim-notify timeout and add render style option
+
 ## v1.3.15
 - Add PlantUML support (ascii output)
 - Basic user input support
