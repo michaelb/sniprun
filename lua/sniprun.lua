@@ -49,6 +49,7 @@ M.config_values = {
         "TempFloatingWindow", -- implies LongTempFloatingWindow, which is not a correct key here
     },
 
+    ansi_escape = true,
     inline_messages = 0,
     borders = 'single',
 
@@ -68,7 +69,6 @@ M.config_values = {
     neovim_pid = 0,
     binary_path = binary_path,
     sniprun_path = sniprun_path,
-
 }
 
 

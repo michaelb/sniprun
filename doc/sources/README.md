@@ -274,8 +274,8 @@ require'sniprun'.setup({
 
   display_options = {
     terminal_scrollback = vim.o.scrollback, --# change terminal display scrollback lines
-    terminal_line_number = false, --# whether show line number in terminal window
-    terminal_signcolumn = false,  --# whether show signcolumn in terminal window
+    terminal_line_number = false,   --# whether show line number in terminal window
+    terminal_signcolumn = false,    --# whether show signcolumn in terminal window
     terminal_position = "vertical", --# or "horizontal", to open as horizontal split instead of vertical split
     terminal_width = 45,          --# change the terminal display option width (if vertical)
     terminal_height = 20,         --# change the terminal display option height (if horizontal)
@@ -286,7 +286,7 @@ require'sniprun'.setup({
   --# no output should display nothing or '(no output)'
   show_no_output = {
     "Classic",
-    "TempFloatingWindow",      --# implies LongTempFloatingWindow, which has no effect on its own
+    "TempFloatingWindow",  --# implies LongTempFloatingWindow, which has no effect on its own
   },
 
   --# customize highlight groups (setting this overrides colorscheme)
@@ -301,7 +301,8 @@ require'sniprun'.setup({
   live_mode_toggle='off'      --# live mode toggle, see Usage - Running for more info   
 
   --# miscellaneous compatibility/adjustement settings
-  inline_messages = false,    --# boolean toggle for a one-line way to display messages
+  ansi_escape = true,         --# Remove ANSI escapes (usually color) from outputs
+  inline_messages = false,    --# boolean toggle for a one-line way to display output
                               --# to workaround sniprun not being able to display anything
 
   borders = 'single',         --# display borders around floating windows
