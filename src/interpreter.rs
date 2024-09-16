@@ -280,18 +280,6 @@ impl<T: Interpreter> InterpreterUtils for T {
 
     /// get an interpreter option
     fn get_interpreter_option(data: &DataHolder, option: &str) -> Option<neovim_lib::Value> {
-        fn index_from_name(
-            name: &str,
-            config: &[(neovim_lib::Value, neovim_lib::Value)],
-        ) -> Option<usize> {
-            for (i, kv) in config.iter().enumerate() {
-                if name == kv.0.as_str().unwrap_or("") {
-                    return Some(i);
-                }
-            }
-            // info!("key '{}' not found in interpreter option", name);
-            None
-        }
         // this is the ugliness required to fetch something from the interpreter options
         if let Some(config) = &data.interpreter_options {
             if let Some(ar) = config.as_map() {
@@ -382,4 +370,15 @@ pub trait ReplLikeInterpreter {
             "REPL-like behavior is not implemented for this interpreter",
         )))
     }
+}
+pub fn index_from_name(
+    name: &str,
+    config: &[(neovim_lib::Value, neovim_lib::Value)],
+) -> Option<usize> {
+    for (i, kv) in config.iter().enumerate() {
+        if name == kv.0.as_str().unwrap_or("") {
+            return Some(i);
+        }
+    }
+    None
 }

@@ -274,8 +274,8 @@ require'sniprun'.setup({
 
   display_options = {
     terminal_scrollback = vim.o.scrollback, --# change terminal display scrollback lines
-    terminal_line_number = false, --# whether show line number in terminal window
-    terminal_signcolumn = false,  --# whether show signcolumn in terminal window
+    terminal_line_number = false,   --# whether show line number in terminal window
+    terminal_signcolumn = false,    --# whether show signcolumn in terminal window
     terminal_position = "vertical", --# or "horizontal", to open as horizontal split instead of vertical split
     terminal_width = 45,          --# change the terminal display option width (if vertical)
     terminal_height = 20,         --# change the terminal display option height (if horizontal)
@@ -286,7 +286,7 @@ require'sniprun'.setup({
   --# no output should display nothing or '(no output)'
   show_no_output = {
     "Classic",
-    "TempFloatingWindow",      --# implies LongTempFloatingWindow, which has no effect on its own
+    "TempFloatingWindow",  --# implies LongTempFloatingWindow, which has no effect on its own
   },
 
   --# customize highlight groups (setting this overrides colorscheme)
@@ -301,7 +301,8 @@ require'sniprun'.setup({
   live_mode_toggle='off'      --# live mode toggle, see Usage - Running for more info   
 
   --# miscellaneous compatibility/adjustement settings
-  inline_messages = false,    --# boolean toggle for a one-line way to display messages
+  ansi_escape = true,         --# Remove ANSI escapes (usually color) from outputs
+  inline_messages = false,    --# boolean toggle for a one-line way to display output
                               --# to workaround sniprun not being able to display anything
 
   borders = 'single',         --# display borders around floating windows
@@ -335,8 +336,9 @@ All of sniprun functionalities:
 (mapping)=
 ## Mappings & recommandations
 
-- Map the run command to a simple command such as `<leader>ff` (or just `f` in visual mode)
-- Check `SnipInfo` & `:SnipInfo <interpreter_name>` to learn any quirk or tips about the language you're interested in
+- Map the run command to a simple command such as `<leader>r` 
+- Check `SnipInfo` & `:SnipInfo <interpreter_name>` to learn any quirk or
+  tips about the language you're interested in (completion is available)
 - The operator mapping allows you to combine movements with sniprun: with the suggested mapping, "\<leader\>f + j" will run sniprun on the current line + the line below.
 
   (if you don't know what is the leader key you can find a short explanation [here](https://vim.works/2019/03/03/vims-leader-key-wtf-is-it/)).
@@ -345,9 +347,9 @@ All of sniprun functionalities:
 <p>
 
 ```
-vim.api.nvim_set_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
+vim.api.nvim_set_keymap('v', '<leader>r', '<Plug>SnipRun', {silent = true})
+vim.api.nvim_set_keymap('n', '<leader>r', '<Plug>SnipRun', {silent = true})
 vim.api.nvim_set_keymap('n', '<leader>f', '<Plug>SnipRunOperator', {silent = true})
-vim.api.nvim_set_keymap('n', '<leader>ff', '<Plug>SnipRun', {silent = true})
 ```
 </details>
 </p>

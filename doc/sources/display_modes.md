@@ -165,7 +165,8 @@ lua << EOF
 require'sniprun'.setup({
     display = {"NvimNotify"},
     display_options = {
-        notification_timeout = 5   -- in seconds
+        notification_timeout = 5,        -- in seconds
+        notification_render = "default"  -- nvim-notify render style
     },
 })
 EOF

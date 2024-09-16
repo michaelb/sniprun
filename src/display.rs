@@ -1,4 +1,5 @@
 use crate::error::SniprunError;
+use crate::interpreter::index_from_name;
 use crate::{DataHolder, ReturnMessageType};
 use log::info;
 use neovim_lib::{Neovim, NeovimApi};
@@ -303,7 +304,8 @@ pub fn display_terminal_with_code(
                     .lines()
                     .fold("".to_string(), |cur_bloc, line_in_bloc| {
                         cur_bloc + "> " + line_in_bloc + "\n"
-                    })
+                    }),
+                ansi_option(data)
             )
             .replace('\n', "\\\n"),
             no_output_wrap(result, data, &DisplayType::TerminalWithCode(filter))
@@ -317,7 +319,8 @@ pub fn display_terminal_with_code(
                     .lines()
                     .fold("".to_string(), |cur_bloc, line_in_bloc| {
                         cur_bloc + "> " + line_in_bloc + "\n"
-                    })
+                    }),
+                ansi_option(data)
             )
             .replace('\n', "\\\n"),
             no_output_wrap(
@@ -462,7 +465,7 @@ fn shorten_err(message: &str) -> String {
     marker
 }
 
-fn cleanup_and_escape(message: &str) -> String {
+fn cleanup_and_escape(message: &str, remove_ansi: bool) -> String {
     let mut escaped = String::with_capacity(message.len());
     for c in message.chars() {
         match c {
@@ -475,6 +478,12 @@ fn cleanup_and_escape(message: &str) -> String {
         }
     }
 
+    let escaped = if remove_ansi {
+        String::from_utf8(strip_ansi_escapes::strip(escaped.into_bytes())).unwrap()
+    } else {
+        escaped
+    };
+
     //remove trailing /starting newlines
     let answer_str = escaped
         .trim_start_matches('\n')
@@ -484,7 +493,7 @@ fn cleanup_and_escape(message: &str) -> String {
 }
 
 fn no_output_wrap(message: &str, data: &DataHolder, current_type: &DisplayType) -> String {
-    let message_clean = cleanup_and_escape(message);
+    let message_clean = cleanup_and_escape(message, ansi_option(data));
     for dt in data.display_no_output.iter() {
         if dt == current_type && message_clean.is_empty() {
             info!("Empty message converted to 'no output')");
@@ -493,4 +502,17 @@ fn no_output_wrap(message: &str, data: &DataHolder, current_type: &DisplayType) 
     }
     info!("message '{}' cleaned out", message_clean);
     message_clean
+}
+
+fn ansi_option(data: &DataHolder) -> bool {
+    if let Some(config) = &data.interpreter_options {
+        if let Some(ar) = config.as_map() {
+            if let Some(i) = index_from_name("ansi_escape", ar) {
+                if let Some(ansi_escape) = ar[i].1.as_bool() {
+                    return ansi_escape;
+                }
+            }
+        }
+    }
+    true
 }

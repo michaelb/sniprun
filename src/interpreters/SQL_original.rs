@@ -110,7 +110,7 @@ impl Interpreter for SQL_original {
             .arg("-w")
             .arg("--file")
             .arg(&self.main_file_path)
-            .arg(&self.read_previous_code().replace('\n', "")) // contains database address
+            .arg(self.read_previous_code().replace('\n', "")) // contains database address
             .current_dir(&self.data.projectroot)
             .output()
             .expect("Unable to start process");
