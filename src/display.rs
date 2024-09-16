@@ -479,7 +479,7 @@ fn cleanup_and_escape(message: &str, remove_ansi: bool) -> String {
     }
 
     let escaped = if remove_ansi {
-        String::from_utf8(strip_ansi_escapes::strip(&escaped.into_bytes())).unwrap()
+        String::from_utf8(strip_ansi_escapes::strip(escaped.into_bytes())).unwrap()
     } else {
         escaped
     };
