@@ -1,3 +1,6 @@
+## v1.3.17
+- better fallback messages
+
 ## v1.3.16
 - Fix nvim-notify timeout and add render style option
 - Filter ANSI escape code by default
