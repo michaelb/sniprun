@@ -16,7 +16,7 @@ Otherwise, carry on:
 
 ### How hard it is?
 
-Lemon squeezy easy. A developper midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 30min ( 13min is my best time, for C\_original to 1h30. You can then submit your proposed changes as a PR to the master branch.
+Lemon squeezy easy. A developer midly familiar with Rust and the language to add support for can write a working bloc-support interpreter in 30min ( 13min is my best time, for C\_original to 1h30. You can then submit your proposed changes as a PR to the master branch.
 
 Higher support levels gets exponentially harder (depends on the languages though), so you should start out with Bloc. You don't need to mind to support levels, actually.
 
@@ -41,7 +41,7 @@ I just finished some changes, how do I test my code quickly?
 
 Is _my_ code running?
 
--> Assert that the file type detected by Neovim is contained in your list of supported file types. If there is already a implementation for your filetype/language, set (temporarly) your max support level to "Selected", or run something like `:lua require'sniprun'.setup({selected_interpreters = {'<name>'}})` before `:SnipRun` . `SnipInfo` will then tell you what interpreter will be used on an opened file.
+-> Assert that the file type detected by Neovim is contained in your list of supported file types. If there is already a implementation for your filetype/language, set (temporarily) your max support level to "Selected", or run something like `:lua require'sniprun'.setup({selected_interpreters = {'<name>'}})` before `:SnipRun` . `SnipInfo` will then tell you what interpreter will be used on an opened file.
 
 ---
 
@@ -102,7 +102,7 @@ Run with `cargo test -- --test-threads=1` or use the #[serial] attribute which y
 ---
 My tests fail in the CI pipeline
 
--> The CI has limited capabilities, especially about the REPL functionnality. Tag your non-working-in-CI tests with '#[cfg\_attr(feature = "ignore\_in\_ci", ignore)]'
+-> The CI has limited capabilities, especially about the REPL functionality. Tag your non-working-in-CI tests with '#[cfg\_attr(feature = "ignore\_in\_ci", ignore)]'
 
 ---
 I think I've done a good job, but am I ready to submit a PR?
@@ -117,7 +117,7 @@ Python3\_fifo has a pipe (UNIX fifo) - based ReplLikeInterpreter implementation,
 
 - Support Levels? Those exists to document what the interpreter supports to the end user. They are also used for higher (file, project and system) levels as if an interpreter detects it does not need a support level that high, it can set down its own level and hopefully be faster [ since it won't need to open all files etc...]. **You don't have to worry about this too much if you are just getting started**.
 
-- Errors? When possible and sensible, functions like fetch(), build() and execute() should return either an Ok(\_) variant or a Err(SniprunError). Choose the error that most closely describe whatever migth cause your function to fail, and populate it with a String message if relevant.
+- Errors? When possible and sensible, functions like fetch(), build() and execute() should return either an Ok(\_) variant or a Err(SniprunError). Choose the error that most closely describe whatever might cause your function to fail, and populate it with a String message if relevant.
 
 * The imposed names? To simplify contribution (you only have to write a interpreter), the main program fetch new files and run functions of your interpreter. This is only easily possible if you types names match your file name, as I can get those easily but i would have to read them, guess what struct is the correct one should you have many....no, I rather do the `use file_name::file_name;` trick that just works. Also helps future contributors/users.
 
