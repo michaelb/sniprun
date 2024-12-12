@@ -8,9 +8,30 @@ on:
   workflow_dispatch:
 
 jobs:
+  ci-safety:
+    name: ci-safety
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v4
+      - name: run zizmor ci analysis tool
+        run: uvx zizmor --format sarif . > results.sarif 
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+          category: zizmor
+
   build:
     name : build-latest-stable
     runs-on: ubuntu-20.04
+    # version used in release process to guarantee old-GLIBC compatibility
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -36,7 +57,7 @@ jobs:
 
   buildnightly:
     name: build-nightly
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -76,9 +97,6 @@ jobs:
     - name: integration tests
       run: cargo test --release --features ignore_in_ci --test integration
 
-
-
-
   install:
     name: install (download)
     runs-on: ubuntu-20.04
@@ -88,5 +106,3 @@ jobs:
         persist-credentials: false
     - name: installation tests
       run: ./install.sh
-
-
