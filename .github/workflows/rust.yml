@@ -12,7 +12,9 @@ jobs:
     name : build-latest-stable
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - name: Build
       run: cargo build --verbose --release --target x86_64-unknown-linux-gnu 
 
@@ -20,7 +22,9 @@ jobs:
     name: build-msrv
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - run: "rm Cargo.lock"
       - name: Install Rust 1.65 toolchain
         uses: actions-rs/toolchain@v1
@@ -34,7 +38,9 @@ jobs:
     name: build-nightly
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Install nightly toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -48,7 +54,9 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
 
     - run: './ressources/install_all_compilers_ci.sh'
 
@@ -75,7 +83,9 @@ jobs:
     name: install (download)
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - name: installation tests
       run: ./install.sh
 
