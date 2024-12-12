@@ -46,14 +46,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - run: "rm Cargo.lock"
       - name: Install Rust 1.65 toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: 1.65
           override: true
       - name: build
-        run: cargo build --release
+        run: cargo build --release --locked
 
   buildnightly:
     name: build-nightly
