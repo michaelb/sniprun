@@ -20,7 +20,6 @@ jobs:
         run: uvx zizmor --format sarif . > results.sarif 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
         with:
@@ -36,6 +35,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         persist-credentials: false
+    - uses: dtolnay/rust-toolchain@stable
     - name: Build
       run: cargo build --verbose --release --target x86_64-unknown-linux-gnu 
 
@@ -46,11 +46,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Install Rust 1.65 toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: 1.65
-          override: true
+      - uses: dtolnay/rust-toolchain@1.65
       - name: build
         run: cargo build --release --locked
 
@@ -61,11 +57,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Install nightly toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          override: true
+      - uses: dtolnay/rust-toolchain@nightly
       - name: build
         run: cargo build --release --target x86_64-unknown-linux-gnu 
 
@@ -73,28 +65,21 @@ jobs:
     name: unit & integration tests
     runs-on: ubuntu-20.04
     steps:
-
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-
-    - run: './ressources/install_all_compilers_ci.sh'
-
-    - uses: oven-sh/setup-bun@v1
-
-    - uses: dlang-community/setup-dlang@v1
-
-    - uses: erlef/setup-beam@v1
-      with:
-        otp-version: "23"
-        elixir-version: "1.14"
-
-
-    - name: Unit tests
-      run: cargo test --release --features ignore_in_ci
-
-    - name: integration tests
-      run: cargo test --release --features ignore_in_ci --test integration
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - run: './ressources/install_all_compilers_ci.sh'
+      - uses: oven-sh/setup-bun@v1
+      - uses: dlang-community/setup-dlang@v1
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: "23"
+          elixir-version: "1.14"
+      - name: Unit tests
+        run: cargo test --release --features ignore_in_ci
+      - name: integration tests
+        run: cargo test --release --features ignore_in_ci --test integration
 
   install:
     name: install (download)
