@@ -262,6 +262,7 @@ require'sniprun'.setup({
     "VirtualTextOk",              --# display ok results as virtual text (multiline is shortened)
 
     -- "VirtualText",             --# display results as virtual text
+    -- "VirtualLine",             --# display results as virtual lines
     -- "TempFloatingWindow",      --# display results in a floating window
     -- "LongTempFloatingWindow",  --# same as above, but only long results. To use with VirtualText[Ok/Err]
     -- "Terminal",                --# display results in a vertical split
