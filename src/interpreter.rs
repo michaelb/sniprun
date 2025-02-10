@@ -145,7 +145,7 @@ pub trait Interpreter: ReplLikeInterpreter {
                 but we'll check if fallback interpreters produce a valid answer"
             );
             if let Some(alt_res) = self.fallback() {
-                return fallback_concatenate_result(res,alt_res);
+                return fallback_concatenate_result(res, alt_res);
             }
         }
 
