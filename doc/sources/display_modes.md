@@ -6,6 +6,7 @@ Display modes:
 
 - "Classic"
 - "VirtualText"
+- "VirtualLine"
 - "Terminal"
 - "TerminalWithCode"
 - "TempFloatingWindow"
@@ -20,17 +21,13 @@ Suffixes:
 
 To configure which display mode(s) you want, just include their names (+suffix if wanted) in the `display` configuration key:
 
-```
-lua << EOF
-
+```lua
 require('sniprun').setup({
     display = {
         "Classic",         -- will display both 'ok' & 'err' results in the command area
         "VirtualTextOk",   -- will display only 'ok' results as virtual text on the line sent to sniprun
     },
 })
-
-EOF
 ```
 
 # Available display modes
@@ -47,12 +44,10 @@ Results are displayed on the command area.
  - Ok/Err highlighting
  - Disappear on the next keypress
 
-```
-lua << EOF
+```lua
 require'sniprun'.setup({
   display = { "Classic" },
 })
-EOF
 ```
 
     
@@ -72,18 +67,42 @@ Results are displayed as virtual text after the end of the line you sent to snip
  - Visually close to the code
  - No multiline possible. Results are shortened on a best-effort basis
  - Cannot be copied
+ - Cannot be used as the same time as Virtual Line
 
-```
-lua <<EOF
+```lua
 require'sniprun'.setup({
   display = {
     "VirtualText",
   },
 })
-EOF
 ```
 
  ![](../../ressources/visual_assets/virtual_text.png)
+
+(virtualline-display)=
+## Virtual Line
+
+Results are displayed as virtual lines after the line/visual selection you sent to sniprun.
+
+**Pro/cons:**
+
+- Does not disappear (except after a SnipClose)
+- Ok/Err highlighting (outputs for ok and error results are highlighted
+  with the groups `SniprunVirtualTextOk` and `SniprunVirtualTextErr` respectively)
+- Visually close to the code
+- Multiline works out-of-the-box
+- Cannot be copied
+- Visually moves the code around, especially for long outputs (eg: print in loops)
+
+```lua
+require'sniprun'.setup({
+  display = {
+    "VirtualLine",
+  },
+})
+```
+
+![](../../ressources/visual_assets/display_virtline.png)
 
 
 (floatingwindow-display)=
@@ -99,7 +118,7 @@ Result are displayed in (temporary) floating windows. "LongTempFloatingWindow" w
  - Disappears on the next keypress
  - Cannot be copied
 
-```
+```lua
 require'sniprun'.setup({
   display = { "TempFloatingWindow" },
 })
@@ -120,8 +139,7 @@ Results are displayed in a side panel
  - No highlighting (only a 'ok' or 'err' message)
  - Can display the code that ran along with the result (with the "TerminalWithCode" variant)
 
-```
-lua << EOF
+```lua
 require'sniprun'.setup({
     display = { "Terminal" },
     display_options = {
@@ -133,7 +151,6 @@ require'sniprun'.setup({
         terminal_height = 20,         --# change the terminal display option height (if horizontal)
     },
 })
-EOF
 ```
 
 

@@ -77,7 +77,7 @@ Sniprun will then:
 
 - **Compiler / interpreter** for the languages you work with must be installed & on your \$PATH. In case non-standard build tools or softwares are required, those are documented in the navigation pane of the [wiki](https://michaelb.github.io/sniprun/), as well as in the [doc/sources/interpreters](https://github.com/michaelb/sniprun/tree/master/doc/sources/interpreters) folder, for each interpreter, which I urge you to get a look at before getting started as it also contains the potential limitations of each interpreter; this information can be accessed through `:SnipInfo <interpreter_name>` (tab autocompletion supported).
 
-- [optional] **cargo and the rust toolchain** version >= 1.65 (you can find those [here](https://www.rust-lang.org/tools/install)), if you want/need to compile sniprun locally.
+- [optional] **cargo and the rust toolchain** version >= 1.65 (you can find those [here](https://www.rust-lang.org/tools/install)), if you want/need to compile sniprun locally. When using old version of Rust, the `--locked` flag is necessary to prevent Cargo from overzealously updating packages
 
 - [optional] the plugin [nvim-notify](https://github.com/rcarriga/nvim-notify) for the notification display style
 
@@ -262,6 +262,7 @@ require'sniprun'.setup({
     "VirtualTextOk",              --# display ok results as virtual text (multiline is shortened)
 
     -- "VirtualText",             --# display results as virtual text
+    -- "VirtualLine",             --# display results as virtual lines
     -- "TempFloatingWindow",      --# display results in a floating window
     -- "LongTempFloatingWindow",  --# same as above, but only long results. To use with VirtualText[Ok/Err]
     -- "Terminal",                --# display results in a vertical split

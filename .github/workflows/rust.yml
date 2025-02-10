@@ -8,11 +8,34 @@ on:
   workflow_dispatch:
 
 jobs:
+  ci-safety:
+    name: ci-safety
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v4
+      - name: run zizmor ci analysis tool
+        run: uvx zizmor --format sarif . > results.sarif 
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+          category: zizmor
+
   build:
     name : build-latest-stable
     runs-on: ubuntu-20.04
+    # version used in release process to guarantee old-GLIBC compatibility
+
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+    - uses: dtolnay/rust-toolchain@stable
     - name: Build
       run: cargo build --verbose --release --target x86_64-unknown-linux-gnu 
 
@@ -20,26 +43,21 @@ jobs:
     name: build-msrv
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - run: "rm Cargo.lock"
-      - name: Install Rust 1.65 toolchain
-        uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
         with:
-          toolchain: 1.65
-          override: true
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@1.65
       - name: build
-        run: cargo build --release
+        run: cargo build --release --locked
 
   buildnightly:
     name: build-nightly
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install nightly toolchain
-        uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
         with:
-          toolchain: nightly
-          override: true
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@nightly
       - name: build
         run: cargo build --release --target x86_64-unknown-linux-gnu 
 
@@ -47,36 +65,28 @@ jobs:
     name: unit & integration tests
     runs-on: ubuntu-20.04
     steps:
-
-    - uses: actions/checkout@v2
-
-    - run: './ressources/install_all_compilers_ci.sh'
-
-    - uses: oven-sh/setup-bun@v1
-
-    - uses: dlang-community/setup-dlang@v1
-
-    - uses: erlef/setup-beam@v1
-      with:
-        otp-version: "23"
-        elixir-version: "1.14"
-
-
-    - name: Unit tests
-      run: cargo test --release --features ignore_in_ci
-
-    - name: integration tests
-      run: cargo test --release --features ignore_in_ci --test integration
-
-
-
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - run: './ressources/install_all_compilers_ci.sh'
+      - uses: oven-sh/setup-bun@v1
+      - uses: dlang-community/setup-dlang@v1
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: "23"
+          elixir-version: "1.14"
+      - name: Unit tests
+        run: cargo test --release --features ignore_in_ci
+      - name: integration tests
+        run: cargo test --release --features ignore_in_ci --test integration
 
   install:
     name: install (download)
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - name: installation tests
       run: ./install.sh
-
-

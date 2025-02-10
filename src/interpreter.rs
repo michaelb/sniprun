@@ -140,9 +140,12 @@ pub trait Interpreter: ReplLikeInterpreter {
             .and_then(|_| self.build())
             .and_then(|_| self.execute());
         if res.is_err() {
-            let alt_res = self.fallback();
-            if let Some(Ok(alt_res_ok)) = alt_res {
-                return Ok(alt_res_ok);
+            info!(
+                "Current interpreter produced an error: {res:?} This might be normal,\
+                but we'll check if fallback interpreters produce a valid answer"
+            );
+            if let Some(alt_res) = self.fallback() {
+                return fallback_concatenate_result(res, alt_res);
             }
         }
 
@@ -381,4 +384,25 @@ pub fn index_from_name(
         }
     }
     None
+}
+
+fn fallback_concatenate_result(
+    res: Result<String, SniprunError>,
+    alt_res: Result<String, SniprunError>,
+) -> Result<String, SniprunError> {
+    let extra_msg = "\nSNIPRUN -- fallback occurs when several interpreters are available\n\
+        for a language and the default one errors out\n\
+        Using :SnipInfo to determine which interpreter is used and which is wanted,\n\
+        then adding it to the configuration under `selected_interpreters` is recommended.";
+    match res {
+        Ok(_) => res,
+        Err(e) => {
+            match alt_res {
+                Ok(alt_ok) => Ok(alt_ok + "\n SNIPRUN -- using a fallback interpreter because the original interpreter failed with:\n" + &e.to_string() + extra_msg),
+                Err(alt_err) => Err(SniprunError::CustomError(e.to_string() + "\nSNIPRUN -- The fallback interpreter also failed with:\n" + &alt_err.to_string() + extra_msg))
+            }
+
+        }
+
+    }
 }
