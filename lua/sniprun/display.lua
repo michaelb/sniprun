@@ -81,6 +81,10 @@ function M.term_set_buffer_chan(winid)
 
     M.term.buffer = buf
     M.term.chan = vim.api.nvim_open_term(buf, {})
+
+    -- Set the cursor to the last line in the new buffer, this will make the terminal
+    -- auto-scroll to the bottom.
+    vim.fn.win_execute(winid, "normal! G<cr>")
 end
 
 function M.term_open()
@@ -91,30 +95,34 @@ end
 function M.write_to_term(message, ok)
     M.term_open()
 
-    local h = M.term.current_line or -1
-
-    local status = "------"
     if ok then
-        status = "--OK--"
+        status = "OK"
     else
-        status = "ERROR-"
+        status = "ERROR"
     end
 
-    local width = vim.api.nvim_win_get_width(M.term.window_handle)
-    local half_width = (width - 6 - 4 - 4) / 2
-    message = "  " .. string.rep("-", half_width) .. status .. string.rep("-", half_width) .. "  " .. "\n" .. message
+    -- Get the window information, including width and number of columns
+    -- occupied by foldcolumn, signcolumn, and line number columns.
+    local wininfo = vim.fn.getwininfo(M.term.window_handle)[1]
 
-    for line in message:gmatch("([^\n]*)\n?") do
-        h = h + 1
-        vim.api.nvim_chan_send(M.term.chan, line)
-        vim.api.nvim_chan_send(M.term.chan, "\n\r");
-    end
+    -- The number of dashes to display before and after the message is half of
+    -- the window screen minus the length of the message and the two spaces on
+    -- each side.
+    local numdashes = (wininfo.width - wininfo.textoff - status:len() - 4) / 2
 
-    M.term.current_line = h
+    -- If the status message is not even, then 'numdashes' will be a float, and
+    -- the header has wrong number of dashes. So we round it down as the prefix,
+    -- and up for the suffix.
 
-    if M.term.current_line > vim.fn.line("w$") then
-        vim.fn.win_execute(M.term.window_handle, "normal " .. M.term.current_line .. "gg")
-    end
+    header_prefix = string.rep("-", math.floor(numdashes))
+    header_suffix = string.rep("-", math.ceil(numdashes))
+
+    -- It's valid for the message to contain null characters per the neovim
+    -- specification, so we try to avoid performing string operations on it by
+    -- calling nvim_chan_send miltiple times.
+    vim.api.nvim_chan_send(M.term.chan, "  " .. header_prefix .. status .. header_suffix .. "\n")
+    vim.api.nvim_chan_send(M.term.chan, message)
+    vim.api.nvim_chan_send(M.term.chan, "\n")
 end
 
 function M.close_all()
