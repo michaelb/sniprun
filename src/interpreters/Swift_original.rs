@@ -23,7 +23,7 @@ impl Swift_original {
         err_path: String,
         id: u32,
     ) -> Result<String, SniprunError> {
-        let end_mark = String::from("sniprun_finished_id=") + &id.to_string() + "\n";
+        let end_mark = String::from("sniprun_finished_id=") + &id.to_string();
         let start_mark = String::from("sniprun_started_id=") + &id.to_string();
 
         info!(
@@ -48,31 +48,35 @@ impl Swift_original {
             }
 
             //check for stderr first
-            if let Ok(mut file) = std::fs::File::open(&err_path) {
+            let err_file_empty = std::fs::OpenOptions::new()
+                .read(true)
+                .write(true)
+                .open(&err_path);
+            info!("err_file_empty, {err_file_empty:?}");
+            if let Ok(mut file) = err_file_empty {
                 info!("errfile exists");
-                out_contents.clear();
+                err_contents.clear();
                 let res = file.read_to_string(&mut err_contents);
+                info!("errfile read staus :{:?}", res);
                 if res.is_ok() {
                     info!("errfile could be read : {:?}", err_contents);
                     // info!("file : {:?}", contents);
-                    if err_contents.contains(&end_mark) {
-                        if let Some(index) = err_contents.rfind(&start_mark) {
-                            let mut err_to_display = err_contents
-                                [index + start_mark.len()..err_contents.len() - end_mark.len() - 1]
-                                .to_owned();
-                            info!("err to display : {:?}", err_to_display);
-                            if !err_to_display.trim().is_empty() {
-                                info!("err found");
-                                if err_to_display.lines().count() > 2 {
-                                    let mut err_to_display_vec =
-                                        err_to_display.lines().skip(2).collect::<Vec<&str>>();
-                                    err_to_display_vec.dedup();
-                                    err_to_display = err_to_display_vec.join("\n");
-                                }
-
-                                return Err(SniprunError::RuntimeError(err_to_display));
-                            }
+                    let mut err_to_display = err_contents[..].to_owned();
+                    info!("err to display : {:?}", err_to_display);
+                    if !err_to_display.trim().is_empty() {
+                        info!("err found");
+                        if err_to_display.lines().count() > 0 {
+                            let mut err_to_display_vec =
+                                err_to_display.lines().collect::<Vec<&str>>();
+                            err_to_display_vec.dedup();
+                            err_to_display = err_to_display_vec.join("\n");
                         }
+
+                        let _ = file.set_len(0); // rm old error for future code
+                                                 // but since actually the repl will continue to write at the previous
+                                                 // file cursor position, there will be many \0 bytes at the beginning
+                        let err_to_display = err_to_display.replace("\0", "");
+                        return Err(SniprunError::RuntimeError(err_to_display));
                     }
                 }
             }
@@ -89,7 +93,7 @@ impl Swift_original {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark).unwrap();
                         return Ok(out_contents
-                            [index + start_mark.len()..out_contents.len() - end_mark.len() - 1]
+                            [index + start_mark.len()..out_contents.len() - end_mark.len() - 2]
                             .to_owned());
                     }
                 }
@@ -143,7 +147,7 @@ impl Swift_original {
     }
 
     fn fetch_config(&mut self) {
-        let default_interpreter = String::from("swift");
+        let default_interpreter = String::from("swift repl");
         self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
             Swift_original::get_interpreter_option(&self.get_data(), "interpreter")
@@ -340,19 +344,35 @@ impl ReplLikeInterpreter for Swift_original {
                 "launching kernel : {:?} on {:?}",
                 init_repl_cmd, &self.cache_dir
             );
-
+            let mut cmd = Command::new("bash");
+            cmd.args(&[
+                init_repl_cmd.clone(),
+                self.cache_dir.clone(),
+                Swift_original::get_nvim_pid(&self.data),
+                self.interpreter
+                    .split_whitespace()
+                    .next()
+                    .unwrap()
+                    .to_string(),
+            ])
+            .args(self.interpreter.split_whitespace().skip(1));
+            info!("init repl cmd = {:?}", cmd);
             match daemon() {
                 Ok(Fork::Child) => {
-                    let _res = Command::new("bash")
-                        .args(&[
-                            init_repl_cmd,
-                            self.cache_dir.clone(),
-                            Swift_original::get_nvim_pid(&self.data),
-                            self.interpreter.clone()
-                                + " -ic 'import sys; sys.ps1=\"\";sys.ps2=\"\"'",
-                        ])
-                        .output()
-                        .unwrap();
+                    let mut cmd = Command::new("bash");
+                    cmd.args(&[
+                        init_repl_cmd,
+                        self.cache_dir.clone(),
+                        Swift_original::get_nvim_pid(&self.data),
+                        self.interpreter
+                            .split_whitespace()
+                            .next()
+                            .unwrap()
+                            .to_string(),
+                    ])
+                    .args(self.interpreter.split_whitespace().skip(1));
+                    info!("init repl cmd = {:?}", cmd);
+                    let _res = cmd.output().unwrap();
 
                     return Err(SniprunError::CustomError("swift REPL exited".to_owned()));
                 }
@@ -364,7 +384,7 @@ impl ReplLikeInterpreter for Swift_original {
 
             let pause = std::time::Duration::from_millis(100);
             std::thread::sleep(pause);
-            self.save_code("kernel_launched\nimport sys".to_owned());
+            self.save_code("kernel_launched\n".to_owned());
 
             Err(SniprunError::CustomError(
                 "swift kernel launched, re-run your snippet".to_owned(),
@@ -380,30 +400,20 @@ impl ReplLikeInterpreter for Swift_original {
         let end_mark = String::from("\nprint(\"sniprun_finished_id=")
             + &self.current_output_id.to_string()
             + "\")\n";
-        let start_mark_err = String::from("\nprint(\"sniprun_started_id=")
-            + &self.current_output_id.to_string()
-            + "\", file=sys.stderr)\n";
-        let end_mark_err = String::from("\nprint(\"sniprun_finished_id=")
-            + &self.current_output_id.to_string()
-            + "\", file=sys.stderr)\n";
+        // let start_mark_err = String::from("\nprint(\"sniprun_started_id=")
+        //     + &self.current_output_id.to_string()
+        //     + "\", file=sys.stderr)\n";
+        // let end_mark_err = String::from("\nprint(\"sniprun_finished_id=")
+        //     + &self.current_output_id.to_string()
+        //     + "\", file=sys.stderr)\n";
 
-        // // remove empty lines interpreted as 'enter'
-        // self.code = self
-        //     .code
-        //     .lines()
-        //     .filter(|l| !l.trim().is_empty())
-        //     .collect::<Vec<&str>>()
-        //     .join("\n")
-        //     .replace("#\n#", "\n");
-        //
-        // self.code = lines.join("\n");
-
-        self.code = start_mark + &start_mark_err + &self.code + &end_mark + &end_mark_err;
+        self.code = start_mark + &self.code + &end_mark;
         Ok(())
     }
 
     fn build_repl(&mut self) -> Result<(), SniprunError> {
-        self.build()
+        write(&self.main_file_path, &self.code).expect("Unable to write to file for python3_fifo");
+        Ok(())
     }
 
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
