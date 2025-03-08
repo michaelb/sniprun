@@ -12,6 +12,10 @@ pub struct Rust_original {
     rust_work_dir: String,
     bin_path: String,
     main_file_path: String,
+
+    // for repl
+    current_output_id: u32,
+    cache_dir: String,
 }
 
 impl Rust_original {
@@ -27,9 +31,83 @@ impl Rust_original {
             }
         }
     }
+
+    fn wait_out_file(
+        &self,
+        out_path: &str,
+        err_path: &str,
+        id: u32,
+    ) -> Result<String, SniprunError> {
+        let end_mark = String::from("sniprun_finished_id=") + &id.to_string();
+        let start_mark = String::from("sniprun_started_id=") + &id.to_string();
+
+        info!(
+            "searching for things between {:?} and {:?}",
+            start_mark, end_mark
+        );
+
+        let mut out_contents = String::new();
+        let mut err_contents = String::new();
+
+        let mut pause = std::time::Duration::from_millis(50);
+        let start = std::time::Instant::now();
+        loop {
+            std::thread::sleep(pause);
+            pause = pause.saturating_add(std::time::Duration::from_millis(50));
+
+            // timeout after 30s if no result found
+            if start.elapsed().as_secs() > Rust_original::get_repl_timeout(&self.data) {
+                return Err(SniprunError::InterpreterLimitationError(String::from(
+                    "reached the repl timeout",
+                )));
+            }
+
+            //check for stderr first
+            if let Ok(mut file) = std::fs::File::open(err_path) {
+                info!("file exists");
+                err_contents.clear();
+                let res = file.read_to_string(&mut err_contents);
+                if res.is_ok() {
+                    info!("file could be read : {:?}", err_contents);
+                    // info!("file : {:?}", contents);
+                    if err_contents.contains(&end_mark) {
+                        info!("out found");
+                        let index = err_contents.rfind(&start_mark).unwrap();
+                        let err_to_display = err_contents
+                            [index + start_mark.len()..err_contents.len() - end_mark.len() - 1]
+                            .to_owned();
+                        info!("err to display : {:?}", err_to_display);
+                        if !err_to_display.trim().is_empty() {
+                            info!("err found");
+                            return Err(SniprunError::RuntimeError(err_to_display));
+                        }
+                    }
+                }
+            }
+
+            //check for stdout
+            if let Ok(mut file) = std::fs::File::open(out_path) {
+                info!("file exists");
+                out_contents.clear();
+                let res = file.read_to_string(&mut out_contents);
+                if res.is_ok() {
+                    info!("file could be read : {:?}", out_contents);
+                    // info!("file : {:?}", contents);
+                    if out_contents.contains(&end_mark) {
+                        info!("out found");
+                        let index = out_contents.rfind(&start_mark).unwrap();
+                        return Ok(out_contents
+                            [index + start_mark.len()..out_contents.len() - end_mark.len() - 2]
+                            .to_owned());
+                    }
+                }
+            }
+
+            info!("not found yet");
+        }
+    }
 }
 
-impl ReplLikeInterpreter for Rust_original {}
 impl Interpreter for Rust_original {
     fn new_with_level(data: DataHolder, support_level: SupportLevel) -> Box<Rust_original> {
         //create a subfolder in the cache folder
@@ -43,6 +121,7 @@ impl Interpreter for Rust_original {
         //pre-create string pointing to main file's and binary's path
         let mfp = rwd.clone() + "/main.rs";
         let bp = String::from(&mfp[..mfp.len() - 3]); // remove extension so binary is named 'main'
+        let cd = rwd.clone() + "/" + &Rust_original::get_nvim_pid(&data);
         Box::new(Rust_original {
             data,
             support_level,
@@ -51,6 +130,9 @@ impl Interpreter for Rust_original {
             bin_path: bp,
             main_file_path: mfp,
             compiler: String::new(),
+
+            current_output_id: 0,
+            cache_dir: cd,
         })
     }
 
@@ -67,12 +149,22 @@ impl Interpreter for Rust_original {
         String::from("Rust_original")
     }
 
+    fn has_repl_capability() -> bool {
+        true
+    }
+
+    fn behave_repl_like_default() -> bool {
+        false
+    }
+
     fn default_for_filetype() -> bool {
         true
     }
+
     fn get_current_level(&self) -> SupportLevel {
         self.support_level
     }
+
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
     }
@@ -225,5 +317,124 @@ mod test_rust_original {
                 ),
             }
         }
+    }
+}
+
+impl ReplLikeInterpreter for Rust_original {
+    fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
+        if !self.read_previous_code().is_empty() {
+            // nothing to do, kernel already running
+            info!("evcxr kernel already running");
+
+            if let Some(id) = self.get_pid() {
+                // there is a race condition here but honestly you'd have to
+                // trigger it on purpose
+                self.current_output_id = id + 1;
+                self.set_pid(self.current_output_id);
+            } else {
+                info!("Could not retrieve a previous id even if the kernel is running");
+                info!("This was in saved code: {}", self.read_previous_code());
+                return Err(SniprunError::CustomError(
+                    "Sniprun failed to connect to the running kernel, please SnipReset".to_string(),
+                ));
+            }
+
+            self.fetch_code()?;
+            Ok(())
+        } else {
+            // launch everything
+            self.set_pid(0);
+
+            let init_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/init_repl.sh";
+            info!(
+                "launching kernel : {:?} on {:?}",
+                init_repl_cmd, &self.cache_dir
+            );
+
+            match daemon() {
+                Ok(Fork::Child) => {
+                    let _res = Command::new("bash")
+                        .args(&[
+                            init_repl_cmd,
+                            self.cache_dir.clone(),
+                            Rust_original::get_nvim_pid(&self.data),
+                            String::from("evcxr"),
+                        ])
+                        .output()
+                        .unwrap();
+
+                    return Err(SniprunError::CustomError("bun REPL exited".to_owned()));
+                }
+                Ok(Fork::Parent(_)) => {}
+                Err(_) => {
+                    info!("JS_TS_bun could not fork itself to the background to launch the kernel")
+                }
+            };
+
+            let pause = std::time::Duration::from_millis(100);
+            std::thread::sleep(pause);
+            self.save_code("kernel_launched\n".to_owned());
+            let pause = std::time::Duration::from_millis(100);
+            std::thread::sleep(pause);
+
+            let v = vec![(self.data.range[0] as usize, self.data.range[1] as usize)];
+            Err(SniprunError::ReRunRanges(v))
+        }
+    }
+
+    fn add_boilerplate_repl(&mut self) -> Result<(), SniprunError> {
+        let start_mark = String::from("\nprintln!(\"sniprun_started_id=")
+            + &self.current_output_id.to_string()
+            + "\");\n";
+        let end_mark = String::from("\nprintln!(\"sniprun_finished_id=")
+            + &self.current_output_id.to_string()
+            + "\");\n";
+
+        let start_mark_err = String::from("\neprintln!(\"sniprun_started_id=")
+            + &self.current_output_id.to_string()
+            + "\");\n";
+        let end_mark_err = String::from("\neprintln!(\"sniprun_finished_id=")
+            + &self.current_output_id.to_string()
+            + "\");\n";
+
+        // Removing empty lines
+        // self.code = self
+        //     .code
+        //     .lines()
+        //     .filter(|l| !l.trim().is_empty())
+        //     .collect::<Vec<&str>>()
+        //     .join("\n");
+
+        let all_code = String::from("\n") + &self.code + "\n\n";
+        self.code = start_mark + &start_mark_err + &all_code + &end_mark + &end_mark_err;
+        Ok(())
+    }
+
+    fn build_repl(&mut self) -> Result<(), SniprunError> {
+        //write code to file
+        let mut _file =
+            File::create(&self.main_file_path).expect("failed to create file for rust_original");
+        // io errors can be ignored, or handled into a proper sniprunerror
+        // if you panic, it should not be too dangerous for anyone
+        write(&self.main_file_path, &self.code).expect("unable to write to file for rust_original");
+
+        Ok(())
+    }
+
+    fn execute_repl(&mut self) -> Result<String, SniprunError> {
+        let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
+        info!("running launcher {}", send_repl_cmd);
+        let res = Command::new(send_repl_cmd)
+            .arg(self.main_file_path.clone())
+            .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
+            .spawn();
+        info!("cmd status: {:?}", res);
+        res.expect("could not run launcher");
+        // info!("launcher launched : {:?}", res);
+
+        let outfile = self.cache_dir.clone() + "/fifo_repl/out_file";
+        let errfile = self.cache_dir.clone() + "/fifo_repl/err_file";
+        info!("outfile : {:?}", outfile);
+        self.wait_out_file(&outfile, &errfile, self.current_output_id)
     }
 }

@@ -1,3 +1,8 @@
+## v1.3.18
+- Swift support (incl. REPL)
+- Configurable REPL timeout
+- Rust_original now repl capable (based on evcxr)
+
 ## v1.3.17
 - better fallback messages
 - Terminal display mode fixes (courtesy of @dbeecham)
