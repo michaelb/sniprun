@@ -34,10 +34,16 @@ impl Sage_fifo {
         let mut err_contents = String::new();
 
         let mut pause = std::time::Duration::from_millis(50);
-        let _start = std::time::Instant::now();
+        let start = std::time::Instant::now();
         loop {
             std::thread::sleep(pause);
             pause = pause.saturating_add(std::time::Duration::from_millis(50));
+
+            if start.elapsed().as_secs() > Sage_fifo::get_repl_timeout(&self.data) {
+                return Err(SniprunError::InterpreterLimitationError(String::from(
+                    "reached the repl timeout",
+                )));
+            }
 
             //check for stderr first
             if let Ok(mut file) = std::fs::File::open(&err_path) {
