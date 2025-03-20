@@ -9,7 +9,7 @@ pub struct TypeScript_original {
     main_file_path: String,
 
     //specific to Typescript
-    compiler: String,
+    interpreter: String,
 }
 
 impl ReplLikeInterpreter for TypeScript_original {}
@@ -27,7 +27,7 @@ impl Interpreter for TypeScript_original {
         //pre-create string pointing to main file's and binary's path
         let mfp = lwd + "/main.ts";
 
-        let compiler = match TypeScript_original::get_interpreter_option(&data, "compiler") {
+        let interpreter = match TypeScript_original::get_interpreter_option(&data, "interpreter") {
             Some(user_compiler) => user_compiler.to_string().replace("\"", ""),
             None => "ts-node".to_string()
         };
@@ -36,7 +36,7 @@ impl Interpreter for TypeScript_original {
             support_level,
             code: String::new(),
             main_file_path: mfp,
-            compiler
+            interpreter
         })
     }
 
@@ -123,7 +123,7 @@ impl Interpreter for TypeScript_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
-        let interpreter = TypeScript_original::get_interpreter_or(&self.data, &self.compiler);
+        let interpreter = TypeScript_original::get_interpreter_or(&self.data, &self.interpreter);
         let output = Command::new(interpreter.split_whitespace().next().unwrap())
             .args(interpreter.split_whitespace().skip(1))
             .arg(&self.main_file_path)
