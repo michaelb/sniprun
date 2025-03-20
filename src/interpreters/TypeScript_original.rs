@@ -28,7 +28,7 @@ impl Interpreter for TypeScript_original {
         let mfp = lwd + "/main.ts";
 
         let interpreter = match TypeScript_original::get_interpreter_option(&data, "interpreter") {
-            Some(user_compiler) => user_compiler.to_string().replace("\"", ""),
+            Some(user_interpreter) => user_interpreter.to_string().replace("\"", ""),
             None => "ts-node".to_string()
         };
         Box::new(TypeScript_original {
