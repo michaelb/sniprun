@@ -37,7 +37,7 @@ jobs:
         persist-credentials: false
     - uses: dtolnay/rust-toolchain@stable
     - name: Build
-      run: cargo build --verbose --release --target x86_64-unknown-linux-gnu 
+      run: cargo build --verbose --release --locked --target x86_64-unknown-linux-gnu 
 
   buildmsrv:
     name: build-msrv
@@ -59,7 +59,7 @@ jobs:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@nightly
       - name: build
-        run: cargo build --release --target x86_64-unknown-linux-gnu 
+        run: cargo build --release --locked --target x86_64-unknown-linux-gnu 
 
   unittest:
     name: unit & integration tests
