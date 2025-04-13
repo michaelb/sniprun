@@ -2,6 +2,7 @@
 - Swift support (incl. REPL)
 - Configurable REPL timeout
 - Rust_original now repl capable (based on evcxr)
+- REPL limitation 'please re-run your snippet' removed
 
 ## v1.3.17
 - better fallback messages
