@@ -1,3 +1,4 @@
+#![allow(clippy::zombie_processes)]
 use crate::interpreters::import::*;
 
 #[derive(Clone)]
@@ -34,10 +35,16 @@ impl Sage_fifo {
         let mut err_contents = String::new();
 
         let mut pause = std::time::Duration::from_millis(50);
-        let _start = std::time::Instant::now();
+        let start = std::time::Instant::now();
         loop {
             std::thread::sleep(pause);
             pause = pause.saturating_add(std::time::Duration::from_millis(50));
+
+            if start.elapsed().as_secs() > Sage_fifo::get_repl_timeout(&self.data) {
+                return Err(SniprunError::InterpreterLimitationError(String::from(
+                    "reached the repl timeout",
+                )));
+            }
 
             //check for stderr first
             if let Ok(mut file) = std::fs::File::open(&err_path) {
@@ -196,7 +203,7 @@ impl Sage_fifo {
             return true;
         }
         if line.contains(" as ") {
-            if let Some(name) = line.split(' ').last() {
+            if let Some(name) = line.split(' ').next_back() {
                 return code.contains(name);
             }
         }
@@ -394,13 +401,11 @@ impl ReplLikeInterpreter for Sage_fifo {
                 }
             };
 
+            self.save_code("kernel_launched\n".to_owned());
             let pause = std::time::Duration::from_millis(100);
             std::thread::sleep(pause);
-            self.save_code("kernel_launched\n".to_string());
-
-            Err(SniprunError::CustomError(
-                "Sage kernel launched, re-run your snippet".to_owned(),
-            ))
+            let v = vec![(self.data.range[0] as usize, self.data.range[1] as usize)];
+            Err(SniprunError::ReRunRanges(v))
         }
     }
 

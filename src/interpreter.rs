@@ -199,6 +199,7 @@ pub trait InterpreterUtils {
     fn contains_main(entry: &str, snippet: &str, comment: &str) -> bool;
     fn error_truncate(data: &DataHolder) -> ErrTruncate;
 
+    fn get_repl_timeout(data: &DataHolder) -> u64;
     fn get_compiler_or(data: &DataHolder, or: &str) -> String;
     fn get_interpreter_or(data: &DataHolder, or: &str) -> String;
 }
@@ -301,6 +302,16 @@ impl<T: Interpreter> InterpreterUtils for T {
         }
 
         None
+    }
+
+    /// returns the configured time (in seconds) to wait for a repl response
+    /// Default: 30s
+    fn get_repl_timeout(data: &DataHolder) -> u64 {
+        if let Some(timeout) = T::get_interpreter_option(data, "repl_timeout") {
+            timeout.as_u64().unwrap_or(30)
+        } else {
+            30
+        }
     }
 
     fn get_compiler_or(data: &DataHolder, or: &str) -> String {

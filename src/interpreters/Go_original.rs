@@ -124,7 +124,11 @@ impl Go_original {
     }
 
     fn parse_import_path(p: &str) -> String {
-        p.replace('\"', "").split('/').last().unwrap().to_string()
+        p.replace('\"', "")
+            .split('/')
+            .next_back()
+            .unwrap()
+            .to_string()
     }
 }
 

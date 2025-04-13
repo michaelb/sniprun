@@ -1,3 +1,4 @@
+#![allow(clippy::zombie_processes)]
 use crate::interpreters::import::*;
 
 #[derive(Clone)]
@@ -31,9 +32,9 @@ impl JS_TS_bun {
             pause = pause.saturating_add(std::time::Duration::from_millis(50));
 
             // timeout after 30s if no result found
-            if start.elapsed().as_secs() > 30 {
+            if start.elapsed().as_secs() > JS_TS_bun::get_repl_timeout(&self.data) {
                 return Err(SniprunError::InterpreterLimitationError(String::from(
-                    "reached the 30s timeout",
+                    "reached the repl timeout",
                 )));
             }
 
@@ -220,7 +221,7 @@ impl Interpreter for JS_TS_bun {
                         .unwrap()
                         .lines()
                         .filter(|l| l.contains("Error:"))
-                        .last()
+                        .next_back()
                         .unwrap_or(&String::from_utf8(output.stderr).unwrap())
                         .to_string(),
                 ))

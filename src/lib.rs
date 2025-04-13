@@ -271,7 +271,7 @@ impl EventHandler {
             //get filetype
             let ft = self.nvim.lock().unwrap().command_output("set ft?");
             if let Ok(real_ft) = ft {
-                self.data.filetype = String::from(real_ft.split('=').last().unwrap());
+                self.data.filetype = String::from(real_ft.split('=').next_back().unwrap());
             }
             info!("[FILLDATA] got filetype");
         }

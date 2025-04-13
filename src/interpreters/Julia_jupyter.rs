@@ -1,3 +1,4 @@
+#![allow(clippy::zombie_processes)]
 use crate::interpreters::import::*;
 
 #[derive(Clone)]
@@ -109,7 +110,7 @@ impl Interpreter for Julia_jupyter {
                 String::from_utf8(output.stderr.clone())
                     .unwrap()
                     .lines()
-                    .last()
+                    .next_back()
                     .unwrap_or(&String::from_utf8(output.stderr).unwrap())
                     .to_owned(),
             ))
@@ -193,7 +194,7 @@ impl ReplLikeInterpreter for Julia_jupyter {
         if String::from_utf8(output.stderr.clone()).unwrap().is_empty() {
             Ok(cleaned_result.join("\n") + "\n")
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 strip_ansi_escapes::strip_str(String::from_utf8_lossy(&output.stderr.clone()))
                     .lines()
                     .last()
@@ -201,7 +202,7 @@ impl ReplLikeInterpreter for Julia_jupyter {
                         &output.stderr,
                     )))
                     .to_owned(),
-            ));
+            ))
         }
     }
 }

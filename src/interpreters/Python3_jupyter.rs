@@ -1,3 +1,4 @@
+#![allow(clippy::zombie_processes)]
 use crate::interpreters::import::*;
 
 #[derive(Clone)]
@@ -70,7 +71,7 @@ impl Python3_jupyter {
             return true;
         }
         if line.contains(" as ") {
-            if let Some(name) = line.split(' ').last() {
+            if let Some(name) = line.split(' ').next_back() {
                 return code.contains(name);
             }
         }
@@ -354,7 +355,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
         if String::from_utf8(output.stderr.clone()).unwrap().is_empty() {
             Ok(cleaned_result.join("\n") + "\n")
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 strip_ansi_escapes::strip_str(String::from_utf8_lossy(&output.stderr.clone()))
                     .lines()
                     .last()
@@ -362,7 +363,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
                         &output.stderr,
                     )))
                     .to_owned(),
-            ));
+            ))
         }
     }
 }

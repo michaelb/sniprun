@@ -1,3 +1,4 @@
+#![allow(clippy::zombie_processes)]
 use crate::interpreters::import::*;
 
 #[derive(Clone)]
@@ -37,9 +38,9 @@ impl JS_TS_deno {
             pause = pause.saturating_add(std::time::Duration::from_millis(50));
 
             // timeout after 30s if no result found
-            if start.elapsed().as_secs() > 30 {
+            if start.elapsed().as_secs() > JS_TS_deno::get_repl_timeout(&self.data) {
                 return Err(SniprunError::InterpreterLimitationError(String::from(
-                    "reached the 30s timeout",
+                    "reached the repl timeout",
                 )));
             }
 
@@ -237,7 +238,7 @@ impl Interpreter for JS_TS_deno {
                         .unwrap()
                         .lines()
                         .filter(|l| l.contains("Error:"))
-                        .last()
+                        .next_back()
                         .unwrap_or(&String::from_utf8(output.stderr).unwrap())
                         .to_string(),
                 ))
@@ -302,13 +303,11 @@ impl ReplLikeInterpreter for JS_TS_deno {
                 }
             };
 
+            self.save_code("kernel_launched\n".to_owned());
             let pause = std::time::Duration::from_millis(100);
             std::thread::sleep(pause);
-            self.save_code("kernel_launched\n".to_owned());
-
-            Err(SniprunError::CustomError(
-                "Deno kernel launched, re-run your snippet".to_owned(),
-            ))
+            let v = vec![(self.data.range[0] as usize, self.data.range[1] as usize)];
+            Err(SniprunError::ReRunRanges(v))
         }
     }
 
