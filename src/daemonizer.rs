@@ -1,6 +1,4 @@
-/**
-Derived from https://github.com/immortal/fork
-*/
+//! Derived from https://github.com/immortal/fork
 
 /// Fork result
 pub enum Fork {

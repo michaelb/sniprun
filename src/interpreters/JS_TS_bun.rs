@@ -1,3 +1,4 @@
+#![allow(clippy::zombie_processes)]
 use crate::interpreters::import::*;
 
 #[derive(Clone)]
@@ -220,7 +221,7 @@ impl Interpreter for JS_TS_bun {
                         .unwrap()
                         .lines()
                         .filter(|l| l.contains("Error:"))
-                        .last()
+                        .next_back()
                         .unwrap_or(&String::from_utf8(output.stderr).unwrap())
                         .to_string(),
                 ))

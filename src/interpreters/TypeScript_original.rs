@@ -130,7 +130,7 @@ impl Interpreter for TypeScript_original {
                     .unwrap()
                     .lines()
                     .filter(|l| l.contains("Error:"))
-                    .last()
+                    .next_back()
                     .unwrap_or(&String::from_utf8(output.stderr).unwrap())
                     .to_owned(),
             ))

@@ -1,3 +1,4 @@
+#![allow(clippy::zombie_processes)]
 use crate::interpreters::import::*;
 
 #[derive(Clone)]
@@ -186,7 +187,7 @@ impl Python3_fifo {
             return true;
         }
         if line.contains(" as ") {
-            if let Some(name) = line.replace(',', " ").split(' ').last() {
+            if let Some(name) = line.replace(',', " ").split(' ').next_back() {
                 return code.contains(name);
             }
         }

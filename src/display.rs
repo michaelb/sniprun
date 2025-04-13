@@ -439,7 +439,7 @@ pub fn display_floating_window(
         .current_bloc
         .lines()
         .filter(|&line| !line.is_empty())
-        .last()
+        .next_back()
         .unwrap_or(&data.current_line)
         .len();
     let row = data.range[0] + data.current_bloc.trim_end_matches('\n').lines().count() as i64 - 1;
@@ -533,7 +533,7 @@ fn shorten_ok(message: &str) -> String {
         + message
             .lines()
             .filter(|&s| !s.is_empty())
-            .last()
+            .next_back()
             .unwrap_or("")
 }
 
