@@ -434,13 +434,11 @@ impl ReplLikeInterpreter for Python3_fifo {
                 ),
             };
 
+            self.save_code("kernel_launched\nimport sys".to_owned());
             let pause = std::time::Duration::from_millis(100);
             std::thread::sleep(pause);
-            self.save_code("kernel_launched\nimport sys".to_owned());
-
-            Err(SniprunError::CustomError(
-                "Python3 kernel launched, re-run your snippet".to_owned(),
-            ))
+            let v = vec![(self.data.range[0] as usize, self.data.range[1] as usize)];
+            Err(SniprunError::ReRunRanges(v))
         }
     }
 

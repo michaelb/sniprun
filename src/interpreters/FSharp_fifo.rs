@@ -282,9 +282,12 @@ impl ReplLikeInterpreter for FSharp_fifo {
             let pause = std::time::Duration::from_millis(2000); // prevent an user from re-running the snippet
                                                                 // before dotnet launches (2-3 secs)
             std::thread::sleep(pause);
-            Err(SniprunError::CustomError(
-                "F# interactive kernel launched, re-run your snippet".to_owned(),
-            ))
+
+            self.save_code("kernel_launched\n".to_owned());
+            let pause = std::time::Duration::from_millis(100);
+            std::thread::sleep(pause);
+            let v = vec![(self.data.range[0] as usize, self.data.range[1] as usize)];
+            Err(SniprunError::ReRunRanges(v))
         }
     }
 

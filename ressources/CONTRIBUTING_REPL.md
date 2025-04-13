@@ -26,7 +26,6 @@ Just like you implemented the Interpreter trait for a conventional runner, you'l
 
 1. Running something in the background:
     
-    Unfortunately, this require a first workaround. It's mainly due to how sniprun can't really launch a background process that stays alive, even when the thread executing the user's command exits, and sorta re-launch itself some time later (the interpreters needs some time to launch) to execute the input. The first user command will always fail with a message ("launching .. interpreter in the background, please re-run last snippet").
     ```rust
       fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
         if !self.read_previous_code().is_empty() {
@@ -57,11 +56,11 @@ Just like you implemented the Interpreter trait for a conventional runner, you'l
 
             let pause = std::time::Duration::from_millis(100);
             std::thread::sleep(pause);
-            self.save_code("kernel_launched\nimport sys".to_owned());
 
-            Err(SniprunError::CustomError(
-                "Python3 kernel launched, re-run your snippet".to_owned(),
-            ))
+            self.save_code("kernel_launched\n".to_owned());
+            let v = vec![(self.data.range[0] as usize, self.data.range[1] as usize)];
+            Err(SniprunError::ReRunRanges(v)) // special error that tells sniprun to re-run a snippet
+                                              // which is simpler than to embed calls to fetch/build/.. here
         }
     ```
     The important thing to note is that `self.read_previous_code()` is used to determine whether a kernel was already launched; (`self.get_pid()/set_pid()` can be used to store an incrementing number of 'runs' or the child's PID, or whatever.

@@ -294,13 +294,10 @@ impl ReplLikeInterpreter for Clojure_fifo {
             };
 
             self.save_code("kernel_launched\n".to_owned());
-
-            let pause = std::time::Duration::from_millis(300);
+            let pause = std::time::Duration::from_millis(100);
             std::thread::sleep(pause);
-
-            Err(SniprunError::CustomError(
-                "Clojure interactive kernel launched, re-run your snippet".to_owned(),
-            ))
+            let v = vec![(self.data.range[0] as usize, self.data.range[1] as usize)];
+            Err(SniprunError::ReRunRanges(v))
         }
     }
 
