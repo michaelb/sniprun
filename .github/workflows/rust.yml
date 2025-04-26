@@ -7,12 +7,10 @@ on:
     branches: [ master, dev]
   workflow_dispatch:
 
-permissions: {}
-
 jobs:
   ci-safety:
     name: ci-safety
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,7 +28,7 @@ jobs:
 
   build:
     name : build-latest-stable
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     # version used in release process to guarantee old-GLIBC compatibility
 
     steps:
@@ -43,7 +41,7 @@ jobs:
 
   buildmsrv:
     name: build-msrv
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -65,7 +63,7 @@ jobs:
 
   unittest:
     name: unit & integration tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -85,7 +83,7 @@ jobs:
 
   install:
     name: install (download)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
       with:
