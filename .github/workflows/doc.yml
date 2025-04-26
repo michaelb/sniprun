@@ -11,6 +11,9 @@ on:
   workflow_dispatch:
 
 
+permission:
+  pages: write
+
 jobs:
 
   build_sphinx_job:
