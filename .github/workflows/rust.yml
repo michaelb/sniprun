@@ -13,6 +13,9 @@ jobs:
   ci-safety:
     name: ci-safety
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      security-events: write
     steps:
       - uses: actions/checkout@v4
         with:

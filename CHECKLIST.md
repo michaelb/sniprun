@@ -24,6 +24,7 @@
 
  - merge master in dev
  - Bump Cargo.toml to next version on dev, suffixed by 'beta'
+ - `cargo update --offline` # update sniprun's version in committed Cargo.lock
 
 # When the tag gets pushed, the 'release' github action will automatically add the new tag to GitHub's 'Releases'
 
