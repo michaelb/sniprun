@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@c7f87aa956e4c323abf06d5dec078e358f6b4d04
       - name: run zizmor ci analysis tool
         run: uvx zizmor --format sarif . > results.sarif 
         env:
@@ -70,11 +70,11 @@ jobs:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@stable
       - run: './ressources/install_all_compilers_ci.sh'
-      - uses: oven-sh/setup-bun@v1
-      - uses: dlang-community/setup-dlang@v1
-      - uses: erlef/setup-beam@v1
+      - uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5
+      - uses: dlang-community/setup-dlang@2979e3ea011f6a234cd3a47dcbeb60f451c9635f
+      - uses: erlef/setup-beam@5304e04ea2b355f03681464e683d92e3b2f18451
         with:
-          otp-version: "23"
+          otp-version: "24.2"
           elixir-version: "1.14"
       - name: Unit tests
         run: cargo test --release --features ignore_in_ci
