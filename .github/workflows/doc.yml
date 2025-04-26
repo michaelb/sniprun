@@ -19,6 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     container: debian:buster-slim
 
+    permissions:
+      pages: write
+
     steps:
     
       - name: Get prerequisites and clone repository
@@ -33,8 +36,6 @@ jobs:
 
       - name: Run build script for Sphinx pages
 
-        permissions:
-          pages: write
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: "doc/build.sh"
