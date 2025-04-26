@@ -11,8 +11,7 @@ on:
   workflow_dispatch:
 
 
-permission:
-  pages: write
+permissions: {}
 
 jobs:
 
@@ -33,6 +32,9 @@ jobs:
         shell: bash
 
       - name: Run build script for Sphinx pages
+
+        permissions:
+          pages: write
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: "doc/build.sh"
