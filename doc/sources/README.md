@@ -514,7 +514,7 @@ sa.run_string(codestring, <filetype>, <config>)
 
 Due to its nature, Sniprun may have trouble with programs that :
 
-- Mess with standart output / stderr
+- Mess with standard output / stderr
 - Need to read from stdin
 - Print incorrect UTF8 characters, or just too many lines
 - Access files; sniprun does not run in a virtual environment, it accesses files just like your own code do, but since it does not run the whole program, something might go wrong. **Relative paths may cause issues**, as the current working directory for sniprun will be somewhere in ~/.cache/sniprun, and relative imports may miss.
