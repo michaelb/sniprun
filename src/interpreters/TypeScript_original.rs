@@ -29,14 +29,14 @@ impl Interpreter for TypeScript_original {
 
         let interpreter = match TypeScript_original::get_interpreter_option(&data, "interpreter") {
             Some(user_interpreter) => user_interpreter.to_string().replace("\"", ""),
-            None => "ts-node".to_string()
+            None => "ts-node".to_string(),
         };
         Box::new(TypeScript_original {
             data,
             support_level,
             code: String::new(),
             main_file_path: mfp,
-            interpreter
+            interpreter,
         })
     }
 
