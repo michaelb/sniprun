@@ -82,8 +82,8 @@ jobs:
           otp-version: "24.2"
           elixir-version: "1.14"
       - name: Unit tests
-        run: cargo test --release --features ignore_in_ci
-      - name: integration tests
+        run: nohup python ressources/python_server.py & cargo test --release --features ignore_in_ci
+      - name: Integration tests
         run: cargo test --release --features ignore_in_ci --test integration
 
   install:

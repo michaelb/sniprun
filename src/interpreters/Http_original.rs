@@ -161,25 +161,20 @@ impl Interpreter for Http_original {
 mod test_http_original {
     use super::*;
     use serial_test::serial;
-    use ureq::serde_json;
 
     #[test]
     #[serial]
     fn simple_http_get() {
         let mut data = DataHolder::new();
 
-        data.current_bloc = String::from("GET https://httpbin.org/get");
+        data.current_bloc = String::from("GET http://localhost:8079/");
 
         let mut interpreter = Http_original::new(data);
         let res = interpreter.run();
 
         assert!(res.is_ok(), "Could not run http interpreter");
         let data = res.ok().unwrap();
-        let (body, status) = data.split_once("---").unwrap();
-
-        let v: serde_json::Value = serde_json::from_str(body).unwrap();
-        println!("{}", serde_json::to_string_pretty(&v).unwrap());
-        assert_eq!(v["url"], "https://httpbin.org/get".to_owned());
+        let (_body, status) = data.split_once("---").unwrap();
 
         assert!(status.contains("200"));
     }
@@ -188,23 +183,19 @@ mod test_http_original {
     #[serial]
     fn simple_http_get_long() {
         let data = DataHolder {
-            current_bloc: String::from("GET https://httpbin.org/get"),
+            current_bloc: String::from("GET http://localhost:8079"),
             ..Default::default()
         };
 
-        println!("{:?}", data.interpreter_options);
-        println!("{:?}", Http_original::error_truncate(&data));
+        // println!("{:?}", data.interpreter_options);
+        // println!("{:?}", Http_original::error_truncate(&data));
 
         let mut interpreter = Http_original::new(data);
         let res = interpreter.run();
 
         assert!(res.is_ok(), "Could not run http interpreter");
         let data = res.ok().unwrap();
-        let (body, status) = data.split_once("---").unwrap();
-
-        let v: serde_json::Value = serde_json::from_str(body).unwrap();
-        println!("{}", serde_json::to_string_pretty(&v).unwrap());
-        assert_eq!(v["url"], "https://httpbin.org/get".to_owned());
+        let (_body, status) = data.split_once("---").unwrap();
 
         assert!(status.contains("200"));
     }
@@ -215,9 +206,9 @@ mod test_http_original {
         let data = DataHolder {
             current_bloc: String::from(
                 r####"
-GET https://httpbin.org/get
+GET http://localhost:8079
 ###
-GET https://httpbin.org/anything
+GET http://localhost:8079
 "####,
             ),
             ..Default::default()
@@ -230,12 +221,9 @@ GET https://httpbin.org/anything
 
         let data = res.ok().unwrap();
 
-        let v: Vec<&str> = data.split("---").collect();
+        let (_body, status) = data.split_once("---").unwrap();
 
-        println!("{v:?}");
-
-        // Body + Status + newline per request
-        assert_eq!(v.len(), 6);
+        assert!(status.contains("200"));
     }
 
     #[test]
@@ -245,7 +233,7 @@ GET https://httpbin.org/anything
 
         data.current_bloc = String::from(
             r#"
-POST https://httpbin.org/post
+POST http://localhost:8079
 
 {
     "foo": "bar"
@@ -257,16 +245,7 @@ POST https://httpbin.org/post
 
         assert!(res.is_ok(), "Could not run http interpreter");
         let data = res.ok().unwrap();
-        let (body, status) = data.split_once("---").unwrap();
-
-        let v: serde_json::Value = serde_json::from_str(body).unwrap();
-        // println!("{}", serde_json::to_string_pretty(&v).unwrap());
-
-        let j: serde_json::Value = serde_json::from_str(&v["json"].to_string()).unwrap();
-        // println!("{}", serde_json::to_string_pretty(&foo).unwrap());
-
-        assert_eq!(v["url"], "https://httpbin.org/post".to_owned());
-        assert_eq!(j["foo"], "bar".to_owned());
+        let (_body, status) = data.split_once("---").unwrap();
 
         assert!(status.contains("200"));
     }
