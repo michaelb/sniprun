@@ -9,6 +9,8 @@ env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: -C target-feature=+crt-static
 
+permissions:
+  contents: write
 
 jobs:
   release:
@@ -24,7 +26,7 @@ jobs:
       run: cargo build --target x86_64-unknown-linux-gnu --release --verbose && mv ./target/x86_64-unknown-linux-gnu/release/sniprun .
 
     - name: upload to releases
-      uses: svenstaro/upload-release-action@v2
+      uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: sniprun

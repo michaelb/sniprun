@@ -430,6 +430,7 @@ println!("-> {}", alphabet);
 | Perl/Perl6   | Line          | No               |
 | Plantuml     | Bloc          | No               |
 | Python3      | Import        | Yes\*\*          |
+| PHP          | Bloc          | Yes\*\*          |
 | R            | Bloc          | Yes\*\*          |
 | Ruby         | Bloc          | No               |
 | Rust         | Bloc          | No               |

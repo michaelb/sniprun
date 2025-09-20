@@ -1,3 +1,5 @@
+#![allow(clippy::zombie_processes)]
+
 use crate::interpreters::import::*;
 
 #[derive(Clone)]
@@ -269,7 +271,7 @@ impl ReplLikeInterpreter for PHP_original {
                 }
                 Ok(Fork::Parent(_)) => {}
                 Err(_) => info!(
-                    "Python3_fifo could not fork itself to the background to launch the kernel"
+                    "PHP_original could not fork itself to the background to launch the kernel"
                 ),
             };
 
@@ -315,8 +317,7 @@ impl ReplLikeInterpreter for PHP_original {
             + "\\n\");\n";
 
         let all_code = String::from("\n") + &self.code + "\n\n";
-        self.code =
-            String::from(start_mark) + &start_mark_err + &all_code + &end_mark + &end_mark_err;
+        self.code = start_mark + &start_mark_err + &all_code + &end_mark + &end_mark_err;
         Ok(())
     }
 }

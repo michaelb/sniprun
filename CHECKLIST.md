@@ -11,6 +11,12 @@
  - remove the 'beta' from the version field in Cargo.toml
  - `cargo update --offline` # update sniprun's version in committed Cargo.lock
 
+But alas some packages must be downgraded to respect MSRV:
+- cargo update -p flate2@1.1.2 --precise 1.0.22
+- cargo update -p backtrace@0.3.75 --precise 0.3.71
+- cargo update -p ring@0.17.14 --precise 0.17.11
+- cargo update -p serde_bytes@0.11.19 --precise 0.11.15
+
 ## Merge process
  - create a PR dev -> master
  - merge
@@ -24,6 +30,7 @@
 
  - merge master in dev
  - Bump Cargo.toml to next version on dev, suffixed by 'beta'
+ - `cargo update --offline` # update sniprun's version in committed Cargo.lock
 
 # When the tag gets pushed, the 'release' github action will automatically add the new tag to GitHub's 'Releases'
 

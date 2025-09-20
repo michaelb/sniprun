@@ -7,15 +7,20 @@ on:
     branches: [ master, dev]
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   ci-safety:
     name: ci-safety
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      security-events: write
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@c7f87aa956e4c323abf06d5dec078e358f6b4d04
       - name: run zizmor ci analysis tool
         run: uvx zizmor --format sarif . > results.sarif 
         env:
@@ -28,7 +33,7 @@ jobs:
 
   build:
     name : build-latest-stable
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     # version used in release process to guarantee old-GLIBC compatibility
 
     steps:
@@ -41,7 +46,7 @@ jobs:
 
   buildmsrv:
     name: build-msrv
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -63,27 +68,27 @@ jobs:
 
   unittest:
     name: unit & integration tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@stable
       - run: './ressources/install_all_compilers_ci.sh'
-      - uses: oven-sh/setup-bun@v1
-      - uses: dlang-community/setup-dlang@v1
-      - uses: erlef/setup-beam@v1
+      - uses: oven-sh/setup-bun@4bc047ad259df6fc24a6c9b0f9a0cb08cf17fbe5
+      - uses: dlang-community/setup-dlang@2979e3ea011f6a234cd3a47dcbeb60f451c9635f
+      - uses: erlef/setup-beam@5304e04ea2b355f03681464e683d92e3b2f18451
         with:
-          otp-version: "23"
+          otp-version: "24.2"
           elixir-version: "1.14"
       - name: Unit tests
-        run: cargo test --release --features ignore_in_ci
-      - name: integration tests
+        run: nohup python ressources/python_server.py & cargo test --release --features ignore_in_ci
+      - name: Integration tests
         run: cargo test --release --features ignore_in_ci --test integration
 
   install:
     name: install (download)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
       with:
