@@ -269,7 +269,7 @@ impl ReplLikeInterpreter for PHP_original {
                 }
                 Ok(Fork::Parent(_)) => {}
                 Err(_) => info!(
-                    "Python3_fifo could not fork itself to the background to launch the kernel"
+                    "PHP_original could not fork itself to the background to launch the kernel"
                 ),
             };
 
