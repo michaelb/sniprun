@@ -17,7 +17,6 @@ jobs:
 
   build_sphinx_job:
     runs-on: ubuntu-latest
-    container: debian:buster-slim
 
     permissions:
       pages: write
@@ -29,8 +28,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -x
-          apt-get update
-          apt-get install -y git
+          sudo apt-get update
+          sudo apt-get install -y git
           git clone "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
         shell: bash
 
