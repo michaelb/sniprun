@@ -24,7 +24,7 @@ jobs:
         persist-credentials: false
     - uses: dtolnay/rust-toolchain@stable
     - name: build
-      run: cargo build --target x86_64-unknown-linux-gnu --release --verbose && mv ./target/x86_64-unknown-linux-gnu/release/sniprun .
+      run: cargo build --target x86_64-unknown-linux-gnu --locked --release --verbose && mv ./target/x86_64-unknown-linux-gnu/release/sniprun .
 
     - name: upload to releases
       uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd
