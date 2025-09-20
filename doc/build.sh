@@ -2,9 +2,6 @@
 set -x
 set -e
 
-apt-get update
-apt-get -y install git rsync python3-pip python3-venv
-
 python3 -m venv venv
 source venv/bin/activate
 pip install myst-parser==1.0.0 docutils==0.18.1 sphinx-rtd-theme==1.2.0 sphinx==5.0
