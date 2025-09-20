@@ -17,7 +17,7 @@ class S(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
+        # logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
         self._set_response()
         self.wfile.write("GET request for {}".format(self.path).encode('utf-8'))
 
