@@ -74,6 +74,11 @@ then
     sudo apt-get install clojure
 fi
 
+if ! command -v php &> /dev/null
+then
+    sudo apt-get install php php-cli
+fi
+
 if ! command -v plantuml &> /dev/null
 then
     sudo apt-get install plantuml
