@@ -20,6 +20,7 @@ jobs:
 
     permissions:
       pages: write
+      contents: write
 
     steps:
     
