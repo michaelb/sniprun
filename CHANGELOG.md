@@ -1,3 +1,7 @@
+## v1.3.19
+- PHP (incl. REPL) support, courtesy of @be-west
+- CI fixes & improvements
+
 ## v1.3.18
 - Swift support (incl. REPL)
 - Configurable REPL timeout
