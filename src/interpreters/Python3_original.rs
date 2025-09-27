@@ -60,14 +60,14 @@ impl Python3_original {
             if line.trim().starts_with("import ") || line.trim().starts_with("from ") {
                 //basic selection
                 if line.contains('(') {
-                    self.imports = self.imports.clone() + "\n" + line;
+                    self.imports = self.imports.clone() + "\n" + line.trim();
                     in_import_list = true;
                     continue;
                 }
                 if self.module_used(line, &self.code) {
                     // embed in try catch blocs in case uneeded module is unavailable
                     let line = unindent(line);
-                    self.imports = self.imports.clone() + "\n" + &line;
+                    self.imports = self.imports.clone() + "\n" + &line.trim();
                 }
             }
         }
