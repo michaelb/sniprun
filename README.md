@@ -18,15 +18,15 @@
 
 # Introduction
 
-Sniprun is a code runner plugin for neovim written in Lua and Rust.
-It aims to provide stupidly fast partial code testing for interpreted
-**and compiled** [languages](https://michaelb.github.io/sniprun/sources/README.html#support-levels-and-languages)
-. Sniprun blurs the line between standard save/run workflow, jupyter-like
-notebook, and REPL/interpreters.
+Sniprun is a code runner plugin for neovim written in Lua and Rust. It aims to provide
+stupidly fast partial code testing for most interpreted **and compiled**
+[language](https://michaelb.github.io/sniprun/sources/README.html#support-levels-and-languages)
+, right from within your favorite editor, blurring the line between standard
+save/run workflow, jupyter-like notebook, and REPL/interpreters.
 
 </br>
 
-TLDR: `Plug 'michaelb/sniprun', {'do': 'sh install.sh'}`, `:SnipRun`, `:'<,'>SnipRun`, `:SnipInfo`
+TLDR: `{ "michaelb/sniprun", "build = "sh install.sh" }`, `:SnipRun`, `:'<,'>SnipRun`, `:SnipInfo`
 
 # Installation, configuration, ...
 
@@ -59,10 +59,11 @@ A very simple example (in C), play the .gif and look in the command area:
 ##### REPL-like behavior is available for some languages
 
 Python, Julia, Lua, JavaScript & Typescript (via deno), Clojure, R, Mathematica,
-Sage, coming soon for many other interpreted (and compiled) languages.
+Sage, PHP, Swift, OCaml, and of course Rust (via [evcxr](https://github.com/evcxr/evcxr)),
+coming soon for many other interpreted (and compiled) languages.
 With [REPL-like behavior](https://michaelb.github.io/sniprun/sources/README.html#repl-like-behavior)
 ,you can run code dependent on previously executed code, just like in
-a REPL, from within your favorite editor.
+a REPL !
 
 ![spacer](ressources/visual_assets/760091.png)
 
@@ -116,7 +117,7 @@ It's been quite a journey already! For history fans, see the [full changelog](CH
 
 ## Contributing
 
-Sniprun has been made contributor-friendly (see
+Sniprun should be quite contributor-friendly (see
 [CONTRIBUTING.md](CONTRIBUTING.md)), so it's relatively easy to create / fix
 interpreters for any language. But any (constructive) issue, discussion, or
-doc Pull Request is a welcome form of contribution !
+documentation Pull Request is a welcome form of contribution !
