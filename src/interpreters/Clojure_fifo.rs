@@ -59,9 +59,9 @@ impl Clojure_fifo {
                     // info!("file : {:?}", contents);
                     if err_contents.contains(&end_mark_err) {
                         if let Some(index) = err_contents.rfind(&start_mark_err) {
-                            let mut err_to_display = err_contents[index + start_mark_err.len()
-                                ..err_contents.len() - end_mark_err.len() - 1]
-                                .to_owned();
+                            let index_e = err_contents.rfind(&end_mark_err).unwrap();
+                            let mut err_to_display =
+                                err_contents[index + start_mark_err.len()..index_e].to_owned();
                             info!("err to display : {:?}", err_to_display);
                             if !err_to_display.trim().is_empty() {
                                 info!("err found");
@@ -88,9 +88,8 @@ impl Clojure_fifo {
                     if out_contents.contains(&end_mark_ok) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark_ok).unwrap();
-                        return Ok(out_contents[index + start_mark_ok.len()
-                            ..out_contents.len() - end_mark_ok.len() - 1]
-                            .to_owned());
+                        let index_e = out_contents.rfind(&end_mark_ok).unwrap();
+                        return Ok(out_contents[index + start_mark_ok.len()..index_e].to_owned());
                     }
                 }
             }

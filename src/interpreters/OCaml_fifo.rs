@@ -60,9 +60,9 @@ impl OCaml_fifo {
                     if out_contents.contains(&end_mark_ok) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark_ok).unwrap();
-                        let output = out_contents[index + start_mark_ok.len()
-                            ..out_contents.len() - end_mark_ok.len() - 1]
-                            .to_owned();
+
+                        let index_e = out_contents.rfind(&end_mark_ok).unwrap();
+                        let output = &out_contents[index + start_mark_ok.len()..index_e].to_owned();
                         if output.trim().contains("Error: ") {
                             return Err(SniprunError::RuntimeError(output));
                         } else {

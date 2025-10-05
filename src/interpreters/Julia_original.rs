@@ -50,7 +50,9 @@ impl Julia_original {
         }
 
         let index = contents.rfind(&start_mark).unwrap();
-        Ok(contents[index + start_mark.len()..contents.len() - end_mark.len() - 1].to_owned())
+
+        let index_e = contents.rfind(&end_mark).unwrap();
+        return Ok(contents[index + start_mark.len()..index_e].to_owned());
     }
 
     fn fetch_config(&mut self) {
