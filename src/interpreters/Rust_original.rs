@@ -368,7 +368,7 @@ impl ReplLikeInterpreter for Rust_original {
                 }
                 Ok(Fork::Parent(_)) => {}
                 Err(_) => {
-                    info!("JS_TS_bun could not fork itself to the background to launch the kernel")
+                    info!("Rust_original could not fork itself to the background to launch the kernel")
                 }
             };
 
