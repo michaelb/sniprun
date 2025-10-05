@@ -27,9 +27,10 @@ Welcome to Sniprun's documentation!
    sources/common_options.md
    sources/interpreters/Ada_original.md
    sources/interpreters/Bash_original.md
-   sources/interpreters/Clojure_fifo.md
    sources/interpreters/C_original.md
+   sources/interpreters/Clojure_fifo.md
    sources/interpreters/Cpp_original.md
+   sources/interpreters/CS_original.md
    sources/interpreters/CSharp_original.md
    sources/interpreters/CS_original.md
    sources/interpreters/D_original.md
@@ -51,6 +52,7 @@ Welcome to Sniprun's documentation!
    sources/interpreters/Neorg_original.md
    sources/interpreters/OCaml_fifo.md
    sources/interpreters/OrgMode_original.md
+   sources/interpreters/PHP_original.md
    sources/interpreters/Prolog_original.md
    sources/interpreters/Python3_fifo.md
    sources/interpreters/Python3_jupyter.md
@@ -60,4 +62,5 @@ Welcome to Sniprun's documentation!
    sources/interpreters/Rust_original.md
    sources/interpreters/Sage_fifo.md
    sources/interpreters/Scala_original.md
+   sources/interpreters/SQL_original.md
    sources/interpreters/TypeScript_original.md
