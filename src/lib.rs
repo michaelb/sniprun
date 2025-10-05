@@ -73,6 +73,9 @@ pub struct DataHolder {
     pub cli_args: Vec<String>,
 
     pub nvim_pid: usize,
+
+    // getting this sometimes fail, so better save it in sniprun's memory
+    pub sniprun_namespace_id_cache: Option<i64>,
 }
 
 #[derive(Clone, Default, Debug)]
@@ -123,6 +126,7 @@ impl Default for DataHolder {
             display_no_output: vec![DisplayType::Classic(Both)],
             cli_args: vec![],
             nvim_pid: 0,
+            sniprun_namespace_id_cache: None,
         }
     }
 }
@@ -519,11 +523,11 @@ pub fn start() {
                             let result = launcher.select_and_run();
                             info!("[RUN] Interpreter return a result");
                             data.range[1] += 1; // display on end of code bloc
-                            display(result, nvim, &data);
+                            display(result, nvim, &mut data);
                         }
                     } else {
                         // normal, unique result
-                        display(result, event_handler2.nvim, &event_handler2.data);
+                        display(result, event_handler2.nvim, &mut event_handler2.data);
                     }
 
                     //clean data

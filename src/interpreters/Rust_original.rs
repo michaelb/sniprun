@@ -39,8 +39,8 @@ impl Rust_original {
         err_path: &str,
         id: u32,
     ) -> Result<String, SniprunError> {
-        let end_mark = String::from("sniprun_finished_id=") + &id.to_string();
-        let start_mark = String::from("sniprun_started_id=") + &id.to_string();
+        let end_mark = String::from("sniprun_finished_id=") + &id.to_string() + "\n";
+        let start_mark = String::from("sniprun_started_id=") + &id.to_string() + "\n";
 
         info!(
             "searching for things between {:?} and {:?}",
@@ -75,11 +75,13 @@ impl Rust_original {
                     info!("file could be read : {:?}", err_contents);
                     // info!("file : {:?}", contents);
                     if err_contents.contains(&end_mark) {
-                        info!("out found");
+                        info!("err found: ");
                         let index = err_contents.rfind(&start_mark).unwrap();
-                        let err_to_display = err_contents
-                            [index + start_mark.len()..err_contents.len() - end_mark.len() - 1]
-                            .to_owned();
+                        info!("slicing with index = {index}, start_mark len = {}, err_contents.len() = {}, end mark len = {}", start_mark.len(), err_contents.len(), end_mark.len());
+
+                        let index_e = err_contents.rfind(&end_mark).unwrap();
+                        let err_to_display =
+                            err_contents[index + start_mark.len()..index_e].to_owned();
                         info!("err to display : {:?}", err_to_display);
                         if !err_to_display.trim().is_empty() {
                             info!("err found");
@@ -103,9 +105,8 @@ impl Rust_original {
                     if out_contents.contains(&end_mark) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark).unwrap();
-                        return Ok(out_contents
-                            [index + start_mark.len()..out_contents.len() - end_mark.len() - 2]
-                            .to_owned());
+                        let index_e = out_contents.rfind(&end_mark).unwrap();
+                        return Ok(out_contents[index + start_mark.len()..index_e].to_owned());
                     }
                 }
             }
