@@ -246,9 +246,11 @@ impl Interpreter for Neorg_original {
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
     }
-
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
     }
 
     fn get_max_support_level() -> SupportLevel {
@@ -271,7 +273,7 @@ impl Interpreter for Neorg_original {
                 false,
             )
             .unwrap();
-        for tag_name in self.get_data().cli_args {
+        for tag_name in &self.get_data().cli_args {
             // walk the whole visual selection in case multiple code block are contained
 
             let mut found = false;

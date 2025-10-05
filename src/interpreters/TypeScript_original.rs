@@ -66,10 +66,13 @@ impl Interpreter for TypeScript_original {
     fn default_for_filetype() -> bool {
         true
     }
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
-    }
 
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
+    }
     fn get_max_support_level() -> SupportLevel {
         //define the max level support of the interpreter (see readme for definitions)
         SupportLevel::Bloc

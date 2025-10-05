@@ -54,12 +54,14 @@ impl Interpreter for SQL_original {
         true
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
-    }
-
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Bloc
+    }
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {

@@ -68,6 +68,9 @@ impl Rust_original {
                 info!("file exists");
                 err_contents.clear();
                 let res = file.read_to_string(&mut err_contents);
+                err_contents =
+                    String::from_utf8(strip_ansi_escapes::strip(err_contents.into_bytes()))
+                        .unwrap();
                 if res.is_ok() {
                     info!("file could be read : {:?}", err_contents);
                     // info!("file : {:?}", contents);
@@ -90,6 +93,9 @@ impl Rust_original {
             if let Ok(mut file) = std::fs::File::open(out_path) {
                 info!("file exists");
                 out_contents.clear();
+                out_contents =
+                    String::from_utf8(strip_ansi_escapes::strip(out_contents.into_bytes()))
+                        .unwrap();
                 let res = file.read_to_string(&mut out_contents);
                 if res.is_ok() {
                     info!("file could be read : {:?}", out_contents);
@@ -161,6 +167,12 @@ impl Interpreter for Rust_original {
     fn default_for_filetype() -> bool {
         true
     }
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
+    }
 
     fn get_current_level(&self) -> SupportLevel {
         self.support_level
@@ -168,10 +180,6 @@ impl Interpreter for Rust_original {
 
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
-    }
-
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
     }
 
     fn get_max_support_level() -> SupportLevel {
@@ -323,6 +331,11 @@ mod test_rust_original {
 
 impl ReplLikeInterpreter for Rust_original {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
+        info!(
+            "previous code = {:?}, self.pid  = {:?}",
+            self.read_previous_code(),
+            self.get_pid()
+        );
         if !self.read_previous_code().is_empty() {
             // nothing to do, kernel already running
             info!("evcxr kernel already running");

@@ -53,10 +53,12 @@ impl Interpreter for R_original {
         self.support_level = level;
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
     }
-
+    fn get_data(&self) -> &DataHolder {
+        &self.data
+    }
     fn check_cli_args(&self) -> Result<(), SniprunError> {
         // All cli arguments are sendable to python
         // Though they will be ignored in REPL mode

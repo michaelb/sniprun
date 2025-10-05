@@ -62,7 +62,8 @@ pub trait Interpreter: ReplLikeInterpreter {
 
     fn get_current_level(&self) -> SupportLevel;
     fn set_current_level(&mut self, level: SupportLevel);
-    fn get_data(&self) -> DataHolder;
+    fn get_data_mut(&mut self) -> &mut DataHolder;
+    fn get_data(&self) -> &DataHolder;
 
     fn get_nvim_pid(data: &DataHolder) -> String {
         // associated utility function
@@ -190,11 +191,11 @@ pub trait InterpreterUtils {
     ///read previously saved code from the interpreterdata object
     fn read_previous_code(&self) -> String;
     ///append code to the interpreterdata object
-    fn save_code(&self, code: String);
-    fn clear(&self);
+    fn save_code(&mut self, code: String);
+    fn clear(&mut self);
 
-    fn set_pid(&self, pid: u32);
-    fn get_pid(&self) -> Option<u32>;
+    fn set_pid(&mut self, pid: u32);
+    fn get_pid(&mut self) -> Option<u32>;
     fn get_interpreter_option(data: &DataHolder, option: &str) -> Option<neovim_lib::Value>;
     fn contains_main(entry: &str, snippet: &str, comment: &str) -> bool;
     fn error_truncate(data: &DataHolder) -> ErrTruncate;
@@ -213,7 +214,13 @@ impl<T: Interpreter> InterpreterUtils for T {
             String::new()
         } else {
             info!("found interpreter_data");
-            let interpreter_data = data.interpreter_data.unwrap().lock().unwrap().clone();
+            let interpreter_data = data
+                .interpreter_data
+                .as_ref()
+                .unwrap()
+                .lock()
+                .unwrap()
+                .clone();
             let content_owner = T::get_name();
             if interpreter_data.owner == content_owner {
                 interpreter_data.content
@@ -226,40 +233,27 @@ impl<T: Interpreter> InterpreterUtils for T {
     /// Save an unique String to Sniprun memory.
     /// This will be emptied at neovim startup,
     /// when sniprun is reset or memoryclean'd
-    fn save_code(&self, code: String) {
+    fn save_code(&mut self, code: String) {
         let previous_code = self.read_previous_code();
-        let data = self.get_data();
-        if data.interpreter_data.is_none() {
-            info!("Unable to save code for next usage");
-        } else {
+        let data = self.get_data_mut();
+        if let Some(d) = data.interpreter_data.as_mut() {
             {
-                data.interpreter_data.clone().unwrap().lock().unwrap().owner = T::get_name();
+                d.lock().unwrap().owner = T::get_name();
             }
             {
-                data.interpreter_data.unwrap().lock().unwrap().content =
-                    previous_code + "\n" + &code;
+                d.lock().unwrap().content = previous_code + "\n" + &code;
             }
             info!("code saved: {}", self.read_previous_code());
         }
     }
 
     /// Clear sniprun memory
-    fn clear(&self) {
-        let data = self.get_data();
-        if data.interpreter_data.is_some() {
-            data.interpreter_data
-                .clone()
-                .unwrap()
-                .lock()
-                .unwrap()
-                .owner
-                .clear();
-            data.interpreter_data
-                .unwrap()
-                .lock()
-                .unwrap()
-                .content
-                .clear();
+    fn clear(&mut self) {
+        if let Some(d) = self.get_data_mut().interpreter_data.as_mut() {
+            let mut d = d.lock().unwrap();
+            d.owner.clear();
+            d.content.clear();
+            d.pid = None;
         }
     }
 
@@ -267,15 +261,15 @@ impl<T: Interpreter> InterpreterUtils for T {
     /// to sniprun memory
     /// This will be emptied at neovim startup,
     /// when sniprun is reset or memoryclean'd
-    fn set_pid(&self, pid: u32) {
-        if let Some(di) = self.get_data().interpreter_data {
+    fn set_pid(&mut self, pid: u32) {
+        if let Some(di) = &self.get_data().interpreter_data {
             di.lock().unwrap().pid = Some(pid);
         }
     }
 
     /// get a unsigned integer previously saved in sniprun memory
-    fn get_pid(&self) -> Option<u32> {
-        if let Some(di) = self.get_data().interpreter_data {
+    fn get_pid(&mut self) -> Option<u32> {
+        if let Some(di) = &self.get_data().interpreter_data {
             di.lock().unwrap().pid
         } else {
             None

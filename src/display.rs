@@ -267,7 +267,10 @@ pub fn display_virtual_text(
     filter: DisplayFilter,
 ) {
     info!("range is : {:?}", data.range);
-    let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
+    let namespace_id = nvim.lock().unwrap().create_namespace("sniprun");
+
+    info!("namespace = {:?}", namespace_id);
+    let namespace_id = namespace_id.unwrap();
     if (filter == OnlyOk) && result.is_err() || (filter == OnlyErr) && result.is_ok() {
         if let Err(SniprunError::InterpreterLimitationError(_)) = result {
             return; // without clearing the line
