@@ -1,3 +1,7 @@
+## v1.3.20
+- PHP repl mode fixes
+- Python3_original import indentation fix
+
 ## v1.3.19
 - PHP (incl. REPL) support, courtesy of @be-west
 - CI fixes & improvements
@@ -9,7 +13,7 @@
 - REPL limitation 'please re-run your snippet' removed
 
 ## v1.3.17
-- better fallback messages
+- Better fallback messages
 - Terminal display mode fixes (courtesy of @dbeecham)
 - VirtualLine display mode
 
