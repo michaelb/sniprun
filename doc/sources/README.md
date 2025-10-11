@@ -32,7 +32,7 @@ An example in C, look in the command area:
 **send-to-REPL-like behavior is available for some languages**
 
 Python, R, D, Mathematica, Sage, Julia, Javascript & Typescript (via deno),
-Clojure and Lua, coming soon for many other interpreted and compiled languages.
+Clojure, Rust (via `evcxr`) and Lua, coming soon for many other interpreted and compiled languages.
 Very versatile, you can even run things like GUI plots on the fly!
 
 ![](../../ressources/visual_assets/demo_repl.png)
