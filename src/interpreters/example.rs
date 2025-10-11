@@ -67,9 +67,11 @@ impl Interpreter for Language_subname {
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
     }
-
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
     }
 
     fn get_max_support_level() -> SupportLevel {
@@ -125,7 +127,6 @@ impl Interpreter for Language_subname {
         write(&self.main_file_path, &self.code)
             .expect("Unable to write to file for language_subname");
 
-
         //fetch the option from the configuration
         //  interpreter_options = {
         //   example_original = {
@@ -140,8 +141,6 @@ impl Interpreter for Language_subname {
                 configurable_option = config_value_valid_string.to_string();
             }
         }
-
-
 
         let compiler = Language_subname::get_compiler_or(&self.data, "compiler");
         //compile it (to the bin_path that already points to the rigth path)

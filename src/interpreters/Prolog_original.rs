@@ -42,8 +42,11 @@ impl Interpreter for Prolog_original {
     fn default_for_filetype() -> bool {
         true
     }
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
     }
     fn check_cli_args(&self) -> Result<(), SniprunError> {
         // All cli arguments are sendable to the exe
@@ -56,7 +59,7 @@ impl Interpreter for Prolog_original {
         let default_interpreter = String::from("gprolog");
         self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
-            Prolog_original::get_interpreter_option(&self.get_data(), "interpreter")
+            Prolog_original::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -111,19 +114,19 @@ impl Interpreter for Prolog_original {
         info!("yay from Prolog interpreter");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if Prolog_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-            return Err(SniprunError::RuntimeError(
+        } else if Prolog_original::error_truncate(self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()
                     .lines()
                     .last()
                     .unwrap_or(&String::from_utf8(output.stderr).unwrap())
                     .to_owned(),
-            ));
+            ))
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }

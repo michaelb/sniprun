@@ -56,9 +56,9 @@ impl Sage_fifo {
                     // info!("file : {:?}", contents);
                     if err_contents.contains(&end_mark) {
                         if let Some(index) = err_contents.rfind(&start_mark) {
-                            let err_to_display = err_contents
-                                [index + start_mark.len()..err_contents.len() - end_mark.len() - 1]
-                                .to_owned();
+                            let index_e = err_contents.rfind(&end_mark).unwrap();
+                            let err_to_display =
+                                err_contents[index + start_mark.len()..index_e].to_owned();
                             info!("err to display : {:?}", err_to_display);
                             if !err_to_display.trim().is_empty() {
                                 info!("err found");
@@ -225,7 +225,7 @@ impl Sage_fifo {
         let default_interpreter = String::from("sage");
         self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
-            Sage_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            Sage_fifo::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -233,7 +233,7 @@ impl Sage_fifo {
             }
         }
         if let Some(user_sage_config) =
-            Sage_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            Sage_fifo::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(_user_sage_config_str) = user_sage_config.as_str() {
                 info!("Using user sage config");
@@ -296,14 +296,16 @@ impl Interpreter for Sage_fifo {
         self.support_level = level;
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
-    }
-
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Import
     }
 
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
+    }
     fn default_for_filetype() -> bool {
         true
     }

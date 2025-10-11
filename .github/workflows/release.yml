@@ -22,7 +22,10 @@ jobs:
     - uses: actions/checkout@v4
       with:
         persist-credentials: false
-    - uses: dtolnay/rust-toolchain@stable
+    # pinned rust toolchain to 1.88; since using a non-pinned action
+    # in a wrokflow that produce distributed executables is something
+    # of a security risk
+    - uses: dtolnay/rust-toolchain@e2d9ac80ead8661a2e202b02724382f7a4eb1e1d
     - name: build
       run: cargo build --target x86_64-unknown-linux-gnu --locked --release --verbose && mv ./target/x86_64-unknown-linux-gnu/release/sniprun .
 

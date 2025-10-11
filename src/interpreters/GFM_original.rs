@@ -163,7 +163,7 @@ impl Interpreter for GFM_original {
         });
 
         if let Some(value) =
-            GFM_original::get_interpreter_option(&gfm_interpreter.get_data(), "default_filetype")
+            GFM_original::get_interpreter_option(gfm_interpreter.get_data(), "default_filetype")
         {
             if let Some(valid_string) = value.as_str() {
                 gfm_interpreter.default_filetype = valid_string.to_string();
@@ -191,10 +191,12 @@ impl Interpreter for GFM_original {
         self.support_level = level;
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
     }
-
+    fn get_data(&self) -> &DataHolder {
+        &self.data
+    }
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Import
     }

@@ -63,9 +63,11 @@ impl Interpreter for Plantuml_original {
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
     }
-
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
     }
 
     fn default_for_filetype() -> bool {

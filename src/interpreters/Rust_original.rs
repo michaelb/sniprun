@@ -24,7 +24,7 @@ impl Rust_original {
         let default_compiler = String::from("rustc");
         self.compiler = default_compiler;
         if let Some(used_compiler) =
-            Rust_original::get_interpreter_option(&self.get_data(), "compiler")
+            Rust_original::get_interpreter_option(self.get_data(), "compiler")
         {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
@@ -39,8 +39,8 @@ impl Rust_original {
         err_path: &str,
         id: u32,
     ) -> Result<String, SniprunError> {
-        let end_mark = String::from("sniprun_finished_id=") + &id.to_string();
-        let start_mark = String::from("sniprun_started_id=") + &id.to_string();
+        let end_mark = String::from("sniprun_finished_id=") + &id.to_string() + "\n";
+        let start_mark = String::from("sniprun_started_id=") + &id.to_string() + "\n";
 
         info!(
             "searching for things between {:?} and {:?}",
@@ -68,15 +68,20 @@ impl Rust_original {
                 info!("file exists");
                 err_contents.clear();
                 let res = file.read_to_string(&mut err_contents);
+                err_contents =
+                    String::from_utf8(strip_ansi_escapes::strip(err_contents.into_bytes()))
+                        .unwrap();
                 if res.is_ok() {
                     info!("file could be read : {:?}", err_contents);
                     // info!("file : {:?}", contents);
                     if err_contents.contains(&end_mark) {
-                        info!("out found");
+                        info!("err found: ");
                         let index = err_contents.rfind(&start_mark).unwrap();
-                        let err_to_display = err_contents
-                            [index + start_mark.len()..err_contents.len() - end_mark.len() - 1]
-                            .to_owned();
+                        info!("slicing with index = {index}, start_mark len = {}, err_contents.len() = {}, end mark len = {}", start_mark.len(), err_contents.len(), end_mark.len());
+
+                        let index_e = err_contents.rfind(&end_mark).unwrap();
+                        let err_to_display =
+                            err_contents[index + start_mark.len()..index_e].to_owned();
                         info!("err to display : {:?}", err_to_display);
                         if !err_to_display.trim().is_empty() {
                             info!("err found");
@@ -90,6 +95,9 @@ impl Rust_original {
             if let Ok(mut file) = std::fs::File::open(out_path) {
                 info!("file exists");
                 out_contents.clear();
+                out_contents =
+                    String::from_utf8(strip_ansi_escapes::strip(out_contents.into_bytes()))
+                        .unwrap();
                 let res = file.read_to_string(&mut out_contents);
                 if res.is_ok() {
                     info!("file could be read : {:?}", out_contents);
@@ -97,9 +105,8 @@ impl Rust_original {
                     if out_contents.contains(&end_mark) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark).unwrap();
-                        return Ok(out_contents
-                            [index + start_mark.len()..out_contents.len() - end_mark.len() - 2]
-                            .to_owned());
+                        let index_e = out_contents.rfind(&end_mark).unwrap();
+                        return Ok(out_contents[index + start_mark.len()..index_e].to_owned());
                     }
                 }
             }
@@ -161,6 +168,12 @@ impl Interpreter for Rust_original {
     fn default_for_filetype() -> bool {
         true
     }
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
+    }
 
     fn get_current_level(&self) -> SupportLevel {
         self.support_level
@@ -168,10 +181,6 @@ impl Interpreter for Rust_original {
 
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
-    }
-
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
     }
 
     fn get_max_support_level() -> SupportLevel {
@@ -250,7 +259,7 @@ impl Interpreter for Rust_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if Rust_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if Rust_original::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()
@@ -323,6 +332,11 @@ mod test_rust_original {
 
 impl ReplLikeInterpreter for Rust_original {
     fn fetch_code_repl(&mut self) -> Result<(), SniprunError> {
+        info!(
+            "previous code = {:?}, self.pid  = {:?}",
+            self.read_previous_code(),
+            self.get_pid()
+        );
         if !self.read_previous_code().is_empty() {
             // nothing to do, kernel already running
             info!("evcxr kernel already running");
@@ -368,7 +382,7 @@ impl ReplLikeInterpreter for Rust_original {
                 }
                 Ok(Fork::Parent(_)) => {}
                 Err(_) => {
-                    info!("JS_TS_bun could not fork itself to the background to launch the kernel")
+                    info!("Rust_original could not fork itself to the background to launch the kernel")
                 }
             };
 

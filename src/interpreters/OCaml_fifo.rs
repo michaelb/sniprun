@@ -60,13 +60,13 @@ impl OCaml_fifo {
                     if out_contents.contains(&end_mark_ok) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark_ok).unwrap();
-                        let output = out_contents[index + start_mark_ok.len()
-                            ..out_contents.len() - end_mark_ok.len() - 1]
-                            .to_owned();
+
+                        let index_e = out_contents.rfind(&end_mark_ok).unwrap();
+                        let output = &out_contents[index + start_mark_ok.len()..index_e].to_owned();
                         if output.trim().contains("Error: ") {
-                            return Err(SniprunError::RuntimeError(output));
+                            return Err(SniprunError::RuntimeError(output.to_string()));
                         } else {
-                            return Ok(output);
+                            return Ok(output.to_string());
                         }
                     }
                 }
@@ -82,7 +82,7 @@ impl OCaml_fifo {
         self.interpreter = default_interpreter;
         self.interpreter_repl = default_interpreter_repl;
         if let Some(used_interpreter) =
-            OCaml_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            OCaml_fifo::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -90,7 +90,7 @@ impl OCaml_fifo {
             }
         }
         if let Some(used_interpreter_repl) =
-            OCaml_fifo::get_interpreter_option(&self.get_data(), "interpreter_repl")
+            OCaml_fifo::get_interpreter_option(self.get_data(), "interpreter_repl")
         {
             if let Some(interpreter_string_repl) = used_interpreter_repl.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string_repl);
@@ -157,10 +157,12 @@ impl Interpreter for OCaml_fifo {
         self.support_level = level;
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
     }
-
+    fn get_data(&self) -> &DataHolder {
+        &self.data
+    }
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Bloc
     }
@@ -200,7 +202,7 @@ impl Interpreter for OCaml_fifo {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if OCaml_fifo::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if OCaml_fifo::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr)
                     .unwrap()

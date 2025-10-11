@@ -70,9 +70,9 @@ impl Python3_fifo {
                     // info!("file : {:?}", contents);
                     if err_contents.contains(&end_mark) {
                         if let Some(index) = err_contents.rfind(&start_mark) {
-                            let mut err_to_display = err_contents
-                                [index + start_mark.len()..err_contents.len() - end_mark.len() - 1]
-                                .to_owned();
+                            let index_e = err_contents.rfind(&end_mark).unwrap();
+                            let mut err_to_display =
+                                err_contents[index + start_mark.len()..index_e].to_owned();
                             info!("err to display : {:?}", err_to_display);
                             if !err_to_display.trim().is_empty() {
                                 info!("err found");
@@ -101,9 +101,9 @@ impl Python3_fifo {
                     if out_contents.contains(&end_mark) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark).unwrap();
-                        return Ok(out_contents
-                            [index + start_mark.len()..out_contents.len() - end_mark.len() - 1]
-                            .to_owned());
+
+                        let index_e = out_contents.rfind(&end_mark).unwrap();
+                        return Ok(out_contents[index + start_mark.len()..index_e].to_owned());
                     }
                 }
             }
@@ -227,7 +227,7 @@ impl Python3_fifo {
         let default_interpreter = String::from("python3");
         self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
-            Python3_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            Python3_fifo::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -237,7 +237,7 @@ impl Python3_fifo {
 
         if let Ok(path) = env::current_dir() {
             if let Some(venv_array_config) =
-                Python3_fifo::get_interpreter_option(&self.get_data(), "venv")
+                Python3_fifo::get_interpreter_option(self.get_data(), "venv")
             {
                 if let Some(actual_vec_of_venv) = venv_array_config.as_array() {
                     for possible_venv in actual_vec_of_venv.iter() {
@@ -316,10 +316,12 @@ impl Interpreter for Python3_fifo {
         self.support_level = level;
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
     }
-
+    fn get_data(&self) -> &DataHolder {
+        &self.data
+    }
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Import
     }

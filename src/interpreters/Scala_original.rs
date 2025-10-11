@@ -60,12 +60,14 @@ impl Interpreter for Scala_original {
         self.support_level = level;
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
-    }
-
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Bloc
+    }
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -145,7 +147,7 @@ impl Interpreter for Scala_original {
         if output.status.success() {
             //return stdout
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if Scala_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if Scala_original::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()

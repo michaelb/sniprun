@@ -21,7 +21,6 @@ impl PHP_original {
         id: u32,
     ) -> Result<String, SniprunError> {
         let end_mark = String::from("sniprun_finished_id=") + &id.to_string();
-        let end_mark_nl = end_mark.clone() + "\n";
         let start_mark = String::from("sniprun_started_id=") + &id.to_string();
 
         info!(
@@ -51,7 +50,7 @@ impl PHP_original {
                 err_contents.clear();
                 if file.read_to_string(&mut err_contents).is_ok() {
                     // info!("errfile could be read : {:?}", err_contents);
-                    if let Some(end_index) = err_contents.rfind(&end_mark_nl) {
+                    if let Some(end_index) = err_contents.rfind(&end_mark) {
                         if let Some(index) = err_contents.rfind(&start_mark) {
                             let err_to_display =
                                 err_contents[index + start_mark.len()..end_index].to_owned();
@@ -96,7 +95,7 @@ impl PHP_original {
         let mut interpreter: String = "php".to_owned();
 
         let data = self.get_data();
-        if let Some(interpreter_val) = PHP_original::get_interpreter_option(&data, "interpreter") {
+        if let Some(interpreter_val) = PHP_original::get_interpreter_option(data, "interpreter") {
             if let Some(interpreter_string) = interpreter_val.as_str() {
                 interpreter = interpreter_string.to_owned();
             }
@@ -158,9 +157,11 @@ impl Interpreter for PHP_original {
     fn set_current_level(&mut self, level: SupportLevel) {
         self.support_level = level;
     }
-
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
     }
 
     fn get_max_support_level() -> SupportLevel {
@@ -208,7 +209,7 @@ impl Interpreter for PHP_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if PHP_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if PHP_original::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()
@@ -306,13 +307,13 @@ impl ReplLikeInterpreter for PHP_original {
         let start_mark = String::from("\n;print(\"sniprun_started_id=")
             + &self.current_output_id.to_string()
             + "\\n\");\n";
-        let end_mark = String::from("\n;print(\"sniprun_finished_id=")
+        let end_mark = String::from("\n;print(\"\\nsniprun_finished_id=")
             + &self.current_output_id.to_string()
             + "\\n\");\n";
         let start_mark_err = String::from("\n;fwrite(STDERR, \"sniprun_started_id=")
             + &self.current_output_id.to_string()
             + "\\n\");\n";
-        let end_mark_err = String::from("\n;fwrite(STDERR, \"sniprun_finished_id=")
+        let end_mark_err = String::from("\n;fwrite(STDERR, \"\\nsniprun_finished_id=")
             + &self.current_output_id.to_string()
             + "\\n\");\n";
 

@@ -49,10 +49,12 @@ impl Interpreter for Lua_nvim {
         self.support_level = level;
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
     }
-
+    fn get_data(&self) -> &DataHolder {
+        &self.data
+    }
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Bloc
     }
@@ -130,7 +132,7 @@ impl Interpreter for Lua_nvim {
         info!("yay from lua interpreter - in another nvim instance");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if Lua_nvim::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if Lua_nvim::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()

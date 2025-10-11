@@ -59,9 +59,9 @@ impl Clojure_fifo {
                     // info!("file : {:?}", contents);
                     if err_contents.contains(&end_mark_err) {
                         if let Some(index) = err_contents.rfind(&start_mark_err) {
-                            let mut err_to_display = err_contents[index + start_mark_err.len()
-                                ..err_contents.len() - end_mark_err.len() - 1]
-                                .to_owned();
+                            let index_e = err_contents.rfind(&end_mark_err).unwrap();
+                            let mut err_to_display =
+                                err_contents[index + start_mark_err.len()..index_e].to_owned();
                             info!("err to display : {:?}", err_to_display);
                             if !err_to_display.trim().is_empty() {
                                 info!("err found");
@@ -88,9 +88,8 @@ impl Clojure_fifo {
                     if out_contents.contains(&end_mark_ok) {
                         info!("out found");
                         let index = out_contents.rfind(&start_mark_ok).unwrap();
-                        return Ok(out_contents[index + start_mark_ok.len()
-                            ..out_contents.len() - end_mark_ok.len() - 1]
-                            .to_owned());
+                        let index_e = out_contents.rfind(&end_mark_ok).unwrap();
+                        return Ok(out_contents[index + start_mark_ok.len()..index_e].to_owned());
                     }
                 }
             }
@@ -106,7 +105,7 @@ impl Clojure_fifo {
         self.interpreter = default_interpreter;
         self.interpreter_repl = default_interpreter_repl;
         if let Some(used_interpreter) =
-            Clojure_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            Clojure_fifo::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -114,7 +113,7 @@ impl Clojure_fifo {
             }
         }
         if let Some(used_interpreter_repl) =
-            Clojure_fifo::get_interpreter_option(&self.get_data(), "interpreter_repl")
+            Clojure_fifo::get_interpreter_option(self.get_data(), "interpreter_repl")
         {
             if let Some(interpreter_string_repl) = used_interpreter_repl.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string_repl);
@@ -180,10 +179,12 @@ impl Interpreter for Clojure_fifo {
         self.support_level = level;
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
     }
-
+    fn get_data(&self) -> &DataHolder {
+        &self.data
+    }
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Bloc
     }
@@ -224,7 +225,7 @@ impl Interpreter for Clojure_fifo {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if Clojure_fifo::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if Clojure_fifo::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr)
                     .unwrap()

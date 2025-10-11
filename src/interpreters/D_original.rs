@@ -49,8 +49,11 @@ impl Interpreter for D_original {
         true
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
     }
 
     fn get_max_support_level() -> SupportLevel {
@@ -101,7 +104,7 @@ impl Interpreter for D_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if D_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if D_original::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()

@@ -18,7 +18,7 @@ impl CSharp_original {
         let default_compiler = String::from("csc");
         self.compiler = default_compiler;
         if let Some(used_compiler) =
-            CSharp_original::get_interpreter_option(&self.get_data(), "compiler")
+            CSharp_original::get_interpreter_option(self.get_data(), "compiler")
         {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
@@ -74,10 +74,12 @@ impl Interpreter for CSharp_original {
         self.support_level = level;
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
     }
-
+    fn get_data(&self) -> &DataHolder {
+        &self.data
+    }
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Bloc
     }
@@ -162,19 +164,19 @@ impl Interpreter for CSharp_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if CSharp_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-            return Err(SniprunError::RuntimeError(
+        } else if CSharp_original::error_truncate(self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()
                     .lines()
                     .next()
                     .unwrap_or(&String::from_utf8(output.stderr).unwrap())
                     .to_owned(),
-            ));
+            ))
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }

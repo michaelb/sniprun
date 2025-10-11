@@ -96,7 +96,16 @@ impl fmt::Display for DisplayType {
     }
 }
 
-pub fn display(result: Result<String, SniprunError>, nvim: Arc<Mutex<Neovim>>, data: &DataHolder) {
+pub fn display(
+    result: Result<String, SniprunError>,
+    nvim: Arc<Mutex<Neovim>>,
+    data: &mut DataHolder,
+) {
+    if data.sniprun_namespace_id_cache.is_none() {
+        let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
+        data.sniprun_namespace_id_cache = Some(namespace_id);
+    }
+
     let mut display_type = data.display_type.clone();
     display_type.sort();
     display_type.dedup(); //now only uniques display types
@@ -188,7 +197,7 @@ pub fn display_virtual_line(
     filter: DisplayFilter,
 ) {
     info!("range is : {:?}", data.range);
-    let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
+    let namespace_id = data.sniprun_namespace_id_cache.unwrap();
     if (filter == OnlyOk) && result.is_err() || (filter == OnlyErr) && result.is_ok() {
         if let Err(SniprunError::InterpreterLimitationError(_)) = result {
             return; // without clearing the line
@@ -267,7 +276,8 @@ pub fn display_virtual_text(
     filter: DisplayFilter,
 ) {
     info!("range is : {:?}", data.range);
-    let namespace_id = nvim.lock().unwrap().create_namespace("sniprun").unwrap();
+    let namespace_id = data.sniprun_namespace_id_cache.unwrap();
+
     if (filter == OnlyOk) && result.is_err() || (filter == OnlyErr) && result.is_ok() {
         if let Err(SniprunError::InterpreterLimitationError(_)) = result {
             return; // without clearing the line

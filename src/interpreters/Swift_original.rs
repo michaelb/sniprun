@@ -151,7 +151,7 @@ impl Swift_original {
         let default_interpreter = String::from("swift repl");
         self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
-            Swift_original::get_interpreter_option(&self.get_data(), "interpreter")
+            Swift_original::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -162,7 +162,7 @@ impl Swift_original {
         let default_compiler = String::from("swiftc");
         self.compiler = default_compiler;
         if let Some(used_compiler) =
-            Swift_original::get_interpreter_option(&self.get_data(), "compiler")
+            Swift_original::get_interpreter_option(self.get_data(), "compiler")
         {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("using custom compiler: {}", compiler_string);
@@ -227,12 +227,14 @@ impl Interpreter for Swift_original {
         self.support_level = level;
     }
 
-    fn get_data(&self) -> DataHolder {
-        self.data.clone()
-    }
-
     fn get_max_support_level() -> SupportLevel {
         SupportLevel::Import
+    }
+    fn get_data_mut(&mut self) -> &mut DataHolder {
+        &mut self.data
+    }
+    fn get_data(&self) -> &DataHolder {
+        &self.data
     }
 
     fn fetch_code(&mut self) -> Result<(), SniprunError> {
@@ -297,19 +299,19 @@ impl Interpreter for Swift_original {
         let output = cmd.output().expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if Swift_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
-            return Err(SniprunError::RuntimeError(
+        } else if Swift_original::error_truncate(self.get_data()) == ErrTruncate::Short {
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()
                     .lines()
                     .last()
                     .unwrap_or(&String::from_utf8(output.stderr).unwrap())
                     .to_owned(),
-            ));
+            ))
         } else {
-            return Err(SniprunError::RuntimeError(
+            Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr).unwrap(),
-            ));
+            ))
         }
     }
 }
