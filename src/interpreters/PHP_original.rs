@@ -95,7 +95,7 @@ impl PHP_original {
         let mut interpreter: String = "php".to_owned();
 
         let data = self.get_data();
-        if let Some(interpreter_val) = PHP_original::get_interpreter_option(&data, "interpreter") {
+        if let Some(interpreter_val) = PHP_original::get_interpreter_option(data, "interpreter") {
             if let Some(interpreter_string) = interpreter_val.as_str() {
                 interpreter = interpreter_string.to_owned();
             }
@@ -209,7 +209,7 @@ impl Interpreter for PHP_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if PHP_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if PHP_original::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()

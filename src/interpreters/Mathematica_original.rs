@@ -167,7 +167,7 @@ impl Interpreter for Mathematica_original {
         let mut preload_graphics = String::from("");
         let mut wait_for_graphics = String::from("");
         if let Some(use_javagraphics_msgpack) = Mathematica_original::get_interpreter_option(
-            &self.get_data(),
+            self.get_data(),
             "use_javagraphics_if_contains",
         ) {
             if let Some(use_javagraphics) = use_javagraphics_msgpack.as_array() {
@@ -179,7 +179,7 @@ impl Interpreter for Mathematica_original {
                             wait_for_graphics = String::from("Pause[3600];\n");
 
                             if let Some(time_mgspack) = Mathematica_original::get_interpreter_option(
-                                &self.get_data(),
+                                self.get_data(),
                                 "keep_plot_open_for",
                             ) {
                                 if let Some(time) = time_mgspack.as_i64() {
@@ -198,7 +198,7 @@ impl Interpreter for Mathematica_original {
 
         if let Some(wrap_all_lines_with_print_msgpack) =
             Mathematica_original::get_interpreter_option(
-                &self.get_data(),
+                self.get_data(),
                 "wrap_all_lines_with_print",
             )
         {
@@ -214,7 +214,7 @@ impl Interpreter for Mathematica_original {
         }
         if let Some(wrap_last_line_with_print_msgpack) =
             Mathematica_original::get_interpreter_option(
-                &self.get_data(),
+                self.get_data(),
                 "wrap_last_line_with_print",
             )
         {
@@ -328,7 +328,7 @@ impl ReplLikeInterpreter for Mathematica_original {
         info!("adding boilerplate");
         let mut preload_graphics = "";
         if let Some(use_javagraphics_msgpack) = Mathematica_original::get_interpreter_option(
-            &self.get_data(),
+            self.get_data(),
             "use_javagraphics_if_contains",
         ) {
             if !self.read_previous_code().contains("JavaGraphics loaded") {

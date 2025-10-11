@@ -24,7 +24,7 @@ impl Rust_original {
         let default_compiler = String::from("rustc");
         self.compiler = default_compiler;
         if let Some(used_compiler) =
-            Rust_original::get_interpreter_option(&self.get_data(), "compiler")
+            Rust_original::get_interpreter_option(self.get_data(), "compiler")
         {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
@@ -259,7 +259,7 @@ impl Interpreter for Rust_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if Rust_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if Rust_original::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()

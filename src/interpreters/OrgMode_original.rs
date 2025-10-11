@@ -221,7 +221,7 @@ impl Interpreter for OrgMode_original {
         });
 
         if let Some(value) = OrgMode_original::get_interpreter_option(
-            &orgmode_interpreter.get_data(),
+            orgmode_interpreter.get_data(),
             "default_filetype",
         ) {
             if let Some(valid_string) = value.as_str() {

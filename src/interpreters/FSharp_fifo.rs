@@ -100,7 +100,7 @@ impl FSharp_fifo {
         let default_interpreter = String::from("dotnet fsi --nologo");
         self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
-            FSharp_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            FSharp_fifo::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -208,7 +208,7 @@ impl Interpreter for FSharp_fifo {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if FSharp_fifo::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if FSharp_fifo::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()

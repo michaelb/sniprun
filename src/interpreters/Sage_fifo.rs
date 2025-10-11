@@ -225,7 +225,7 @@ impl Sage_fifo {
         let default_interpreter = String::from("sage");
         self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
-            Sage_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            Sage_fifo::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -233,7 +233,7 @@ impl Sage_fifo {
             }
         }
         if let Some(user_sage_config) =
-            Sage_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            Sage_fifo::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(_user_sage_config_str) = user_sage_config.as_str() {
                 info!("Using user sage config");

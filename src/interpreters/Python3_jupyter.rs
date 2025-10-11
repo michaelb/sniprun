@@ -222,7 +222,7 @@ impl Interpreter for Python3_jupyter {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if Python3_jupyter::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if Python3_jupyter::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()

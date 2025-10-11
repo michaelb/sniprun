@@ -227,7 +227,7 @@ impl Python3_fifo {
         let default_interpreter = String::from("python3");
         self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
-            Python3_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            Python3_fifo::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -237,7 +237,7 @@ impl Python3_fifo {
 
         if let Ok(path) = env::current_dir() {
             if let Some(venv_array_config) =
-                Python3_fifo::get_interpreter_option(&self.get_data(), "venv")
+                Python3_fifo::get_interpreter_option(self.get_data(), "venv")
             {
                 if let Some(actual_vec_of_venv) = venv_array_config.as_array() {
                     for possible_venv in actual_vec_of_venv.iter() {

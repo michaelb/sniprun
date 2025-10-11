@@ -105,7 +105,7 @@ impl Clojure_fifo {
         self.interpreter = default_interpreter;
         self.interpreter_repl = default_interpreter_repl;
         if let Some(used_interpreter) =
-            Clojure_fifo::get_interpreter_option(&self.get_data(), "interpreter")
+            Clojure_fifo::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -113,7 +113,7 @@ impl Clojure_fifo {
             }
         }
         if let Some(used_interpreter_repl) =
-            Clojure_fifo::get_interpreter_option(&self.get_data(), "interpreter_repl")
+            Clojure_fifo::get_interpreter_option(self.get_data(), "interpreter_repl")
         {
             if let Some(interpreter_string_repl) = used_interpreter_repl.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string_repl);
@@ -225,7 +225,7 @@ impl Interpreter for Clojure_fifo {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if Clojure_fifo::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if Clojure_fifo::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr)
                     .unwrap()

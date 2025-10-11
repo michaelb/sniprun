@@ -221,7 +221,7 @@ impl Interpreter for Neorg_original {
         });
 
         if let Some(value) = Neorg_original::get_interpreter_option(
-            &neorg_interpreter.get_data(),
+            neorg_interpreter.get_data(),
             "default_filetype",
         ) {
             if let Some(valid_string) = value.as_str() {

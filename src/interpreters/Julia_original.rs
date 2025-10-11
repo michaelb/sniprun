@@ -52,14 +52,14 @@ impl Julia_original {
         let index = contents.rfind(&start_mark).unwrap();
 
         let index_e = contents.rfind(&end_mark).unwrap();
-        return Ok(contents[index + start_mark.len()..index_e].to_owned());
+        Ok(contents[index + start_mark.len()..index_e].to_owned())
     }
 
     fn fetch_config(&mut self) {
         let default_interpreter = String::from("julia");
         self.interpreter = default_interpreter;
         if let Some(used_interpreter) =
-            Julia_original::get_interpreter_option(&self.get_data(), "interpreter")
+            Julia_original::get_interpreter_option(self.get_data(), "interpreter")
         {
             if let Some(interpreter_string) = used_interpreter.as_str() {
                 info!("Using custom interpreter: {}", interpreter_string);
@@ -68,7 +68,7 @@ impl Julia_original {
         }
 
         if let Some(project_opt) =
-            Julia_original::get_interpreter_option(&self.get_data(), "project")
+            Julia_original::get_interpreter_option(self.get_data(), "project")
         {
             if let Some(mut project_str) = project_opt.as_str() {
                 if project_str == "." {
@@ -196,7 +196,7 @@ impl Interpreter for Julia_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if Julia_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if Julia_original::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()

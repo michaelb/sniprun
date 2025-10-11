@@ -51,7 +51,7 @@ impl Cpp_original {
         let default_compiler = String::from("g++");
         self.compiler = default_compiler;
         if let Some(used_compiler) =
-            Cpp_original::get_interpreter_option(&self.get_data(), "compiler")
+            Cpp_original::get_interpreter_option(self.get_data(), "compiler")
         {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
@@ -166,7 +166,7 @@ impl Interpreter for Cpp_original {
             .expect("Unable to start process");
 
         if !output.status.success() {
-            if Cpp_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            if Cpp_original::error_truncate(self.get_data()) == ErrTruncate::Short {
                 let error_pos = String::from_utf8(output.stderr.clone())
                     .unwrap()
                     .find("error:");

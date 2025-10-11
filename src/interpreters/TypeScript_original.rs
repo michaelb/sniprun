@@ -136,7 +136,7 @@ impl Interpreter for TypeScript_original {
         if output.status.success() {
             //return stdout
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if TypeScript_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if TypeScript_original::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()

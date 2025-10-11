@@ -56,7 +56,7 @@ impl C_original {
         let default_compiler = String::from("gcc");
         self.compiler = default_compiler;
         if let Some(used_compiler) =
-            C_original::get_interpreter_option(&self.get_data(), "compiler")
+            C_original::get_interpreter_option(self.get_data(), "compiler")
         {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
@@ -238,7 +238,7 @@ impl Interpreter for C_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if C_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if C_original::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()

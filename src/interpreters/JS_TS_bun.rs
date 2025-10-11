@@ -218,7 +218,7 @@ impl Interpreter for JS_TS_bun {
             Ok(String::from_utf8(output.stdout).unwrap())
         } else {
             // return stderr
-            if JS_TS_bun::error_truncate(&self.get_data()) == ErrTruncate::Short {
+            if JS_TS_bun::error_truncate(self.get_data()) == ErrTruncate::Short {
                 Err(SniprunError::RuntimeError(
                     String::from_utf8(output.stderr.clone())
                         .unwrap()

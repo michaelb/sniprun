@@ -118,7 +118,7 @@ impl Interpreter for SQL_original {
             .expect("Unable to start process");
         if output.status.success() {
             Ok(String::from_utf8(output.stdout).unwrap())
-        } else if SQL_original::error_truncate(&self.get_data()) == ErrTruncate::Short {
+        } else if SQL_original::error_truncate(self.get_data()) == ErrTruncate::Short {
             Err(SniprunError::RuntimeError(
                 String::from_utf8(output.stderr.clone())
                     .unwrap()
