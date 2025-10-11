@@ -41,9 +41,11 @@ and much more useful information on the
 ## Demos
 
 ##### Send to Sniprun snippets of any language
-A very simple example (in C), play the .gif and look in the command area:
 
-![demo_c](ressources/visual_assets/demo_c.gif)
+A very simple example (Rust, of course), where current lines and visual selections
+are sent to sniprun via shortcuts.
+
+![demo_rust2](ressources/visual_assets/demo_rust2.gif)
 
 ##### The result can be returned in multiple (even at the same time) ways:
 

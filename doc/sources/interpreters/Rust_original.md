@@ -12,3 +12,11 @@ require'sniprun'.setup({
     }
 })
 ```
+
+the Rust interpreter supports REPL mode via `evcxr` (needs to be installed)
+
+```lua
+require('sniprun').setup({
+    repl_enable = { 'Rust_original' },
+})
+```
