@@ -1,5 +1,5 @@
 ## v1.3.20
-- PHP repl mode fixes
+- PHP repl, Rust repl fixes
 - Python3_original import indentation fix
 
 ## v1.3.19
