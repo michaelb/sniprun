@@ -595,7 +595,7 @@ mod test_main {
         let result = launcher.select_and_run();
         info!("[RUN] Interpreter return a result");
 
-        display(result, event_handler.nvim, &event_handler.data);
+        display(result, event_handler.nvim, &mut event_handler.data);
     }
 
     pub fn fake_event() -> EventHandler {
