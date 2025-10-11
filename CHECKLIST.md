@@ -11,11 +11,8 @@
  - remove the 'beta' from the version field in Cargo.toml
  - `cargo update --offline` # update sniprun's version in committed Cargo.lock
 
-But alas some packages must be downgraded to respect MSRV:
-- cargo update -p flate --precise 1.0.22
-- cargo update -p backtrace --precise 0.3.71
-- cargo update -p ring --precise 0.17.11
-- cargo update -p serde_bytes --precise 0.11.15
+But alas some packages must be downgraded to respect MSRV, see Cargo.toml and
+add to the list if (when) necessary
 
 ## Merge process
  - create a PR dev -> master
