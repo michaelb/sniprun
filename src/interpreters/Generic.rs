@@ -320,6 +320,7 @@ impl Interpreter for Generic {
             info!("compiling main file to exe");
 
             let output = Command::new(self.compiler.split_whitespace().next().unwrap())
+                .current_dir(Generic::get_interpreter_desired_cwd(&self.data))
                 .args(self.compiler.split_whitespace().skip(1))
                 .arg(&self.main_file_path)
                 .current_dir(&self.workdir)
@@ -353,6 +354,7 @@ impl Interpreter for Generic {
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = if self.interpreted_lang {
             Command::new(self.interpreter.split_whitespace().next().unwrap())
+                .current_dir(Generic::get_interpreter_desired_cwd(&self.data))
                 .args(self.interpreter.split_whitespace().skip(1))
                 .arg(&self.main_file_path)
                 .args(&self.get_data().cli_args)
@@ -361,6 +363,7 @@ impl Interpreter for Generic {
                 .expect("Unable to start process specified in Generic's config")
         } else {
             Command::new(self.exe_path.clone())
+                .current_dir(Generic::get_interpreter_desired_cwd(&self.data))
                 .args(&self.get_data().cli_args)
                 .current_dir(&self.workdir)
                 .output()

@@ -218,6 +218,7 @@ impl Interpreter for Clojure_fifo {
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new(self.interpreter.split_whitespace().next().unwrap())
+            .current_dir(Clojure_fifo::get_interpreter_desired_cwd(&self.data))
             .args(self.interpreter.split_whitespace().skip(1))
             .arg(&self.main_file_path)
             .args(&self.get_data().cli_args)
@@ -278,6 +279,7 @@ impl ReplLikeInterpreter for Clojure_fifo {
             match daemon() {
                 Ok(Fork::Child) => {
                     let _res = Command::new("bash")
+                        .current_dir(Clojure_fifo::get_interpreter_desired_cwd(&self.data))
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
@@ -331,6 +333,7 @@ impl ReplLikeInterpreter for Clojure_fifo {
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         info!("running launcher {}", send_repl_cmd);
         let res = Command::new(send_repl_cmd)
+            .current_dir(Clojure_fifo::get_interpreter_desired_cwd(&self.data))
             .arg(self.main_file_path.clone())
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn();

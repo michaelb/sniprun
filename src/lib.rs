@@ -7,6 +7,7 @@ pub use display::{display, display_floating_window, DisplayFilter::*, DisplayTyp
 use log::{info, LevelFilter};
 use neovim_lib::{Neovim, NeovimApi, Session, Value};
 use simple_logging::log_to_file;
+use std::path::PathBuf;
 use std::str::FromStr;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
@@ -58,6 +59,10 @@ pub struct DataHolder {
     pub repl_disabled: Vec<String>,
     ///interpreter options
     pub interpreter_options: Option<Value>,
+
+    /// user config, expressing the desired working dir for the spawned
+    /// interpreter / exe processes. if "." or unset, uses projectroot
+    pub cwd: Option<String>,
 
     ///interpreter data
     pub interpreter_data: Option<Arc<Mutex<InterpreterData>>>,
@@ -112,6 +117,9 @@ impl Default for DataHolder {
             range: [-1, -1],
             filepath: String::new(),
             projectroot: String::new(),
+            cwd: std::env::current_dir()
+                .ok()
+                .map(|path| path.to_string_lossy().to_string()),
             dependencies_path: vec![],
             work_dir: format!("{}/{}", cache_dir().unwrap().to_str().unwrap(), "sniprun"),
             sniprun_root_dir: String::new(),
@@ -157,6 +165,15 @@ impl DataHolder {
             self.current_bloc = real_current_bloc.join("\n");
             self.current_line = real_current_bloc[0].to_string();
         }
+    }
+
+    pub fn get_desired_cwd(&self) -> PathBuf {
+        if let Some(cwd) = &self.cwd {
+            if cwd != "." {
+                return PathBuf::from(&cwd);
+            }
+        }
+        PathBuf::from(&self.projectroot)
     }
 }
 
@@ -252,6 +269,12 @@ impl EventHandler {
             if let Some(i) = self.index_from_name("sniprun_root_dir", config) {
                 self.data.sniprun_root_dir = String::from(config[i].1.as_str().unwrap());
                 info!("[FILLDATA] got sniprun root");
+            }
+        }
+        {
+            if let Some(i) = self.index_from_name("cwd", config) {
+                self.data.cwd = Some(String::from(config[i].1.as_str().unwrap()));
+                info!("[FILLDATA] got sniprun config cwd");
             }
         }
 

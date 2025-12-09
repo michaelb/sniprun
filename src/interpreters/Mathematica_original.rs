@@ -250,6 +250,9 @@ impl Interpreter for Mathematica_original {
         //run th binary and get the std output (or stderr)
         let interpreter = Mathematica_original::get_interpreter_or(&self.data, "WolframKernel");
         let output = Command::new(interpreter.split_whitespace().next().unwrap())
+            .current_dir(Mathematica_original::get_interpreter_desired_cwd(
+                &self.data,
+            ))
             .args(interpreter.split_whitespace().skip(1))
             .arg("-noprompt")
             .arg("-script")
@@ -301,6 +304,9 @@ impl ReplLikeInterpreter for Mathematica_original {
             match daemon() {
                 Ok(Fork::Child) => {
                     let _res = Command::new("bash")
+                        .current_dir(Mathematica_original::get_interpreter_desired_cwd(
+                            &self.data,
+                        ))
                         .args(&[init_repl_cmd, self.language_work_dir.clone()])
                         .output()
                         .unwrap();
@@ -372,6 +378,9 @@ impl ReplLikeInterpreter for Mathematica_original {
         let send_repl_cmd = self.data.sniprun_root_dir.clone()
             + "/src/interpreters/Mathematica_original/launcher.sh";
         let res = Command::new(send_repl_cmd)
+            .current_dir(Mathematica_original::get_interpreter_desired_cwd(
+                &self.data,
+            ))
             .arg(self.language_work_dir.clone() + "/main.mma")
             .arg(self.language_work_dir.clone() + "/pipe_in")
             .spawn()

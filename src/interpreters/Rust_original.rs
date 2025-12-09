@@ -227,6 +227,7 @@ impl Interpreter for Rust_original {
 
         //compile it (to the bin_path that arleady points to the rigth path)
         let output = Command::new(self.compiler.split_whitespace().next().unwrap())
+            .current_dir(Rust_original::get_interpreter_desired_cwd(&self.data))
             .args(self.compiler.split_whitespace().skip(1))
             .arg("--out-dir")
             .arg(&self.rust_work_dir)
@@ -255,6 +256,7 @@ impl Interpreter for Rust_original {
         //run th binary and get the std output (or stderr)
         let output = Command::new(&self.bin_path)
             .args(&self.get_data().cli_args)
+            .current_dir(Rust_original::get_interpreter_desired_cwd(&self.data))
             .output()
             .expect("Unable to start process");
         if output.status.success() {
@@ -369,6 +371,7 @@ impl ReplLikeInterpreter for Rust_original {
             match daemon() {
                 Ok(Fork::Child) => {
                     let _res = Command::new("bash")
+                        .current_dir(Rust_original::get_interpreter_desired_cwd(&self.data))
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
@@ -440,6 +443,7 @@ impl ReplLikeInterpreter for Rust_original {
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         info!("running launcher {}", send_repl_cmd);
         let res = Command::new(send_repl_cmd)
+            .current_dir(Rust_original::get_interpreter_desired_cwd(&self.data))
             .arg(self.main_file_path.clone())
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn();

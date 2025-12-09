@@ -113,6 +113,7 @@ impl Interpreter for Bash_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         let interpreter = Bash_original::get_interpreter_or(&self.data, "bash");
         let output = Command::new(interpreter.split_whitespace().next().unwrap())
+            .current_dir(Bash_original::get_interpreter_desired_cwd(&self.data))
             .args(interpreter.split_whitespace().skip(1))
             .arg(&self.main_file_path)
             .args(&self.get_data().cli_args)

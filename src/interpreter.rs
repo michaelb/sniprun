@@ -2,6 +2,7 @@ use crate::error::SniprunError;
 use crate::DataHolder;
 use log::info;
 use std::fmt::Display;
+use std::path::PathBuf;
 
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 #[allow(dead_code)]
@@ -203,6 +204,8 @@ pub trait InterpreterUtils {
     fn get_repl_timeout(data: &DataHolder) -> u64;
     fn get_compiler_or(data: &DataHolder, or: &str) -> String;
     fn get_interpreter_or(data: &DataHolder, or: &str) -> String;
+
+    fn get_interpreter_desired_cwd(data: &DataHolder) -> PathBuf;
 }
 
 impl<T: Interpreter> InterpreterUtils for T {
@@ -327,6 +330,17 @@ impl<T: Interpreter> InterpreterUtils for T {
         }
         info!("using interpreter '{}'", or);
         or.to_string()
+    }
+
+    fn get_interpreter_desired_cwd(data: &DataHolder) -> PathBuf {
+        if let Some(cwd) = T::get_interpreter_option(data, "cwd") {
+            if let Some(cwd) = cwd.as_str() {
+                info!("found cwd '{}'", cwd);
+                return PathBuf::from(cwd);
+            }
+        }
+        // otherwise, use config.cwd if set, or else, neovim's cwd
+        data.get_desired_cwd()
     }
 
     fn error_truncate(data: &DataHolder) -> ErrTruncate {

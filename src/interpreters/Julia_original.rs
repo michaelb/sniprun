@@ -188,6 +188,7 @@ impl Interpreter for Julia_original {
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new(self.interpreter.split_whitespace().next().unwrap())
+            .current_dir(Julia_original::get_interpreter_desired_cwd(&self.data))
             .args(self.interpreter.split_whitespace().skip(1))
             .args(&self.interpreter_args)
             .arg(&self.main_file_path)
@@ -245,6 +246,7 @@ impl ReplLikeInterpreter for Julia_original {
             match daemon() {
                 Ok(Fork::Child) => {
                     let _res = Command::new("bash")
+                        .current_dir(Julia_original::get_interpreter_desired_cwd(&self.data))
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
@@ -299,6 +301,7 @@ impl ReplLikeInterpreter for Julia_original {
         info!("running launcher");
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         let res = Command::new(send_repl_cmd)
+            .current_dir(Julia_original::get_interpreter_desired_cwd(&self.data))
             .arg(self.main_file_path.clone())
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn()

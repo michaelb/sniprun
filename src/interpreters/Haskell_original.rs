@@ -111,6 +111,7 @@ impl Interpreter for Haskell_original {
         );
         let compiler = Haskell_original::get_compiler_or(&self.data, "ghc");
         let output = Command::new(compiler.split_whitespace().next().unwrap())
+            .current_dir(Haskell_original::get_interpreter_desired_cwd(&self.data))
             .args(compiler.split_whitespace().skip(1))
             .arg("-dynamic")
             .arg("-o")
@@ -133,6 +134,7 @@ impl Interpreter for Haskell_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
         let output = Command::new(&self.bin_path)
+            .current_dir(Haskell_original::get_interpreter_desired_cwd(&self.data))
             .args(&self.get_data().cli_args)
             .output()
             .expect("Unable to start process");
