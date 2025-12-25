@@ -150,7 +150,10 @@ function M.term_close()
     if M.term.window_handle == 0 then
         return
     end
-    vim.api.nvim_win_close(M.term.window_handle, true)
+    if vim.api.nvim_win_is_valid(M.term.window_handle) then
+        vim.api.nvim_win_close(M.term.window_handle, true)
+    end
+
     M.term.window_handle = 0
     M.term.buffer = -1
     M.term.current_line = 0
