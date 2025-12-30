@@ -156,7 +156,7 @@ function M.term_close()
     end
     -- windows may have been closed by the user, let's not
     -- fail with a big lua error just because of that
-    if vim.api.nvim_win_is_valid(M.fw_handle) then
+    if vim.api.nvim_win_is_valid(M.term.window_handle) then
         vim.api.nvim_win_close(M.term.window_handle, true)
     end
     M.term.window_handle = 0
