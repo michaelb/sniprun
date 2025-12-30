@@ -1,3 +1,7 @@
+## v1.3.21
+- Settable current working directory
+- Fix window/terminal close bug
+
 ## v1.3.20
 - PHP repl, Rust repl fixes
 - Python3_original import indentation fix
