@@ -302,7 +302,7 @@ require'sniprun'.setup({
     SniprunFloatingWinErr  =  {fg="#881515", ctermfg="DarkRed", bold=true},
   },
 
-  live_mode_toggle='off'      --# live mode toggle, see Usage - Running for more info   
+  live_mode_toggle='off',      --# live mode toggle, see Usage - Running for more info
 
   --# miscellaneous compatibility/adjustement settings
   ansi_escape = true,         --# Remove ANSI escapes (usually color) from outputs
