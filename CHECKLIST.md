@@ -12,7 +12,8 @@
  - `cargo update --offline` # update sniprun's version in committed Cargo.lock
 
 But alas some packages must be downgraded to respect MSRV, see Cargo.toml and
-add to the list if (when) necessary
+add to the list if (when) necessary:
+- cargo update -p syn@2.0.108 --precise 2.0.106
 
 ## Merge process
  - create a PR dev -> master
