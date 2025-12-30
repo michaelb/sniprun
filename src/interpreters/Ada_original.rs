@@ -110,6 +110,7 @@ impl Interpreter for Ada_original {
 
         let compiler = Ada_original::get_compiler_or(&self.data, "gnatmake");
         let output = Command::new(compiler.split_whitespace().next().unwrap())
+            .current_dir(Ada_original::get_interpreter_desired_cwd(&self.data))
             .args(compiler.split_whitespace().skip(1))
             .arg("main")
             .arg(&self.main_file_path)
@@ -127,6 +128,7 @@ impl Interpreter for Ada_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new(&self.bin_path)
+            .current_dir(Ada_original::get_interpreter_desired_cwd(&self.data))
             .output()
             .expect("Unable to start process");
 

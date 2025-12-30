@@ -245,6 +245,7 @@ impl Interpreter for Go_original {
 
         //compile it (to the bin_path that arleady points to the rigth path)
         let output = Command::new(self.compiler.split_whitespace().next().unwrap())
+            .current_dir(Go_original::get_interpreter_desired_cwd(&self.data))
             .args(self.compiler.split_whitespace().skip(1))
             .arg("build")
             .arg("-o")
@@ -277,6 +278,7 @@ impl Interpreter for Go_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
         let output = Command::new(&self.bin_path)
+            .current_dir(Go_original::get_interpreter_desired_cwd(&self.data))
             .args(&self.get_data().cli_args)
             .output()
             .expect("Unable to start process");

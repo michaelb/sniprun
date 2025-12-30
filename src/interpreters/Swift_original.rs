@@ -269,6 +269,7 @@ impl Interpreter for Swift_original {
             .expect("Unable to write to file for swift-original");
         let mut cmd = Command::new(self.compiler.split_whitespace().next().unwrap());
         let cmd = cmd
+            .current_dir(Swift_original::get_interpreter_desired_cwd(&self.data))
             .args(self.compiler.split_whitespace().skip(1))
             .arg(&self.main_file_path)
             .arg("-o")
@@ -293,7 +294,9 @@ impl Interpreter for Swift_original {
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
         let mut cmd = Command::new(&self.bin_path);
-        cmd.args(&self.get_data().cli_args);
+        let cmd = cmd
+            .current_dir(Swift_original::get_interpreter_desired_cwd(&self.data))
+            .args(&self.get_data().cli_args);
 
         info!("cmd: {:?}", &cmd);
         let output = cmd.output().expect("Unable to start process");
@@ -348,6 +351,7 @@ impl ReplLikeInterpreter for Swift_original {
                 init_repl_cmd, &self.cache_dir
             );
             let mut cmd = Command::new("bash");
+            let cmd = cmd.current_dir(Swift_original::get_interpreter_desired_cwd(&self.data));
             cmd.args(&[
                 init_repl_cmd.clone(),
                 self.cache_dir.clone(),
@@ -363,6 +367,8 @@ impl ReplLikeInterpreter for Swift_original {
             match daemon() {
                 Ok(Fork::Child) => {
                     let mut cmd = Command::new("bash");
+                    let cmd =
+                        cmd.current_dir(Swift_original::get_interpreter_desired_cwd(&self.data));
                     cmd.args(&[
                         init_repl_cmd,
                         self.cache_dir.clone(),
@@ -422,6 +428,7 @@ impl ReplLikeInterpreter for Swift_original {
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         info!("running launcher {}", send_repl_cmd);
         let res = Command::new(send_repl_cmd)
+            .current_dir(Swift_original::get_interpreter_desired_cwd(&self.data))
             .arg(self.main_file_path.clone())
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn();

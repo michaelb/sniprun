@@ -102,6 +102,7 @@ impl Interpreter for Julia_jupyter {
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new("julia")
+            .current_dir(Julia_jupyter::get_interpreter_desired_cwd(&self.data))
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
@@ -175,6 +176,7 @@ impl ReplLikeInterpreter for Julia_jupyter {
     fn execute_repl(&mut self) -> Result<String, SniprunError> {
         info!("starting executing repl: bash {}", &self.launcher_path);
         let output = Command::new("bash")
+            .current_dir(Julia_jupyter::get_interpreter_desired_cwd(&self.data))
             .arg(&self.launcher_path)
             .output()
             .expect("failed to run command");

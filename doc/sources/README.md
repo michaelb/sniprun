@@ -290,6 +290,9 @@ require'sniprun'.setup({
     "TempFloatingWindow",  --# implies LongTempFloatingWindow, which has no effect on its own
   },
 
+  cwd = '.',  --# set the working directory for build/run processes. By default or if set to '.',
+              --# is neovim's current working directory. Can be overwritten by interpreter-options
+
   --# customize highlight groups (setting this overrides colorscheme)
   --# any parameters of nvim_set_hl() can be passed as-is
   snipruncolors = {

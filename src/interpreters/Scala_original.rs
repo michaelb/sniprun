@@ -117,6 +117,7 @@ impl Interpreter for Scala_original {
         let compiler = Scala_original::get_compiler_or(&self.data, "scalac");
         //compile it (to the bin_path that arleady points to the rigth path)
         let output = Command::new(compiler.split_whitespace().next().unwrap())
+            .current_dir(Scala_original::get_interpreter_desired_cwd(&self.data))
             .args(compiler.split_whitespace().skip(1))
             .arg("-d")
             .arg(&self.language_work_dir)
@@ -139,6 +140,7 @@ impl Interpreter for Scala_original {
         //run th binary and get the std output (or stderr)
         let interpreter = Scala_original::get_interpreter_or(&self.data, "scala");
         let output = Command::new(interpreter)
+            .current_dir(Scala_original::get_interpreter_desired_cwd(&self.data))
             .arg("Main")
             .current_dir(&self.language_work_dir)
             .output()

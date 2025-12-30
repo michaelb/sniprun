@@ -204,6 +204,7 @@ impl Interpreter for Plantuml_original {
         let compiler = Plantuml_original::get_compiler_or(&self.data, "plantuml");
         //compile it (to the bin_path that already points to the rigth path)
         let output = Command::new(compiler.split_whitespace().next().unwrap())
+            .current_dir(Plantuml_original::get_interpreter_desired_cwd(&self.data))
             .args(compiler.split_whitespace().skip(1))
             .arg("-o")
             .arg(&self.language_work_dir)

@@ -171,6 +171,7 @@ impl Interpreter for Elixir_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         let interpreter = Elixir_original::get_interpreter_or(&self.data, "elixir");
         let output = Command::new(interpreter.split_whitespace().next().unwrap())
+            .current_dir(Elixir_original::get_interpreter_desired_cwd(&self.data))
             .args(interpreter.split_whitespace().skip(1))
             .arg(&self.main_file_path)
             .args(&self.get_data().cli_args)
@@ -226,6 +227,7 @@ impl ReplLikeInterpreter for Elixir_original {
             match daemon() {
                 Ok(Fork::Child) => {
                     let _res = Command::new("bash")
+                        .current_dir(Elixir_original::get_interpreter_desired_cwd(&self.data))
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
@@ -272,6 +274,7 @@ impl ReplLikeInterpreter for Elixir_original {
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         info!("running launcher (via {})", send_repl_cmd);
         let res = Command::new(send_repl_cmd)
+            .current_dir(Elixir_original::get_interpreter_desired_cwd(&self.data))
             .arg(self.cache_dir.clone() + "/main.exs")
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn()

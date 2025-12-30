@@ -261,6 +261,7 @@ impl Interpreter for Python3_original {
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new(self.interpreter.split_whitespace().next().unwrap())
+            .current_dir(Python3_original::get_interpreter_desired_cwd(&self.data))
             .args(self.interpreter.split_whitespace().skip(1))
             .arg(&self.main_file_path)
             .args(&self.get_data().cli_args)

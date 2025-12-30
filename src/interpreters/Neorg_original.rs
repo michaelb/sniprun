@@ -220,10 +220,9 @@ impl Interpreter for Neorg_original {
             default_filetype: ddf,
         });
 
-        if let Some(value) = Neorg_original::get_interpreter_option(
-            neorg_interpreter.get_data(),
-            "default_filetype",
-        ) {
+        if let Some(value) =
+            Neorg_original::get_interpreter_option(neorg_interpreter.get_data(), "default_filetype")
+        {
             if let Some(valid_string) = value.as_str() {
                 neorg_interpreter.default_filetype = valid_string.to_string();
             }

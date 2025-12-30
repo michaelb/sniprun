@@ -203,6 +203,7 @@ impl Interpreter for PHP_original {
             self.interpreter
         );
         let output = Command::new(&self.interpreter)
+            .current_dir(PHP_original::get_interpreter_desired_cwd(&self.data))
             .arg(&self.main_file_path)
             .args(&self.get_data().cli_args)
             .output()
@@ -260,6 +261,7 @@ impl ReplLikeInterpreter for PHP_original {
             match daemon() {
                 Ok(Fork::Child) => {
                     let _res = Command::new("bash")
+                        .current_dir(PHP_original::get_interpreter_desired_cwd(&self.data))
                         .arg(init_repl_cmd)
                         .arg(&self.cache_dir)
                         .arg(PHP_original::get_nvim_pid(&self.data))
@@ -291,6 +293,7 @@ impl ReplLikeInterpreter for PHP_original {
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         info!("running launcher {}", send_repl_cmd);
         let res = Command::new(send_repl_cmd)
+            .current_dir(PHP_original::get_interpreter_desired_cwd(&self.data))
             .arg(self.main_file_path.clone())
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn();

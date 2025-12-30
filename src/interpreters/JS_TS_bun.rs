@@ -205,6 +205,7 @@ impl Interpreter for JS_TS_bun {
         }
         let interpreter = JS_TS_bun::get_interpreter_or(&self.data, "bun");
         let output = Command::new(interpreter.split_whitespace().next().unwrap())
+            .current_dir(JS_TS_bun::get_interpreter_desired_cwd(&self.data))
             .args(interpreter.split_whitespace().skip(1))
             .arg("run")
             .arg("--silent")
@@ -271,6 +272,7 @@ impl ReplLikeInterpreter for JS_TS_bun {
             match daemon() {
                 Ok(Fork::Child) => {
                     let _res = Command::new("bash")
+                        .current_dir(JS_TS_bun::get_interpreter_desired_cwd(&self.data))
                         .args(&[
                             init_repl_cmd,
                             self.cache_dir.clone(),
@@ -329,6 +331,7 @@ impl ReplLikeInterpreter for JS_TS_bun {
         let send_repl_cmd = self.data.sniprun_root_dir.clone() + "/ressources/launcher_repl.sh";
         info!("running launcher {}", send_repl_cmd);
         let res = Command::new(send_repl_cmd)
+            .current_dir(JS_TS_bun::get_interpreter_desired_cwd(&self.data))
             .arg(self.main_file_path.clone())
             .arg(self.cache_dir.clone() + "/fifo_repl/pipe_in")
             .spawn();

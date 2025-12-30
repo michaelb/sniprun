@@ -133,6 +133,7 @@ impl Interpreter for CSharp_original {
 
         //compile it (to the bin_path that arleady points to the rigth path)
         let output = Command::new(self.compiler.split_whitespace().next().unwrap())
+            .current_dir(CSharp_original::get_interpreter_desired_cwd(&self.data))
             .args(self.compiler.split_whitespace().skip(1))
             .arg(String::from("-out:") + &self.bin_path)
             .arg(&self.main_file_path)
@@ -158,6 +159,7 @@ impl Interpreter for CSharp_original {
     fn execute(&mut self) -> Result<String, SniprunError> {
         //run th binary and get the std output (or stderr)
         let output = Command::new("mono")
+            .current_dir(CSharp_original::get_interpreter_desired_cwd(&self.data))
             .arg(&self.bin_path)
             .args(&self.get_data().cli_args)
             .output()

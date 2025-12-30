@@ -75,7 +75,7 @@ EOF
 
 The `use_on_filetypes` key is implicitely an option of every interpreter
 
-```
+```lua
 interpreter_options = {
     GFM_original = {
         use_on_filetypes = {"markdown.pandoc", "rstudio" }
@@ -125,7 +125,7 @@ Almost every interpreter support either the "interpreter" or "compiler" key even
 
 example:
 
-```
+```lua
 interpreter_options = {
     Python3_original = {
         interpreter = "python3.9"
@@ -133,7 +133,7 @@ interpreter_options = {
     Rust_original = {
         compiler = "/home/user/bin/rustc-patched -Zlocation-detail=none"
     }
-}, 
+}
 ```
 
 You can see what interpreters/compilers are being used at any time by watching sniprun's log for the line
@@ -148,3 +148,20 @@ Exceptions:
    as they rely on the underlying interpreter for the code's block language and use its configuration.
 
 
+### The "cwd" key
+
+This key is supported by all interpreters and allows setting a specific
+current working directory for all sub-processes (build, run, REPL processes...).
+
+This key overwrites the global 'cwd' config field on a per-interpreter basis, which
+itself defaults to the Neovim's current working directory.
+
+If set, the pointed location must exist prior to running anything.
+
+```lua
+interpreter_options = {
+    Python3_original = {
+        cwd = "/tmp/python_projects"
+    }
+}
+```

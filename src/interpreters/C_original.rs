@@ -55,8 +55,7 @@ impl C_original {
     fn fetch_config(&mut self) {
         let default_compiler = String::from("gcc");
         self.compiler = default_compiler;
-        if let Some(used_compiler) =
-            C_original::get_interpreter_option(self.get_data(), "compiler")
+        if let Some(used_compiler) = C_original::get_interpreter_option(self.get_data(), "compiler")
         {
             if let Some(compiler_string) = used_compiler.as_str() {
                 info!("Using custom compiler: {}", compiler_string);
@@ -185,6 +184,7 @@ impl Interpreter for C_original {
         write(&self.main_file_path, &self.code).expect("Unable to write to file for c-original");
         let mut cmd = Command::new(self.compiler.split_whitespace().next().unwrap());
         let cmd = cmd
+            .current_dir(C_original::get_interpreter_desired_cwd(&self.data))
             .args(self.compiler.split_whitespace().skip(1))
             .arg(&self.main_file_path)
             .arg("-o")
@@ -233,6 +233,7 @@ impl Interpreter for C_original {
 
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new(&self.bin_path)
+            .current_dir(C_original::get_interpreter_desired_cwd(&self.data))
             .args(&self.get_data().cli_args)
             .output()
             .expect("Unable to start process");

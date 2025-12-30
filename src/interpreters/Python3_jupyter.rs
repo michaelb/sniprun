@@ -217,6 +217,7 @@ impl Interpreter for Python3_jupyter {
     }
     fn execute(&mut self) -> Result<String, SniprunError> {
         let output = Command::new("python3")
+            .current_dir(Python3_jupyter::get_interpreter_desired_cwd(&self.data))
             .arg(&self.main_file_path)
             .output()
             .expect("Unable to start process");
@@ -249,6 +250,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
             //this will be cleared by the SnipReplMemoryClean command
             let _res = std::fs::remove_file(&self.kernel_file);
             let _res = Command::new("jupyter-kernel")
+                .current_dir(Python3_jupyter::get_interpreter_desired_cwd(&self.data))
                 .arg("--kernel=python3")
                 .arg(String::from("--KernelManager.connection_file=") + &self.kernel_file)
                 .spawn();
@@ -338,6 +340,7 @@ impl ReplLikeInterpreter for Python3_jupyter {
         self.wait_on_kernel()?;
 
         let output = Command::new("sh")
+            .current_dir(Python3_jupyter::get_interpreter_desired_cwd(&self.data))
             .arg(&self.launcher_path)
             .output()
             .expect("Unable to start process");
