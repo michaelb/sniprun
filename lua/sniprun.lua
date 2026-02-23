@@ -41,6 +41,7 @@ M.config_values = {
         terminal_height = 20, -- change the terminal display option heigth (if horizontal)
         notification_timeout = 5, -- timeout for nvim_notify output
         notification_render = "default", -- nvim_notify style
+        max_fw_width = 80, -- max width of floating windows. Longer text gets wrapped
     },
 
     show_no_output = {

@@ -281,6 +281,7 @@ require'sniprun'.setup({
     terminal_width = 45,          --# change the terminal display option width (if vertical)
     terminal_height = 20,         --# change the terminal display option height (if horizontal)
     notification_timeout = 5      --# timeout for nvim_notify output
+    max_fw_width = 80,            --# max width for floating windows, longer lines will wrap
   },
 
   --# You can use the same keys to customize whether a sniprun producing
