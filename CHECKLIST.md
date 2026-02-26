@@ -14,6 +14,12 @@
 But alas some packages must be downgraded to respect MSRV, see Cargo.toml and
 add to the list if (when) necessary:
 - cargo update -p syn@2.0.108 --precise 2.0.106
+- cargo update -p ryu@1.0.22 --precise 1.0.20
+- cargo update -p unicode-ident@1.0.24 --precise 1.0.20
+- cargo update -p quote@1.0.44 --precise 1.0.41
+- cargo update -p log@0.4.29 --precise 0.4.28
+- cargo update -p itoa@1.0.17 --precise 1.0.15
+ - cargo update -p proc-macro2@1.0.106 --precise 1.0.102
 
 ## Merge process
  - create a PR dev -> master

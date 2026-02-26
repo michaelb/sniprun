@@ -552,9 +552,6 @@ pub fn start() {
                         // normal, unique result
                         display(result, event_handler2.nvim, &mut event_handler2.data);
                     }
-
-                    //clean data
-                    event_handler2.data = DataHolder::new();
                 })));
             }
             Messages::Clean => {

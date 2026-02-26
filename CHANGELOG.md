@@ -1,3 +1,6 @@
+## v1.3.22
+- Wrap long lines in FloatingWindow display mode
+
 ## v1.3.21
 - Settable current working directory
 - Fix window/terminal close bug

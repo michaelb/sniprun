@@ -19,25 +19,29 @@ function M.fw_open(row, column, message, ok, temp)
     local namespace_id = vim.api.nvim_create_namespace(NAMESPACE)
 
     local w = 0
-    local h = -1
+    local h = 0
     local bp = { row, column }
     local bufnr = vim.api.nvim_create_buf(false, true)
+
+    local max_width = math.max(require("sniprun").config_values.display_options.max_fw_width, 1)
     for line in message:gmatch("([^\n]*)\n?") do
-        h = h + 1
-        w = math.max(w, string.len(line))
         vim.api.nvim_buf_set_lines(bufnr, h, h + 1, false, { line })
+        h = h + (1 + math.floor((string.len(line) - 1) / max_width)) -- account for lines which will wrap
+        w = math.max(w, string.len(line))
         vim.api.nvim_buf_add_highlight(bufnr, namespace_id, hl, h, 0, -1) -- highlight lines in floating window
     end
+
     if h ~= 0 then
         M.fw_handle = vim.api.nvim_open_win(bufnr, false, {
             relative = "win",
-            width = w + 1,
+            width = math.min(w, max_width),
             height = h,
             bufpos = bp,
             focusable = false,
             style = "minimal",
             border = M.borders,
         })
+        vim.api.nvim_set_option_value("wrap", true, { win = M.fw_handle })
     end
 end
 
