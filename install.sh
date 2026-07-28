@@ -19,7 +19,17 @@ cargo_build() {
   if command -v cargo >/dev/null; then
     echo "Building sniprun from source..."
     cargo build --release 2>&1
-    echo "Done (status: $?)"
+    status=$?
+    echo "Done (status: $status)"
+    # cargo may write the binary elsewhere with a custom CARGO_TARGET_DIR or
+    # cargo config `target-dir`; the Lua launcher expects target/release/sniprun.
+    real_target=$(cargo metadata --format-version 1 --no-deps 2>/dev/null \
+      | sed -n 's/.*"target_directory"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
+    if [ -n "$real_target" ] && [ -f "$real_target/release/sniprun" ]; then
+      mkdir -p target/release
+      cp -f "$real_target/release/sniprun" target/release/sniprun
+      echo "Placed binary at target/release/sniprun (built under $real_target)"
+    fi
     return 0
   else
     echo "Could not find cargo in \$PATH: the Rust toolchain is required to build Sniprun"
