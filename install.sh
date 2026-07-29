@@ -18,8 +18,16 @@ fi
 cargo_build() {
   if command -v cargo >/dev/null; then
     echo "Building sniprun from source..."
+    unset CARGO_TARGET_DIR
     cargo build --release 2>&1
     echo "Done (status: $?)"
+
+    # save the sniprun binary before cleaning up
+    mv -f target/release/sniprun ./sniprun
+    cargo clean 2>&1
+    mkdir -p target/release/
+    mv -f sniprun target/release/
+    echo "Cleaned up build folder"
     return 0
   else
     echo "Could not find cargo in \$PATH: the Rust toolchain is required to build Sniprun"
