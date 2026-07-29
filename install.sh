@@ -19,6 +19,7 @@ cargo_build() {
   if command -v cargo >/dev/null; then
     echo "Building sniprun from source..."
     unset CARGO_TARGET_DIR
+    CARGO_TARGET_DIR="$PWD"
     cargo build --release 2>&1
     echo "Done (status: $?)"
 
