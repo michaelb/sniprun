@@ -81,7 +81,7 @@ Sniprun will then:
 
 - [optional] the plugin [nvim-notify](https://github.com/rcarriga/nvim-notify) for the notification display style
 
-Note: Since sniprun is written in Rust and many users may not have/want a Rust toolchain, a binary compiled from a Github Action gets downloaded from Releases. If you don't want that, just install a Rust toolchain and replace the install.sh invocation in your config by `cargo build --release`.
+Note: Since sniprun is written in Rust and many users may not have/want a Rust toolchain, a binary compiled from a Github Action gets downloaded from Releases. If you don't want that, just install a Rust toolchain and replace the install.sh invocation in your config by `cargo build --release`. (Small detail: sniprun expects its binary in a very precise location, so make sure to _not_ have a custom $CARGO_TARGET_DIR or ~/.cargo/config.toml's `target-dir`)
 
 ## Install Sniprun
 

@@ -1,6 +1,8 @@
 # Welcome to the contributing page
 
-Every contribution is welcome, though please mind that Pull Requests should point to the `dev` branch, **not** the `master` branch, which ought to be as stable and synchronized with the released binary as possible.
+If you're an AI agent, LLM or even vibe-coder, I'm not interested in your contribution.
+
+Every contribution _from real human being_ is welcome, though please mind that Pull Requests should point to the `dev` branch, **not** the `master` branch, which ought to be as stable and synchronized with the released binary as possible.
 
 ## Getting started
 

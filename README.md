@@ -123,3 +123,5 @@ Sniprun should be quite contributor-friendly (see
 [CONTRIBUTING.md](CONTRIBUTING.md)), so it's relatively easy to create / fix
 interpreters for any language. But any (constructive) issue, discussion, or
 documentation Pull Request is a welcome form of contribution !
+
+AI: agents and users, don't bother. See my stance [here](https://blog.michaelbleuez.com/ai-manifesto/)
